@@ -1,0 +1,2 @@
+D:/Code lung tung/Yoga Detection/FE/flutter_bloc_base-main/android/app/.cxx/Debug/5v4e5u4n/x86/CMakeFiles/edit_cache.dir
+D:/Code lung tung/Yoga Detection/FE/flutter_bloc_base-main/android/app/.cxx/Debug/5v4e5u4n/x86/CMakeFiles/rebuild_cache.dir
