@@ -1,4 +1,4 @@
-package com.example.yogadetection;
+package com.yogadetection;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
