@@ -25,13 +25,12 @@ class App extends StatelessWidget {
         // Automatically navigate back to the login page when the user logged out
         BlocListener<AuthBloc, AuthState>(
           listenWhen: (previousState, state) =>
-              previousState.loggedIn != state.loggedIn &&
-              state.loggedIn == false,
-          listener: (context, state) =>
-              context.router.replaceAll([const LoginRoute()]),
+              previousState.loggedIn != state.loggedIn && state.loggedIn == false,
+          listener: (context, state) => context.router.replaceAll([const LoginRoute()]),
         ),
       ],
       child: MaterialApp.router(
+        debugShowCheckedModeBanner: false,
         title: F.title,
         theme: appTheme.themeData,
         supportedLocales: context.supportedLocales,

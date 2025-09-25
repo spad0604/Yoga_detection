@@ -41,7 +41,8 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _onLoginPressed() {
-    _bloc.add(const LoginStarted());
+    context.router.pushNamed('/camera-detection');
+    // _bloc.add(const LoginStarted());
   }
 
   void _onSuccess(BuildContext context, LoginState state) {
