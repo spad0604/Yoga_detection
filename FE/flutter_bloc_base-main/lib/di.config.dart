@@ -20,6 +20,7 @@ import 'data/sources/local/local.dart' as _i193;
 import 'data/sources/network/dio.dart' as _i288;
 import 'data/sources/network/network.dart' as _i536;
 import 'data/states/auth/auth_bloc.dart' as _i963;
+import 'data/states/camera_detection/camera_detection_bloc.dart' as _i161;
 import 'data/states/settings/settings_bloc.dart' as _i932;
 import 'data/usecases/login.dart' as _i470;
 import 'data/usecases/verify_login_status.dart' as _i412;
@@ -42,6 +43,7 @@ extension GetItInjectableX on _i174.GetIt {
       environmentFilter,
     );
     final registerModule = _$RegisterModule();
+    gh.factory<_i161.CameraDetectionBloc>(() => _i161.CameraDetectionBloc());
     gh.singleton<_i963.AuthBloc>(() => _i963.AuthBloc());
     gh.singleton<_i932.SettingsBloc>(() => _i932.SettingsBloc());
     gh.singleton<_i558.FlutterSecureStorage>(

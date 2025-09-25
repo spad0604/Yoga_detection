@@ -4,6 +4,7 @@ import 'package:flutter_starter/presenter/pages/home/home.dart';
 import 'package:flutter_starter/presenter/pages/login/login.dart';
 import 'package:flutter_starter/presenter/pages/splash/splash.dart';
 import 'package:injectable/injectable.dart';
+import 'package:flutter_starter/presenter/pages/camera_detection/camera_detection.dart';
 
 part 'navigation.gr.dart';
 
@@ -21,6 +22,7 @@ class AppRouter extends RootStackRouter {
         AutoRoute(path: '/', page: SplashRoute.page),
         AutoRoute(path: '/login', page: LoginRoute.page),
         AutoRoute(path: '/home', page: HomeRoute.page),
+        AutoRoute(path: '/camera-detection', page: CameraDetectionRoute.page),
       ];
 
   bool isUnauthorizedRoute(String routeName) => [

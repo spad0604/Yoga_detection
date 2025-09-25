@@ -31,6 +31,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  #permision
+  permission_handler: ^12.0.1
+
+  #image picker
+  image_picker: ^1.2.0
 
   # Navigation
   auto_route: ^9.3.0+1
@@ -57,11 +62,16 @@ dependencies:
   get_it: ^8.0.3
   injectable: ^2.5.0
 
+  #Google ML Kit
+  google_mlkit_pose_detection: ^0.14.0
+  camera: ^0.10.6
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
   flutter_flavorizr: ^2.2.3
+  flutter_gen_runner: ^5.12.0
   build_runner: ^2.4.14
   auto_route_generator: ^9.3.1
   retrofit_generator: ^9.1.7
@@ -121,3 +131,9 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+flutter_gen:
+  output: lib/presenter/gen/
+  integrations:
+    image: true
+    flutter_svg: true  

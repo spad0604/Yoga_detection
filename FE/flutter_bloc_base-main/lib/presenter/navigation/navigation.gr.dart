@@ -11,6 +11,22 @@
 part of 'navigation.dart';
 
 /// generated route for
+/// [CameraDetectionPage]
+class CameraDetectionRoute extends PageRouteInfo<void> {
+  const CameraDetectionRoute({List<PageRouteInfo>? children})
+    : super(CameraDetectionRoute.name, initialChildren: children);
+
+  static const String name = 'CameraDetectionRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return WrappedRoute(child: CameraDetectionPage());
+    },
+  );
+}
+
+/// generated route for
 /// [HomePage]
 class HomeRoute extends PageRouteInfo<void> {
   const HomeRoute({List<PageRouteInfo>? children})
