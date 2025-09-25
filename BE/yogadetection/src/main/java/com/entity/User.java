@@ -23,7 +23,7 @@ import java.util.List;
 public class User implements UserDetails {
     @Id
     @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "com.example.UUIDv7Generator")
+    @GenericGenerator(name = "uuid", strategy = "com.config.UUIDv7Generator")
     private Long id;
 
     @Column(name = "first_name", nullable = false)

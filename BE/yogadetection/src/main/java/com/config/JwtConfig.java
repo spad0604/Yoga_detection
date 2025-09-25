@@ -1,7 +1,7 @@
-package com.auth;
+package com.config;
 
 import com.entity.User;
-import com.response.TokenResponse;
+import com.dto.response.TokenResponse;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,8 +19,8 @@ import java.util.Map;
 @Service
 public class JwtConfig {
 
-    @Value("${spring.key-gen}")
-    private String SECRET_KEY;
+//    @Value("${spring.key-gen}")
+    private String SECRET_KEY = "xxx";
 
     private final long ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 15;
     private final long REFRESH_TOKEN_EXPIRATION = 1000L * 60 * 60 * 24 * 7;
