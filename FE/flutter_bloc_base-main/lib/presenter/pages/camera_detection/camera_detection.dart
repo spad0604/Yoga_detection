@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_starter/data/states/camera_detection/camera_detection_event.dart';
@@ -43,47 +44,116 @@ class CameraDetectionPage extends StatefulWidget implements AutoRouteWrapper {
   State<CameraDetectionPage> createState() => _CameraDetectionPageState();
 }
 
-class _CameraDetectionPageState extends State<CameraDetectionPage> {
+class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsBindingObserver {
   CameraDetectionBloc get _bloc => context.read<CameraDetectionBloc>();
 
   CameraController? _cameraController;
   PoseDetector? _poseDetector;
   bool _isProcessing = false;
   Size? _previewSize;
+  CameraLensDirection _currentLensDirection = CameraLensDirection.back;
 
   @override
   void initState() {
-    _initializeCameraAndDetector();
-    () async {
-      await _initializeCameraAndDetector();
-      await _startStream();
-      if (mounted) setState(() {});
-    }();
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _initializeCameraAndDetector().then((_) {
+      if (mounted) {
+        _startStream();
+      }
+    });
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (_cameraController == null || !_cameraController!.value.isInitialized) return;
+
+    if (state == AppLifecycleState.inactive) {
+      _stopStream();
+    } else if (state == AppLifecycleState.resumed) {
+      _startStream();
+    }
+  }
+
+  void _showError(String message) {
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
+    }
+  }
+
+  Future<void> _switchCamera() async {
+    if (_cameraController == null) return;
+
+    // Stop current stream and dispose controller
+    await _stopStream();
+    await _cameraController!.dispose();
+    _cameraController = null;
+
+    // Switch lens direction
+    _currentLensDirection = _currentLensDirection == CameraLensDirection.back
+        ? CameraLensDirection.front
+        : CameraLensDirection.back;
+
+    // Reinitialize with new camera
+    await _initializeCameraAndDetector();
+    if (mounted) {
+      await _startStream();
+    }
   }
 
   Future<void> _initializeCameraAndDetector() async {
-    final status = await Permission.camera.request();
+    try {
+      final status = await Permission.camera.request();
 
-    if (!status.isGranted) {
-      return;
+      if (!status.isGranted) {
+        _showError('Camera permission denied. Please grant camera permission in settings.');
+        return;
+      }
+
+      final cameras = await availableCameras();
+
+      if (cameras.isEmpty) {
+        _showError('No cameras found on this device.');
+        return;
+      }
+
+      // Find the camera with the desired lens direction
+      final selectedCamera = cameras.firstWhere(
+        (camera) => camera.lensDirection == _currentLensDirection,
+        orElse: () => cameras.first, // Fallback to first available camera
+      );
+
+      // Try to initialize the selected camera
+      try {
+        final controller = CameraController(
+          selectedCamera,
+          ResolutionPreset.low, // Start with lowest resolution
+          enableAudio: false,
+          imageFormatGroup: ImageFormatGroup.yuv420,
+        );
+
+        await controller.initialize();
+
+        if (controller.value.isInitialized) {
+          _cameraController = controller;
+        } else {
+          await controller.dispose();
+          _showError('Unable to initialize camera. Please try restarting the app or check camera hardware.');
+          return;
+        }
+      } catch (e) {
+        _showError('Failed to initialize camera: ${e.toString()}');
+        return;
+      }
+
+      _previewSize = _cameraController!.value.previewSize;
+      _poseDetector = PoseDetector(options: PoseDetectorOptions(mode: PoseDetectionMode.stream));
+    } catch (e) {
+      _showError('Failed to initialize camera: ${e.toString()}');
     }
-
-    final cameras = await availableCameras();
-
-    final camera = cameras.firstWhere((camera) => camera.lensDirection == CameraLensDirection.back);
-
-    _cameraController = CameraController(
-      camera,
-      ResolutionPreset.high,
-      enableAudio: false,
-      imageFormatGroup: ImageFormatGroup.nv21,
-    );
-
-    await _cameraController!.initialize();
-
-    _previewSize = _cameraController!.value.previewSize;
-    _poseDetector = PoseDetector(options: PoseDetectorOptions(mode: PoseDetectionMode.stream));
   }
 
   Uint8List _concatenatePlanes(List<Plane> planes) {
@@ -146,6 +216,8 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _stopStream(); // Stop stream first
     _cameraController?.dispose();
     _poseDetector?.close();
     super.dispose();
@@ -195,11 +267,24 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> {
                                   painter: _PosePainter(
                                     poses: poses,
                                     imageSize: _previewSize!,
-                                    isFrontCamera: _controller!.description.lensDirection ==
+                                    isFrontCamera: _controller.description.lensDirection ==
                                         CameraLensDirection.front,
                                   ),
                                 );
                               },
+                            ),
+                            // Camera rotation button
+                            Positioned(
+                              bottom: 20,
+                              right: 20,
+                              child: FloatingActionButton(
+                                onPressed: _switchCamera,
+                                backgroundColor: Colors.black.withOpacity(0.7),
+                                child: const Icon(
+                                  Icons.flip_camera_ios,
+                                  color: Colors.white,
+                                ),
+                              ),
                             ),
                           ],
                         ),
@@ -213,14 +298,15 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          cameraDetectionButton(
-                              AppImages.ic_video, Colors.white, Colors.black, () {}),
+                          cameraDetectionButton(AppImages.ic_video, Colors.white, Colors.black,
+                              () async => await _startStream()),
                           cameraDetectionButton(
                               AppImages.ic_present, Colors.white, Colors.black, () {}),
-                          cameraDetectionButton(
-                              AppImages.ic_pause, Colors.white, Colors.black, () {}),
-                          cameraDetectionButton(AppImages.ic_close, Colors.red, Colors.white, () {
-                            dispose();
+                          cameraDetectionButton(AppImages.ic_pause, Colors.white, Colors.black,
+                              () async => await _stopStream()),
+                          cameraDetectionButton(AppImages.ic_close, Colors.red, Colors.white,
+                              () async {
+                            await _stopStream();
                             context.router.maybePop();
                           })
                         ],

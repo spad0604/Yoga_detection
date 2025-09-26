@@ -58,6 +58,14 @@ class $AssetsImagesGen {
   AssetGenImage get icClose =>
       const AssetGenImage('assets/images/ic_close.png');
 
+  /// File path: assets/images/ic_facebook.png
+  AssetGenImage get icFacebook =>
+      const AssetGenImage('assets/images/ic_facebook.png');
+
+  /// File path: assets/images/ic_google.png
+  AssetGenImage get icGoogle =>
+      const AssetGenImage('assets/images/ic_google.png');
+
   /// File path: assets/images/ic_pause.png
   AssetGenImage get icPause =>
       const AssetGenImage('assets/images/ic_pause.png');
@@ -70,8 +78,20 @@ class $AssetsImagesGen {
   AssetGenImage get icVideo =>
       const AssetGenImage('assets/images/ic_video.png');
 
+  /// File path: assets/images/logo.png
+  AssetGenImage get logo => const AssetGenImage('assets/images/logo.png');
+
   /// List of all assets
-  List<dynamic> get values => [aGitkeep, icClose, icPause, icPresent, icVideo];
+  List<dynamic> get values => [
+        aGitkeep,
+        icClose,
+        icFacebook,
+        icGoogle,
+        icPause,
+        icPresent,
+        icVideo,
+        logo
+      ];
 }
 
 class $LibPresenterGen {

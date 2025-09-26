@@ -27,6 +27,7 @@ import 'data/usecases/verify_login_status.dart' as _i412;
 import 'di.dart' as _i913;
 import 'presenter/navigation/navigation.dart' as _i551;
 import 'presenter/pages/login/login_bloc.dart' as _i902;
+import 'presenter/pages/register/register_bloc.dart' as _i338;
 import 'presenter/pages/splash/splash_bloc.dart' as _i517;
 import 'services/oauth_token_manager/oauth_token_manager.dart' as _i132;
 import 'services/oauth_token_manager/oauth_token_manager.default.dart' as _i290;
@@ -44,6 +45,7 @@ extension GetItInjectableX on _i174.GetIt {
     );
     final registerModule = _$RegisterModule();
     gh.factory<_i161.CameraDetectionBloc>(() => _i161.CameraDetectionBloc());
+    gh.factory<_i338.RegisterBloc>(() => _i338.RegisterBloc());
     gh.singleton<_i963.AuthBloc>(() => _i963.AuthBloc());
     gh.singleton<_i932.SettingsBloc>(() => _i932.SettingsBloc());
     gh.singleton<_i558.FlutterSecureStorage>(

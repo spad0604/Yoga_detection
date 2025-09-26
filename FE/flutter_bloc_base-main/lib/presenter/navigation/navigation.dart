@@ -6,6 +6,8 @@ import 'package:flutter_starter/presenter/pages/splash/splash.dart';
 import 'package:injectable/injectable.dart';
 import 'package:flutter_starter/presenter/pages/camera_detection/camera_detection.dart';
 
+import '../pages/register/register.dart';
+
 part 'navigation.gr.dart';
 
 @singleton
@@ -21,6 +23,7 @@ class AppRouter extends RootStackRouter {
   List<AutoRoute> get routes => [
         AutoRoute(path: '/', page: SplashRoute.page),
         AutoRoute(path: '/login', page: LoginRoute.page),
+        AutoRoute(path: '/register', page: RegisterRoute.page),
         AutoRoute(path: '/home', page: HomeRoute.page),
         AutoRoute(path: '/camera-detection', page: CameraDetectionRoute.page),
       ];
