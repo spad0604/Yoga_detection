@@ -141,7 +141,8 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
           _cameraController = controller;
         } else {
           await controller.dispose();
-          _showError('Unable to initialize camera. Please try restarting the app or check camera hardware.');
+          _showError(
+              'Unable to initialize camera. Please try restarting the app or check camera hardware.');
           return;
         }
       } catch (e) {
