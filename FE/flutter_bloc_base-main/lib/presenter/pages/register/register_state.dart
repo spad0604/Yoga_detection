@@ -15,5 +15,12 @@ class RegisterState with _$RegisterState {
   const factory RegisterState({
     @Default(RegisterStatus.initial) RegisterStatus status,
     BaseException? error,
+    String? firstNameError,
+    String? lastNameError,
+    String? emailError,
+    String? phoneError,
+    String? passwordError,
+    String? confirmPasswordError,
+    String? birthDateError,
   }) = _RegisterState;
 }

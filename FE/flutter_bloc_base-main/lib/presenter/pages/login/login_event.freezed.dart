@@ -18,51 +18,57 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$LoginEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(String username) usernameChanged,
+    required TResult Function(String email) emailChanged,
     required TResult Function(String password) passwordChanged,
     required TResult Function() loginStarted,
     required TResult Function(BaseException<dynamic>? error) errorOccurred,
+    required TResult Function() loading,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String username)? usernameChanged,
+    TResult? Function(String email)? emailChanged,
     TResult? Function(String password)? passwordChanged,
     TResult? Function()? loginStarted,
     TResult? Function(BaseException<dynamic>? error)? errorOccurred,
+    TResult? Function()? loading,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String username)? usernameChanged,
+    TResult Function(String email)? emailChanged,
     TResult Function(String password)? passwordChanged,
     TResult Function()? loginStarted,
     TResult Function(BaseException<dynamic>? error)? errorOccurred,
+    TResult Function()? loading,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(LoginUsernameChanged value) usernameChanged,
+    required TResult Function(LoginEmailChanged value) emailChanged,
     required TResult Function(LoginPasswordChanged value) passwordChanged,
     required TResult Function(LoginStarted value) loginStarted,
     required TResult Function(LoginErrorOccurred value) errorOccurred,
+    required TResult Function(LoginLoading value) loading,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(LoginUsernameChanged value)? usernameChanged,
+    TResult? Function(LoginEmailChanged value)? emailChanged,
     TResult? Function(LoginPasswordChanged value)? passwordChanged,
     TResult? Function(LoginStarted value)? loginStarted,
     TResult? Function(LoginErrorOccurred value)? errorOccurred,
+    TResult? Function(LoginLoading value)? loading,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(LoginUsernameChanged value)? usernameChanged,
+    TResult Function(LoginEmailChanged value)? emailChanged,
     TResult Function(LoginPasswordChanged value)? passwordChanged,
     TResult Function(LoginStarted value)? loginStarted,
     TResult Function(LoginErrorOccurred value)? errorOccurred,
+    TResult Function(LoginLoading value)? loading,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -90,20 +96,20 @@ class _$LoginEventCopyWithImpl<$Res, $Val extends LoginEvent>
 }
 
 /// @nodoc
-abstract class _$$LoginUsernameChangedImplCopyWith<$Res> {
-  factory _$$LoginUsernameChangedImplCopyWith(_$LoginUsernameChangedImpl value,
-          $Res Function(_$LoginUsernameChangedImpl) then) =
-      __$$LoginUsernameChangedImplCopyWithImpl<$Res>;
+abstract class _$$LoginEmailChangedImplCopyWith<$Res> {
+  factory _$$LoginEmailChangedImplCopyWith(_$LoginEmailChangedImpl value,
+          $Res Function(_$LoginEmailChangedImpl) then) =
+      __$$LoginEmailChangedImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({String username});
+  $Res call({String email});
 }
 
 /// @nodoc
-class __$$LoginUsernameChangedImplCopyWithImpl<$Res>
-    extends _$LoginEventCopyWithImpl<$Res, _$LoginUsernameChangedImpl>
-    implements _$$LoginUsernameChangedImplCopyWith<$Res> {
-  __$$LoginUsernameChangedImplCopyWithImpl(_$LoginUsernameChangedImpl _value,
-      $Res Function(_$LoginUsernameChangedImpl) _then)
+class __$$LoginEmailChangedImplCopyWithImpl<$Res>
+    extends _$LoginEventCopyWithImpl<$Res, _$LoginEmailChangedImpl>
+    implements _$$LoginEmailChangedImplCopyWith<$Res> {
+  __$$LoginEmailChangedImplCopyWithImpl(_$LoginEmailChangedImpl _value,
+      $Res Function(_$LoginEmailChangedImpl) _then)
       : super(_value, _then);
 
   /// Create a copy of LoginEvent
@@ -111,12 +117,12 @@ class __$$LoginUsernameChangedImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? username = null,
+    Object? email = null,
   }) {
-    return _then(_$LoginUsernameChangedImpl(
-      null == username
-          ? _value.username
-          : username // ignore: cast_nullable_to_non_nullable
+    return _then(_$LoginEmailChangedImpl(
+      null == email
+          ? _value.email
+          : email // ignore: cast_nullable_to_non_nullable
               as String,
     ));
   }
@@ -124,72 +130,73 @@ class __$$LoginUsernameChangedImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$LoginUsernameChangedImpl implements LoginUsernameChanged {
-  const _$LoginUsernameChangedImpl(this.username);
+class _$LoginEmailChangedImpl implements LoginEmailChanged {
+  const _$LoginEmailChangedImpl(this.email);
 
   @override
-  final String username;
+  final String email;
 
   @override
   String toString() {
-    return 'LoginEvent.usernameChanged(username: $username)';
+    return 'LoginEvent.emailChanged(email: $email)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$LoginUsernameChangedImpl &&
-            (identical(other.username, username) ||
-                other.username == username));
+            other is _$LoginEmailChangedImpl &&
+            (identical(other.email, email) || other.email == email));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, username);
+  int get hashCode => Object.hash(runtimeType, email);
 
   /// Create a copy of LoginEvent
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$LoginUsernameChangedImplCopyWith<_$LoginUsernameChangedImpl>
-      get copyWith =>
-          __$$LoginUsernameChangedImplCopyWithImpl<_$LoginUsernameChangedImpl>(
-              this, _$identity);
+  _$$LoginEmailChangedImplCopyWith<_$LoginEmailChangedImpl> get copyWith =>
+      __$$LoginEmailChangedImplCopyWithImpl<_$LoginEmailChangedImpl>(
+          this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(String username) usernameChanged,
+    required TResult Function(String email) emailChanged,
     required TResult Function(String password) passwordChanged,
     required TResult Function() loginStarted,
     required TResult Function(BaseException<dynamic>? error) errorOccurred,
+    required TResult Function() loading,
   }) {
-    return usernameChanged(username);
+    return emailChanged(email);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String username)? usernameChanged,
+    TResult? Function(String email)? emailChanged,
     TResult? Function(String password)? passwordChanged,
     TResult? Function()? loginStarted,
     TResult? Function(BaseException<dynamic>? error)? errorOccurred,
+    TResult? Function()? loading,
   }) {
-    return usernameChanged?.call(username);
+    return emailChanged?.call(email);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String username)? usernameChanged,
+    TResult Function(String email)? emailChanged,
     TResult Function(String password)? passwordChanged,
     TResult Function()? loginStarted,
     TResult Function(BaseException<dynamic>? error)? errorOccurred,
+    TResult Function()? loading,
     required TResult orElse(),
   }) {
-    if (usernameChanged != null) {
-      return usernameChanged(username);
+    if (emailChanged != null) {
+      return emailChanged(email);
     }
     return orElse();
   }
@@ -197,52 +204,54 @@ class _$LoginUsernameChangedImpl implements LoginUsernameChanged {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(LoginUsernameChanged value) usernameChanged,
+    required TResult Function(LoginEmailChanged value) emailChanged,
     required TResult Function(LoginPasswordChanged value) passwordChanged,
     required TResult Function(LoginStarted value) loginStarted,
     required TResult Function(LoginErrorOccurred value) errorOccurred,
+    required TResult Function(LoginLoading value) loading,
   }) {
-    return usernameChanged(this);
+    return emailChanged(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(LoginUsernameChanged value)? usernameChanged,
+    TResult? Function(LoginEmailChanged value)? emailChanged,
     TResult? Function(LoginPasswordChanged value)? passwordChanged,
     TResult? Function(LoginStarted value)? loginStarted,
     TResult? Function(LoginErrorOccurred value)? errorOccurred,
+    TResult? Function(LoginLoading value)? loading,
   }) {
-    return usernameChanged?.call(this);
+    return emailChanged?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(LoginUsernameChanged value)? usernameChanged,
+    TResult Function(LoginEmailChanged value)? emailChanged,
     TResult Function(LoginPasswordChanged value)? passwordChanged,
     TResult Function(LoginStarted value)? loginStarted,
     TResult Function(LoginErrorOccurred value)? errorOccurred,
+    TResult Function(LoginLoading value)? loading,
     required TResult orElse(),
   }) {
-    if (usernameChanged != null) {
-      return usernameChanged(this);
+    if (emailChanged != null) {
+      return emailChanged(this);
     }
     return orElse();
   }
 }
 
-abstract class LoginUsernameChanged implements LoginEvent {
-  const factory LoginUsernameChanged(final String username) =
-      _$LoginUsernameChangedImpl;
+abstract class LoginEmailChanged implements LoginEvent {
+  const factory LoginEmailChanged(final String email) = _$LoginEmailChangedImpl;
 
-  String get username;
+  String get email;
 
   /// Create a copy of LoginEvent
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$LoginUsernameChangedImplCopyWith<_$LoginUsernameChangedImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  _$$LoginEmailChangedImplCopyWith<_$LoginEmailChangedImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -316,10 +325,11 @@ class _$LoginPasswordChangedImpl implements LoginPasswordChanged {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(String username) usernameChanged,
+    required TResult Function(String email) emailChanged,
     required TResult Function(String password) passwordChanged,
     required TResult Function() loginStarted,
     required TResult Function(BaseException<dynamic>? error) errorOccurred,
+    required TResult Function() loading,
   }) {
     return passwordChanged(password);
   }
@@ -327,10 +337,11 @@ class _$LoginPasswordChangedImpl implements LoginPasswordChanged {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String username)? usernameChanged,
+    TResult? Function(String email)? emailChanged,
     TResult? Function(String password)? passwordChanged,
     TResult? Function()? loginStarted,
     TResult? Function(BaseException<dynamic>? error)? errorOccurred,
+    TResult? Function()? loading,
   }) {
     return passwordChanged?.call(password);
   }
@@ -338,10 +349,11 @@ class _$LoginPasswordChangedImpl implements LoginPasswordChanged {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String username)? usernameChanged,
+    TResult Function(String email)? emailChanged,
     TResult Function(String password)? passwordChanged,
     TResult Function()? loginStarted,
     TResult Function(BaseException<dynamic>? error)? errorOccurred,
+    TResult Function()? loading,
     required TResult orElse(),
   }) {
     if (passwordChanged != null) {
@@ -353,10 +365,11 @@ class _$LoginPasswordChangedImpl implements LoginPasswordChanged {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(LoginUsernameChanged value) usernameChanged,
+    required TResult Function(LoginEmailChanged value) emailChanged,
     required TResult Function(LoginPasswordChanged value) passwordChanged,
     required TResult Function(LoginStarted value) loginStarted,
     required TResult Function(LoginErrorOccurred value) errorOccurred,
+    required TResult Function(LoginLoading value) loading,
   }) {
     return passwordChanged(this);
   }
@@ -364,10 +377,11 @@ class _$LoginPasswordChangedImpl implements LoginPasswordChanged {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(LoginUsernameChanged value)? usernameChanged,
+    TResult? Function(LoginEmailChanged value)? emailChanged,
     TResult? Function(LoginPasswordChanged value)? passwordChanged,
     TResult? Function(LoginStarted value)? loginStarted,
     TResult? Function(LoginErrorOccurred value)? errorOccurred,
+    TResult? Function(LoginLoading value)? loading,
   }) {
     return passwordChanged?.call(this);
   }
@@ -375,10 +389,11 @@ class _$LoginPasswordChangedImpl implements LoginPasswordChanged {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(LoginUsernameChanged value)? usernameChanged,
+    TResult Function(LoginEmailChanged value)? emailChanged,
     TResult Function(LoginPasswordChanged value)? passwordChanged,
     TResult Function(LoginStarted value)? loginStarted,
     TResult Function(LoginErrorOccurred value)? errorOccurred,
+    TResult Function(LoginLoading value)? loading,
     required TResult orElse(),
   }) {
     if (passwordChanged != null) {
@@ -442,10 +457,11 @@ class _$LoginStartedImpl implements LoginStarted {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(String username) usernameChanged,
+    required TResult Function(String email) emailChanged,
     required TResult Function(String password) passwordChanged,
     required TResult Function() loginStarted,
     required TResult Function(BaseException<dynamic>? error) errorOccurred,
+    required TResult Function() loading,
   }) {
     return loginStarted();
   }
@@ -453,10 +469,11 @@ class _$LoginStartedImpl implements LoginStarted {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String username)? usernameChanged,
+    TResult? Function(String email)? emailChanged,
     TResult? Function(String password)? passwordChanged,
     TResult? Function()? loginStarted,
     TResult? Function(BaseException<dynamic>? error)? errorOccurred,
+    TResult? Function()? loading,
   }) {
     return loginStarted?.call();
   }
@@ -464,10 +481,11 @@ class _$LoginStartedImpl implements LoginStarted {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String username)? usernameChanged,
+    TResult Function(String email)? emailChanged,
     TResult Function(String password)? passwordChanged,
     TResult Function()? loginStarted,
     TResult Function(BaseException<dynamic>? error)? errorOccurred,
+    TResult Function()? loading,
     required TResult orElse(),
   }) {
     if (loginStarted != null) {
@@ -479,10 +497,11 @@ class _$LoginStartedImpl implements LoginStarted {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(LoginUsernameChanged value) usernameChanged,
+    required TResult Function(LoginEmailChanged value) emailChanged,
     required TResult Function(LoginPasswordChanged value) passwordChanged,
     required TResult Function(LoginStarted value) loginStarted,
     required TResult Function(LoginErrorOccurred value) errorOccurred,
+    required TResult Function(LoginLoading value) loading,
   }) {
     return loginStarted(this);
   }
@@ -490,10 +509,11 @@ class _$LoginStartedImpl implements LoginStarted {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(LoginUsernameChanged value)? usernameChanged,
+    TResult? Function(LoginEmailChanged value)? emailChanged,
     TResult? Function(LoginPasswordChanged value)? passwordChanged,
     TResult? Function(LoginStarted value)? loginStarted,
     TResult? Function(LoginErrorOccurred value)? errorOccurred,
+    TResult? Function(LoginLoading value)? loading,
   }) {
     return loginStarted?.call(this);
   }
@@ -501,10 +521,11 @@ class _$LoginStartedImpl implements LoginStarted {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(LoginUsernameChanged value)? usernameChanged,
+    TResult Function(LoginEmailChanged value)? emailChanged,
     TResult Function(LoginPasswordChanged value)? passwordChanged,
     TResult Function(LoginStarted value)? loginStarted,
     TResult Function(LoginErrorOccurred value)? errorOccurred,
+    TResult Function(LoginLoading value)? loading,
     required TResult orElse(),
   }) {
     if (loginStarted != null) {
@@ -587,10 +608,11 @@ class _$LoginErrorOccurredImpl implements LoginErrorOccurred {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(String username) usernameChanged,
+    required TResult Function(String email) emailChanged,
     required TResult Function(String password) passwordChanged,
     required TResult Function() loginStarted,
     required TResult Function(BaseException<dynamic>? error) errorOccurred,
+    required TResult Function() loading,
   }) {
     return errorOccurred(error);
   }
@@ -598,10 +620,11 @@ class _$LoginErrorOccurredImpl implements LoginErrorOccurred {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String username)? usernameChanged,
+    TResult? Function(String email)? emailChanged,
     TResult? Function(String password)? passwordChanged,
     TResult? Function()? loginStarted,
     TResult? Function(BaseException<dynamic>? error)? errorOccurred,
+    TResult? Function()? loading,
   }) {
     return errorOccurred?.call(error);
   }
@@ -609,10 +632,11 @@ class _$LoginErrorOccurredImpl implements LoginErrorOccurred {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String username)? usernameChanged,
+    TResult Function(String email)? emailChanged,
     TResult Function(String password)? passwordChanged,
     TResult Function()? loginStarted,
     TResult Function(BaseException<dynamic>? error)? errorOccurred,
+    TResult Function()? loading,
     required TResult orElse(),
   }) {
     if (errorOccurred != null) {
@@ -624,10 +648,11 @@ class _$LoginErrorOccurredImpl implements LoginErrorOccurred {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(LoginUsernameChanged value) usernameChanged,
+    required TResult Function(LoginEmailChanged value) emailChanged,
     required TResult Function(LoginPasswordChanged value) passwordChanged,
     required TResult Function(LoginStarted value) loginStarted,
     required TResult Function(LoginErrorOccurred value) errorOccurred,
+    required TResult Function(LoginLoading value) loading,
   }) {
     return errorOccurred(this);
   }
@@ -635,10 +660,11 @@ class _$LoginErrorOccurredImpl implements LoginErrorOccurred {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(LoginUsernameChanged value)? usernameChanged,
+    TResult? Function(LoginEmailChanged value)? emailChanged,
     TResult? Function(LoginPasswordChanged value)? passwordChanged,
     TResult? Function(LoginStarted value)? loginStarted,
     TResult? Function(LoginErrorOccurred value)? errorOccurred,
+    TResult? Function(LoginLoading value)? loading,
   }) {
     return errorOccurred?.call(this);
   }
@@ -646,10 +672,11 @@ class _$LoginErrorOccurredImpl implements LoginErrorOccurred {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(LoginUsernameChanged value)? usernameChanged,
+    TResult Function(LoginEmailChanged value)? emailChanged,
     TResult Function(LoginPasswordChanged value)? passwordChanged,
     TResult Function(LoginStarted value)? loginStarted,
     TResult Function(LoginErrorOccurred value)? errorOccurred,
+    TResult Function(LoginLoading value)? loading,
     required TResult orElse(),
   }) {
     if (errorOccurred != null) {
@@ -670,4 +697,127 @@ abstract class LoginErrorOccurred implements LoginEvent {
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$LoginErrorOccurredImplCopyWith<_$LoginErrorOccurredImpl> get copyWith =>
       throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$LoginLoadingImplCopyWith<$Res> {
+  factory _$$LoginLoadingImplCopyWith(
+          _$LoginLoadingImpl value, $Res Function(_$LoginLoadingImpl) then) =
+      __$$LoginLoadingImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$LoginLoadingImplCopyWithImpl<$Res>
+    extends _$LoginEventCopyWithImpl<$Res, _$LoginLoadingImpl>
+    implements _$$LoginLoadingImplCopyWith<$Res> {
+  __$$LoginLoadingImplCopyWithImpl(
+      _$LoginLoadingImpl _value, $Res Function(_$LoginLoadingImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of LoginEvent
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+
+class _$LoginLoadingImpl implements LoginLoading {
+  const _$LoginLoadingImpl();
+
+  @override
+  String toString() {
+    return 'LoginEvent.loading()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _$LoginLoadingImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(String email) emailChanged,
+    required TResult Function(String password) passwordChanged,
+    required TResult Function() loginStarted,
+    required TResult Function(BaseException<dynamic>? error) errorOccurred,
+    required TResult Function() loading,
+  }) {
+    return loading();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(String email)? emailChanged,
+    TResult? Function(String password)? passwordChanged,
+    TResult? Function()? loginStarted,
+    TResult? Function(BaseException<dynamic>? error)? errorOccurred,
+    TResult? Function()? loading,
+  }) {
+    return loading?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(String email)? emailChanged,
+    TResult Function(String password)? passwordChanged,
+    TResult Function()? loginStarted,
+    TResult Function(BaseException<dynamic>? error)? errorOccurred,
+    TResult Function()? loading,
+    required TResult orElse(),
+  }) {
+    if (loading != null) {
+      return loading();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(LoginEmailChanged value) emailChanged,
+    required TResult Function(LoginPasswordChanged value) passwordChanged,
+    required TResult Function(LoginStarted value) loginStarted,
+    required TResult Function(LoginErrorOccurred value) errorOccurred,
+    required TResult Function(LoginLoading value) loading,
+  }) {
+    return loading(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(LoginEmailChanged value)? emailChanged,
+    TResult? Function(LoginPasswordChanged value)? passwordChanged,
+    TResult? Function(LoginStarted value)? loginStarted,
+    TResult? Function(LoginErrorOccurred value)? errorOccurred,
+    TResult? Function(LoginLoading value)? loading,
+  }) {
+    return loading?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(LoginEmailChanged value)? emailChanged,
+    TResult Function(LoginPasswordChanged value)? passwordChanged,
+    TResult Function(LoginStarted value)? loginStarted,
+    TResult Function(LoginErrorOccurred value)? errorOccurred,
+    TResult Function(LoginLoading value)? loading,
+    required TResult orElse(),
+  }) {
+    if (loading != null) {
+      return loading(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class LoginLoading implements LoginEvent {
+  const factory LoginLoading() = _$LoginLoadingImpl;
 }

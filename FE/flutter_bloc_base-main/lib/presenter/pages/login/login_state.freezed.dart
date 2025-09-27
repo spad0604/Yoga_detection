@@ -17,10 +17,12 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$LoginState {
   LoginStatus get status => throw _privateConstructorUsedError;
-  Account? get account => throw _privateConstructorUsedError;
-  String get username => throw _privateConstructorUsedError;
+  RegisterResponse? get account => throw _privateConstructorUsedError;
+  String get email => throw _privateConstructorUsedError;
   String get password => throw _privateConstructorUsedError;
   BaseException<dynamic>? get error => throw _privateConstructorUsedError;
+  String? get emailError => throw _privateConstructorUsedError;
+  String? get passwordError => throw _privateConstructorUsedError;
 
   /// Create a copy of LoginState
   /// with the given fields replaced by the non-null parameter values.
@@ -37,12 +39,14 @@ abstract class $LoginStateCopyWith<$Res> {
   @useResult
   $Res call(
       {LoginStatus status,
-      Account? account,
-      String username,
+      RegisterResponse? account,
+      String email,
       String password,
-      BaseException<dynamic>? error});
+      BaseException<dynamic>? error,
+      String? emailError,
+      String? passwordError});
 
-  $AccountCopyWith<$Res>? get account;
+  $RegisterResponseCopyWith<$Res>? get account;
 }
 
 /// @nodoc
@@ -62,9 +66,11 @@ class _$LoginStateCopyWithImpl<$Res, $Val extends LoginState>
   $Res call({
     Object? status = null,
     Object? account = freezed,
-    Object? username = null,
+    Object? email = null,
     Object? password = null,
     Object? error = freezed,
+    Object? emailError = freezed,
+    Object? passwordError = freezed,
   }) {
     return _then(_value.copyWith(
       status: null == status
@@ -74,10 +80,10 @@ class _$LoginStateCopyWithImpl<$Res, $Val extends LoginState>
       account: freezed == account
           ? _value.account
           : account // ignore: cast_nullable_to_non_nullable
-              as Account?,
-      username: null == username
-          ? _value.username
-          : username // ignore: cast_nullable_to_non_nullable
+              as RegisterResponse?,
+      email: null == email
+          ? _value.email
+          : email // ignore: cast_nullable_to_non_nullable
               as String,
       password: null == password
           ? _value.password
@@ -87,6 +93,14 @@ class _$LoginStateCopyWithImpl<$Res, $Val extends LoginState>
           ? _value.error
           : error // ignore: cast_nullable_to_non_nullable
               as BaseException<dynamic>?,
+      emailError: freezed == emailError
+          ? _value.emailError
+          : emailError // ignore: cast_nullable_to_non_nullable
+              as String?,
+      passwordError: freezed == passwordError
+          ? _value.passwordError
+          : passwordError // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 
@@ -94,12 +108,12 @@ class _$LoginStateCopyWithImpl<$Res, $Val extends LoginState>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $AccountCopyWith<$Res>? get account {
+  $RegisterResponseCopyWith<$Res>? get account {
     if (_value.account == null) {
       return null;
     }
 
-    return $AccountCopyWith<$Res>(_value.account!, (value) {
+    return $RegisterResponseCopyWith<$Res>(_value.account!, (value) {
       return _then(_value.copyWith(account: value) as $Val);
     });
   }
@@ -115,13 +129,15 @@ abstract class _$$LoginStateImplCopyWith<$Res>
   @useResult
   $Res call(
       {LoginStatus status,
-      Account? account,
-      String username,
+      RegisterResponse? account,
+      String email,
       String password,
-      BaseException<dynamic>? error});
+      BaseException<dynamic>? error,
+      String? emailError,
+      String? passwordError});
 
   @override
-  $AccountCopyWith<$Res>? get account;
+  $RegisterResponseCopyWith<$Res>? get account;
 }
 
 /// @nodoc
@@ -139,9 +155,11 @@ class __$$LoginStateImplCopyWithImpl<$Res>
   $Res call({
     Object? status = null,
     Object? account = freezed,
-    Object? username = null,
+    Object? email = null,
     Object? password = null,
     Object? error = freezed,
+    Object? emailError = freezed,
+    Object? passwordError = freezed,
   }) {
     return _then(_$LoginStateImpl(
       status: null == status
@@ -151,10 +169,10 @@ class __$$LoginStateImplCopyWithImpl<$Res>
       account: freezed == account
           ? _value.account
           : account // ignore: cast_nullable_to_non_nullable
-              as Account?,
-      username: null == username
-          ? _value.username
-          : username // ignore: cast_nullable_to_non_nullable
+              as RegisterResponse?,
+      email: null == email
+          ? _value.email
+          : email // ignore: cast_nullable_to_non_nullable
               as String,
       password: null == password
           ? _value.password
@@ -164,6 +182,14 @@ class __$$LoginStateImplCopyWithImpl<$Res>
           ? _value.error
           : error // ignore: cast_nullable_to_non_nullable
               as BaseException<dynamic>?,
+      emailError: freezed == emailError
+          ? _value.emailError
+          : emailError // ignore: cast_nullable_to_non_nullable
+              as String?,
+      passwordError: freezed == passwordError
+          ? _value.passwordError
+          : passwordError // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -174,27 +200,33 @@ class _$LoginStateImpl implements _LoginState {
   const _$LoginStateImpl(
       {this.status = LoginStatus.initial,
       this.account,
-      this.username = '',
+      this.email = '',
       this.password = '',
-      this.error});
+      this.error,
+      this.emailError,
+      this.passwordError});
 
   @override
   @JsonKey()
   final LoginStatus status;
   @override
-  final Account? account;
+  final RegisterResponse? account;
   @override
   @JsonKey()
-  final String username;
+  final String email;
   @override
   @JsonKey()
   final String password;
   @override
   final BaseException<dynamic>? error;
+  @override
+  final String? emailError;
+  @override
+  final String? passwordError;
 
   @override
   String toString() {
-    return 'LoginState(status: $status, account: $account, username: $username, password: $password, error: $error)';
+    return 'LoginState(status: $status, account: $account, email: $email, password: $password, error: $error, emailError: $emailError, passwordError: $passwordError)';
   }
 
   @override
@@ -204,16 +236,19 @@ class _$LoginStateImpl implements _LoginState {
             other is _$LoginStateImpl &&
             (identical(other.status, status) || other.status == status) &&
             (identical(other.account, account) || other.account == account) &&
-            (identical(other.username, username) ||
-                other.username == username) &&
+            (identical(other.email, email) || other.email == email) &&
             (identical(other.password, password) ||
                 other.password == password) &&
-            (identical(other.error, error) || other.error == error));
+            (identical(other.error, error) || other.error == error) &&
+            (identical(other.emailError, emailError) ||
+                other.emailError == emailError) &&
+            (identical(other.passwordError, passwordError) ||
+                other.passwordError == passwordError));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, status, account, username, password, error);
+  int get hashCode => Object.hash(runtimeType, status, account, email, password,
+      error, emailError, passwordError);
 
   /// Create a copy of LoginState
   /// with the given fields replaced by the non-null parameter values.
@@ -227,21 +262,27 @@ class _$LoginStateImpl implements _LoginState {
 abstract class _LoginState implements LoginState {
   const factory _LoginState(
       {final LoginStatus status,
-      final Account? account,
-      final String username,
+      final RegisterResponse? account,
+      final String email,
       final String password,
-      final BaseException<dynamic>? error}) = _$LoginStateImpl;
+      final BaseException<dynamic>? error,
+      final String? emailError,
+      final String? passwordError}) = _$LoginStateImpl;
 
   @override
   LoginStatus get status;
   @override
-  Account? get account;
+  RegisterResponse? get account;
   @override
-  String get username;
+  String get email;
   @override
   String get password;
   @override
   BaseException<dynamic>? get error;
+  @override
+  String? get emailError;
+  @override
+  String? get passwordError;
 
   /// Create a copy of LoginState
   /// with the given fields replaced by the non-null parameter values.

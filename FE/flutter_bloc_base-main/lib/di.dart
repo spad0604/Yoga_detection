@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_starter/data/states/auth/auth_bloc.dart';
 import 'package:flutter_starter/data/states/settings/settings_bloc.dart';
+import 'package:flutter_starter/presenter/pages/register/register_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:injectable/injectable.dart';
@@ -26,7 +27,7 @@ abstract class RegisterModule {
 
   @Named('baseUrl')
   @singleton
-  String get baseUrl => "https://example.com";
+  String get baseUrl => "http://54.252.233.251:9090/";
 }
 
 class GlobalBlocProviders extends StatelessWidget {
@@ -46,6 +47,9 @@ class GlobalBlocProviders extends StatelessWidget {
         ),
         BlocProvider<SettingsBloc>.value(
           value: provider.get<SettingsBloc>(),
+        ),
+        BlocProvider<RegisterBloc>.value(
+          value: provider.get<RegisterBloc>(),
         ),
       ],
       child: child,

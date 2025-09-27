@@ -18,6 +18,13 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$RegisterState {
   RegisterStatus get status => throw _privateConstructorUsedError;
   BaseException<dynamic>? get error => throw _privateConstructorUsedError;
+  String? get firstNameError => throw _privateConstructorUsedError;
+  String? get lastNameError => throw _privateConstructorUsedError;
+  String? get emailError => throw _privateConstructorUsedError;
+  String? get phoneError => throw _privateConstructorUsedError;
+  String? get passwordError => throw _privateConstructorUsedError;
+  String? get confirmPasswordError => throw _privateConstructorUsedError;
+  String? get birthDateError => throw _privateConstructorUsedError;
 
   /// Create a copy of RegisterState
   /// with the given fields replaced by the non-null parameter values.
@@ -32,7 +39,16 @@ abstract class $RegisterStateCopyWith<$Res> {
           RegisterState value, $Res Function(RegisterState) then) =
       _$RegisterStateCopyWithImpl<$Res, RegisterState>;
   @useResult
-  $Res call({RegisterStatus status, BaseException<dynamic>? error});
+  $Res call(
+      {RegisterStatus status,
+      BaseException<dynamic>? error,
+      String? firstNameError,
+      String? lastNameError,
+      String? emailError,
+      String? phoneError,
+      String? passwordError,
+      String? confirmPasswordError,
+      String? birthDateError});
 }
 
 /// @nodoc
@@ -52,6 +68,13 @@ class _$RegisterStateCopyWithImpl<$Res, $Val extends RegisterState>
   $Res call({
     Object? status = null,
     Object? error = freezed,
+    Object? firstNameError = freezed,
+    Object? lastNameError = freezed,
+    Object? emailError = freezed,
+    Object? phoneError = freezed,
+    Object? passwordError = freezed,
+    Object? confirmPasswordError = freezed,
+    Object? birthDateError = freezed,
   }) {
     return _then(_value.copyWith(
       status: null == status
@@ -62,6 +85,34 @@ class _$RegisterStateCopyWithImpl<$Res, $Val extends RegisterState>
           ? _value.error
           : error // ignore: cast_nullable_to_non_nullable
               as BaseException<dynamic>?,
+      firstNameError: freezed == firstNameError
+          ? _value.firstNameError
+          : firstNameError // ignore: cast_nullable_to_non_nullable
+              as String?,
+      lastNameError: freezed == lastNameError
+          ? _value.lastNameError
+          : lastNameError // ignore: cast_nullable_to_non_nullable
+              as String?,
+      emailError: freezed == emailError
+          ? _value.emailError
+          : emailError // ignore: cast_nullable_to_non_nullable
+              as String?,
+      phoneError: freezed == phoneError
+          ? _value.phoneError
+          : phoneError // ignore: cast_nullable_to_non_nullable
+              as String?,
+      passwordError: freezed == passwordError
+          ? _value.passwordError
+          : passwordError // ignore: cast_nullable_to_non_nullable
+              as String?,
+      confirmPasswordError: freezed == confirmPasswordError
+          ? _value.confirmPasswordError
+          : confirmPasswordError // ignore: cast_nullable_to_non_nullable
+              as String?,
+      birthDateError: freezed == birthDateError
+          ? _value.birthDateError
+          : birthDateError // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -74,7 +125,16 @@ abstract class _$$RegisterStateImplCopyWith<$Res>
       __$$RegisterStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({RegisterStatus status, BaseException<dynamic>? error});
+  $Res call(
+      {RegisterStatus status,
+      BaseException<dynamic>? error,
+      String? firstNameError,
+      String? lastNameError,
+      String? emailError,
+      String? phoneError,
+      String? passwordError,
+      String? confirmPasswordError,
+      String? birthDateError});
 }
 
 /// @nodoc
@@ -92,6 +152,13 @@ class __$$RegisterStateImplCopyWithImpl<$Res>
   $Res call({
     Object? status = null,
     Object? error = freezed,
+    Object? firstNameError = freezed,
+    Object? lastNameError = freezed,
+    Object? emailError = freezed,
+    Object? phoneError = freezed,
+    Object? passwordError = freezed,
+    Object? confirmPasswordError = freezed,
+    Object? birthDateError = freezed,
   }) {
     return _then(_$RegisterStateImpl(
       status: null == status
@@ -102,6 +169,34 @@ class __$$RegisterStateImplCopyWithImpl<$Res>
           ? _value.error
           : error // ignore: cast_nullable_to_non_nullable
               as BaseException<dynamic>?,
+      firstNameError: freezed == firstNameError
+          ? _value.firstNameError
+          : firstNameError // ignore: cast_nullable_to_non_nullable
+              as String?,
+      lastNameError: freezed == lastNameError
+          ? _value.lastNameError
+          : lastNameError // ignore: cast_nullable_to_non_nullable
+              as String?,
+      emailError: freezed == emailError
+          ? _value.emailError
+          : emailError // ignore: cast_nullable_to_non_nullable
+              as String?,
+      phoneError: freezed == phoneError
+          ? _value.phoneError
+          : phoneError // ignore: cast_nullable_to_non_nullable
+              as String?,
+      passwordError: freezed == passwordError
+          ? _value.passwordError
+          : passwordError // ignore: cast_nullable_to_non_nullable
+              as String?,
+      confirmPasswordError: freezed == confirmPasswordError
+          ? _value.confirmPasswordError
+          : confirmPasswordError // ignore: cast_nullable_to_non_nullable
+              as String?,
+      birthDateError: freezed == birthDateError
+          ? _value.birthDateError
+          : birthDateError // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -109,17 +204,40 @@ class __$$RegisterStateImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$RegisterStateImpl implements _RegisterState {
-  const _$RegisterStateImpl({this.status = RegisterStatus.initial, this.error});
+  const _$RegisterStateImpl(
+      {this.status = RegisterStatus.initial,
+      this.error,
+      this.firstNameError,
+      this.lastNameError,
+      this.emailError,
+      this.phoneError,
+      this.passwordError,
+      this.confirmPasswordError,
+      this.birthDateError});
 
   @override
   @JsonKey()
   final RegisterStatus status;
   @override
   final BaseException<dynamic>? error;
+  @override
+  final String? firstNameError;
+  @override
+  final String? lastNameError;
+  @override
+  final String? emailError;
+  @override
+  final String? phoneError;
+  @override
+  final String? passwordError;
+  @override
+  final String? confirmPasswordError;
+  @override
+  final String? birthDateError;
 
   @override
   String toString() {
-    return 'RegisterState(status: $status, error: $error)';
+    return 'RegisterState(status: $status, error: $error, firstNameError: $firstNameError, lastNameError: $lastNameError, emailError: $emailError, phoneError: $phoneError, passwordError: $passwordError, confirmPasswordError: $confirmPasswordError, birthDateError: $birthDateError)';
   }
 
   @override
@@ -128,11 +246,35 @@ class _$RegisterStateImpl implements _RegisterState {
         (other.runtimeType == runtimeType &&
             other is _$RegisterStateImpl &&
             (identical(other.status, status) || other.status == status) &&
-            (identical(other.error, error) || other.error == error));
+            (identical(other.error, error) || other.error == error) &&
+            (identical(other.firstNameError, firstNameError) ||
+                other.firstNameError == firstNameError) &&
+            (identical(other.lastNameError, lastNameError) ||
+                other.lastNameError == lastNameError) &&
+            (identical(other.emailError, emailError) ||
+                other.emailError == emailError) &&
+            (identical(other.phoneError, phoneError) ||
+                other.phoneError == phoneError) &&
+            (identical(other.passwordError, passwordError) ||
+                other.passwordError == passwordError) &&
+            (identical(other.confirmPasswordError, confirmPasswordError) ||
+                other.confirmPasswordError == confirmPasswordError) &&
+            (identical(other.birthDateError, birthDateError) ||
+                other.birthDateError == birthDateError));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, status, error);
+  int get hashCode => Object.hash(
+      runtimeType,
+      status,
+      error,
+      firstNameError,
+      lastNameError,
+      emailError,
+      phoneError,
+      passwordError,
+      confirmPasswordError,
+      birthDateError);
 
   /// Create a copy of RegisterState
   /// with the given fields replaced by the non-null parameter values.
@@ -146,12 +288,33 @@ class _$RegisterStateImpl implements _RegisterState {
 abstract class _RegisterState implements RegisterState {
   const factory _RegisterState(
       {final RegisterStatus status,
-      final BaseException<dynamic>? error}) = _$RegisterStateImpl;
+      final BaseException<dynamic>? error,
+      final String? firstNameError,
+      final String? lastNameError,
+      final String? emailError,
+      final String? phoneError,
+      final String? passwordError,
+      final String? confirmPasswordError,
+      final String? birthDateError}) = _$RegisterStateImpl;
 
   @override
   RegisterStatus get status;
   @override
   BaseException<dynamic>? get error;
+  @override
+  String? get firstNameError;
+  @override
+  String? get lastNameError;
+  @override
+  String? get emailError;
+  @override
+  String? get phoneError;
+  @override
+  String? get passwordError;
+  @override
+  String? get confirmPasswordError;
+  @override
+  String? get birthDateError;
 
   /// Create a copy of RegisterState
   /// with the given fields replaced by the non-null parameter values.

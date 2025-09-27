@@ -1,4 +1,5 @@
 import 'package:flutter_starter/data/entities/account.dart';
+import 'package:flutter_starter/data/entities/response/register_response.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'auth_state.freezed.dart';
@@ -8,7 +9,7 @@ class AuthState with _$AuthState {
   const AuthState._();
 
   const factory AuthState({
-    Account? account,
+    RegisterResponse? account,
     Exception? error,
   }) = _AuthState;
 
