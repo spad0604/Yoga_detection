@@ -1,14 +1,16 @@
 import 'dart:async';
 
+import 'package:flutter_starter/data/entities/response/register_response.dart';
+import 'package:flutter_starter/data/sources/network/base_api_response.dart';
 import 'package:injectable/injectable.dart';
 import 'package:flutter_starter/core/use_case.dart';
 import 'package:flutter_starter/data/entities/account.dart';
 import 'package:flutter_starter/data/repositories/auth_repository/auth_repository.dart';
 
-typedef LoginParams = ({String username, String password});
+typedef LoginParams = ({String email, String password});
 
 @singleton
-class LoginUseCase extends UseCase<Account, LoginParams> {
+class LoginUseCase extends UseCase<RegisterResponse?, LoginParams> {
   final AuthRepository _authRepository;
 
   const LoginUseCase({
@@ -16,10 +18,12 @@ class LoginUseCase extends UseCase<Account, LoginParams> {
   }) : _authRepository = authRepository;
 
   @override
-  FutureOr<Account> call(LoginParams params) {
-    return _authRepository.login(
-      username: params.username,
+  FutureOr<RegisterResponse?> call(LoginParams params) async {
+    final res = await _authRepository.login(
+      email: params.email,
       password: params.password,
     );
+
+    return res.data;
   }
 }

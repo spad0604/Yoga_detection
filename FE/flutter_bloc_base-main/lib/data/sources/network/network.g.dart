@@ -18,17 +18,16 @@ class _NetworkDataSource implements NetworkDataSource {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<Account> login(LoginParams params) async {
+  Future<Account> verifyLoginStatus() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final _data = <String, dynamic>{};
-    _data.addAll(params.toJson());
+    const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<Account>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/login',
+            'api/auth/verify',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -46,25 +45,62 @@ class _NetworkDataSource implements NetworkDataSource {
   }
 
   @override
-  Future<Account> getCurrentAccount() async {
+  Future<BaseApiResponse<RegisterResponse>> login(LoginParams params) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<Account>(
+    final _data = <String, dynamic>{};
+    _data.addAll(params.toJson());
+    final _options = _setStreamType<BaseApiResponse<RegisterResponse>>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/users/me',
+            'api/auth/login',
             queryParameters: queryParameters,
             data: _data,
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late Account _value;
+    late BaseApiResponse<RegisterResponse> _value;
     try {
-      _value = Account.fromJson(_result.data!);
+      _value = BaseApiResponse<RegisterResponse>.fromJson(
+        _result.data!,
+        (json) => RegisterResponse.fromJson(json as Map<String, dynamic>),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<BaseApiResponse<RegisterResponse>> register(
+    RegisterParams params,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(params.toJson());
+    final _options = _setStreamType<BaseApiResponse<RegisterResponse>>(
+      Options(method: 'POST', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            'api/auth/register',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseApiResponse<RegisterResponse> _value;
+    try {
+      _value = BaseApiResponse<RegisterResponse>.fromJson(
+        _result.data!,
+        (json) => RegisterResponse.fromJson(json as Map<String, dynamic>),
+      );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;

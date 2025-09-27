@@ -1,17 +1,16 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-@JsonSerializable(genericArgumentFactories: true)
-class BaseApiResponse<T> {
-  @JsonKey(name: 'error_code')
-  final String? errorCode;
-  @JsonKey(name: 'message')
-  final String? message;
-  @JsonKey(name: 'data')
-  final T? data;
+part 'base_api_response.g.dart';
+part 'base_api_response.freezed.dart';
 
-  BaseApiResponse({
-    this.errorCode,
-    this.message,
-    this.data,
-  });
+@Freezed(genericArgumentFactories: true)
+class BaseApiResponse<T> with _$BaseApiResponse<T> {
+  const factory BaseApiResponse({
+    @JsonKey(name: 'status') required int? status,
+    @JsonKey(name: 'code') required int? code,
+    @JsonKey(name: 'data') required T? data,
+  }) = _BaseApiResponse<T>;
+
+  factory BaseApiResponse.fromJson(Map<String, dynamic> json, T Function(Object? json) fromJsonT) =>
+      _$BaseApiResponseFromJson<T>(json, fromJsonT);
 }

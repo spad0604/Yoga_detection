@@ -16,7 +16,7 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$AuthState {
-  Account? get account => throw _privateConstructorUsedError;
+  RegisterResponse? get account => throw _privateConstructorUsedError;
   Exception? get error => throw _privateConstructorUsedError;
 
   /// Create a copy of AuthState
@@ -31,9 +31,9 @@ abstract class $AuthStateCopyWith<$Res> {
   factory $AuthStateCopyWith(AuthState value, $Res Function(AuthState) then) =
       _$AuthStateCopyWithImpl<$Res, AuthState>;
   @useResult
-  $Res call({Account? account, Exception? error});
+  $Res call({RegisterResponse? account, Exception? error});
 
-  $AccountCopyWith<$Res>? get account;
+  $RegisterResponseCopyWith<$Res>? get account;
 }
 
 /// @nodoc
@@ -58,7 +58,7 @@ class _$AuthStateCopyWithImpl<$Res, $Val extends AuthState>
       account: freezed == account
           ? _value.account
           : account // ignore: cast_nullable_to_non_nullable
-              as Account?,
+              as RegisterResponse?,
       error: freezed == error
           ? _value.error
           : error // ignore: cast_nullable_to_non_nullable
@@ -70,12 +70,12 @@ class _$AuthStateCopyWithImpl<$Res, $Val extends AuthState>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $AccountCopyWith<$Res>? get account {
+  $RegisterResponseCopyWith<$Res>? get account {
     if (_value.account == null) {
       return null;
     }
 
-    return $AccountCopyWith<$Res>(_value.account!, (value) {
+    return $RegisterResponseCopyWith<$Res>(_value.account!, (value) {
       return _then(_value.copyWith(account: value) as $Val);
     });
   }
@@ -89,10 +89,10 @@ abstract class _$$AuthStateImplCopyWith<$Res>
       __$$AuthStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({Account? account, Exception? error});
+  $Res call({RegisterResponse? account, Exception? error});
 
   @override
-  $AccountCopyWith<$Res>? get account;
+  $RegisterResponseCopyWith<$Res>? get account;
 }
 
 /// @nodoc
@@ -115,7 +115,7 @@ class __$$AuthStateImplCopyWithImpl<$Res>
       account: freezed == account
           ? _value.account
           : account // ignore: cast_nullable_to_non_nullable
-              as Account?,
+              as RegisterResponse?,
       error: freezed == error
           ? _value.error
           : error // ignore: cast_nullable_to_non_nullable
@@ -130,7 +130,7 @@ class _$AuthStateImpl extends _AuthState {
   const _$AuthStateImpl({this.account, this.error}) : super._();
 
   @override
-  final Account? account;
+  final RegisterResponse? account;
   @override
   final Exception? error;
 
@@ -161,12 +161,13 @@ class _$AuthStateImpl extends _AuthState {
 }
 
 abstract class _AuthState extends AuthState {
-  const factory _AuthState({final Account? account, final Exception? error}) =
-      _$AuthStateImpl;
+  const factory _AuthState(
+      {final RegisterResponse? account,
+      final Exception? error}) = _$AuthStateImpl;
   const _AuthState._() : super._();
 
   @override
-  Account? get account;
+  RegisterResponse? get account;
   @override
   Exception? get error;
 

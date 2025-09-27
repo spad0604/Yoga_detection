@@ -23,6 +23,7 @@ import 'data/states/auth/auth_bloc.dart' as _i963;
 import 'data/states/camera_detection/camera_detection_bloc.dart' as _i161;
 import 'data/states/settings/settings_bloc.dart' as _i932;
 import 'data/usecases/login.dart' as _i470;
+import 'data/usecases/register.dart' as _i686;
 import 'data/usecases/verify_login_status.dart' as _i412;
 import 'di.dart' as _i913;
 import 'presenter/navigation/navigation.dart' as _i551;
@@ -45,7 +46,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     final registerModule = _$RegisterModule();
     gh.factory<_i161.CameraDetectionBloc>(() => _i161.CameraDetectionBloc());
-    gh.factory<_i338.RegisterBloc>(() => _i338.RegisterBloc());
     gh.singleton<_i963.AuthBloc>(() => _i963.AuthBloc());
     gh.singleton<_i932.SettingsBloc>(() => _i932.SettingsBloc());
     gh.singleton<_i558.FlutterSecureStorage>(
@@ -68,11 +68,15 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i536.NetworkDataSource(gh<_i288.NetworkDio>()));
     gh.singleton<_i344.AuthRepository>(() => _i522.DefaultAuthRepository(
         networkDataSource: gh<_i536.NetworkDataSource>()));
+    gh.singleton<_i686.RegisterUseCase>(
+        () => _i686.RegisterUseCase(repository: gh<_i344.AuthRepository>()));
     gh.singleton<_i470.LoginUseCase>(
         () => _i470.LoginUseCase(authRepository: gh<_i344.AuthRepository>()));
     gh.singleton<_i412.VerifyLoginStatusUseCase>(() =>
         _i412.VerifyLoginStatusUseCase(
             authRepository: gh<_i344.AuthRepository>()));
+    gh.factory<_i338.RegisterBloc>(
+        () => _i338.RegisterBloc(register: gh<_i686.RegisterUseCase>()));
     gh.factory<_i517.SplashBloc>(() => _i517.SplashBloc(
         verifyLoginStatus: gh<_i412.VerifyLoginStatusUseCase>()));
     gh.factory<_i902.LoginBloc>(

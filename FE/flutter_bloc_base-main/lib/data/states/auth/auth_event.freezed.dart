@@ -18,19 +18,19 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$AuthEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(Account account) loggedIn,
+    required TResult Function(RegisterResponse account) loggedIn,
     required TResult Function(Exception? error) loggedOut,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(Account account)? loggedIn,
+    TResult? Function(RegisterResponse account)? loggedIn,
     TResult? Function(Exception? error)? loggedOut,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(Account account)? loggedIn,
+    TResult Function(RegisterResponse account)? loggedIn,
     TResult Function(Exception? error)? loggedOut,
     required TResult orElse(),
   }) =>
@@ -82,9 +82,9 @@ abstract class _$$AuthLoggedInImplCopyWith<$Res> {
           _$AuthLoggedInImpl value, $Res Function(_$AuthLoggedInImpl) then) =
       __$$AuthLoggedInImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({Account account});
+  $Res call({RegisterResponse account});
 
-  $AccountCopyWith<$Res> get account;
+  $RegisterResponseCopyWith<$Res> get account;
 }
 
 /// @nodoc
@@ -106,7 +106,7 @@ class __$$AuthLoggedInImplCopyWithImpl<$Res>
       null == account
           ? _value.account
           : account // ignore: cast_nullable_to_non_nullable
-              as Account,
+              as RegisterResponse,
     ));
   }
 
@@ -114,8 +114,8 @@ class __$$AuthLoggedInImplCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $AccountCopyWith<$Res> get account {
-    return $AccountCopyWith<$Res>(_value.account, (value) {
+  $RegisterResponseCopyWith<$Res> get account {
+    return $RegisterResponseCopyWith<$Res>(_value.account, (value) {
       return _then(_value.copyWith(account: value));
     });
   }
@@ -127,7 +127,7 @@ class _$AuthLoggedInImpl implements AuthLoggedIn {
   const _$AuthLoggedInImpl(this.account);
 
   @override
-  final Account account;
+  final RegisterResponse account;
 
   @override
   String toString() {
@@ -156,7 +156,7 @@ class _$AuthLoggedInImpl implements AuthLoggedIn {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(Account account) loggedIn,
+    required TResult Function(RegisterResponse account) loggedIn,
     required TResult Function(Exception? error) loggedOut,
   }) {
     return loggedIn(account);
@@ -165,7 +165,7 @@ class _$AuthLoggedInImpl implements AuthLoggedIn {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(Account account)? loggedIn,
+    TResult? Function(RegisterResponse account)? loggedIn,
     TResult? Function(Exception? error)? loggedOut,
   }) {
     return loggedIn?.call(account);
@@ -174,7 +174,7 @@ class _$AuthLoggedInImpl implements AuthLoggedIn {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(Account account)? loggedIn,
+    TResult Function(RegisterResponse account)? loggedIn,
     TResult Function(Exception? error)? loggedOut,
     required TResult orElse(),
   }) {
@@ -217,9 +217,10 @@ class _$AuthLoggedInImpl implements AuthLoggedIn {
 }
 
 abstract class AuthLoggedIn implements AuthEvent {
-  const factory AuthLoggedIn(final Account account) = _$AuthLoggedInImpl;
+  const factory AuthLoggedIn(final RegisterResponse account) =
+      _$AuthLoggedInImpl;
 
-  Account get account;
+  RegisterResponse get account;
 
   /// Create a copy of AuthEvent
   /// with the given fields replaced by the non-null parameter values.
@@ -296,7 +297,7 @@ class _$AuthLoggedOutImpl implements AuthLoggedOut {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(Account account) loggedIn,
+    required TResult Function(RegisterResponse account) loggedIn,
     required TResult Function(Exception? error) loggedOut,
   }) {
     return loggedOut(error);
@@ -305,7 +306,7 @@ class _$AuthLoggedOutImpl implements AuthLoggedOut {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(Account account)? loggedIn,
+    TResult? Function(RegisterResponse account)? loggedIn,
     TResult? Function(Exception? error)? loggedOut,
   }) {
     return loggedOut?.call(error);
@@ -314,7 +315,7 @@ class _$AuthLoggedOutImpl implements AuthLoggedOut {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(Account account)? loggedIn,
+    TResult Function(RegisterResponse account)? loggedIn,
     TResult Function(Exception? error)? loggedOut,
     required TResult orElse(),
   }) {
