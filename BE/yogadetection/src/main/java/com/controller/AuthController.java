@@ -4,6 +4,7 @@ import com.config.ErrorCode;
 import com.dto.request.LoginRequest;
 import com.dto.request.RegisterRequest;
 import com.dto.response.ApiResponse;
+import com.dto.response.TokenResponse;
 import com.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,17 +21,17 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ApiResponse login(@RequestBody LoginRequest request) {
+    public TokenResponse login(@RequestBody LoginRequest request) {
         return authService.login(request);
     }
 
     @PostMapping("/register")
-    public ApiResponse register(@RequestBody RegisterRequest request) {
+    public TokenResponse register(@RequestBody RegisterRequest request) {
         return authService.register(request);
     }
 
     @PostMapping("/logout")
-    public ApiResponse logout(@RequestBody Map<String, String> request) {
-        return authService.logout(request.get("token"));
+    public void logout(@RequestBody Map<String, String> request) {
+        authService.logout(request.get("token"));
     }
 }

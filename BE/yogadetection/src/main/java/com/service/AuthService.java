@@ -6,9 +6,9 @@ import com.dto.response.ApiResponse;
 import com.dto.response.TokenResponse;
 
 public interface AuthService {
-    ApiResponse login(LoginRequest request);
+    TokenResponse login(LoginRequest request);
 
-    ApiResponse register(RegisterRequest request);
+    TokenResponse register(RegisterRequest request);
 
-    ApiResponse logout(String token);
+    void logout(String token);
 }

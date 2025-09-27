@@ -6,6 +6,9 @@ import com.dto.request.RegisterRequest;
 import com.dto.response.ApiResponse;
 import com.dto.response.TokenResponse;
 import com.entity.User;
+import com.exception.EmailExistsException;
+import com.exception.InvalidPasswordException;
+import com.exception.UserNotFoundException;
 import com.repository.UserRepository;
 import com.service.AuthService;
 import com.service.JwtService;
@@ -26,27 +29,18 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final TokenBlackListService tokenBlackListService;
 
-    public ApiResponse login(LoginRequest request) {
-        ApiResponse apiResponse = new ApiResponse();
-        User user = userRepository.findByEmail(request.getEmail().toLowerCase()).orElse(null);
-        if (user == null) {
-            apiResponse.setError(ErrorCode.USER_NOT_FOUND);
-            return apiResponse;
-        }
+    public TokenResponse login(LoginRequest request) {
+        User user = userRepository.findByEmail(request.getEmail().toLowerCase()).orElseThrow(() -> new UserNotFoundException());
+
         if (passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            apiResponse.setError(ErrorCode.SUCCESS);
-            apiResponse.setData(new TokenResponse(jwtService.generateToken(user)));
-            return apiResponse;
+            return new TokenResponse(jwtService.generateToken(user));
         }
-        apiResponse.setError(ErrorCode.INVALID_PASSWORD);
-        return apiResponse;
+        else throw new InvalidPasswordException();
     }
 
-    public ApiResponse register(RegisterRequest request) {
-        ApiResponse apiResponse = new ApiResponse();
+    public TokenResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail().toLowerCase())) {
-            apiResponse.setError(ErrorCode.EMAIL_ALREADY_EXISTS);
-            return apiResponse;
+            throw new EmailExistsException();
         }
         User user = User.builder()
                 .firstName(request.getFirstName())
@@ -57,19 +51,13 @@ public class AuthServiceImpl implements AuthService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .build();
         userRepository.save(user);
-        apiResponse.setError(ErrorCode.SUCCESS);
-        apiResponse.setData(new TokenResponse(jwtService.generateToken(user)));
-        return apiResponse;
+        return new TokenResponse(jwtService.generateToken(user));
     }
 
-    public ApiResponse logout(String token) {
-        ApiResponse apiResponse = new ApiResponse();
+    public void logout(String token) {
         if (token == null) {
-            apiResponse.setError(ErrorCode.INVALID_TOKEN);
-            return apiResponse;
+            throw new InvalidPasswordException();
         }
         tokenBlackListService.blacklistToken(token);
-        apiResponse.setError(ErrorCode.SUCCESS);
-        return apiResponse;
     }
 }

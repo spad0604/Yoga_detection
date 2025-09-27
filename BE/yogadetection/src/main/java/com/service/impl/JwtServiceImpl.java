@@ -18,14 +18,16 @@ import java.util.function.Function;
 
 @Service
 public class JwtServiceImpl implements JwtService {
-    private static final String SECRET_KEY = System.getenv("JWT_SECRET");
+//    private static final String SECRET_KEY = System.getenv("JWT_SECRET");
+    private static final String SECRET_KEY = "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970";
     private static final long EXPIRATION_TIME = 86400000;
 
     @Override
     public String generateToken(User user) {
         Map<String, Object> extraClaims = new HashMap<>();
         extraClaims.put("username", user.getUsername());
-        return generateToken(extraClaims, user);
+        String token = generateToken(extraClaims, user);
+        return token;
     }
 
     private String cleanToken(String token) {
