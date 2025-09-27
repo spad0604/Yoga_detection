@@ -10,7 +10,7 @@ import java.util.Map;
 @Data
 @AllArgsConstructor
 public class ApiResponse<T> {
-    private int status = HttpStatus.OK.value();;
+    private int status = HttpStatus.OK.value();
     private int code = ErrorCode.SUCCESS;
     private T data;
 

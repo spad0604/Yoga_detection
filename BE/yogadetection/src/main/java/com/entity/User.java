@@ -24,7 +24,7 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "com.config.UUIDv7Generator")
-    private Long id;
+    private String id;
 
     @Column(name = "first_name", nullable = false)
     private String firstName;
