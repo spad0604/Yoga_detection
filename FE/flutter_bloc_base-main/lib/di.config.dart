@@ -27,6 +27,7 @@ import 'data/usecases/register.dart' as _i686;
 import 'data/usecases/verify_login_status.dart' as _i412;
 import 'di.dart' as _i913;
 import 'presenter/navigation/navigation.dart' as _i551;
+import 'presenter/pages/forgot_password/forgot_password_bloc.dart' as _i132;
 import 'presenter/pages/login/login_bloc.dart' as _i902;
 import 'presenter/pages/register/register_bloc.dart' as _i338;
 import 'presenter/pages/splash/splash_bloc.dart' as _i517;
@@ -46,6 +47,7 @@ extension GetItInjectableX on _i174.GetIt {
     );
     final registerModule = _$RegisterModule();
     gh.factory<_i161.CameraDetectionBloc>(() => _i161.CameraDetectionBloc());
+    gh.factory<_i132.ForgotPasswordBloc>(() => _i132.ForgotPasswordBloc());
     gh.singleton<_i963.AuthBloc>(() => _i963.AuthBloc());
     gh.singleton<_i932.SettingsBloc>(() => _i932.SettingsBloc());
     gh.singleton<_i558.FlutterSecureStorage>(

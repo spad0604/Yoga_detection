@@ -41,6 +41,8 @@ class _LoginPageState extends State<LoginPage> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
 
+  bool _isObscure = true;
+
   LoginBloc get _bloc => context.read<LoginBloc>();
 
   void _onLoginPressed() {
@@ -129,11 +131,17 @@ class _LoginPageState extends State<LoginPage> {
                     final passwordError = state.passwordError;
 
                     return CustomTextField(
-                      isPassword: true,
+                      isPassword: _isObscure,
                       controller: _passwordController,
                       hintText: tr("enter_password"),
                       onChanged: (v) => _bloc.add(LoginPasswordChanged(v)),
                       errorText: passwordError,
+                      suffixIcon: _isObscure ? AppImages.ic_eye_off : AppImages.ic_eye_on,
+                      onTapSuffix: () {
+                        setState(() {
+                          _isObscure = !_isObscure;
+                        });
+                      },
                     );
                   }),
                   Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -154,12 +162,17 @@ class _LoginPageState extends State<LoginPage> {
                       ],
                     ),
                     16.verticalSpace,
-                    Text(
-                      'Forgot Password?',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 14.w,
-                        color: AppColors.lightBlue,
+                    GestureDetector(
+                      onTap: () {
+                        context.router.pushNamed('/forgot-password');
+                      },
+                      child: Text(
+                        'Forgot Password?',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14.w,
+                          color: AppColors.lightBlue,
+                        ),
                       ),
                     ),
                   ]),

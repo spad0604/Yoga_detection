@@ -54,9 +54,21 @@ class $AssetsImagesGen {
   /// File path: assets/images/.gitkeep
   String get aGitkeep => 'assets/images/.gitkeep';
 
+  /// File path: assets/images/ic_calendar.png
+  AssetGenImage get icCalendar =>
+      const AssetGenImage('assets/images/ic_calendar.png');
+
   /// File path: assets/images/ic_close.png
   AssetGenImage get icClose =>
       const AssetGenImage('assets/images/ic_close.png');
+
+  /// File path: assets/images/ic_eye_off.png
+  AssetGenImage get icEyeOff =>
+      const AssetGenImage('assets/images/ic_eye_off.png');
+
+  /// File path: assets/images/ic_eye_on.png
+  AssetGenImage get icEyeOn =>
+      const AssetGenImage('assets/images/ic_eye_on.png');
 
   /// File path: assets/images/ic_facebook.png
   AssetGenImage get icFacebook =>
@@ -66,9 +78,20 @@ class $AssetsImagesGen {
   AssetGenImage get icGoogle =>
       const AssetGenImage('assets/images/ic_google.png');
 
+  /// File path: assets/images/ic_indentity.png
+  AssetGenImage get icIndentity =>
+      const AssetGenImage('assets/images/ic_indentity.png');
+
+  /// File path: assets/images/ic_mail.png
+  AssetGenImage get icMail => const AssetGenImage('assets/images/ic_mail.png');
+
   /// File path: assets/images/ic_pause.png
   AssetGenImage get icPause =>
       const AssetGenImage('assets/images/ic_pause.png');
+
+  /// File path: assets/images/ic_phone.png
+  AssetGenImage get icPhone =>
+      const AssetGenImage('assets/images/ic_phone.png');
 
   /// File path: assets/images/ic_present.png
   AssetGenImage get icPresent =>
@@ -84,10 +107,16 @@ class $AssetsImagesGen {
   /// List of all assets
   List<dynamic> get values => [
         aGitkeep,
+        icCalendar,
         icClose,
+        icEyeOff,
+        icEyeOn,
         icFacebook,
         icGoogle,
+        icIndentity,
+        icMail,
         icPause,
+        icPhone,
         icPresent,
         icVideo,
         logo

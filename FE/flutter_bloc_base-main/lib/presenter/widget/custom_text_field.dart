@@ -8,6 +8,7 @@ class CustomTextField extends StatelessWidget {
   final ValueChanged<String>? onChanged;
   final String? errorText;
   final bool isPassword;
+  final void Function()? onTapSuffix;
 
   const CustomTextField({
     super.key,
@@ -17,6 +18,7 @@ class CustomTextField extends StatelessWidget {
     this.onChanged,
     this.errorText,
     this.isPassword = false,
+    this.onTapSuffix,
   });
 
   @override
@@ -57,13 +59,16 @@ class CustomTextField extends StatelessWidget {
         ),
         suffixIcon: suffixIcon.isEmpty
             ? null
-            : Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: Image.asset(
-                  suffixIcon,
-                  width: 20,
-                  height: 20,
-                  color: AppColors.grey600,
+            : GestureDetector(
+                onTap: onTapSuffix,
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Image.asset(
+                    suffixIcon,
+                    width: 16,
+                    height: 16,
+                    color: AppColors.black,
+                  ),
                 ),
               ),
         errorText: errorText,

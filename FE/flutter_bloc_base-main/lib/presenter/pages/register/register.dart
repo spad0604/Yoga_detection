@@ -38,6 +38,9 @@ class _RegisterPageState extends State<RegisterPage> {
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
 
+  bool _isPasswordVisible = false;
+  bool _isConfirmPasswordVisible = false;
+
   RegisterBloc get _bloc => context.read<RegisterBloc>();
 
   void _onSuccess(BuildContext context, RegisterState state) {
@@ -89,16 +92,20 @@ class _RegisterPageState extends State<RegisterPage> {
                     children: [
                       Expanded(
                         child: CustomTextField(
-                            controller: _firstNameController,
-                            hintText: 'First name',
-                            onChanged: (v) => _bloc.add(const RegisterErrorOccurred(null))),
+                          controller: _firstNameController,
+                          hintText: 'First name',
+                          onChanged: (v) => _bloc.add(const RegisterErrorOccurred(null)),
+                          suffixIcon: AppImages.ic_indentity,
+                        ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: CustomTextField(
-                            controller: _lastNameController,
-                            hintText: 'Last name',
-                            onChanged: (v) => _bloc.add(const RegisterErrorOccurred(null))),
+                          controller: _lastNameController,
+                          hintText: 'Last name',
+                          onChanged: (v) => _bloc.add(const RegisterErrorOccurred(null)),
+                          suffixIcon: AppImages.ic_indentity,
+                        ),
                       ),
                     ],
                   ),
@@ -112,6 +119,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       hintText: 'Email',
                       onChanged: (v) => _bloc.add(const RegisterErrorOccurred(null)),
                       errorText: state.emailError,
+                      suffixIcon: AppImages.ic_mail,
                     );
                   }),
 
@@ -124,6 +132,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       hintText: 'Phone Number',
                       onChanged: (v) => _bloc.add(const RegisterErrorOccurred(null)),
                       errorText: state.phoneError,
+                      suffixIcon: AppImages.ic_phone,
                     );
                   }),
 
@@ -153,6 +162,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           hintText: 'Date of Birth (yyyy-MM-dd)',
                           onChanged: (v) => _bloc.add(const RegisterErrorOccurred(null)),
                           errorText: state.birthDateError,
+                          suffixIcon: AppImages.ic_calendar,
                         );
                       }),
                     ),
@@ -163,11 +173,17 @@ class _RegisterPageState extends State<RegisterPage> {
                   // Password
                   BlocBuilder<RegisterBloc, RegisterState>(builder: (context, state) {
                     return CustomTextField(
-                      isPassword: true,
+                      isPassword: !_isPasswordVisible,
                       controller: _passwordController,
                       hintText: 'Password',
                       onChanged: (v) => _bloc.add(const RegisterErrorOccurred(null)),
                       errorText: state.passwordError,
+                      suffixIcon: _isPasswordVisible ? AppImages.ic_eye_on : AppImages.ic_eye_off,
+                      onTapSuffix: () {
+                        setState(() {
+                          _isPasswordVisible = !_isPasswordVisible;
+                        });
+                      },
                     );
                   }),
 
@@ -176,11 +192,18 @@ class _RegisterPageState extends State<RegisterPage> {
                   // Confirm password
                   BlocBuilder<RegisterBloc, RegisterState>(builder: (context, state) {
                     return CustomTextField(
-                      isPassword: true,
+                      isPassword: !_isConfirmPasswordVisible,
                       controller: _confirmPasswordController,
                       hintText: 'Confirm Password',
                       onChanged: (v) => _bloc.add(const RegisterErrorOccurred(null)),
                       errorText: state.confirmPasswordError,
+                      suffixIcon:
+                          _isConfirmPasswordVisible ? AppImages.ic_eye_on : AppImages.ic_eye_off,
+                      onTapSuffix: () {
+                        setState(() {
+                          _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                        });
+                      },
                     );
                   }),
 
