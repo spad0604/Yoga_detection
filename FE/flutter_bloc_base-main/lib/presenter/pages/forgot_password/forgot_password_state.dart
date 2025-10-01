@@ -14,6 +14,7 @@ enum ForgotPasswordStatus {
 class ForgotPasswordState with _$ForgotPasswordState {
   const factory ForgotPasswordState({
     @Default(ForgotPasswordStatus.initial) ForgotPasswordStatus status,
+    String? email,
     BaseException? error,
   }) = _ForgotPasswordState;
 }
