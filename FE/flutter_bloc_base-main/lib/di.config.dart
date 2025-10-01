@@ -22,6 +22,7 @@ import 'data/sources/network/network.dart' as _i536;
 import 'data/states/auth/auth_bloc.dart' as _i963;
 import 'data/states/camera_detection/camera_detection_bloc.dart' as _i161;
 import 'data/states/settings/settings_bloc.dart' as _i932;
+import 'data/usecases/change_password_uc.dart' as _i1035;
 import 'data/usecases/login.dart' as _i470;
 import 'data/usecases/register.dart' as _i686;
 import 'data/usecases/verify_login_status.dart' as _i412;
@@ -47,7 +48,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     final registerModule = _$RegisterModule();
     gh.factory<_i161.CameraDetectionBloc>(() => _i161.CameraDetectionBloc());
-    gh.factory<_i132.ForgotPasswordBloc>(() => _i132.ForgotPasswordBloc());
     gh.singleton<_i963.AuthBloc>(() => _i963.AuthBloc());
     gh.singleton<_i932.SettingsBloc>(() => _i932.SettingsBloc());
     gh.singleton<_i558.FlutterSecureStorage>(
@@ -68,6 +68,8 @@ extension GetItInjectableX on _i174.GetIt {
         ));
     gh.singleton<_i536.NetworkDataSource>(
         () => _i536.NetworkDataSource(gh<_i288.NetworkDio>()));
+    gh.factory<_i132.ForgotPasswordBloc>(() => _i132.ForgotPasswordBloc(
+        changePassword: gh<_i1035.ChangePasswordUseCase>()));
     gh.singleton<_i344.AuthRepository>(() => _i522.DefaultAuthRepository(
         networkDataSource: gh<_i536.NetworkDataSource>()));
     gh.singleton<_i686.RegisterUseCase>(

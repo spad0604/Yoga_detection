@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_starter/di.dart';
 import 'package:flutter_starter/gen/app_images.dart';
 import 'package:flutter_starter/presenter/pages/forgot_password/forgot_password_bloc.dart';
+import 'package:flutter_starter/presenter/pages/forgot_password/forgot_password_event.dart';
 import 'package:flutter_starter/presenter/pages/forgot_password/type_code_page.dart';
 import 'package:flutter_starter/presenter/themes/colors.dart';
 import 'package:flutter_starter/presenter/widget/custom_button.dart';
@@ -88,6 +89,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   backgroundColor: AppColors.primaryBlue,
                   textColor: Colors.white,
                   onPressed: () {
+                    _bloc.add(SetEmailEvent(_emailController.text));
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (_) => TypeCodePage()),

@@ -1,3 +1,4 @@
+import 'package:flutter_starter/data/entities/request/change_password.dart';
 import 'package:flutter_starter/data/entities/request/register_params.dart';
 import 'package:flutter_starter/data/entities/response/register_response.dart';
 import 'package:flutter_starter/data/sources/network/base_api_response.dart';
@@ -24,4 +25,7 @@ abstract class NetworkDataSource {
 
   @POST('api/auth/register')
   Future<BaseApiResponse<RegisterResponse>> register(@Body() RegisterParams params);
+
+  @POST('api/user/change-password')
+  Future<BaseApiResponse<void>> changePassword(@Body() ChangePasswordRequest params);
 }

@@ -16,44 +16,50 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$ForgotPasswordEvent {
-  BaseException<dynamic>? get error => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(BaseException<dynamic>? error) errorOccurred,
+    required TResult Function(String password, String confirmPassword)
+        changePassword,
+    required TResult Function(String email) setEmail,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(BaseException<dynamic>? error)? errorOccurred,
+    TResult? Function(String password, String confirmPassword)? changePassword,
+    TResult? Function(String email)? setEmail,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(BaseException<dynamic>? error)? errorOccurred,
+    TResult Function(String password, String confirmPassword)? changePassword,
+    TResult Function(String email)? setEmail,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(ForgotPasswordErrorOccurred value) errorOccurred,
+    required TResult Function(ChangePasswordRequested value) changePassword,
+    required TResult Function(SetEmailEvent value) setEmail,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(ForgotPasswordErrorOccurred value)? errorOccurred,
+    TResult? Function(ChangePasswordRequested value)? changePassword,
+    TResult? Function(SetEmailEvent value)? setEmail,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(ForgotPasswordErrorOccurred value)? errorOccurred,
+    TResult Function(ChangePasswordRequested value)? changePassword,
+    TResult Function(SetEmailEvent value)? setEmail,
     required TResult orElse(),
   }) =>
-      throw _privateConstructorUsedError;
-
-  /// Create a copy of ForgotPasswordEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $ForgotPasswordEventCopyWith<ForgotPasswordEvent> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -62,8 +68,6 @@ abstract class $ForgotPasswordEventCopyWith<$Res> {
   factory $ForgotPasswordEventCopyWith(
           ForgotPasswordEvent value, $Res Function(ForgotPasswordEvent) then) =
       _$ForgotPasswordEventCopyWithImpl<$Res, ForgotPasswordEvent>;
-  @useResult
-  $Res call({BaseException<dynamic>? error});
 }
 
 /// @nodoc
@@ -78,28 +82,14 @@ class _$ForgotPasswordEventCopyWithImpl<$Res, $Val extends ForgotPasswordEvent>
 
   /// Create a copy of ForgotPasswordEvent
   /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? error = freezed,
-  }) {
-    return _then(_value.copyWith(
-      error: freezed == error
-          ? _value.error
-          : error // ignore: cast_nullable_to_non_nullable
-              as BaseException<dynamic>?,
-    ) as $Val);
-  }
 }
 
 /// @nodoc
-abstract class _$$ForgotPasswordErrorOccurredImplCopyWith<$Res>
-    implements $ForgotPasswordEventCopyWith<$Res> {
+abstract class _$$ForgotPasswordErrorOccurredImplCopyWith<$Res> {
   factory _$$ForgotPasswordErrorOccurredImplCopyWith(
           _$ForgotPasswordErrorOccurredImpl value,
           $Res Function(_$ForgotPasswordErrorOccurredImpl) then) =
       __$$ForgotPasswordErrorOccurredImplCopyWithImpl<$Res>;
-  @override
   @useResult
   $Res call({BaseException<dynamic>? error});
 }
@@ -132,15 +122,25 @@ class __$$ForgotPasswordErrorOccurredImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$ForgotPasswordErrorOccurredImpl implements ForgotPasswordErrorOccurred {
+class _$ForgotPasswordErrorOccurredImpl
+    with DiagnosticableTreeMixin
+    implements ForgotPasswordErrorOccurred {
   const _$ForgotPasswordErrorOccurredImpl([this.error]);
 
   @override
   final BaseException<dynamic>? error;
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'ForgotPasswordEvent.errorOccurred(error: $error)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'ForgotPasswordEvent.errorOccurred'))
+      ..add(DiagnosticsProperty('error', error));
   }
 
   @override
@@ -167,6 +167,9 @@ class _$ForgotPasswordErrorOccurredImpl implements ForgotPasswordErrorOccurred {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(BaseException<dynamic>? error) errorOccurred,
+    required TResult Function(String password, String confirmPassword)
+        changePassword,
+    required TResult Function(String email) setEmail,
   }) {
     return errorOccurred(error);
   }
@@ -175,6 +178,8 @@ class _$ForgotPasswordErrorOccurredImpl implements ForgotPasswordErrorOccurred {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(BaseException<dynamic>? error)? errorOccurred,
+    TResult? Function(String password, String confirmPassword)? changePassword,
+    TResult? Function(String email)? setEmail,
   }) {
     return errorOccurred?.call(error);
   }
@@ -183,6 +188,8 @@ class _$ForgotPasswordErrorOccurredImpl implements ForgotPasswordErrorOccurred {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(BaseException<dynamic>? error)? errorOccurred,
+    TResult Function(String password, String confirmPassword)? changePassword,
+    TResult Function(String email)? setEmail,
     required TResult orElse(),
   }) {
     if (errorOccurred != null) {
@@ -195,6 +202,8 @@ class _$ForgotPasswordErrorOccurredImpl implements ForgotPasswordErrorOccurred {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(ForgotPasswordErrorOccurred value) errorOccurred,
+    required TResult Function(ChangePasswordRequested value) changePassword,
+    required TResult Function(SetEmailEvent value) setEmail,
   }) {
     return errorOccurred(this);
   }
@@ -203,6 +212,8 @@ class _$ForgotPasswordErrorOccurredImpl implements ForgotPasswordErrorOccurred {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(ForgotPasswordErrorOccurred value)? errorOccurred,
+    TResult? Function(ChangePasswordRequested value)? changePassword,
+    TResult? Function(SetEmailEvent value)? setEmail,
   }) {
     return errorOccurred?.call(this);
   }
@@ -211,6 +222,8 @@ class _$ForgotPasswordErrorOccurredImpl implements ForgotPasswordErrorOccurred {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(ForgotPasswordErrorOccurred value)? errorOccurred,
+    TResult Function(ChangePasswordRequested value)? changePassword,
+    TResult Function(SetEmailEvent value)? setEmail,
     required TResult orElse(),
   }) {
     if (errorOccurred != null) {
@@ -225,13 +238,344 @@ abstract class ForgotPasswordErrorOccurred implements ForgotPasswordEvent {
           [final BaseException<dynamic>? error]) =
       _$ForgotPasswordErrorOccurredImpl;
 
-  @override
   BaseException<dynamic>? get error;
 
   /// Create a copy of ForgotPasswordEvent
   /// with the given fields replaced by the non-null parameter values.
-  @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ForgotPasswordErrorOccurredImplCopyWith<_$ForgotPasswordErrorOccurredImpl>
       get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$ChangePasswordRequestedImplCopyWith<$Res> {
+  factory _$$ChangePasswordRequestedImplCopyWith(
+          _$ChangePasswordRequestedImpl value,
+          $Res Function(_$ChangePasswordRequestedImpl) then) =
+      __$$ChangePasswordRequestedImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({String password, String confirmPassword});
+}
+
+/// @nodoc
+class __$$ChangePasswordRequestedImplCopyWithImpl<$Res>
+    extends _$ForgotPasswordEventCopyWithImpl<$Res,
+        _$ChangePasswordRequestedImpl>
+    implements _$$ChangePasswordRequestedImplCopyWith<$Res> {
+  __$$ChangePasswordRequestedImplCopyWithImpl(
+      _$ChangePasswordRequestedImpl _value,
+      $Res Function(_$ChangePasswordRequestedImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of ForgotPasswordEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? password = null,
+    Object? confirmPassword = null,
+  }) {
+    return _then(_$ChangePasswordRequestedImpl(
+      password: null == password
+          ? _value.password
+          : password // ignore: cast_nullable_to_non_nullable
+              as String,
+      confirmPassword: null == confirmPassword
+          ? _value.confirmPassword
+          : confirmPassword // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$ChangePasswordRequestedImpl
+    with DiagnosticableTreeMixin
+    implements ChangePasswordRequested {
+  const _$ChangePasswordRequestedImpl(
+      {required this.password, required this.confirmPassword});
+
+  @override
+  final String password;
+  @override
+  final String confirmPassword;
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return 'ForgotPasswordEvent.changePassword(password: $password, confirmPassword: $confirmPassword)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'ForgotPasswordEvent.changePassword'))
+      ..add(DiagnosticsProperty('password', password))
+      ..add(DiagnosticsProperty('confirmPassword', confirmPassword));
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$ChangePasswordRequestedImpl &&
+            (identical(other.password, password) ||
+                other.password == password) &&
+            (identical(other.confirmPassword, confirmPassword) ||
+                other.confirmPassword == confirmPassword));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, password, confirmPassword);
+
+  /// Create a copy of ForgotPasswordEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$ChangePasswordRequestedImplCopyWith<_$ChangePasswordRequestedImpl>
+      get copyWith => __$$ChangePasswordRequestedImplCopyWithImpl<
+          _$ChangePasswordRequestedImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(BaseException<dynamic>? error) errorOccurred,
+    required TResult Function(String password, String confirmPassword)
+        changePassword,
+    required TResult Function(String email) setEmail,
+  }) {
+    return changePassword(password, confirmPassword);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(BaseException<dynamic>? error)? errorOccurred,
+    TResult? Function(String password, String confirmPassword)? changePassword,
+    TResult? Function(String email)? setEmail,
+  }) {
+    return changePassword?.call(password, confirmPassword);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(BaseException<dynamic>? error)? errorOccurred,
+    TResult Function(String password, String confirmPassword)? changePassword,
+    TResult Function(String email)? setEmail,
+    required TResult orElse(),
+  }) {
+    if (changePassword != null) {
+      return changePassword(password, confirmPassword);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(ForgotPasswordErrorOccurred value) errorOccurred,
+    required TResult Function(ChangePasswordRequested value) changePassword,
+    required TResult Function(SetEmailEvent value) setEmail,
+  }) {
+    return changePassword(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(ForgotPasswordErrorOccurred value)? errorOccurred,
+    TResult? Function(ChangePasswordRequested value)? changePassword,
+    TResult? Function(SetEmailEvent value)? setEmail,
+  }) {
+    return changePassword?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(ForgotPasswordErrorOccurred value)? errorOccurred,
+    TResult Function(ChangePasswordRequested value)? changePassword,
+    TResult Function(SetEmailEvent value)? setEmail,
+    required TResult orElse(),
+  }) {
+    if (changePassword != null) {
+      return changePassword(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class ChangePasswordRequested implements ForgotPasswordEvent {
+  const factory ChangePasswordRequested(
+      {required final String password,
+      required final String confirmPassword}) = _$ChangePasswordRequestedImpl;
+
+  String get password;
+  String get confirmPassword;
+
+  /// Create a copy of ForgotPasswordEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$ChangePasswordRequestedImplCopyWith<_$ChangePasswordRequestedImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$SetEmailEventImplCopyWith<$Res> {
+  factory _$$SetEmailEventImplCopyWith(
+          _$SetEmailEventImpl value, $Res Function(_$SetEmailEventImpl) then) =
+      __$$SetEmailEventImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({String email});
+}
+
+/// @nodoc
+class __$$SetEmailEventImplCopyWithImpl<$Res>
+    extends _$ForgotPasswordEventCopyWithImpl<$Res, _$SetEmailEventImpl>
+    implements _$$SetEmailEventImplCopyWith<$Res> {
+  __$$SetEmailEventImplCopyWithImpl(
+      _$SetEmailEventImpl _value, $Res Function(_$SetEmailEventImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of ForgotPasswordEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? email = null,
+  }) {
+    return _then(_$SetEmailEventImpl(
+      null == email
+          ? _value.email
+          : email // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$SetEmailEventImpl
+    with DiagnosticableTreeMixin
+    implements SetEmailEvent {
+  const _$SetEmailEventImpl(this.email);
+
+  @override
+  final String email;
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return 'ForgotPasswordEvent.setEmail(email: $email)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'ForgotPasswordEvent.setEmail'))
+      ..add(DiagnosticsProperty('email', email));
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$SetEmailEventImpl &&
+            (identical(other.email, email) || other.email == email));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, email);
+
+  /// Create a copy of ForgotPasswordEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$SetEmailEventImplCopyWith<_$SetEmailEventImpl> get copyWith =>
+      __$$SetEmailEventImplCopyWithImpl<_$SetEmailEventImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(BaseException<dynamic>? error) errorOccurred,
+    required TResult Function(String password, String confirmPassword)
+        changePassword,
+    required TResult Function(String email) setEmail,
+  }) {
+    return setEmail(email);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(BaseException<dynamic>? error)? errorOccurred,
+    TResult? Function(String password, String confirmPassword)? changePassword,
+    TResult? Function(String email)? setEmail,
+  }) {
+    return setEmail?.call(email);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(BaseException<dynamic>? error)? errorOccurred,
+    TResult Function(String password, String confirmPassword)? changePassword,
+    TResult Function(String email)? setEmail,
+    required TResult orElse(),
+  }) {
+    if (setEmail != null) {
+      return setEmail(email);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(ForgotPasswordErrorOccurred value) errorOccurred,
+    required TResult Function(ChangePasswordRequested value) changePassword,
+    required TResult Function(SetEmailEvent value) setEmail,
+  }) {
+    return setEmail(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(ForgotPasswordErrorOccurred value)? errorOccurred,
+    TResult? Function(ChangePasswordRequested value)? changePassword,
+    TResult? Function(SetEmailEvent value)? setEmail,
+  }) {
+    return setEmail?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(ForgotPasswordErrorOccurred value)? errorOccurred,
+    TResult Function(ChangePasswordRequested value)? changePassword,
+    TResult Function(SetEmailEvent value)? setEmail,
+    required TResult orElse(),
+  }) {
+    if (setEmail != null) {
+      return setEmail(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class SetEmailEvent implements ForgotPasswordEvent {
+  const factory SetEmailEvent(final String email) = _$SetEmailEventImpl;
+
+  String get email;
+
+  /// Create a copy of ForgotPasswordEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$SetEmailEventImplCopyWith<_$SetEmailEventImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }

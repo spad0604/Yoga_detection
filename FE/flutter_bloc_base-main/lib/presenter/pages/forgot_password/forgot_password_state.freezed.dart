@@ -17,6 +17,7 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$ForgotPasswordState {
   ForgotPasswordStatus get status => throw _privateConstructorUsedError;
+  String? get email => throw _privateConstructorUsedError;
   BaseException<dynamic>? get error => throw _privateConstructorUsedError;
 
   /// Create a copy of ForgotPasswordState
@@ -32,7 +33,10 @@ abstract class $ForgotPasswordStateCopyWith<$Res> {
           ForgotPasswordState value, $Res Function(ForgotPasswordState) then) =
       _$ForgotPasswordStateCopyWithImpl<$Res, ForgotPasswordState>;
   @useResult
-  $Res call({ForgotPasswordStatus status, BaseException<dynamic>? error});
+  $Res call(
+      {ForgotPasswordStatus status,
+      String? email,
+      BaseException<dynamic>? error});
 }
 
 /// @nodoc
@@ -51,6 +55,7 @@ class _$ForgotPasswordStateCopyWithImpl<$Res, $Val extends ForgotPasswordState>
   @override
   $Res call({
     Object? status = null,
+    Object? email = freezed,
     Object? error = freezed,
   }) {
     return _then(_value.copyWith(
@@ -58,6 +63,10 @@ class _$ForgotPasswordStateCopyWithImpl<$Res, $Val extends ForgotPasswordState>
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as ForgotPasswordStatus,
+      email: freezed == email
+          ? _value.email
+          : email // ignore: cast_nullable_to_non_nullable
+              as String?,
       error: freezed == error
           ? _value.error
           : error // ignore: cast_nullable_to_non_nullable
@@ -74,7 +83,10 @@ abstract class _$$ForgotPasswordStateImplCopyWith<$Res>
       __$$ForgotPasswordStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({ForgotPasswordStatus status, BaseException<dynamic>? error});
+  $Res call(
+      {ForgotPasswordStatus status,
+      String? email,
+      BaseException<dynamic>? error});
 }
 
 /// @nodoc
@@ -91,6 +103,7 @@ class __$$ForgotPasswordStateImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? status = null,
+    Object? email = freezed,
     Object? error = freezed,
   }) {
     return _then(_$ForgotPasswordStateImpl(
@@ -98,6 +111,10 @@ class __$$ForgotPasswordStateImplCopyWithImpl<$Res>
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as ForgotPasswordStatus,
+      email: freezed == email
+          ? _value.email
+          : email // ignore: cast_nullable_to_non_nullable
+              as String?,
       error: freezed == error
           ? _value.error
           : error // ignore: cast_nullable_to_non_nullable
@@ -110,17 +127,19 @@ class __$$ForgotPasswordStateImplCopyWithImpl<$Res>
 
 class _$ForgotPasswordStateImpl implements _ForgotPasswordState {
   const _$ForgotPasswordStateImpl(
-      {this.status = ForgotPasswordStatus.initial, this.error});
+      {this.status = ForgotPasswordStatus.initial, this.email, this.error});
 
   @override
   @JsonKey()
   final ForgotPasswordStatus status;
   @override
+  final String? email;
+  @override
   final BaseException<dynamic>? error;
 
   @override
   String toString() {
-    return 'ForgotPasswordState(status: $status, error: $error)';
+    return 'ForgotPasswordState(status: $status, email: $email, error: $error)';
   }
 
   @override
@@ -129,11 +148,12 @@ class _$ForgotPasswordStateImpl implements _ForgotPasswordState {
         (other.runtimeType == runtimeType &&
             other is _$ForgotPasswordStateImpl &&
             (identical(other.status, status) || other.status == status) &&
+            (identical(other.email, email) || other.email == email) &&
             (identical(other.error, error) || other.error == error));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, status, error);
+  int get hashCode => Object.hash(runtimeType, status, email, error);
 
   /// Create a copy of ForgotPasswordState
   /// with the given fields replaced by the non-null parameter values.
@@ -148,10 +168,13 @@ class _$ForgotPasswordStateImpl implements _ForgotPasswordState {
 abstract class _ForgotPasswordState implements ForgotPasswordState {
   const factory _ForgotPasswordState(
       {final ForgotPasswordStatus status,
+      final String? email,
       final BaseException<dynamic>? error}) = _$ForgotPasswordStateImpl;
 
   @override
   ForgotPasswordStatus get status;
+  @override
+  String? get email;
   @override
   BaseException<dynamic>? get error;
 
