@@ -1,5 +1,6 @@
 package com.service;
 
+import com.dto.request.ChangePasswordRequest;
 import com.dto.request.LoginRequest;
 import com.dto.request.RegisterRequest;
 import com.dto.response.ApiResponse;

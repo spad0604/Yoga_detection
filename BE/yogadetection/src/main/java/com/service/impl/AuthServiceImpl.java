@@ -1,6 +1,7 @@
 package com.service.impl;
 
 import com.config.ErrorCode;
+import com.dto.request.ChangePasswordRequest;
 import com.dto.request.LoginRequest;
 import com.dto.request.RegisterRequest;
 import com.dto.response.ApiResponse;
@@ -60,4 +61,5 @@ public class AuthServiceImpl implements AuthService {
         }
         tokenBlackListService.blacklistToken(token);
     }
+
 }

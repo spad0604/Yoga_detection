@@ -62,7 +62,6 @@ public class TokenBlackListServiceImpl implements TokenBlackListService {
     }
 
     @Scheduled(fixedRate = 60 * 60 * 1000)
-    @Override
     public void cleanupExpiredTokens() {
         long now = System.currentTimeMillis();
         blackList.entrySet().removeIf(entry -> now > entry.getValue());
