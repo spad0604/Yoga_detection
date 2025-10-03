@@ -16,7 +16,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       : _login = login,
         super(const LoginState()) {
     on<LoginErrorOccurred>(_onErrorOccurred);
-    on<LoginUsernameChanged>(_onUsernameChanged, transformer: droppable());
+    on<LoginEmailChanged>(_onEmailChanged, transformer: droppable());
     on<LoginPasswordChanged>(_onPasswordChanged, transformer: droppable());
     on<LoginStarted>(_onLoginStarted, transformer: droppable());
   }
@@ -38,12 +38,15 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     ));
   }
 
-  FutureOr<void> _onUsernameChanged(
-    LoginUsernameChanged event,
+  FutureOr<void> _onEmailChanged(
+    LoginEmailChanged event,
     Emitter<LoginState> emit,
   ) {
+    // clear email error on change
     emit(state.copyWith(
-      username: event.username,
+      email: event.email,
+      emailError: null,
+      error: null,
     ));
   }
 
@@ -51,8 +54,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     LoginPasswordChanged event,
     Emitter<LoginState> emit,
   ) {
+    // clear password error on change
     emit(state.copyWith(
       password: event.password,
+      passwordError: null,
+      error: null,
     ));
   }
 
@@ -60,18 +66,54 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     LoginStarted event,
     Emitter<LoginState> emit,
   ) async {
+    // validate email
+    final email = state.email.trim();
+    final password = state.password;
+
+    // simple email regex
+    final emailRegex = RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}");
+    if (!emailRegex.hasMatch(email)) {
+      emit(state.copyWith(
+        status: LoginStatus.failure,
+        emailError: 'Invalid email format',
+        error: ValidationException('Invalid email address'),
+      ));
+      return;
+    }
+
+    // password: at least one uppercase and one special char
+    final upperRegex = RegExp(r"[A-Z]");
+    // match any non-alphanumeric char (special)
+    final specialRegex = RegExp(r"[^A-Za-z0-9]");
+
+    if (!upperRegex.hasMatch(password) || !specialRegex.hasMatch(password)) {
+      emit(state.copyWith(
+        status: LoginStatus.failure,
+        passwordError: 'Password must contain at least one uppercase and one special character',
+        error: ValidationException('Password requirements not met'),
+      ));
+      return;
+    }
+
     emit(state.copyWith(
       status: LoginStatus.submitting,
     ));
 
-    final account = await _login((
-      username: state.username,
-      password: state.password,
-    ));
+    try {
+      final account = await _login((
+        email: email,
+        password: password,
+      ));
 
-    emit(state.copyWith(
-      status: LoginStatus.success,
-      account: account,
-    ));
+      emit(state.copyWith(
+        status: LoginStatus.success,
+        account: account,
+      ));
+    } catch (e) {
+      emit(state.copyWith(
+        status: LoginStatus.failure,
+        error: BaseException.from(e),
+      ));
+    }
   }
 }

@@ -1,3 +1,4 @@
 bricks:
   bloc_page:
     path: bricks/bloc_page
+  flutter_bloc_feature: ^0.4.0

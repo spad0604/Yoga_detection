@@ -20,12 +20,17 @@ import 'data/sources/local/local.dart' as _i193;
 import 'data/sources/network/dio.dart' as _i288;
 import 'data/sources/network/network.dart' as _i536;
 import 'data/states/auth/auth_bloc.dart' as _i963;
+import 'data/states/camera_detection/camera_detection_bloc.dart' as _i161;
 import 'data/states/settings/settings_bloc.dart' as _i932;
+import 'data/usecases/change_password_uc.dart' as _i1035;
 import 'data/usecases/login.dart' as _i470;
+import 'data/usecases/register.dart' as _i686;
 import 'data/usecases/verify_login_status.dart' as _i412;
 import 'di.dart' as _i913;
 import 'presenter/navigation/navigation.dart' as _i551;
+import 'presenter/pages/forgot_password/forgot_password_bloc.dart' as _i132;
 import 'presenter/pages/login/login_bloc.dart' as _i902;
+import 'presenter/pages/register/register_bloc.dart' as _i338;
 import 'presenter/pages/splash/splash_bloc.dart' as _i517;
 import 'services/oauth_token_manager/oauth_token_manager.dart' as _i132;
 import 'services/oauth_token_manager/oauth_token_manager.default.dart' as _i290;
@@ -42,6 +47,7 @@ extension GetItInjectableX on _i174.GetIt {
       environmentFilter,
     );
     final registerModule = _$RegisterModule();
+    gh.factory<_i161.CameraDetectionBloc>(() => _i161.CameraDetectionBloc());
     gh.singleton<_i963.AuthBloc>(() => _i963.AuthBloc());
     gh.singleton<_i932.SettingsBloc>(() => _i932.SettingsBloc());
     gh.singleton<_i558.FlutterSecureStorage>(
@@ -62,13 +68,19 @@ extension GetItInjectableX on _i174.GetIt {
         ));
     gh.singleton<_i536.NetworkDataSource>(
         () => _i536.NetworkDataSource(gh<_i288.NetworkDio>()));
+    gh.factory<_i132.ForgotPasswordBloc>(() => _i132.ForgotPasswordBloc(
+        changePassword: gh<_i1035.ChangePasswordUseCase>()));
     gh.singleton<_i344.AuthRepository>(() => _i522.DefaultAuthRepository(
         networkDataSource: gh<_i536.NetworkDataSource>()));
+    gh.singleton<_i686.RegisterUseCase>(
+        () => _i686.RegisterUseCase(repository: gh<_i344.AuthRepository>()));
     gh.singleton<_i470.LoginUseCase>(
         () => _i470.LoginUseCase(authRepository: gh<_i344.AuthRepository>()));
     gh.singleton<_i412.VerifyLoginStatusUseCase>(() =>
         _i412.VerifyLoginStatusUseCase(
             authRepository: gh<_i344.AuthRepository>()));
+    gh.factory<_i338.RegisterBloc>(
+        () => _i338.RegisterBloc(register: gh<_i686.RegisterUseCase>()));
     gh.factory<_i517.SplashBloc>(() => _i517.SplashBloc(
         verifyLoginStatus: gh<_i412.VerifyLoginStatusUseCase>()));
     gh.factory<_i902.LoginBloc>(

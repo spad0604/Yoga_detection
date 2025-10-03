@@ -7,5 +7,7 @@
   "Hello": "Hello",
   "Username": "Username",
   "Password": "Password",
-  "Login": "Login"
+  "Login": "Login",
+  "enter_username": "Enter username",
+  "enter_password": "Enter password"
 }

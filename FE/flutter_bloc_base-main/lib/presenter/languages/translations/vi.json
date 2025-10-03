@@ -7,5 +7,7 @@
   "Hello": "Xin chào",
   "Username": "Tên đăng nhập",
   "Password": "Mật khẩu",
-  "Login": "Đăng nhập"
+  "Login": "Đăng nhập",
+  "enter_username": "Nhập tên đăng nhập",
+  "enter_password": "Nhập mật khẩu"
 }

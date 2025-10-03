@@ -4,6 +4,10 @@ import 'package:flutter_starter/presenter/pages/home/home.dart';
 import 'package:flutter_starter/presenter/pages/login/login.dart';
 import 'package:flutter_starter/presenter/pages/splash/splash.dart';
 import 'package:injectable/injectable.dart';
+import 'package:flutter_starter/presenter/pages/camera_detection/camera_detection.dart';
+import 'package:flutter_starter/presenter/pages/forgot_password/forgot_password.dart';
+
+import '../pages/register/register.dart';
 
 part 'navigation.gr.dart';
 
@@ -20,7 +24,10 @@ class AppRouter extends RootStackRouter {
   List<AutoRoute> get routes => [
         AutoRoute(path: '/', page: SplashRoute.page),
         AutoRoute(path: '/login', page: LoginRoute.page),
+        AutoRoute(path: '/register', page: RegisterRoute.page),
         AutoRoute(path: '/home', page: HomeRoute.page),
+        AutoRoute(path: '/camera-detection', page: CameraDetectionRoute.page),
+        AutoRoute(path: '/forgot-password', page: ForgotPasswordRoute.page),
       ];
 
   bool isUnauthorizedRoute(String routeName) => [
@@ -38,7 +45,11 @@ class AppRouter extends RootStackRouter {
             final isAuthenticated = _authBloc.state.loggedIn;
 
             if (isAuthorizedRoute(resolver.routeName) && !isAuthenticated) {
-              return resolver.redirect(LoginRoute(), replace: true);
+              return [
+                resolver.redirect(LoginRoute(), replace: true),
+                resolver.redirect(RegisterRoute(), replace: true),
+                resolver.redirect(ForgotPasswordRoute(), replace: true),
+              ];
             }
 
             if (isUnauthorizedRoute(resolver.routeName) && isAuthenticated) {

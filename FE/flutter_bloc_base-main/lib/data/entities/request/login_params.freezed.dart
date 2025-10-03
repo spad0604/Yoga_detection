@@ -20,8 +20,8 @@ LoginParams _$LoginParamsFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$LoginParams {
-  @JsonKey(name: 'username')
-  String get username => throw _privateConstructorUsedError;
+  @JsonKey(name: 'email')
+  String get email => throw _privateConstructorUsedError;
   @JsonKey(name: 'password')
   String get password => throw _privateConstructorUsedError;
 
@@ -42,7 +42,7 @@ abstract class $LoginParamsCopyWith<$Res> {
       _$LoginParamsCopyWithImpl<$Res, LoginParams>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'username') String username,
+      {@JsonKey(name: 'email') String email,
       @JsonKey(name: 'password') String password});
 }
 
@@ -61,13 +61,13 @@ class _$LoginParamsCopyWithImpl<$Res, $Val extends LoginParams>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? username = null,
+    Object? email = null,
     Object? password = null,
   }) {
     return _then(_value.copyWith(
-      username: null == username
-          ? _value.username
-          : username // ignore: cast_nullable_to_non_nullable
+      email: null == email
+          ? _value.email
+          : email // ignore: cast_nullable_to_non_nullable
               as String,
       password: null == password
           ? _value.password
@@ -86,7 +86,7 @@ abstract class _$$LoginParamsImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'username') String username,
+      {@JsonKey(name: 'email') String email,
       @JsonKey(name: 'password') String password});
 }
 
@@ -103,13 +103,13 @@ class __$$LoginParamsImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? username = null,
+    Object? email = null,
     Object? password = null,
   }) {
     return _then(_$LoginParamsImpl(
-      username: null == username
-          ? _value.username
-          : username // ignore: cast_nullable_to_non_nullable
+      email: null == email
+          ? _value.email
+          : email // ignore: cast_nullable_to_non_nullable
               as String,
       password: null == password
           ? _value.password
@@ -123,22 +123,22 @@ class __$$LoginParamsImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$LoginParamsImpl with DiagnosticableTreeMixin implements _LoginParams {
   const _$LoginParamsImpl(
-      {@JsonKey(name: 'username') required this.username,
+      {@JsonKey(name: 'email') required this.email,
       @JsonKey(name: 'password') required this.password});
 
   factory _$LoginParamsImpl.fromJson(Map<String, dynamic> json) =>
       _$$LoginParamsImplFromJson(json);
 
   @override
-  @JsonKey(name: 'username')
-  final String username;
+  @JsonKey(name: 'email')
+  final String email;
   @override
   @JsonKey(name: 'password')
   final String password;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'LoginParams(username: $username, password: $password)';
+    return 'LoginParams(email: $email, password: $password)';
   }
 
   @override
@@ -146,7 +146,7 @@ class _$LoginParamsImpl with DiagnosticableTreeMixin implements _LoginParams {
     super.debugFillProperties(properties);
     properties
       ..add(DiagnosticsProperty('type', 'LoginParams'))
-      ..add(DiagnosticsProperty('username', username))
+      ..add(DiagnosticsProperty('email', email))
       ..add(DiagnosticsProperty('password', password));
   }
 
@@ -155,15 +155,14 @@ class _$LoginParamsImpl with DiagnosticableTreeMixin implements _LoginParams {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$LoginParamsImpl &&
-            (identical(other.username, username) ||
-                other.username == username) &&
+            (identical(other.email, email) || other.email == email) &&
             (identical(other.password, password) ||
                 other.password == password));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, username, password);
+  int get hashCode => Object.hash(runtimeType, email, password);
 
   /// Create a copy of LoginParams
   /// with the given fields replaced by the non-null parameter values.
@@ -183,7 +182,7 @@ class _$LoginParamsImpl with DiagnosticableTreeMixin implements _LoginParams {
 
 abstract class _LoginParams implements LoginParams {
   const factory _LoginParams(
-          {@JsonKey(name: 'username') required final String username,
+          {@JsonKey(name: 'email') required final String email,
           @JsonKey(name: 'password') required final String password}) =
       _$LoginParamsImpl;
 
@@ -191,8 +190,8 @@ abstract class _LoginParams implements LoginParams {
       _$LoginParamsImpl.fromJson;
 
   @override
-  @JsonKey(name: 'username')
-  String get username;
+  @JsonKey(name: 'email')
+  String get email;
   @override
   @JsonKey(name: 'password')
   String get password;

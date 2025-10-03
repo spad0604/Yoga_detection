@@ -44,3 +44,8 @@ class UnknownException extends BaseException {
 class NetworkException extends BaseException {
   NetworkException() : super(LocaleKeys.Errors_NetworkError);
 }
+
+/// Validation errors for simple input checks (email/password, etc.)
+class ValidationException extends BaseException {
+  ValidationException(String message) : super(message);
+}

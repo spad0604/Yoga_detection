@@ -1,5 +1,6 @@
 import 'package:flutter_starter/core/exception.dart';
 import 'package:flutter_starter/data/entities/account.dart';
+import 'package:flutter_starter/data/entities/response/register_response.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'login_state.freezed.dart';
@@ -15,9 +16,11 @@ enum LoginStatus {
 class LoginState with _$LoginState {
   const factory LoginState({
     @Default(LoginStatus.initial) LoginStatus status,
-    Account? account,
-    @Default('') String username,
+    RegisterResponse? account,
+    @Default('') String email,
     @Default('') String password,
     BaseException? error,
+    String? emailError,
+    String? passwordError,
   }) = _LoginState;
 }

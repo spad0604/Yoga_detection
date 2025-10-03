@@ -7,7 +7,7 @@ part 'login_params.g.dart';
 @freezed
 class LoginParams with _$LoginParams {
   const factory LoginParams({
-    @JsonKey(name: 'username') required String username,
+    @JsonKey(name: 'email') required String email,
     @JsonKey(name: 'password') required String password,
   }) = _LoginParams;
 
