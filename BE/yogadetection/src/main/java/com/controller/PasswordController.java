@@ -2,6 +2,7 @@ package com.controller;
 
 import com.dto.request.ChangePasswordRequest;
 import com.dto.request.ResetPasswordRequest;
+import com.dto.request.VerifyOTPRequest;
 import com.dto.response.ApiResponse;
 import com.service.AuthService;
 import com.service.PasswordService;
@@ -23,8 +24,13 @@ public class PasswordController {
         return passwordService.changePassword(request);
     }
 
-    @PostMapping("/reset")
-    public ApiResponse<String> resetPassword(@RequestBody ResetPasswordRequest request) {
-        return passwordService.resetPassword(request);
+    @PostMapping("/send-otp")
+    public ApiResponse<String> sendOTP(@RequestBody ResetPasswordRequest request) {
+        return passwordService.sendOTP(request);
+    }
+
+    @PostMapping("/verify-otp")
+    public ApiResponse<String> verifyOTP(@RequestBody VerifyOTPRequest request) {
+        return passwordService.verifyOTP(request);
     }
 }
