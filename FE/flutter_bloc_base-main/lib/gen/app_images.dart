@@ -14,4 +14,11 @@ abstract class AppImages {
   static const ic_indentity = 'assets/images/ic_indentity.png';
   static const ic_mail = 'assets/images/ic_mail.png';
   static const ic_phone = 'assets/images/ic_phone.png';
+  static const ic_bell = 'assets/images/ic_bell.png';
+  static const ic_heart_circle = 'assets/images/ic_heart_circle.png';
+  static const ic_home = 'assets/images/ic_home.png';
+  static const ic_clock = 'assets/images/ic_clock.png';
+  static const ic_account = 'assets/images/ic_account.png';
+  static const ic_calo = 'assets/images/ic_calo.png';
+  static const ic_minutes = 'assets/images/ic_minutes.png';
 }

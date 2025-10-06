@@ -1,11 +1,14 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_starter/data/states/auth/auth_bloc.dart';
 import 'package:flutter_starter/presenter/pages/home/home.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_starter/presenter/pages/home_page/home_page.dart';
 import 'package:flutter_starter/presenter/pages/login/login.dart';
 import 'package:flutter_starter/presenter/pages/splash/splash.dart';
 import 'package:injectable/injectable.dart';
 import 'package:flutter_starter/presenter/pages/camera_detection/camera_detection.dart';
 import 'package:flutter_starter/presenter/pages/forgot_password/forgot_password.dart';
+import 'package:flutter_starter/presenter/pages/pose_details/pose_details.dart';
 
 import '../pages/register/register.dart';
 
@@ -28,6 +31,7 @@ class AppRouter extends RootStackRouter {
         AutoRoute(path: '/home', page: HomeRoute.page),
         AutoRoute(path: '/camera-detection', page: CameraDetectionRoute.page),
         AutoRoute(path: '/forgot-password', page: ForgotPasswordRoute.page),
+        AutoRoute(path: '/pose-details', page: PoseDetailsRoute.page),
       ];
 
   bool isUnauthorizedRoute(String routeName) => [
