@@ -50,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _onSuccess(BuildContext context, LoginState state) {
-    context.router.replaceAll([const CameraDetectionRoute()]);
+    context.router.replaceAll([HomeRoute()]);
   }
 
   void _loading(BuildContext context, LoginState state) {

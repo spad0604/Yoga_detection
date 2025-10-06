@@ -54,9 +54,20 @@ class $AssetsImagesGen {
   /// File path: assets/images/.gitkeep
   String get aGitkeep => 'assets/images/.gitkeep';
 
+  /// File path: assets/images/ic_account.png
+  AssetGenImage get icAccount =>
+      const AssetGenImage('assets/images/ic_account.png');
+
+  /// File path: assets/images/ic_bell.png
+  AssetGenImage get icBell => const AssetGenImage('assets/images/ic_bell.png');
+
   /// File path: assets/images/ic_calendar.png
   AssetGenImage get icCalendar =>
       const AssetGenImage('assets/images/ic_calendar.png');
+
+  /// File path: assets/images/ic_clock.png
+  AssetGenImage get icClock =>
+      const AssetGenImage('assets/images/ic_clock.png');
 
   /// File path: assets/images/ic_close.png
   AssetGenImage get icClose =>
@@ -77,6 +88,13 @@ class $AssetsImagesGen {
   /// File path: assets/images/ic_google.png
   AssetGenImage get icGoogle =>
       const AssetGenImage('assets/images/ic_google.png');
+
+  /// File path: assets/images/ic_heart_circle.png
+  AssetGenImage get icHeartCircle =>
+      const AssetGenImage('assets/images/ic_heart_circle.png');
+
+  /// File path: assets/images/ic_home.png
+  AssetGenImage get icHome => const AssetGenImage('assets/images/ic_home.png');
 
   /// File path: assets/images/ic_indentity.png
   AssetGenImage get icIndentity =>
@@ -107,12 +125,17 @@ class $AssetsImagesGen {
   /// List of all assets
   List<dynamic> get values => [
         aGitkeep,
+        icAccount,
+        icBell,
         icCalendar,
+        icClock,
         icClose,
         icEyeOff,
         icEyeOn,
         icFacebook,
         icGoogle,
+        icHeartCircle,
+        icHome,
         icIndentity,
         icMail,
         icPause,

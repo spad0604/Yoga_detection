@@ -44,16 +44,50 @@ class ForgotPasswordRoute extends PageRouteInfo<void> {
 
 /// generated route for
 /// [HomePage]
-class HomeRoute extends PageRouteInfo<void> {
-  const HomeRoute({List<PageRouteInfo>? children})
-    : super(HomeRoute.name, initialChildren: children);
+class HomeRoute extends PageRouteInfo<HomeRouteArgs> {
+  HomeRoute({Key? key, List<PageRouteInfo>? children})
+    : super(
+        HomeRoute.name,
+        args: HomeRouteArgs(key: key),
+        initialChildren: children,
+      );
 
   static const String name = 'HomeRoute';
 
   static PageInfo page = PageInfo(
     name,
     builder: (data) {
-      return const HomePage();
+      final args = data.argsAs<HomeRouteArgs>(
+        orElse: () => const HomeRouteArgs(),
+      );
+      return HomePage(key: args.key);
+    },
+  );
+}
+
+class HomeRouteArgs {
+  const HomeRouteArgs({this.key});
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'HomeRouteArgs{key: $key}';
+  }
+}
+
+/// generated route for
+/// [HomePagePage]
+class HomeRouteRoute extends PageRouteInfo<void> {
+  const HomeRouteRoute({List<PageRouteInfo>? children})
+    : super(HomeRouteRoute.name, initialChildren: children);
+
+  static const String name = 'HomeRouteRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return WrappedRoute(child: HomePagePage());
     },
   );
 }
@@ -70,6 +104,22 @@ class LoginRoute extends PageRouteInfo<void> {
     name,
     builder: (data) {
       return WrappedRoute(child: LoginPage());
+    },
+  );
+}
+
+/// generated route for
+/// [PoseDetailsPage]
+class PoseDetailsRoute extends PageRouteInfo<void> {
+  const PoseDetailsRoute({List<PageRouteInfo>? children})
+    : super(PoseDetailsRoute.name, initialChildren: children);
+
+  static const String name = 'PoseDetailsRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return WrappedRoute(child: PoseDetailsPage());
     },
   );
 }
