@@ -22,6 +22,8 @@ mixin _$ForgotPasswordEvent {
     required TResult Function(String password, String confirmPassword)
         changePassword,
     required TResult Function(String email) setEmail,
+    required TResult Function(String email) sendOtp,
+    required TResult Function(String email, String otp) verifyOtp,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -29,6 +31,8 @@ mixin _$ForgotPasswordEvent {
     TResult? Function(BaseException<dynamic>? error)? errorOccurred,
     TResult? Function(String password, String confirmPassword)? changePassword,
     TResult? Function(String email)? setEmail,
+    TResult? Function(String email)? sendOtp,
+    TResult? Function(String email, String otp)? verifyOtp,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -36,6 +40,8 @@ mixin _$ForgotPasswordEvent {
     TResult Function(BaseException<dynamic>? error)? errorOccurred,
     TResult Function(String password, String confirmPassword)? changePassword,
     TResult Function(String email)? setEmail,
+    TResult Function(String email)? sendOtp,
+    TResult Function(String email, String otp)? verifyOtp,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -44,6 +50,8 @@ mixin _$ForgotPasswordEvent {
     required TResult Function(ForgotPasswordErrorOccurred value) errorOccurred,
     required TResult Function(ChangePasswordRequested value) changePassword,
     required TResult Function(SetEmailEvent value) setEmail,
+    required TResult Function(SendOtpRequested value) sendOtp,
+    required TResult Function(VerifyOtpRequested value) verifyOtp,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -51,6 +59,8 @@ mixin _$ForgotPasswordEvent {
     TResult? Function(ForgotPasswordErrorOccurred value)? errorOccurred,
     TResult? Function(ChangePasswordRequested value)? changePassword,
     TResult? Function(SetEmailEvent value)? setEmail,
+    TResult? Function(SendOtpRequested value)? sendOtp,
+    TResult? Function(VerifyOtpRequested value)? verifyOtp,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -58,6 +68,8 @@ mixin _$ForgotPasswordEvent {
     TResult Function(ForgotPasswordErrorOccurred value)? errorOccurred,
     TResult Function(ChangePasswordRequested value)? changePassword,
     TResult Function(SetEmailEvent value)? setEmail,
+    TResult Function(SendOtpRequested value)? sendOtp,
+    TResult Function(VerifyOtpRequested value)? verifyOtp,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -170,6 +182,8 @@ class _$ForgotPasswordErrorOccurredImpl
     required TResult Function(String password, String confirmPassword)
         changePassword,
     required TResult Function(String email) setEmail,
+    required TResult Function(String email) sendOtp,
+    required TResult Function(String email, String otp) verifyOtp,
   }) {
     return errorOccurred(error);
   }
@@ -180,6 +194,8 @@ class _$ForgotPasswordErrorOccurredImpl
     TResult? Function(BaseException<dynamic>? error)? errorOccurred,
     TResult? Function(String password, String confirmPassword)? changePassword,
     TResult? Function(String email)? setEmail,
+    TResult? Function(String email)? sendOtp,
+    TResult? Function(String email, String otp)? verifyOtp,
   }) {
     return errorOccurred?.call(error);
   }
@@ -190,6 +206,8 @@ class _$ForgotPasswordErrorOccurredImpl
     TResult Function(BaseException<dynamic>? error)? errorOccurred,
     TResult Function(String password, String confirmPassword)? changePassword,
     TResult Function(String email)? setEmail,
+    TResult Function(String email)? sendOtp,
+    TResult Function(String email, String otp)? verifyOtp,
     required TResult orElse(),
   }) {
     if (errorOccurred != null) {
@@ -204,6 +222,8 @@ class _$ForgotPasswordErrorOccurredImpl
     required TResult Function(ForgotPasswordErrorOccurred value) errorOccurred,
     required TResult Function(ChangePasswordRequested value) changePassword,
     required TResult Function(SetEmailEvent value) setEmail,
+    required TResult Function(SendOtpRequested value) sendOtp,
+    required TResult Function(VerifyOtpRequested value) verifyOtp,
   }) {
     return errorOccurred(this);
   }
@@ -214,6 +234,8 @@ class _$ForgotPasswordErrorOccurredImpl
     TResult? Function(ForgotPasswordErrorOccurred value)? errorOccurred,
     TResult? Function(ChangePasswordRequested value)? changePassword,
     TResult? Function(SetEmailEvent value)? setEmail,
+    TResult? Function(SendOtpRequested value)? sendOtp,
+    TResult? Function(VerifyOtpRequested value)? verifyOtp,
   }) {
     return errorOccurred?.call(this);
   }
@@ -224,6 +246,8 @@ class _$ForgotPasswordErrorOccurredImpl
     TResult Function(ForgotPasswordErrorOccurred value)? errorOccurred,
     TResult Function(ChangePasswordRequested value)? changePassword,
     TResult Function(SetEmailEvent value)? setEmail,
+    TResult Function(SendOtpRequested value)? sendOtp,
+    TResult Function(VerifyOtpRequested value)? verifyOtp,
     required TResult orElse(),
   }) {
     if (errorOccurred != null) {
@@ -345,6 +369,8 @@ class _$ChangePasswordRequestedImpl
     required TResult Function(String password, String confirmPassword)
         changePassword,
     required TResult Function(String email) setEmail,
+    required TResult Function(String email) sendOtp,
+    required TResult Function(String email, String otp) verifyOtp,
   }) {
     return changePassword(password, confirmPassword);
   }
@@ -355,6 +381,8 @@ class _$ChangePasswordRequestedImpl
     TResult? Function(BaseException<dynamic>? error)? errorOccurred,
     TResult? Function(String password, String confirmPassword)? changePassword,
     TResult? Function(String email)? setEmail,
+    TResult? Function(String email)? sendOtp,
+    TResult? Function(String email, String otp)? verifyOtp,
   }) {
     return changePassword?.call(password, confirmPassword);
   }
@@ -365,6 +393,8 @@ class _$ChangePasswordRequestedImpl
     TResult Function(BaseException<dynamic>? error)? errorOccurred,
     TResult Function(String password, String confirmPassword)? changePassword,
     TResult Function(String email)? setEmail,
+    TResult Function(String email)? sendOtp,
+    TResult Function(String email, String otp)? verifyOtp,
     required TResult orElse(),
   }) {
     if (changePassword != null) {
@@ -379,6 +409,8 @@ class _$ChangePasswordRequestedImpl
     required TResult Function(ForgotPasswordErrorOccurred value) errorOccurred,
     required TResult Function(ChangePasswordRequested value) changePassword,
     required TResult Function(SetEmailEvent value) setEmail,
+    required TResult Function(SendOtpRequested value) sendOtp,
+    required TResult Function(VerifyOtpRequested value) verifyOtp,
   }) {
     return changePassword(this);
   }
@@ -389,6 +421,8 @@ class _$ChangePasswordRequestedImpl
     TResult? Function(ForgotPasswordErrorOccurred value)? errorOccurred,
     TResult? Function(ChangePasswordRequested value)? changePassword,
     TResult? Function(SetEmailEvent value)? setEmail,
+    TResult? Function(SendOtpRequested value)? sendOtp,
+    TResult? Function(VerifyOtpRequested value)? verifyOtp,
   }) {
     return changePassword?.call(this);
   }
@@ -399,6 +433,8 @@ class _$ChangePasswordRequestedImpl
     TResult Function(ForgotPasswordErrorOccurred value)? errorOccurred,
     TResult Function(ChangePasswordRequested value)? changePassword,
     TResult Function(SetEmailEvent value)? setEmail,
+    TResult Function(SendOtpRequested value)? sendOtp,
+    TResult Function(VerifyOtpRequested value)? verifyOtp,
     required TResult orElse(),
   }) {
     if (changePassword != null) {
@@ -505,6 +541,8 @@ class _$SetEmailEventImpl
     required TResult Function(String password, String confirmPassword)
         changePassword,
     required TResult Function(String email) setEmail,
+    required TResult Function(String email) sendOtp,
+    required TResult Function(String email, String otp) verifyOtp,
   }) {
     return setEmail(email);
   }
@@ -515,6 +553,8 @@ class _$SetEmailEventImpl
     TResult? Function(BaseException<dynamic>? error)? errorOccurred,
     TResult? Function(String password, String confirmPassword)? changePassword,
     TResult? Function(String email)? setEmail,
+    TResult? Function(String email)? sendOtp,
+    TResult? Function(String email, String otp)? verifyOtp,
   }) {
     return setEmail?.call(email);
   }
@@ -525,6 +565,8 @@ class _$SetEmailEventImpl
     TResult Function(BaseException<dynamic>? error)? errorOccurred,
     TResult Function(String password, String confirmPassword)? changePassword,
     TResult Function(String email)? setEmail,
+    TResult Function(String email)? sendOtp,
+    TResult Function(String email, String otp)? verifyOtp,
     required TResult orElse(),
   }) {
     if (setEmail != null) {
@@ -539,6 +581,8 @@ class _$SetEmailEventImpl
     required TResult Function(ForgotPasswordErrorOccurred value) errorOccurred,
     required TResult Function(ChangePasswordRequested value) changePassword,
     required TResult Function(SetEmailEvent value) setEmail,
+    required TResult Function(SendOtpRequested value) sendOtp,
+    required TResult Function(VerifyOtpRequested value) verifyOtp,
   }) {
     return setEmail(this);
   }
@@ -549,6 +593,8 @@ class _$SetEmailEventImpl
     TResult? Function(ForgotPasswordErrorOccurred value)? errorOccurred,
     TResult? Function(ChangePasswordRequested value)? changePassword,
     TResult? Function(SetEmailEvent value)? setEmail,
+    TResult? Function(SendOtpRequested value)? sendOtp,
+    TResult? Function(VerifyOtpRequested value)? verifyOtp,
   }) {
     return setEmail?.call(this);
   }
@@ -559,6 +605,8 @@ class _$SetEmailEventImpl
     TResult Function(ForgotPasswordErrorOccurred value)? errorOccurred,
     TResult Function(ChangePasswordRequested value)? changePassword,
     TResult Function(SetEmailEvent value)? setEmail,
+    TResult Function(SendOtpRequested value)? sendOtp,
+    TResult Function(VerifyOtpRequested value)? verifyOtp,
     required TResult orElse(),
   }) {
     if (setEmail != null) {
@@ -577,5 +625,357 @@ abstract class SetEmailEvent implements ForgotPasswordEvent {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SetEmailEventImplCopyWith<_$SetEmailEventImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$SendOtpRequestedImplCopyWith<$Res> {
+  factory _$$SendOtpRequestedImplCopyWith(_$SendOtpRequestedImpl value,
+          $Res Function(_$SendOtpRequestedImpl) then) =
+      __$$SendOtpRequestedImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({String email});
+}
+
+/// @nodoc
+class __$$SendOtpRequestedImplCopyWithImpl<$Res>
+    extends _$ForgotPasswordEventCopyWithImpl<$Res, _$SendOtpRequestedImpl>
+    implements _$$SendOtpRequestedImplCopyWith<$Res> {
+  __$$SendOtpRequestedImplCopyWithImpl(_$SendOtpRequestedImpl _value,
+      $Res Function(_$SendOtpRequestedImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of ForgotPasswordEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? email = null,
+  }) {
+    return _then(_$SendOtpRequestedImpl(
+      null == email
+          ? _value.email
+          : email // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$SendOtpRequestedImpl
+    with DiagnosticableTreeMixin
+    implements SendOtpRequested {
+  const _$SendOtpRequestedImpl(this.email);
+
+  @override
+  final String email;
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return 'ForgotPasswordEvent.sendOtp(email: $email)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'ForgotPasswordEvent.sendOtp'))
+      ..add(DiagnosticsProperty('email', email));
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$SendOtpRequestedImpl &&
+            (identical(other.email, email) || other.email == email));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, email);
+
+  /// Create a copy of ForgotPasswordEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$SendOtpRequestedImplCopyWith<_$SendOtpRequestedImpl> get copyWith =>
+      __$$SendOtpRequestedImplCopyWithImpl<_$SendOtpRequestedImpl>(
+          this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(BaseException<dynamic>? error) errorOccurred,
+    required TResult Function(String password, String confirmPassword)
+        changePassword,
+    required TResult Function(String email) setEmail,
+    required TResult Function(String email) sendOtp,
+    required TResult Function(String email, String otp) verifyOtp,
+  }) {
+    return sendOtp(email);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(BaseException<dynamic>? error)? errorOccurred,
+    TResult? Function(String password, String confirmPassword)? changePassword,
+    TResult? Function(String email)? setEmail,
+    TResult? Function(String email)? sendOtp,
+    TResult? Function(String email, String otp)? verifyOtp,
+  }) {
+    return sendOtp?.call(email);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(BaseException<dynamic>? error)? errorOccurred,
+    TResult Function(String password, String confirmPassword)? changePassword,
+    TResult Function(String email)? setEmail,
+    TResult Function(String email)? sendOtp,
+    TResult Function(String email, String otp)? verifyOtp,
+    required TResult orElse(),
+  }) {
+    if (sendOtp != null) {
+      return sendOtp(email);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(ForgotPasswordErrorOccurred value) errorOccurred,
+    required TResult Function(ChangePasswordRequested value) changePassword,
+    required TResult Function(SetEmailEvent value) setEmail,
+    required TResult Function(SendOtpRequested value) sendOtp,
+    required TResult Function(VerifyOtpRequested value) verifyOtp,
+  }) {
+    return sendOtp(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(ForgotPasswordErrorOccurred value)? errorOccurred,
+    TResult? Function(ChangePasswordRequested value)? changePassword,
+    TResult? Function(SetEmailEvent value)? setEmail,
+    TResult? Function(SendOtpRequested value)? sendOtp,
+    TResult? Function(VerifyOtpRequested value)? verifyOtp,
+  }) {
+    return sendOtp?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(ForgotPasswordErrorOccurred value)? errorOccurred,
+    TResult Function(ChangePasswordRequested value)? changePassword,
+    TResult Function(SetEmailEvent value)? setEmail,
+    TResult Function(SendOtpRequested value)? sendOtp,
+    TResult Function(VerifyOtpRequested value)? verifyOtp,
+    required TResult orElse(),
+  }) {
+    if (sendOtp != null) {
+      return sendOtp(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class SendOtpRequested implements ForgotPasswordEvent {
+  const factory SendOtpRequested(final String email) = _$SendOtpRequestedImpl;
+
+  String get email;
+
+  /// Create a copy of ForgotPasswordEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$SendOtpRequestedImplCopyWith<_$SendOtpRequestedImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$VerifyOtpRequestedImplCopyWith<$Res> {
+  factory _$$VerifyOtpRequestedImplCopyWith(_$VerifyOtpRequestedImpl value,
+          $Res Function(_$VerifyOtpRequestedImpl) then) =
+      __$$VerifyOtpRequestedImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({String email, String otp});
+}
+
+/// @nodoc
+class __$$VerifyOtpRequestedImplCopyWithImpl<$Res>
+    extends _$ForgotPasswordEventCopyWithImpl<$Res, _$VerifyOtpRequestedImpl>
+    implements _$$VerifyOtpRequestedImplCopyWith<$Res> {
+  __$$VerifyOtpRequestedImplCopyWithImpl(_$VerifyOtpRequestedImpl _value,
+      $Res Function(_$VerifyOtpRequestedImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of ForgotPasswordEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? email = null,
+    Object? otp = null,
+  }) {
+    return _then(_$VerifyOtpRequestedImpl(
+      email: null == email
+          ? _value.email
+          : email // ignore: cast_nullable_to_non_nullable
+              as String,
+      otp: null == otp
+          ? _value.otp
+          : otp // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$VerifyOtpRequestedImpl
+    with DiagnosticableTreeMixin
+    implements VerifyOtpRequested {
+  const _$VerifyOtpRequestedImpl({required this.email, required this.otp});
+
+  @override
+  final String email;
+  @override
+  final String otp;
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return 'ForgotPasswordEvent.verifyOtp(email: $email, otp: $otp)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'ForgotPasswordEvent.verifyOtp'))
+      ..add(DiagnosticsProperty('email', email))
+      ..add(DiagnosticsProperty('otp', otp));
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$VerifyOtpRequestedImpl &&
+            (identical(other.email, email) || other.email == email) &&
+            (identical(other.otp, otp) || other.otp == otp));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, email, otp);
+
+  /// Create a copy of ForgotPasswordEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$VerifyOtpRequestedImplCopyWith<_$VerifyOtpRequestedImpl> get copyWith =>
+      __$$VerifyOtpRequestedImplCopyWithImpl<_$VerifyOtpRequestedImpl>(
+          this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(BaseException<dynamic>? error) errorOccurred,
+    required TResult Function(String password, String confirmPassword)
+        changePassword,
+    required TResult Function(String email) setEmail,
+    required TResult Function(String email) sendOtp,
+    required TResult Function(String email, String otp) verifyOtp,
+  }) {
+    return verifyOtp(email, otp);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(BaseException<dynamic>? error)? errorOccurred,
+    TResult? Function(String password, String confirmPassword)? changePassword,
+    TResult? Function(String email)? setEmail,
+    TResult? Function(String email)? sendOtp,
+    TResult? Function(String email, String otp)? verifyOtp,
+  }) {
+    return verifyOtp?.call(email, otp);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(BaseException<dynamic>? error)? errorOccurred,
+    TResult Function(String password, String confirmPassword)? changePassword,
+    TResult Function(String email)? setEmail,
+    TResult Function(String email)? sendOtp,
+    TResult Function(String email, String otp)? verifyOtp,
+    required TResult orElse(),
+  }) {
+    if (verifyOtp != null) {
+      return verifyOtp(email, otp);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(ForgotPasswordErrorOccurred value) errorOccurred,
+    required TResult Function(ChangePasswordRequested value) changePassword,
+    required TResult Function(SetEmailEvent value) setEmail,
+    required TResult Function(SendOtpRequested value) sendOtp,
+    required TResult Function(VerifyOtpRequested value) verifyOtp,
+  }) {
+    return verifyOtp(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(ForgotPasswordErrorOccurred value)? errorOccurred,
+    TResult? Function(ChangePasswordRequested value)? changePassword,
+    TResult? Function(SetEmailEvent value)? setEmail,
+    TResult? Function(SendOtpRequested value)? sendOtp,
+    TResult? Function(VerifyOtpRequested value)? verifyOtp,
+  }) {
+    return verifyOtp?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(ForgotPasswordErrorOccurred value)? errorOccurred,
+    TResult Function(ChangePasswordRequested value)? changePassword,
+    TResult Function(SetEmailEvent value)? setEmail,
+    TResult Function(SendOtpRequested value)? sendOtp,
+    TResult Function(VerifyOtpRequested value)? verifyOtp,
+    required TResult orElse(),
+  }) {
+    if (verifyOtp != null) {
+      return verifyOtp(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class VerifyOtpRequested implements ForgotPasswordEvent {
+  const factory VerifyOtpRequested(
+      {required final String email,
+      required final String otp}) = _$VerifyOtpRequestedImpl;
+
+  String get email;
+  String get otp;
+
+  /// Create a copy of ForgotPasswordEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$VerifyOtpRequestedImplCopyWith<_$VerifyOtpRequestedImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

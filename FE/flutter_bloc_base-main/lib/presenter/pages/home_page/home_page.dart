@@ -36,77 +36,84 @@ class _HomePagePageState extends State<HomePagePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Container(
-              height: 50,
-              color: Colors.white,
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Image.asset(
-                    AppImages.logo,
-                    width: 40.w,
-                    height: 40.h,
-                  ),
-                  Center(
-                    child: Text(
-                      'Yoga',
-                      style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      Image.asset(
-                        AppImages.ic_bell,
-                        width: 30.w,
-                        height: 30.h,
-                      ),
-                      SizedBox(
-                        width: 16,
-                      ),
-                      Image.asset(
-                        AppImages.ic_heart_circle,
-                        width: 30.w,
-                        height: 30.h,
-                      ),
-                    ],
-                  )
-                ],
-              ),
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              Container(
+                height: 50,
+                color: Colors.white,
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const SizedBox(height: 16),
-                    WelcomeBanner(),
-                    const SizedBox(height: 24),
-                    OverView(
-                      totalSessions: '15',
+                    Image.asset(
+                      AppImages.logo,
+                      width: 40.w,
+                      height: 40.h,
                     ),
-                    const SizedBox(height: 24),
+                    Center(
+                      child: Text(
+                        'Yoga',
+                        style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
+                      ),
+                    ),
                     Row(
                       children: [
-                        Text(
-                          'Yoga Poses',
-                          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                        Image.asset(
+                          AppImages.ic_bell,
+                          width: 30.w,
+                          height: 30.h,
                         ),
-                        Spacer(),
-                        Text(
-                          'View All',
-                          style: TextStyle(
-                              fontSize: 16, color: AppColors.blue, fontWeight: FontWeight.w600),
+                        SizedBox(
+                          width: 16,
                         ),
-                        SizedBox(width: 8),
-                        Icon(Icons.arrow_forward, size: 16, color: AppColors.blue)
+                        Image.asset(
+                          AppImages.ic_heart_circle,
+                          width: 30.w,
+                          height: 30.h,
+                        ),
                       ],
-                    ),
-                    ListView.builder(
+                    )
+                  ],
+                ),
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 16),
+                      WelcomeBanner(),
+                      const SizedBox(height: 24),
+                      OverView(
+                        totalSessions: '15',
+                      ),
+                      const SizedBox(height: 24),
+                      Row(
+                        children: [
+                          const Text(
+                            'Yoga Poses',
+                            style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                          ),
+                          const Spacer(),
+                          Text(
+                            'View All',
+                            style: TextStyle(
+                                fontSize: 16,
+                                color: AppColors.primaryBlue,
+                                fontWeight: FontWeight.w600),
+                          ),
+                          const SizedBox(width: 8),
+                          const Icon(Icons.arrow_forward, size: 16, color: AppColors.primaryBlue),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      ListView.builder(
+                        itemCount: 5,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 12.0),
@@ -119,14 +126,13 @@ class _HomePagePageState extends State<HomePagePage> {
                             ),
                           );
                         },
-                        itemCount: 5,
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics())
-                  ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            )
-          ],
+            ],
+          ),
         ),
       ),
     );

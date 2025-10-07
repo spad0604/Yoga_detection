@@ -1,5 +1,7 @@
 import 'package:flutter_starter/data/entities/request/change_password.dart';
 import 'package:flutter_starter/data/entities/request/register_params.dart';
+import 'package:flutter_starter/data/entities/request/request_change_password.dart';
+import 'package:flutter_starter/data/entities/request/verify_otp_request.dart';
 import 'package:flutter_starter/data/entities/response/register_response.dart';
 import 'package:flutter_starter/data/sources/network/base_api_response.dart';
 import 'package:injectable/injectable.dart';
@@ -26,6 +28,12 @@ abstract class NetworkDataSource {
   @POST('api/auth/register')
   Future<BaseApiResponse<RegisterResponse>> register(@Body() RegisterParams params);
 
-  @POST('api/user/change-password')
-  Future<BaseApiResponse<void>> changePassword(@Body() ChangePasswordRequest params);
+  @POST('api/user/change')
+  Future<BaseApiResponse<String>> changePassword(@Body() ChangePasswordRequest params);
+
+  @POST('api/password/send-otp')
+  Future<BaseApiResponse<String>> sendOtp(@Body() RequestChangePassword params);
+
+  @POST('api/password/verify-otp')
+  Future<BaseApiResponse<String>> verifyOtp(@Body() VerifyOtpRequest params);
 }

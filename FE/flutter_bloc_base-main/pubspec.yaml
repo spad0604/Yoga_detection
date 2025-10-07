@@ -71,6 +71,9 @@ dependencies:
   flutter_dotenv: ^6.0.0
   flutter_easyloading: ^3.0.5
 
+  # Other
+  toastification: ^3.0.3
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -17,4 +17,19 @@ abstract class AuthRepository {
     required String lastName,
     required String birthDate,
   });
+
+  Future<BaseApiResponse<String>> changePassword({
+    required String email,
+    required String currentPassword,
+    required String newPassword,
+  });
+
+  Future<BaseApiResponse<String>> sendOtp({
+    required String email,
+  });
+
+  Future<BaseApiResponse<String>> verifyOtp({
+    required String email,
+    required String otp,
+  });
 }

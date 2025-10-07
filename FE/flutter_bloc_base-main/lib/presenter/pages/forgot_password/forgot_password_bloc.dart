@@ -3,7 +3,11 @@ import 'dart:math';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_starter/data/entities/request/change_password.dart';
+import 'package:flutter_starter/data/entities/request/request_change_password.dart';
+import 'package:flutter_starter/data/entities/request/verify_otp_request.dart';
 import 'package:flutter_starter/data/usecases/change_password_uc.dart';
+import 'package:flutter_starter/data/usecases/send_otp_uc.dart';
+import 'package:flutter_starter/data/usecases/verify_otp_uc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:flutter_starter/core/exception.dart';
 import 'package:flutter_starter/presenter/pages/forgot_password/forgot_password_event.dart';
@@ -12,15 +16,26 @@ import 'package:flutter_starter/presenter/pages/forgot_password/forgot_password_
 @injectable
 class ForgotPasswordBloc extends Bloc<ForgotPasswordEvent, ForgotPasswordState> {
   final ChangePasswordUseCase _changePassword;
+  final SendOtpUc _sendOtpUc;
+  final VerifyOtpUc _verifyOtpUc;
 
-  ForgotPasswordBloc({required ChangePasswordUseCase changePassword})
+  ForgotPasswordBloc(
+      {required ChangePasswordUseCase changePassword,
+      required SendOtpUc sendOtpUc,
+      required VerifyOtpUc verifyOtpUc})
       : _changePassword = changePassword,
+        _sendOtpUc = sendOtpUc,
+        _verifyOtpUc = verifyOtpUc,
         super(const ForgotPasswordState()) {
     on<ForgotPasswordErrorOccurred>(_onErrorOccurred);
 
     on<ChangePasswordRequested>(_onChangePasswordRequested);
 
     on<SetEmailEvent>((event, emit) => setEmail(event, emit));
+
+    on<SendOtpRequested>(_onSendOtpRequested);
+
+    on<VerifyOtpRequested>(_onVerifyOtpRequested);
   }
 
   @override
@@ -28,6 +43,32 @@ class ForgotPasswordBloc extends Bloc<ForgotPasswordEvent, ForgotPasswordState> 
     add(ForgotPasswordErrorOccurred(BaseException.from(error)));
 
     super.onError(error, stackTrace);
+  }
+
+  FutureOr<void> _onVerifyOtpRequested(
+    VerifyOtpRequested event,
+    Emitter<ForgotPasswordState> emit,
+  ) async {
+    emit(state.copyWith(status: ForgotPasswordStatus.loading));
+
+    await _verifyOtpUc.call(VerifyOtpRequest(email: event.email, otp: event.otp));
+    emit(state.copyWith(
+      email: event.email,
+      status: ForgotPasswordStatus.otpVerifySuccess,
+    ));
+  }
+
+  FutureOr<void> _onSendOtpRequested(
+    SendOtpRequested event,
+    Emitter<ForgotPasswordState> emit,
+  ) async {
+    emit(state.copyWith(status: ForgotPasswordStatus.loading));
+
+    await _sendOtpUc.call(RequestChangePassword(email: event.email));
+    emit(state.copyWith(
+      email: event.email,
+      status: ForgotPasswordStatus.otpSendSuccess,
+    ));
   }
 
   void setEmail(SetEmailEvent event, Emitter<ForgotPasswordState> emit) {

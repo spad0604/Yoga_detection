@@ -2,7 +2,20 @@
   "Errors": {
     "AnUnknownErrorOccurred": "An unknown error occurred",
     "NetworkError": "Please check your internet connection",
-    "InvalidUsernameOrPassword": "Invalid username or password"
+    "InvalidUsernameOrPassword": "Invalid username or password",
+    "SUCCESS": "Success",
+    "INVALID_PASSWORD": "Invalid password",
+    "USER_NOT_FOUND": "User not found",
+    "EMAIL_ALREADY_IN_USE": "Email already in use",
+    "INVALID_TOKEN": "Invalid token",
+    "USER_ALREADY_EXISTS": "User already exists",
+    "INVALID_FORMAT": "Invalid format",
+    "UNAUTHORIZED": "Unauthorized",
+    "ACCESS_DENIED": "Access denied",
+    "NOT_FOUND": "Not found",
+    "INTERNAL_SERVER_ERROR": "Internal server error",
+    "OTP_EXPIRED": "OTP expired",
+    "OTP_INCORRECT": "OTP incorrect"
   },
   "Hello": "Hello",
   "Username": "Username",

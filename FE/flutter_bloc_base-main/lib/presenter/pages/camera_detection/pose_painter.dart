@@ -4,18 +4,20 @@ class _PosePainter extends CustomPainter {
   final List<Pose> poses;
   final Size imageSize;
   final bool isFrontCamera;
+  final bool showLabels;
 
   _PosePainter({
     required this.poses,
     required this.imageSize,
     required this.isFrontCamera,
+    this.showLabels = false,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
     if (imageSize == Size.zero) return;
 
-    final paintPoint = Paint()
+    final paintPointCenter = Paint()
       ..color = Colors.greenAccent
       ..style = PaintingStyle.fill;
 
@@ -24,32 +26,66 @@ class _PosePainter extends CustomPainter {
       ..strokeWidth = 2.0
       ..style = PaintingStyle.stroke;
 
-    final scaleX = size.width / imageSize.height;
-    final scaleY = size.height / imageSize.width;
+    // Map landmark coordinates (in image space) to the preview size.
+    // Use image width/height directly; CameraPreview handles rotation internally.
+    final scaleX = size.width / imageSize.width;
+    final scaleY = size.height / imageSize.height;
+
+    Color _colorFor(String label) {
+      if (label.startsWith('left')) return Colors.lightBlueAccent;
+      if (label.startsWith('right')) return Colors.pinkAccent;
+      return Colors.greenAccent;
+    }
 
     for (final pose in poses) {
-      final landmarks = pose.landmarks.values.toList();
-      for (final lm in landmarks) {
-        double x = lm.x;
-        double y = lm.y;
-        if (isFrontCamera) x = imageSize.width - x;
-        final dx = x * scaleX;
-        final dy = y * scaleY;
-        canvas.drawCircle(Offset(dx, dy), 4.0, paintPoint);
+      final landmarksMap = pose.landmarks; // Map<PoseLandmarkType, PoseLandmark>
+      final landmarks = landmarksMap.values.toList();
+
+      // Draw points with optional labels
+      for (final entry in landmarksMap.entries) {
+        final type = entry.key;
+        final lm = entry.value;
+        double dx = lm.x * scaleX;
+        double dy = lm.y * scaleY;
+        if (isFrontCamera) dx = size.width - dx; // mirror horizontally for front camera
+
+        final label = type.toString().split('.').last; // e.g., leftShoulder
+        final pointColor = _colorFor(label);
+
+        // draw point
+        canvas.drawCircle(Offset(dx, dy), 4.0, paintPointCenter..color = pointColor);
+
+        // draw label if enabled
+        if (showLabels) {
+          final textPainter = TextPainter(
+            text: TextSpan(
+              text: label,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 10,
+                fontWeight: FontWeight.w600,
+                shadows: [Shadow(blurRadius: 2, color: Colors.black, offset: Offset(0, 0))],
+              ),
+            ),
+            textDirection: TextDirection.ltr,
+            maxLines: 1,
+          )..layout();
+          textPainter.paint(canvas, Offset(dx + 6, dy + 2));
+        }
       }
 
       // simple connections (adjacent in the list) - replace with real bone pairs if needed
       if (landmarks.length > 1) {
         for (int i = 0; i < landmarks.length - 1; i++) {
-          var a = landmarks[i];
-          var b = landmarks[i + 1];
-          double ax = a.x, ay = a.y, bx = b.x, by = b.y;
+          final a = landmarks[i];
+          final b = landmarks[i + 1];
+          double ax = a.x * scaleX, ay = a.y * scaleY;
+          double bx = b.x * scaleX, by = b.y * scaleY;
           if (isFrontCamera) {
-            ax = imageSize.width - ax;
-            bx = imageSize.width - bx;
+            ax = size.width - ax;
+            bx = size.width - bx;
           }
-          canvas.drawLine(
-              Offset(ax * scaleX, ay * scaleY), Offset(bx * scaleX, by * scaleY), paintLine);
+          canvas.drawLine(Offset(ax, ay), Offset(bx, by), paintLine);
         }
       }
     }

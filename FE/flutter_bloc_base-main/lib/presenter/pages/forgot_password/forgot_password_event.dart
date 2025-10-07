@@ -15,4 +15,11 @@ class ForgotPasswordEvent with _$ForgotPasswordEvent {
   }) = ChangePasswordRequested;
 
   const factory ForgotPasswordEvent.setEmail(String email) = SetEmailEvent;
+
+  const factory ForgotPasswordEvent.sendOtp(String email) = SendOtpRequested;
+
+  const factory ForgotPasswordEvent.verifyOtp({
+    required String email,
+    required String otp,
+  }) = VerifyOtpRequested;
 }

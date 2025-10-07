@@ -270,6 +270,7 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
                                     imageSize: _previewSize!,
                                     isFrontCamera: _controller.description.lensDirection ==
                                         CameraLensDirection.front,
+                                    showLabels: true,
                                   ),
                                 );
                               },
