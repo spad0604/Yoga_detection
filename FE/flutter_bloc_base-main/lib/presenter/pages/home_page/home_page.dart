@@ -98,12 +98,17 @@ class _HomePagePageState extends State<HomePagePage> {
                             style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                           ),
                           const Spacer(),
-                          Text(
-                            'View All',
-                            style: TextStyle(
-                                fontSize: 16,
-                                color: AppColors.primaryBlue,
-                                fontWeight: FontWeight.w600),
+                          GestureDetector(
+                            onTap: () {
+                              context.router.push(const SearchYogaPoseRoute());
+                            },
+                            child: Text(
+                              'View All',
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: AppColors.primaryBlue,
+                                  fontWeight: FontWeight.w600),
+                            ),
                           ),
                           const SizedBox(width: 8),
                           const Icon(Icons.arrow_forward, size: 16, color: AppColors.primaryBlue),

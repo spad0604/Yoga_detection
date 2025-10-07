@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class YogaPoseSummaryResponse {
     private String id;     
     private String name;
+    private String imageUrl;
     private int minutes;      
     private int calos;       
 }

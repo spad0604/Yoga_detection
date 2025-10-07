@@ -141,6 +141,22 @@ class RegisterRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [SearchYogaPosePage]
+class SearchYogaPoseRoute extends PageRouteInfo<void> {
+  const SearchYogaPoseRoute({List<PageRouteInfo>? children})
+    : super(SearchYogaPoseRoute.name, initialChildren: children);
+
+  static const String name = 'SearchYogaPoseRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return WrappedRoute(child: SearchYogaPosePage());
+    },
+  );
+}
+
+/// generated route for
 /// [SplashPage]
 class SplashRoute extends PageRouteInfo<void> {
   const SplashRoute({List<PageRouteInfo>? children})

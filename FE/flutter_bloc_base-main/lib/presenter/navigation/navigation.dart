@@ -9,7 +9,7 @@ import 'package:injectable/injectable.dart';
 import 'package:flutter_starter/presenter/pages/camera_detection/camera_detection.dart';
 import 'package:flutter_starter/presenter/pages/forgot_password/forgot_password.dart';
 import 'package:flutter_starter/presenter/pages/pose_details/pose_details.dart';
-
+import 'package:flutter_starter/presenter/pages/search_yoga_pose/search_yoga_pose.dart';
 import '../pages/register/register.dart';
 
 part 'navigation.gr.dart';
@@ -32,6 +32,7 @@ class AppRouter extends RootStackRouter {
         AutoRoute(path: '/camera-detection', page: CameraDetectionRoute.page),
         AutoRoute(path: '/forgot-password', page: ForgotPasswordRoute.page),
         AutoRoute(path: '/pose-details', page: PoseDetailsRoute.page),
+        AutoRoute(path: '/search-yoga-pose', page: SearchYogaPoseRoute.page),
       ];
 
   bool isUnauthorizedRoute(String routeName) => [

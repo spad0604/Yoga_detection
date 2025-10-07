@@ -19,6 +19,8 @@ public class YogaPoseDetails {
     private String code;
     @Column(name = "name", nullable = false)
     private String name;
+    @Column(name = "image_url")
+    private String imageUrl;
     @Column(name =  "total_minutes", nullable = false)
     private int totalMinutes;
     @Column(name = "total_calos", nullable = false)
