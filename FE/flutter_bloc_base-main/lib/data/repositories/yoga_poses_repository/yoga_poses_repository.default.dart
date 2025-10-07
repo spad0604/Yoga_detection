@@ -1,7 +1,9 @@
 import 'package:flutter_starter/data/entities/response/yoga_pose_details.dart';
 import 'package:flutter_starter/data/repositories/yoga_poses_repository/yoga_poses_repository.dart';
 import 'package:flutter_starter/data/sources/network/network.dart';
+import 'package:injectable/injectable.dart';
 
+@Singleton(as: YogaPosesRepository)
 class YogaPosesRepositoryImpl implements YogaPosesRepository {
   final NetworkDataSource _networkDataSource;
 

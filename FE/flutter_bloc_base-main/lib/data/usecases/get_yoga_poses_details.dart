@@ -1,7 +1,9 @@
 import 'package:flutter_starter/core/use_case.dart';
 import 'package:flutter_starter/data/entities/response/yoga_pose_details.dart';
 import 'package:flutter_starter/data/repositories/yoga_poses_repository/yoga_poses_repository.dart';
+import 'package:injectable/injectable.dart';
 
+@singleton
 class GetYogaPoseDetailsUc extends UseCase<YogaPoseDetails, String> {
   final YogaPosesRepository _repository;
 

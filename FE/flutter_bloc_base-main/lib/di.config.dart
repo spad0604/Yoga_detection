@@ -19,6 +19,10 @@ import 'data/repositories/auth_repository/auth_repository.default.dart'
 import 'data/repositories/user_repository/user_repository.dart' as _i971;
 import 'data/repositories/user_repository/user_repository.default.dart'
     as _i912;
+import 'data/repositories/yoga_poses_repository/yoga_poses_repository.dart'
+    as _i153;
+import 'data/repositories/yoga_poses_repository/yoga_poses_repository.default.dart'
+    as _i818;
 import 'data/sources/local/local.dart' as _i193;
 import 'data/sources/network/dio.dart' as _i288;
 import 'data/sources/network/network.dart' as _i536;
@@ -76,14 +80,10 @@ extension GetItInjectableX on _i174.GetIt {
           tokenManager: gh<_i132.OauthTokenManager>(),
           baseUrl: gh<String>(instanceName: 'baseUrl'),
         ));
-    gh.factory<_i267.HomePageBloc>(() =>
-        _i267.HomePageBloc(getListYogaPoses: gh<_i856.GetListYogaPosesUc>()));
-    gh.factory<_i296.SearchYogaPoseBloc>(() => _i296.SearchYogaPoseBloc(
-        getListYogaPoses: gh<_i856.GetListYogaPosesUc>()));
     gh.singleton<_i536.NetworkDataSource>(
         () => _i536.NetworkDataSource(gh<_i288.NetworkDio>()));
-    gh.factory<_i133.PoseDetailsBloc>(() => _i133.PoseDetailsBloc(
-        getYogaPoseDetails: gh<_i404.GetYogaPoseDetailsUc>()));
+    gh.singleton<_i153.YogaPosesRepository>(() => _i818.YogaPosesRepositoryImpl(
+        networkDataSource: gh<_i536.NetworkDataSource>()));
     gh.singleton<_i971.UserRepository>(() => _i912.UserRepositoryImpl(
         networkDataSource: gh<_i536.NetworkDataSource>()));
     gh.singleton<_i1035.ChangePasswordUseCase>(() =>
@@ -93,6 +93,10 @@ extension GetItInjectableX on _i174.GetIt {
         networkDataSource: gh<_i536.NetworkDataSource>()));
     gh.singleton<_i686.RegisterUseCase>(
         () => _i686.RegisterUseCase(repository: gh<_i344.AuthRepository>()));
+    gh.singleton<_i856.GetListYogaPosesUc>(
+        () => _i856.GetListYogaPosesUc(gh<_i153.YogaPosesRepository>()));
+    gh.singleton<_i404.GetYogaPoseDetailsUc>(
+        () => _i404.GetYogaPoseDetailsUc(gh<_i153.YogaPosesRepository>()));
     gh.singleton<_i470.LoginUseCase>(
         () => _i470.LoginUseCase(authRepository: gh<_i344.AuthRepository>()));
     gh.singleton<_i412.VerifyLoginStatusUseCase>(() =>
@@ -111,6 +115,12 @@ extension GetItInjectableX on _i174.GetIt {
         ));
     gh.factory<_i517.SplashBloc>(() => _i517.SplashBloc(
         verifyLoginStatus: gh<_i412.VerifyLoginStatusUseCase>()));
+    gh.factory<_i267.HomePageBloc>(() =>
+        _i267.HomePageBloc(getListYogaPoses: gh<_i856.GetListYogaPosesUc>()));
+    gh.factory<_i296.SearchYogaPoseBloc>(() => _i296.SearchYogaPoseBloc(
+        getListYogaPoses: gh<_i856.GetListYogaPosesUc>()));
+    gh.factory<_i133.PoseDetailsBloc>(() => _i133.PoseDetailsBloc(
+        getYogaPoseDetails: gh<_i404.GetYogaPoseDetailsUc>()));
     gh.factory<_i902.LoginBloc>(
         () => _i902.LoginBloc(login: gh<_i470.LoginUseCase>()));
     return this;
