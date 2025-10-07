@@ -2,9 +2,12 @@ package com.yogadetection.service;
 
 import com.yogadetection.dto.request.LoginRequest;
 import com.yogadetection.dto.request.RegisterRequest;
-import com.yogadetection.dto.response.ApiResponse;
+import com.yogadetection.dto.response.TokenResponse;
 
 public interface AuthService {
-    String login(LoginRequest request);
-    String register(RegisterRequest request);
+    TokenResponse login(LoginRequest request);
+
+    TokenResponse register(RegisterRequest request);
+
+    void logout(String token);
 }
