@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:BE/yogadetection/src/main/java/com/yogadetection/YogadetectionApplication.java
-package com.yogadetection;
-========
 package com;
->>>>>>>> backend:BE/yogadetection/src/main/java/com/YogadetectionApplication.java
 
 import com.entity.User;
 import org.springframework.boot.SpringApplication;

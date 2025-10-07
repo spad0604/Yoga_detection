@@ -1,16 +1,13 @@
 package com.controller;
 
+import com.dto.request.ChangeInformationRequest;
 import com.dto.request.ChangePasswordRequest;
-import com.dto.request.LoginRequest;
-import com.dto.request.RegisterRequest;
-import com.dto.response.TokenResponse;
-import com.service.AuthService;
+import com.dto.response.ApiResponse;
 import com.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 
 @RestController
@@ -21,8 +18,21 @@ public class UserController {
 
     @PostMapping("/change-password")
     public void changePassword(@RequestBody ChangePasswordRequest request) {
-        System.out.println("hehe");
         userService.changePassword(request);
     }
 
+    @GetMapping("/me")
+    public ApiResponse<Map<String, String>> getInformation(@RequestParam String id) {
+        return userService.getInformation(id);
+    }
+
+    @PostMapping("/change")
+    public ApiResponse<String> changeInformation(@RequestBody ChangeInformationRequest request) {
+        return userService.changeInformation(request);
+    }
+
+    @DeleteMapping
+    public ApiResponse<String> deleteUser(@RequestParam String id) {
+        return userService.deleteUser(id);
+    }
 }
