@@ -13,7 +13,7 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
-@RestControllerAdvice(basePackages = "com.controller")
+@RestControllerAdvice(basePackages = "com.yogadetection.controller")
 @AllArgsConstructor
 public class ApiResponseWrapper implements ResponseBodyAdvice<Object> {
 
