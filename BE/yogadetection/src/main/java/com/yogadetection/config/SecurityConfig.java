@@ -65,6 +65,9 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers("/api/auth/**").permitAll()
+                    .requestMatchers("/api/password/send-otp").permitAll()
+                    .requestMatchers("/api/password/verify-otp").permitAll()
+                    .requestMatchers("/api/password/update-password").permitAll()
                     .requestMatchers("/api/password/reset").permitAll()
                     .requestMatchers("/api/yoga-poses/**").permitAll()
                     .requestMatchers("/api/user/**").permitAll()
