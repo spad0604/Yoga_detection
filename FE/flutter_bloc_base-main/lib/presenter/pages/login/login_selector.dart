@@ -34,3 +34,12 @@ class LoginFailureListener extends BlocListener<LoginBloc, LoginState> {
               currentState.status == LoginStatus.failure,
         );
 }
+
+class LoginLoadingListener extends BlocListener<LoginBloc, LoginState> {
+  LoginLoadingListener({super.key, required super.listener})
+      : super(
+          listenWhen: (previousState, currentState) =>
+              previousState.status != currentState.status &&
+              currentState.status == LoginStatus.submitting,
+        );
+}

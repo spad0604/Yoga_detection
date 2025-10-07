@@ -4,11 +4,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_starter/di.dart';
 import 'package:flutter_starter/gen/app_images.dart';
 import 'package:flutter_starter/presenter/pages/forgot_password/forgot_password_bloc.dart';
+import 'package:flutter_starter/presenter/pages/forgot_password/forgot_password_state.dart';
 import 'package:flutter_starter/presenter/pages/forgot_password/forgot_password_event.dart';
 import 'package:flutter_starter/presenter/pages/forgot_password/type_code_page.dart';
 import 'package:flutter_starter/presenter/themes/colors.dart';
 import 'package:flutter_starter/presenter/widget/custom_button.dart';
 import 'package:flutter_starter/presenter/widget/custom_text_field.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:toastification/toastification.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 // TODO: Add the page to the router
 @RoutePage()
@@ -36,8 +40,49 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-          appBar: AppBar(),
-          body: Padding(
+        appBar: AppBar(),
+        body: MultiBlocListener(
+          listeners: [
+            BlocListener<ForgotPasswordBloc, ForgotPasswordState>(
+              listenWhen: (prev, curr) => prev.status != curr.status,
+              listener: (context, state) {
+                if (state.status == ForgotPasswordStatus.loading) {
+                  EasyLoading.show(status: 'loading...');
+                  return;
+                }
+
+                EasyLoading.dismiss();
+
+                if (state.status == ForgotPasswordStatus.otpSendSuccess) {
+                  toastification.show(
+                    context: context,
+                    type: ToastificationType.success,
+                    title: const Text('OTP sent successfully'),
+                  );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => BlocProvider.value(
+                        value: _bloc,
+                        child: TypeCodePage(),
+                      ),
+                    ),
+                  );
+                } else if (state.status == ForgotPasswordStatus.failure) {
+                  final raw = state.error?.message;
+                  if (raw != null) {
+                    final display = raw.startsWith('Errors.') ? tr(raw) : raw.toString();
+                    toastification.show(
+                      context: context,
+                      type: ToastificationType.error,
+                      title: Text(display),
+                    );
+                  }
+                }
+              },
+            ),
+          ],
+          child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -90,15 +135,14 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   textColor: Colors.white,
                   onPressed: () {
                     _bloc.add(SetEmailEvent(_emailController.text));
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => TypeCodePage()),
-                    );
+                    _bloc.add(SendOtpRequested(_emailController.text));
                   },
                 )
               ],
             ),
-          )),
+          ),
+        ),
+      ),
     );
   }
 }

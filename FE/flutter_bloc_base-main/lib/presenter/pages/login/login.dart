@@ -8,15 +8,17 @@ import 'package:flutter_starter/di.dart';
 import 'package:flutter_starter/gen/app_images.dart';
 // ...existing code...
 import 'package:flutter_starter/presenter/navigation/navigation.dart';
+import 'package:flutter_starter/data/states/auth/auth_event.dart';
 import 'package:flutter_starter/presenter/pages/login/login_bloc.dart';
 import 'package:flutter_starter/presenter/pages/login/login_event.dart';
 import 'package:flutter_starter/presenter/pages/login/login_selector.dart';
 import 'package:flutter_starter/presenter/pages/login/login_state.dart';
 import 'package:flutter_starter/presenter/themes/colors.dart';
-import 'package:flutter_starter/core/exception.dart';
-import 'package:flutter_starter/presenter/themes/extensions.dart';
+// ...existing code...
 import 'package:flutter_starter/presenter/widget/custom_button.dart';
 import 'package:flutter_starter/presenter/widget/custom_text_field.dart';
+import 'package:flutter_starter/data/states/auth/auth_bloc.dart';
+import 'package:toastification/toastification.dart';
 // ...existing code...
 
 part 'another_login_button.dart';
@@ -50,7 +52,19 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _onSuccess(BuildContext context, LoginState state) {
-    context.router.replaceAll([HomeRoute()]);
+    EasyLoading.dismiss();
+    toastification.show(
+      autoCloseDuration: Duration(seconds: 5),
+      context: context,
+      type: ToastificationType.success,
+      title: Text(tr('Errors.SUCCESS', args: [], namedArgs: {}),
+          maxLines: 2, overflow: TextOverflow.ellipsis),
+    );
+    if (state.account != null) {
+      context.read<AuthBloc>().add(AuthLoggedIn(state.account!));
+    }
+
+    context.router.replace(HomeRoute());
   }
 
   void _loading(BuildContext context, LoginState state) {
@@ -58,15 +72,16 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _onError(BuildContext context, LoginState state) {
-    final errorMessage = state.error?.message;
+    EasyLoading.dismiss();
+    final raw = state.error?.message;
+    if (raw == null) return;
 
-    if (errorMessage == null) return;
+    final display = raw.startsWith('Errors.') ? tr(raw) : raw.toString();
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(errorMessage.toString()),
-        backgroundColor: context.colors.error,
-      ),
+    toastification.show(
+      context: context,
+      type: ToastificationType.error,
+      title: Text(display, maxLines: 2, overflow: TextOverflow.ellipsis),
     );
   }
 
@@ -77,6 +92,7 @@ class _LoginPageState extends State<LoginPage> {
       listeners: [
         LoginSuccessListener(listener: _onSuccess),
         LoginFailureListener(listener: _onError),
+        LoginLoadingListener(listener: _loading),
       ],
       child: Scaffold(
         body: Center(
@@ -177,7 +193,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ]),
                   CustomButton(
-                    text: tr("Log In"),
+                    text: tr("Login"),
                     onPressed: _onLoginPressed,
                   ),
                   Row(

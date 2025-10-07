@@ -65,6 +65,9 @@ class $AssetsImagesGen {
   AssetGenImage get icCalendar =>
       const AssetGenImage('assets/images/ic_calendar.png');
 
+  /// File path: assets/images/ic_calo.png
+  AssetGenImage get icCalo => const AssetGenImage('assets/images/ic_calo.png');
+
   /// File path: assets/images/ic_clock.png
   AssetGenImage get icClock =>
       const AssetGenImage('assets/images/ic_clock.png');
@@ -103,6 +106,10 @@ class $AssetsImagesGen {
   /// File path: assets/images/ic_mail.png
   AssetGenImage get icMail => const AssetGenImage('assets/images/ic_mail.png');
 
+  /// File path: assets/images/ic_minutes.png
+  AssetGenImage get icMinutes =>
+      const AssetGenImage('assets/images/ic_minutes.png');
+
   /// File path: assets/images/ic_pause.png
   AssetGenImage get icPause =>
       const AssetGenImage('assets/images/ic_pause.png');
@@ -128,6 +135,7 @@ class $AssetsImagesGen {
         icAccount,
         icBell,
         icCalendar,
+        icCalo,
         icClock,
         icClose,
         icEyeOff,
@@ -138,6 +146,7 @@ class $AssetsImagesGen {
         icHome,
         icIndentity,
         icMail,
+        icMinutes,
         icPause,
         icPhone,
         icPresent,

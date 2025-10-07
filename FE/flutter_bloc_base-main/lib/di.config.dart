@@ -16,6 +16,9 @@ import 'package:injectable/injectable.dart' as _i526;
 import 'data/repositories/auth_repository/auth_repository.dart' as _i344;
 import 'data/repositories/auth_repository/auth_repository.default.dart'
     as _i522;
+import 'data/repositories/user_repository/user_repository.dart' as _i971;
+import 'data/repositories/user_repository/user_repository.default.dart'
+    as _i912;
 import 'data/sources/local/local.dart' as _i193;
 import 'data/sources/network/dio.dart' as _i288;
 import 'data/sources/network/network.dart' as _i536;
@@ -25,7 +28,9 @@ import 'data/states/settings/settings_bloc.dart' as _i932;
 import 'data/usecases/change_password_uc.dart' as _i1035;
 import 'data/usecases/login.dart' as _i470;
 import 'data/usecases/register.dart' as _i686;
+import 'data/usecases/send_otp_uc.dart' as _i212;
 import 'data/usecases/verify_login_status.dart' as _i412;
+import 'data/usecases/verify_otp_uc.dart' as _i855;
 import 'di.dart' as _i913;
 import 'presenter/navigation/navigation.dart' as _i551;
 import 'presenter/pages/forgot_password/forgot_password_bloc.dart' as _i132;
@@ -72,8 +77,11 @@ extension GetItInjectableX on _i174.GetIt {
         ));
     gh.singleton<_i536.NetworkDataSource>(
         () => _i536.NetworkDataSource(gh<_i288.NetworkDio>()));
-    gh.factory<_i132.ForgotPasswordBloc>(() => _i132.ForgotPasswordBloc(
-        changePassword: gh<_i1035.ChangePasswordUseCase>()));
+    gh.singleton<_i971.UserRepository>(() => _i912.UserRepositoryImpl(
+        networkDataSource: gh<_i536.NetworkDataSource>()));
+    gh.singleton<_i1035.ChangePasswordUseCase>(() =>
+        _i1035.ChangePasswordUseCase(
+            userRepository: gh<_i971.UserRepository>()));
     gh.singleton<_i344.AuthRepository>(() => _i522.DefaultAuthRepository(
         networkDataSource: gh<_i536.NetworkDataSource>()));
     gh.singleton<_i686.RegisterUseCase>(
@@ -83,8 +91,17 @@ extension GetItInjectableX on _i174.GetIt {
     gh.singleton<_i412.VerifyLoginStatusUseCase>(() =>
         _i412.VerifyLoginStatusUseCase(
             authRepository: gh<_i344.AuthRepository>()));
+    gh.singleton<_i212.SendOtpUc>(
+        () => _i212.SendOtpUc(authRepository: gh<_i344.AuthRepository>()));
+    gh.singleton<_i855.VerifyOtpUc>(
+        () => _i855.VerifyOtpUc(authRepository: gh<_i344.AuthRepository>()));
     gh.factory<_i338.RegisterBloc>(
         () => _i338.RegisterBloc(register: gh<_i686.RegisterUseCase>()));
+    gh.factory<_i132.ForgotPasswordBloc>(() => _i132.ForgotPasswordBloc(
+          changePassword: gh<_i1035.ChangePasswordUseCase>(),
+          sendOtpUc: gh<_i212.SendOtpUc>(),
+          verifyOtpUc: gh<_i855.VerifyOtpUc>(),
+        ));
     gh.factory<_i517.SplashBloc>(() => _i517.SplashBloc(
         verifyLoginStatus: gh<_i412.VerifyLoginStatusUseCase>()));
     gh.factory<_i902.LoginBloc>(
