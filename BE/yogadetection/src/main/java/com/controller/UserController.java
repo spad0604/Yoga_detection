@@ -35,4 +35,9 @@ public class UserController {
     public ApiResponse<String> deleteUser(@RequestParam String id) {
         return userService.deleteUser(id);
     }
+
+    @PostMapping("/update-password")
+    public void updatePassword(@RequestBody ChangePasswordRequest request) {
+        userService.changePassword(request);
+    }
 }
