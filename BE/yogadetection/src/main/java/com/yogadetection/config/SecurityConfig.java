@@ -66,6 +66,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers("/api/auth/**").permitAll()
                     .requestMatchers("/api/password/reset").permitAll()
+                    .requestMatchers("/api/yoga-poses/**").permitAll()
                     .requestMatchers("/api/user/**").permitAll()
                     .anyRequest().authenticated()
             )
