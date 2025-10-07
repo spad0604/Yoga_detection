@@ -32,4 +32,9 @@ public class PasswordController {
     public ApiResponse<String> verifyOTP(@RequestBody VerifyOTPRequest request) {
         return passwordService.verifyOTP(request);
     }
+
+    @PostMapping("/update-password")
+    public ApiResponse<String> updatePassword(@RequestBody ChangePasswordRequest request) {
+        return passwordService.changePassword(request);
+    }
 }
