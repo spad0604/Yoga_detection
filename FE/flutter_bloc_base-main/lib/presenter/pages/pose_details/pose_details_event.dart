@@ -6,4 +6,6 @@ part 'pose_details_event.freezed.dart';
 @freezed
 class PoseDetailsEvent with _$PoseDetailsEvent {
   const factory PoseDetailsEvent.errorOccurred([BaseException? error]) = PoseDetailsErrorOccurred;
+
+  const factory PoseDetailsEvent.getDetails(String code) = PoseDetailsGetDetails;
 }

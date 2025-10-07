@@ -2,7 +2,9 @@ import 'package:flutter_starter/data/entities/request/change_password.dart';
 import 'package:flutter_starter/data/entities/request/register_params.dart';
 import 'package:flutter_starter/data/entities/request/request_change_password.dart';
 import 'package:flutter_starter/data/entities/request/verify_otp_request.dart';
+import 'package:flutter_starter/data/entities/response/page_response.dart';
 import 'package:flutter_starter/data/entities/response/register_response.dart';
+import 'package:flutter_starter/data/entities/response/yoga_pose_details.dart';
 import 'package:flutter_starter/data/sources/network/base_api_response.dart';
 import 'package:injectable/injectable.dart';
 import 'package:dio/dio.dart';
@@ -36,4 +38,11 @@ abstract class NetworkDataSource {
 
   @POST('api/password/verify-otp')
   Future<BaseApiResponse<String>> verifyOtp(@Body() VerifyOtpRequest params);
+
+  @GET('api/yoga-poses')
+  Future<BaseApiResponse<PageResponse<YogaPoseDetails>>> getYogaPoses(
+      @Query('page') int page, @Query('pageSize') int size, @Query('keyWord') String keyword);
+
+  @GET('api/yoga-poses/{code}')
+  Future<BaseApiResponse<YogaPoseDetails>> getYogaPoseDetails(@Path('code') String code);
 }

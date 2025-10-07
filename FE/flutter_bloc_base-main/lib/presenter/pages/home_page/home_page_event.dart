@@ -6,4 +6,8 @@ part 'home_page_event.freezed.dart';
 @freezed
 class HomePageEvent with _$HomePageEvent {
   const factory HomePageEvent.errorOccurred([BaseException? error]) = HomePageErrorOccurred;
+
+  const factory HomePageEvent.started() = HomePageStarted;
+
+  const factory HomePageEvent.fetchYogaPoses(String code) = HomePageFetchYogaPoses;
 }

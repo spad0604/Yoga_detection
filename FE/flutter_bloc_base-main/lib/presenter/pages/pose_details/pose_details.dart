@@ -4,7 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_starter/di.dart';
 import 'package:flutter_starter/gen/app_images.dart';
 import 'package:flutter_starter/presenter/navigation/navigation.dart';
+import 'package:flutter_starter/presenter/pages/home_page/home_page_bloc.dart';
 import 'package:flutter_starter/presenter/pages/pose_details/pose_details_bloc.dart';
+import 'package:flutter_starter/presenter/pages/pose_details/pose_details_event.dart';
 import 'package:flutter_starter/presenter/themes/colors.dart';
 import 'package:flutter_starter/presenter/widget/custom_button.dart';
 
@@ -17,8 +19,15 @@ class PoseDetailsPage extends StatefulWidget implements AutoRouteWrapper {
 
   @override
   Widget wrappedRoute(BuildContext context) {
-    return BlocProvider<PoseDetailsBloc>(
-      create: (ctx) => provider.get<PoseDetailsBloc>(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<PoseDetailsBloc>(
+          create: (ctx) => provider.get<PoseDetailsBloc>(),
+        ),
+        BlocProvider<HomePageBloc>(
+          create: (ctx) => provider.get<HomePageBloc>(),
+        ),
+      ],
       child: this,
     );
   }
@@ -29,6 +38,15 @@ class PoseDetailsPage extends StatefulWidget implements AutoRouteWrapper {
 
 class _PoseDetailsPageState extends State<PoseDetailsPage> {
   PoseDetailsBloc get _bloc => context.read<PoseDetailsBloc>();
+
+  HomePageBloc get _homeBloc => context.read<HomePageBloc>();
+
+  @override
+  void initState() {
+    _bloc.add(PoseDetailsGetDetails(_homeBloc.state.chooseYogaPose));
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +59,8 @@ class _PoseDetailsPageState extends State<PoseDetailsPage> {
               width: double.infinity,
               height: 240,
               child: Image.network(
-                'https://genk.mediacdn.vn/2019/9/10/image014-15680981147321515432907.png',
+                _bloc.state.yogaPoseDetails?.imageUrl ??
+                    'https://genk.mediacdn.vn/2019/9/10/image014-15680981147321515432907.png',
                 fit: BoxFit.cover,
               ),
             ),
@@ -54,7 +73,7 @@ class _PoseDetailsPageState extends State<PoseDetailsPage> {
                   children: [
                     Center(
                       child: Text(
-                        'Shinnosuke',
+                        _bloc.state.yogaPoseDetails?.name ?? '',
                         style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -70,12 +89,14 @@ class _PoseDetailsPageState extends State<PoseDetailsPage> {
                         InformationDetailsItems(
                           iconPath: AppImages.ic_minutes,
                           title: 'Duration',
-                          value: '5 min',
+                          value:
+                              '${_bloc.state.yogaPoseDetails?.totalMinutes.toString()} mins ?? ' '',
                         ),
                         InformationDetailsItems(
                           iconPath: AppImages.ic_calo,
                           title: 'Calories',
-                          value: '50 cal',
+                          value: '${_bloc.state.yogaPoseDetails?.totalCalories.toString()} cals ?? '
+                              '',
                         ),
                       ],
                     ),
@@ -86,7 +107,7 @@ class _PoseDetailsPageState extends State<PoseDetailsPage> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'From a standing position, the legs are in a wide stance with the feet aligned and flat on the earth. The back foot is in a 60-degree angle toward the front. The hips are squared. The inner thighs are rotated toward each other. The front knee is bent in a 90-degree angle directly above the ankle. The arms extend up to the sky with the biceps by the ears. The hands can be together or separated and facing each other with the fingers spread wide. The ribcage is lifted and the pelvis tucked. The gaze is forward.',
+                      _bloc.state.yogaPoseDetails?.description ?? '',
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w400,

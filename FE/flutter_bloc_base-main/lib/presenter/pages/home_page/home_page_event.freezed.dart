@@ -16,44 +16,49 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$HomePageEvent {
-  BaseException<dynamic>? get error => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(BaseException<dynamic>? error) errorOccurred,
+    required TResult Function() started,
+    required TResult Function(String code) fetchYogaPoses,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(BaseException<dynamic>? error)? errorOccurred,
+    TResult? Function()? started,
+    TResult? Function(String code)? fetchYogaPoses,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(BaseException<dynamic>? error)? errorOccurred,
+    TResult Function()? started,
+    TResult Function(String code)? fetchYogaPoses,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(HomePageErrorOccurred value) errorOccurred,
+    required TResult Function(HomePageStarted value) started,
+    required TResult Function(HomePageFetchYogaPoses value) fetchYogaPoses,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(HomePageErrorOccurred value)? errorOccurred,
+    TResult? Function(HomePageStarted value)? started,
+    TResult? Function(HomePageFetchYogaPoses value)? fetchYogaPoses,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(HomePageErrorOccurred value)? errorOccurred,
+    TResult Function(HomePageStarted value)? started,
+    TResult Function(HomePageFetchYogaPoses value)? fetchYogaPoses,
     required TResult orElse(),
   }) =>
-      throw _privateConstructorUsedError;
-
-  /// Create a copy of HomePageEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $HomePageEventCopyWith<HomePageEvent> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -62,8 +67,6 @@ abstract class $HomePageEventCopyWith<$Res> {
   factory $HomePageEventCopyWith(
           HomePageEvent value, $Res Function(HomePageEvent) then) =
       _$HomePageEventCopyWithImpl<$Res, HomePageEvent>;
-  @useResult
-  $Res call({BaseException<dynamic>? error});
 }
 
 /// @nodoc
@@ -78,28 +81,14 @@ class _$HomePageEventCopyWithImpl<$Res, $Val extends HomePageEvent>
 
   /// Create a copy of HomePageEvent
   /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? error = freezed,
-  }) {
-    return _then(_value.copyWith(
-      error: freezed == error
-          ? _value.error
-          : error // ignore: cast_nullable_to_non_nullable
-              as BaseException<dynamic>?,
-    ) as $Val);
-  }
 }
 
 /// @nodoc
-abstract class _$$HomePageErrorOccurredImplCopyWith<$Res>
-    implements $HomePageEventCopyWith<$Res> {
+abstract class _$$HomePageErrorOccurredImplCopyWith<$Res> {
   factory _$$HomePageErrorOccurredImplCopyWith(
           _$HomePageErrorOccurredImpl value,
           $Res Function(_$HomePageErrorOccurredImpl) then) =
       __$$HomePageErrorOccurredImplCopyWithImpl<$Res>;
-  @override
   @useResult
   $Res call({BaseException<dynamic>? error});
 }
@@ -165,6 +154,8 @@ class _$HomePageErrorOccurredImpl implements HomePageErrorOccurred {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(BaseException<dynamic>? error) errorOccurred,
+    required TResult Function() started,
+    required TResult Function(String code) fetchYogaPoses,
   }) {
     return errorOccurred(error);
   }
@@ -173,6 +164,8 @@ class _$HomePageErrorOccurredImpl implements HomePageErrorOccurred {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(BaseException<dynamic>? error)? errorOccurred,
+    TResult? Function()? started,
+    TResult? Function(String code)? fetchYogaPoses,
   }) {
     return errorOccurred?.call(error);
   }
@@ -181,6 +174,8 @@ class _$HomePageErrorOccurredImpl implements HomePageErrorOccurred {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(BaseException<dynamic>? error)? errorOccurred,
+    TResult Function()? started,
+    TResult Function(String code)? fetchYogaPoses,
     required TResult orElse(),
   }) {
     if (errorOccurred != null) {
@@ -193,6 +188,8 @@ class _$HomePageErrorOccurredImpl implements HomePageErrorOccurred {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(HomePageErrorOccurred value) errorOccurred,
+    required TResult Function(HomePageStarted value) started,
+    required TResult Function(HomePageFetchYogaPoses value) fetchYogaPoses,
   }) {
     return errorOccurred(this);
   }
@@ -201,6 +198,8 @@ class _$HomePageErrorOccurredImpl implements HomePageErrorOccurred {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(HomePageErrorOccurred value)? errorOccurred,
+    TResult? Function(HomePageStarted value)? started,
+    TResult? Function(HomePageFetchYogaPoses value)? fetchYogaPoses,
   }) {
     return errorOccurred?.call(this);
   }
@@ -209,6 +208,8 @@ class _$HomePageErrorOccurredImpl implements HomePageErrorOccurred {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(HomePageErrorOccurred value)? errorOccurred,
+    TResult Function(HomePageStarted value)? started,
+    TResult Function(HomePageFetchYogaPoses value)? fetchYogaPoses,
     required TResult orElse(),
   }) {
     if (errorOccurred != null) {
@@ -222,13 +223,272 @@ abstract class HomePageErrorOccurred implements HomePageEvent {
   const factory HomePageErrorOccurred([final BaseException<dynamic>? error]) =
       _$HomePageErrorOccurredImpl;
 
-  @override
   BaseException<dynamic>? get error;
 
   /// Create a copy of HomePageEvent
   /// with the given fields replaced by the non-null parameter values.
-  @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$HomePageErrorOccurredImplCopyWith<_$HomePageErrorOccurredImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$HomePageStartedImplCopyWith<$Res> {
+  factory _$$HomePageStartedImplCopyWith(_$HomePageStartedImpl value,
+          $Res Function(_$HomePageStartedImpl) then) =
+      __$$HomePageStartedImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$HomePageStartedImplCopyWithImpl<$Res>
+    extends _$HomePageEventCopyWithImpl<$Res, _$HomePageStartedImpl>
+    implements _$$HomePageStartedImplCopyWith<$Res> {
+  __$$HomePageStartedImplCopyWithImpl(
+      _$HomePageStartedImpl _value, $Res Function(_$HomePageStartedImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of HomePageEvent
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+
+class _$HomePageStartedImpl implements HomePageStarted {
+  const _$HomePageStartedImpl();
+
+  @override
+  String toString() {
+    return 'HomePageEvent.started()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _$HomePageStartedImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(BaseException<dynamic>? error) errorOccurred,
+    required TResult Function() started,
+    required TResult Function(String code) fetchYogaPoses,
+  }) {
+    return started();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(BaseException<dynamic>? error)? errorOccurred,
+    TResult? Function()? started,
+    TResult? Function(String code)? fetchYogaPoses,
+  }) {
+    return started?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(BaseException<dynamic>? error)? errorOccurred,
+    TResult Function()? started,
+    TResult Function(String code)? fetchYogaPoses,
+    required TResult orElse(),
+  }) {
+    if (started != null) {
+      return started();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(HomePageErrorOccurred value) errorOccurred,
+    required TResult Function(HomePageStarted value) started,
+    required TResult Function(HomePageFetchYogaPoses value) fetchYogaPoses,
+  }) {
+    return started(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(HomePageErrorOccurred value)? errorOccurred,
+    TResult? Function(HomePageStarted value)? started,
+    TResult? Function(HomePageFetchYogaPoses value)? fetchYogaPoses,
+  }) {
+    return started?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(HomePageErrorOccurred value)? errorOccurred,
+    TResult Function(HomePageStarted value)? started,
+    TResult Function(HomePageFetchYogaPoses value)? fetchYogaPoses,
+    required TResult orElse(),
+  }) {
+    if (started != null) {
+      return started(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class HomePageStarted implements HomePageEvent {
+  const factory HomePageStarted() = _$HomePageStartedImpl;
+}
+
+/// @nodoc
+abstract class _$$HomePageFetchYogaPosesImplCopyWith<$Res> {
+  factory _$$HomePageFetchYogaPosesImplCopyWith(
+          _$HomePageFetchYogaPosesImpl value,
+          $Res Function(_$HomePageFetchYogaPosesImpl) then) =
+      __$$HomePageFetchYogaPosesImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({String code});
+}
+
+/// @nodoc
+class __$$HomePageFetchYogaPosesImplCopyWithImpl<$Res>
+    extends _$HomePageEventCopyWithImpl<$Res, _$HomePageFetchYogaPosesImpl>
+    implements _$$HomePageFetchYogaPosesImplCopyWith<$Res> {
+  __$$HomePageFetchYogaPosesImplCopyWithImpl(
+      _$HomePageFetchYogaPosesImpl _value,
+      $Res Function(_$HomePageFetchYogaPosesImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of HomePageEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? code = null,
+  }) {
+    return _then(_$HomePageFetchYogaPosesImpl(
+      null == code
+          ? _value.code
+          : code // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$HomePageFetchYogaPosesImpl implements HomePageFetchYogaPoses {
+  const _$HomePageFetchYogaPosesImpl(this.code);
+
+  @override
+  final String code;
+
+  @override
+  String toString() {
+    return 'HomePageEvent.fetchYogaPoses(code: $code)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$HomePageFetchYogaPosesImpl &&
+            (identical(other.code, code) || other.code == code));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, code);
+
+  /// Create a copy of HomePageEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$HomePageFetchYogaPosesImplCopyWith<_$HomePageFetchYogaPosesImpl>
+      get copyWith => __$$HomePageFetchYogaPosesImplCopyWithImpl<
+          _$HomePageFetchYogaPosesImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(BaseException<dynamic>? error) errorOccurred,
+    required TResult Function() started,
+    required TResult Function(String code) fetchYogaPoses,
+  }) {
+    return fetchYogaPoses(code);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(BaseException<dynamic>? error)? errorOccurred,
+    TResult? Function()? started,
+    TResult? Function(String code)? fetchYogaPoses,
+  }) {
+    return fetchYogaPoses?.call(code);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(BaseException<dynamic>? error)? errorOccurred,
+    TResult Function()? started,
+    TResult Function(String code)? fetchYogaPoses,
+    required TResult orElse(),
+  }) {
+    if (fetchYogaPoses != null) {
+      return fetchYogaPoses(code);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(HomePageErrorOccurred value) errorOccurred,
+    required TResult Function(HomePageStarted value) started,
+    required TResult Function(HomePageFetchYogaPoses value) fetchYogaPoses,
+  }) {
+    return fetchYogaPoses(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(HomePageErrorOccurred value)? errorOccurred,
+    TResult? Function(HomePageStarted value)? started,
+    TResult? Function(HomePageFetchYogaPoses value)? fetchYogaPoses,
+  }) {
+    return fetchYogaPoses?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(HomePageErrorOccurred value)? errorOccurred,
+    TResult Function(HomePageStarted value)? started,
+    TResult Function(HomePageFetchYogaPoses value)? fetchYogaPoses,
+    required TResult orElse(),
+  }) {
+    if (fetchYogaPoses != null) {
+      return fetchYogaPoses(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class HomePageFetchYogaPoses implements HomePageEvent {
+  const factory HomePageFetchYogaPoses(final String code) =
+      _$HomePageFetchYogaPosesImpl;
+
+  String get code;
+
+  /// Create a copy of HomePageEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$HomePageFetchYogaPosesImplCopyWith<_$HomePageFetchYogaPosesImpl>
       get copyWith => throw _privateConstructorUsedError;
 }

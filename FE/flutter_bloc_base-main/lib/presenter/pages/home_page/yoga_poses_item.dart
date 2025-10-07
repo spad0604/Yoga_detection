@@ -1,12 +1,14 @@
 part of 'home_page.dart';
 
 class YogaPosesItem extends StatelessWidget {
+  String code;
   String title;
   String totalTime;
   String level;
   String imageUrl;
   YogaPosesItem({
     super.key,
+    required this.code,
     required this.title,
     required this.totalTime,
     required this.level,
@@ -17,7 +19,8 @@ class YogaPosesItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.router.push(const PoseDetailsRoute());
+        context.read<HomePageBloc>().add(HomePageFetchYogaPoses(code));
+        context.router.push(PoseDetailsRoute());
       },
       child: Container(
         padding: const EdgeInsets.only(right: 8),

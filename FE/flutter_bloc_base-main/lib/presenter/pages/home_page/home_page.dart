@@ -6,6 +6,7 @@ import 'package:flutter_starter/di.dart';
 import 'package:flutter_starter/gen/app_images.dart';
 import 'package:flutter_starter/presenter/navigation/navigation.dart';
 import 'package:flutter_starter/presenter/pages/home_page/home_page_bloc.dart';
+import 'package:flutter_starter/presenter/pages/home_page/home_page_event.dart';
 import 'package:flutter_starter/presenter/themes/colors.dart';
 
 part 'welcome_banner.dart';
@@ -31,6 +32,12 @@ class HomePagePage extends StatefulWidget implements AutoRouteWrapper {
 
 class _HomePagePageState extends State<HomePagePage> {
   HomePageBloc get _bloc => context.read<HomePageBloc>();
+
+  @override
+  void initState() {
+    super.initState();
+    _bloc.add(HomePageStarted());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -116,18 +123,19 @@ class _HomePagePageState extends State<HomePagePage> {
                       ),
                       const SizedBox(height: 12),
                       ListView.builder(
-                        itemCount: 5,
+                        itemCount: _bloc.state.yogaPoses.length,
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
+                          final items = _bloc.state.yogaPoses[index];
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 12.0),
                             child: YogaPosesItem(
-                              title: 'Sun Salutation',
-                              totalTime: '15',
-                              level: 'Beginner',
-                              imageUrl:
-                                  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRaYRmvtTjbhBRv-BIbEfxFcWy4ZKwwscujrQ&s',
+                              code: items.code,
+                              title: items.name,
+                              totalTime: items.totalMinutes.toString(),
+                              level: items.level,
+                              imageUrl: items.imageUrl,
                             ),
                           );
                         },

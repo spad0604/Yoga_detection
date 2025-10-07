@@ -17,6 +17,7 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$SearchYogaPoseState {
   SearchYogaPoseStatus get status => throw _privateConstructorUsedError;
+  List<YogaPoseDetails> get yogaPoses => throw _privateConstructorUsedError;
   BaseException<dynamic>? get error => throw _privateConstructorUsedError;
 
   /// Create a copy of SearchYogaPoseState
@@ -32,7 +33,10 @@ abstract class $SearchYogaPoseStateCopyWith<$Res> {
           SearchYogaPoseState value, $Res Function(SearchYogaPoseState) then) =
       _$SearchYogaPoseStateCopyWithImpl<$Res, SearchYogaPoseState>;
   @useResult
-  $Res call({SearchYogaPoseStatus status, BaseException<dynamic>? error});
+  $Res call(
+      {SearchYogaPoseStatus status,
+      List<YogaPoseDetails> yogaPoses,
+      BaseException<dynamic>? error});
 }
 
 /// @nodoc
@@ -51,6 +55,7 @@ class _$SearchYogaPoseStateCopyWithImpl<$Res, $Val extends SearchYogaPoseState>
   @override
   $Res call({
     Object? status = null,
+    Object? yogaPoses = null,
     Object? error = freezed,
   }) {
     return _then(_value.copyWith(
@@ -58,6 +63,10 @@ class _$SearchYogaPoseStateCopyWithImpl<$Res, $Val extends SearchYogaPoseState>
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as SearchYogaPoseStatus,
+      yogaPoses: null == yogaPoses
+          ? _value.yogaPoses
+          : yogaPoses // ignore: cast_nullable_to_non_nullable
+              as List<YogaPoseDetails>,
       error: freezed == error
           ? _value.error
           : error // ignore: cast_nullable_to_non_nullable
@@ -74,7 +83,10 @@ abstract class _$$SearchYogaPoseStateImplCopyWith<$Res>
       __$$SearchYogaPoseStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({SearchYogaPoseStatus status, BaseException<dynamic>? error});
+  $Res call(
+      {SearchYogaPoseStatus status,
+      List<YogaPoseDetails> yogaPoses,
+      BaseException<dynamic>? error});
 }
 
 /// @nodoc
@@ -91,6 +103,7 @@ class __$$SearchYogaPoseStateImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? status = null,
+    Object? yogaPoses = null,
     Object? error = freezed,
   }) {
     return _then(_$SearchYogaPoseStateImpl(
@@ -98,6 +111,10 @@ class __$$SearchYogaPoseStateImplCopyWithImpl<$Res>
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as SearchYogaPoseStatus,
+      yogaPoses: null == yogaPoses
+          ? _value._yogaPoses
+          : yogaPoses // ignore: cast_nullable_to_non_nullable
+              as List<YogaPoseDetails>,
       error: freezed == error
           ? _value.error
           : error // ignore: cast_nullable_to_non_nullable
@@ -110,17 +127,29 @@ class __$$SearchYogaPoseStateImplCopyWithImpl<$Res>
 
 class _$SearchYogaPoseStateImpl implements _SearchYogaPoseState {
   const _$SearchYogaPoseStateImpl(
-      {this.status = SearchYogaPoseStatus.initial, this.error});
+      {this.status = SearchYogaPoseStatus.initial,
+      final List<YogaPoseDetails> yogaPoses = const [],
+      this.error})
+      : _yogaPoses = yogaPoses;
 
   @override
   @JsonKey()
   final SearchYogaPoseStatus status;
+  final List<YogaPoseDetails> _yogaPoses;
+  @override
+  @JsonKey()
+  List<YogaPoseDetails> get yogaPoses {
+    if (_yogaPoses is EqualUnmodifiableListView) return _yogaPoses;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_yogaPoses);
+  }
+
   @override
   final BaseException<dynamic>? error;
 
   @override
   String toString() {
-    return 'SearchYogaPoseState(status: $status, error: $error)';
+    return 'SearchYogaPoseState(status: $status, yogaPoses: $yogaPoses, error: $error)';
   }
 
   @override
@@ -129,11 +158,14 @@ class _$SearchYogaPoseStateImpl implements _SearchYogaPoseState {
         (other.runtimeType == runtimeType &&
             other is _$SearchYogaPoseStateImpl &&
             (identical(other.status, status) || other.status == status) &&
+            const DeepCollectionEquality()
+                .equals(other._yogaPoses, _yogaPoses) &&
             (identical(other.error, error) || other.error == error));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, status, error);
+  int get hashCode => Object.hash(runtimeType, status,
+      const DeepCollectionEquality().hash(_yogaPoses), error);
 
   /// Create a copy of SearchYogaPoseState
   /// with the given fields replaced by the non-null parameter values.
@@ -148,10 +180,13 @@ class _$SearchYogaPoseStateImpl implements _SearchYogaPoseState {
 abstract class _SearchYogaPoseState implements SearchYogaPoseState {
   const factory _SearchYogaPoseState(
       {final SearchYogaPoseStatus status,
+      final List<YogaPoseDetails> yogaPoses,
       final BaseException<dynamic>? error}) = _$SearchYogaPoseStateImpl;
 
   @override
   SearchYogaPoseStatus get status;
+  @override
+  List<YogaPoseDetails> get yogaPoses;
   @override
   BaseException<dynamic>? get error;
 

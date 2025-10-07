@@ -17,6 +17,8 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$HomePageState {
   HomePageStatus get status => throw _privateConstructorUsedError;
+  List<YogaPoseDetails> get yogaPoses => throw _privateConstructorUsedError;
+  String get chooseYogaPose => throw _privateConstructorUsedError;
   BaseException<dynamic>? get error => throw _privateConstructorUsedError;
 
   /// Create a copy of HomePageState
@@ -32,7 +34,11 @@ abstract class $HomePageStateCopyWith<$Res> {
           HomePageState value, $Res Function(HomePageState) then) =
       _$HomePageStateCopyWithImpl<$Res, HomePageState>;
   @useResult
-  $Res call({HomePageStatus status, BaseException<dynamic>? error});
+  $Res call(
+      {HomePageStatus status,
+      List<YogaPoseDetails> yogaPoses,
+      String chooseYogaPose,
+      BaseException<dynamic>? error});
 }
 
 /// @nodoc
@@ -51,6 +57,8 @@ class _$HomePageStateCopyWithImpl<$Res, $Val extends HomePageState>
   @override
   $Res call({
     Object? status = null,
+    Object? yogaPoses = null,
+    Object? chooseYogaPose = null,
     Object? error = freezed,
   }) {
     return _then(_value.copyWith(
@@ -58,6 +66,14 @@ class _$HomePageStateCopyWithImpl<$Res, $Val extends HomePageState>
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as HomePageStatus,
+      yogaPoses: null == yogaPoses
+          ? _value.yogaPoses
+          : yogaPoses // ignore: cast_nullable_to_non_nullable
+              as List<YogaPoseDetails>,
+      chooseYogaPose: null == chooseYogaPose
+          ? _value.chooseYogaPose
+          : chooseYogaPose // ignore: cast_nullable_to_non_nullable
+              as String,
       error: freezed == error
           ? _value.error
           : error // ignore: cast_nullable_to_non_nullable
@@ -74,7 +90,11 @@ abstract class _$$HomePageStateImplCopyWith<$Res>
       __$$HomePageStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({HomePageStatus status, BaseException<dynamic>? error});
+  $Res call(
+      {HomePageStatus status,
+      List<YogaPoseDetails> yogaPoses,
+      String chooseYogaPose,
+      BaseException<dynamic>? error});
 }
 
 /// @nodoc
@@ -91,6 +111,8 @@ class __$$HomePageStateImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? status = null,
+    Object? yogaPoses = null,
+    Object? chooseYogaPose = null,
     Object? error = freezed,
   }) {
     return _then(_$HomePageStateImpl(
@@ -98,6 +120,14 @@ class __$$HomePageStateImplCopyWithImpl<$Res>
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as HomePageStatus,
+      yogaPoses: null == yogaPoses
+          ? _value._yogaPoses
+          : yogaPoses // ignore: cast_nullable_to_non_nullable
+              as List<YogaPoseDetails>,
+      chooseYogaPose: null == chooseYogaPose
+          ? _value.chooseYogaPose
+          : chooseYogaPose // ignore: cast_nullable_to_non_nullable
+              as String,
       error: freezed == error
           ? _value.error
           : error // ignore: cast_nullable_to_non_nullable
@@ -109,17 +139,34 @@ class __$$HomePageStateImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$HomePageStateImpl implements _HomePageState {
-  const _$HomePageStateImpl({this.status = HomePageStatus.initial, this.error});
+  const _$HomePageStateImpl(
+      {this.status = HomePageStatus.initial,
+      final List<YogaPoseDetails> yogaPoses = const [],
+      this.chooseYogaPose = '',
+      this.error})
+      : _yogaPoses = yogaPoses;
 
   @override
   @JsonKey()
   final HomePageStatus status;
+  final List<YogaPoseDetails> _yogaPoses;
+  @override
+  @JsonKey()
+  List<YogaPoseDetails> get yogaPoses {
+    if (_yogaPoses is EqualUnmodifiableListView) return _yogaPoses;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_yogaPoses);
+  }
+
+  @override
+  @JsonKey()
+  final String chooseYogaPose;
   @override
   final BaseException<dynamic>? error;
 
   @override
   String toString() {
-    return 'HomePageState(status: $status, error: $error)';
+    return 'HomePageState(status: $status, yogaPoses: $yogaPoses, chooseYogaPose: $chooseYogaPose, error: $error)';
   }
 
   @override
@@ -128,11 +175,16 @@ class _$HomePageStateImpl implements _HomePageState {
         (other.runtimeType == runtimeType &&
             other is _$HomePageStateImpl &&
             (identical(other.status, status) || other.status == status) &&
+            const DeepCollectionEquality()
+                .equals(other._yogaPoses, _yogaPoses) &&
+            (identical(other.chooseYogaPose, chooseYogaPose) ||
+                other.chooseYogaPose == chooseYogaPose) &&
             (identical(other.error, error) || other.error == error));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, status, error);
+  int get hashCode => Object.hash(runtimeType, status,
+      const DeepCollectionEquality().hash(_yogaPoses), chooseYogaPose, error);
 
   /// Create a copy of HomePageState
   /// with the given fields replaced by the non-null parameter values.
@@ -146,10 +198,16 @@ class _$HomePageStateImpl implements _HomePageState {
 abstract class _HomePageState implements HomePageState {
   const factory _HomePageState(
       {final HomePageStatus status,
+      final List<YogaPoseDetails> yogaPoses,
+      final String chooseYogaPose,
       final BaseException<dynamic>? error}) = _$HomePageStateImpl;
 
   @override
   HomePageStatus get status;
+  @override
+  List<YogaPoseDetails> get yogaPoses;
+  @override
+  String get chooseYogaPose;
   @override
   BaseException<dynamic>? get error;
 

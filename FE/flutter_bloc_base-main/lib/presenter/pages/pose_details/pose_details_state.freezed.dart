@@ -17,6 +17,7 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$PoseDetailsState {
   PoseDetailsStatus get status => throw _privateConstructorUsedError;
+  YogaPoseDetails? get yogaPoseDetails => throw _privateConstructorUsedError;
   BaseException<dynamic>? get error => throw _privateConstructorUsedError;
 
   /// Create a copy of PoseDetailsState
@@ -32,7 +33,12 @@ abstract class $PoseDetailsStateCopyWith<$Res> {
           PoseDetailsState value, $Res Function(PoseDetailsState) then) =
       _$PoseDetailsStateCopyWithImpl<$Res, PoseDetailsState>;
   @useResult
-  $Res call({PoseDetailsStatus status, BaseException<dynamic>? error});
+  $Res call(
+      {PoseDetailsStatus status,
+      YogaPoseDetails? yogaPoseDetails,
+      BaseException<dynamic>? error});
+
+  $YogaPoseDetailsCopyWith<$Res>? get yogaPoseDetails;
 }
 
 /// @nodoc
@@ -51,6 +57,7 @@ class _$PoseDetailsStateCopyWithImpl<$Res, $Val extends PoseDetailsState>
   @override
   $Res call({
     Object? status = null,
+    Object? yogaPoseDetails = freezed,
     Object? error = freezed,
   }) {
     return _then(_value.copyWith(
@@ -58,11 +65,29 @@ class _$PoseDetailsStateCopyWithImpl<$Res, $Val extends PoseDetailsState>
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as PoseDetailsStatus,
+      yogaPoseDetails: freezed == yogaPoseDetails
+          ? _value.yogaPoseDetails
+          : yogaPoseDetails // ignore: cast_nullable_to_non_nullable
+              as YogaPoseDetails?,
       error: freezed == error
           ? _value.error
           : error // ignore: cast_nullable_to_non_nullable
               as BaseException<dynamic>?,
     ) as $Val);
+  }
+
+  /// Create a copy of PoseDetailsState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $YogaPoseDetailsCopyWith<$Res>? get yogaPoseDetails {
+    if (_value.yogaPoseDetails == null) {
+      return null;
+    }
+
+    return $YogaPoseDetailsCopyWith<$Res>(_value.yogaPoseDetails!, (value) {
+      return _then(_value.copyWith(yogaPoseDetails: value) as $Val);
+    });
   }
 }
 
@@ -74,7 +99,13 @@ abstract class _$$PoseDetailsStateImplCopyWith<$Res>
       __$$PoseDetailsStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({PoseDetailsStatus status, BaseException<dynamic>? error});
+  $Res call(
+      {PoseDetailsStatus status,
+      YogaPoseDetails? yogaPoseDetails,
+      BaseException<dynamic>? error});
+
+  @override
+  $YogaPoseDetailsCopyWith<$Res>? get yogaPoseDetails;
 }
 
 /// @nodoc
@@ -91,6 +122,7 @@ class __$$PoseDetailsStateImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? status = null,
+    Object? yogaPoseDetails = freezed,
     Object? error = freezed,
   }) {
     return _then(_$PoseDetailsStateImpl(
@@ -98,6 +130,10 @@ class __$$PoseDetailsStateImplCopyWithImpl<$Res>
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as PoseDetailsStatus,
+      yogaPoseDetails: freezed == yogaPoseDetails
+          ? _value.yogaPoseDetails
+          : yogaPoseDetails // ignore: cast_nullable_to_non_nullable
+              as YogaPoseDetails?,
       error: freezed == error
           ? _value.error
           : error // ignore: cast_nullable_to_non_nullable
@@ -110,17 +146,21 @@ class __$$PoseDetailsStateImplCopyWithImpl<$Res>
 
 class _$PoseDetailsStateImpl implements _PoseDetailsState {
   const _$PoseDetailsStateImpl(
-      {this.status = PoseDetailsStatus.initial, this.error});
+      {this.status = PoseDetailsStatus.initial,
+      this.yogaPoseDetails,
+      this.error});
 
   @override
   @JsonKey()
   final PoseDetailsStatus status;
   @override
+  final YogaPoseDetails? yogaPoseDetails;
+  @override
   final BaseException<dynamic>? error;
 
   @override
   String toString() {
-    return 'PoseDetailsState(status: $status, error: $error)';
+    return 'PoseDetailsState(status: $status, yogaPoseDetails: $yogaPoseDetails, error: $error)';
   }
 
   @override
@@ -129,11 +169,13 @@ class _$PoseDetailsStateImpl implements _PoseDetailsState {
         (other.runtimeType == runtimeType &&
             other is _$PoseDetailsStateImpl &&
             (identical(other.status, status) || other.status == status) &&
+            (identical(other.yogaPoseDetails, yogaPoseDetails) ||
+                other.yogaPoseDetails == yogaPoseDetails) &&
             (identical(other.error, error) || other.error == error));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, status, error);
+  int get hashCode => Object.hash(runtimeType, status, yogaPoseDetails, error);
 
   /// Create a copy of PoseDetailsState
   /// with the given fields replaced by the non-null parameter values.
@@ -148,10 +190,13 @@ class _$PoseDetailsStateImpl implements _PoseDetailsState {
 abstract class _PoseDetailsState implements PoseDetailsState {
   const factory _PoseDetailsState(
       {final PoseDetailsStatus status,
+      final YogaPoseDetails? yogaPoseDetails,
       final BaseException<dynamic>? error}) = _$PoseDetailsStateImpl;
 
   @override
   PoseDetailsStatus get status;
+  @override
+  YogaPoseDetails? get yogaPoseDetails;
   @override
   BaseException<dynamic>? get error;
 

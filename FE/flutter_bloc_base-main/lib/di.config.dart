@@ -26,6 +26,8 @@ import 'data/states/auth/auth_bloc.dart' as _i963;
 import 'data/states/camera_detection/camera_detection_bloc.dart' as _i161;
 import 'data/states/settings/settings_bloc.dart' as _i932;
 import 'data/usecases/change_password_uc.dart' as _i1035;
+import 'data/usecases/get_list_yoga_poses_uc.dart' as _i856;
+import 'data/usecases/get_yoga_poses_details.dart' as _i404;
 import 'data/usecases/login.dart' as _i470;
 import 'data/usecases/register.dart' as _i686;
 import 'data/usecases/send_otp_uc.dart' as _i212;
@@ -56,9 +58,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     final registerModule = _$RegisterModule();
     gh.factory<_i161.CameraDetectionBloc>(() => _i161.CameraDetectionBloc());
-    gh.factory<_i267.HomePageBloc>(() => _i267.HomePageBloc());
-    gh.factory<_i133.PoseDetailsBloc>(() => _i133.PoseDetailsBloc());
-    gh.factory<_i296.SearchYogaPoseBloc>(() => _i296.SearchYogaPoseBloc());
     gh.singleton<_i963.AuthBloc>(() => _i963.AuthBloc());
     gh.singleton<_i932.SettingsBloc>(() => _i932.SettingsBloc());
     gh.singleton<_i558.FlutterSecureStorage>(
@@ -77,8 +76,14 @@ extension GetItInjectableX on _i174.GetIt {
           tokenManager: gh<_i132.OauthTokenManager>(),
           baseUrl: gh<String>(instanceName: 'baseUrl'),
         ));
+    gh.factory<_i267.HomePageBloc>(() =>
+        _i267.HomePageBloc(getListYogaPoses: gh<_i856.GetListYogaPosesUc>()));
+    gh.factory<_i296.SearchYogaPoseBloc>(() => _i296.SearchYogaPoseBloc(
+        getListYogaPoses: gh<_i856.GetListYogaPosesUc>()));
     gh.singleton<_i536.NetworkDataSource>(
         () => _i536.NetworkDataSource(gh<_i288.NetworkDio>()));
+    gh.factory<_i133.PoseDetailsBloc>(() => _i133.PoseDetailsBloc(
+        getYogaPoseDetails: gh<_i404.GetYogaPoseDetailsUc>()));
     gh.singleton<_i971.UserRepository>(() => _i912.UserRepositoryImpl(
         networkDataSource: gh<_i536.NetworkDataSource>()));
     gh.singleton<_i1035.ChangePasswordUseCase>(() =>
