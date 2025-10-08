@@ -1,7 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_starter/di.dart';
 import 'package:flutter_starter/gen/app_images.dart';
 import 'package:flutter_starter/presenter/pages/forgot_password/forgot_password_bloc.dart';
 import 'package:flutter_starter/presenter/pages/forgot_password/forgot_password_event.dart';
@@ -10,8 +12,17 @@ import 'package:flutter_starter/presenter/widget/custom_button.dart';
 import 'package:flutter_starter/presenter/widget/custom_text_field.dart';
 import 'package:toastification/toastification.dart';
 
-class ChangePasswordPage extends StatefulWidget {
-  ChangePasswordPage({Key? key}) : super(key: key);
+@RoutePage()
+class ChangePasswordPage extends StatefulWidget implements AutoRouteWrapper {
+  const ChangePasswordPage();
+
+  @override
+  Widget wrappedRoute(BuildContext context) {
+    return BlocProvider<ForgotPasswordBloc>(
+      create: (ctx) => provider.get<ForgotPasswordBloc>(),
+      child: this,
+    );
+  }
 
   @override
   State<ChangePasswordPage> createState() => _ChangePasswordPageState();

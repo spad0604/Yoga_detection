@@ -6,7 +6,7 @@ part 'change_password.g.dart';
 class ChangePasswordRequest with _$ChangePasswordRequest {
   const factory ChangePasswordRequest({
     @JsonKey(name: 'email') required String email,
-    @JsonKey(name: 'oldassword') required String oldPassword,
+    @JsonKey(name: 'oldpassword') required String oldPassword,
     @JsonKey(name: 'newPassword') required String newPassword,
   }) = _ChangePasswordRequest;
 

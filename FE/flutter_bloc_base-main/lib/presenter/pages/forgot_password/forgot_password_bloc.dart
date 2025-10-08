@@ -56,10 +56,11 @@ class ForgotPasswordBloc extends Bloc<ForgotPasswordEvent, ForgotPasswordState> 
   ) async {
     emit(state.copyWith(status: ForgotPasswordStatus.loading));
 
-    await _verifyOtpUc.call(VerifyOtpRequest(email: event.email, otp: event.otp));
+    final res = await _verifyOtpUc.call(VerifyOtpRequest(email: event.email, otp: event.otp));
 
     //Hung Todo: Lấy được token rồi thì gọi hàm dưới này để hệ thống lưu Token lại, dùng cho việc truyền vào header sau này
-    //_oauthTokenManager.saveAccessToken(event.token);
+    _oauthTokenManager.saveAccessToken(res.token);
+
     emit(state.copyWith(
       email: event.email,
       status: ForgotPasswordStatus.otpVerifySuccess,
