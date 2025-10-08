@@ -7,6 +7,7 @@ import com.yogadetection.entity.User;
 import com.yogadetection.exception.InvalidPasswordException;
 import com.yogadetection.exception.UserNotFoundException;
 import com.yogadetection.repository.UserRepository;
+import com.yogadetection.service.JwtService;
 import com.yogadetection.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,6 +21,7 @@ import java.util.Map;
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
+    private final JwtService jwtService;
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
 
@@ -34,10 +36,11 @@ public class UserServiceImpl implements UserService {
         else throw new InvalidPasswordException();
     }
     @Override
-    public ApiResponse <Map< String, String >> getInformation(String id) {
+    public ApiResponse <Map< String, String >> getInformation(String token) {
         Map< String, String > map = new HashMap<>();
         ApiResponse apiResponse = new ApiResponse();
-        User user = userRepository.findById(id.toLowerCase()).orElseThrow(() -> new UserNotFoundException());
+        String email = jwtService.extractUsername(token);
+        User user = userRepository.findByEmail(email.toLowerCase()).orElseThrow(() -> new UserNotFoundException());
         map.put("email", user.getEmail());
         map.put("id",  user.getId());
         map.put("firstName", user.getFirstName());
@@ -64,8 +67,9 @@ public class UserServiceImpl implements UserService {
         return new ApiResponse<>();
     }
 
-    public ApiResponse<String> deleteUser(String id) {
-        User user = userRepository.findById(id.toLowerCase()).orElseThrow(() -> new UserNotFoundException());
+    public ApiResponse<String> deleteUser(String token) {
+        String email = jwtService.extractUsername(token);
+        User user = userRepository.findById(email.toLowerCase()).orElseThrow(() -> new UserNotFoundException());
         userRepository.delete(user);
         return new ApiResponse<>();
     }

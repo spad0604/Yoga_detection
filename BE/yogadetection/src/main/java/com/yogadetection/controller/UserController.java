@@ -22,8 +22,8 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public ApiResponse<Map<String, String>> getInformation(@RequestParam String id) {
-        return userService.getInformation(id);
+    public ApiResponse<Map<String, String>> getInformation(@RequestHeader("Authorization") String token) {
+        return userService.getInformation(token);
     }
 
     @PostMapping("/change")
@@ -32,12 +32,7 @@ public class UserController {
     }
 
     @DeleteMapping
-    public ApiResponse<String> deleteUser(@RequestParam String id) {
-        return userService.deleteUser(id);
-    }
-
-    @PostMapping("/update-password")
-    public void updatePassword(@RequestBody ChangePasswordRequest request) {
-        userService.changePassword(request);
+    public ApiResponse<String> deleteUser(@RequestHeader("Authorization") String token) {
+        return userService.deleteUser(token);
     }
 }
