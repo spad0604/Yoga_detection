@@ -5,11 +5,13 @@ import com.yogadetection.dto.request.ChangePasswordRequest;
 import com.yogadetection.dto.request.ResetPasswordRequest;
 import com.yogadetection.dto.request.VerifyOTPRequest;
 import com.yogadetection.dto.response.ApiResponse;
+import com.yogadetection.dto.response.TokenResponse;
 import com.yogadetection.entity.OTPCode;
 import com.yogadetection.entity.User;
 import com.yogadetection.exception.InvalidPasswordException;
 import com.yogadetection.exception.UserNotFoundException;
 import com.yogadetection.repository.UserRepository;
+import com.yogadetection.service.JwtService;
 import com.yogadetection.service.MailService;
 import com.yogadetection.service.PasswordService;
 import lombok.AllArgsConstructor;
@@ -28,6 +30,7 @@ public class PasswordServiceImpl implements PasswordService {
     private final PasswordEncoder passwordEncoder;
     private final MailService mailService;
     private final Map<String, OTPCode> otpSet = new HashMap<>();
+    private final JwtService jwtService;
 
     @Override
     public ApiResponse<String> changePassword(ChangePasswordRequest request) {
@@ -56,7 +59,9 @@ public class PasswordServiceImpl implements PasswordService {
         return new ApiResponse<>();
     }
 
-    public ApiResponse<String> verifyOTP(VerifyOTPRequest request) {
+    public ApiResponse<Map<String, String>> verifyOTP(VerifyOTPRequest request) {
+        ApiResponse<Map<String, String>> apiResponse = new ApiResponse<>();
+        Map<String, String> token = new HashMap<>();
         User user = userRepository.findByEmail(request.getEmail().toLowerCase()).orElseThrow(() -> new UserNotFoundException());
         if (!otpSet.containsKey(request.getEmail())) {
             return new ApiResponse<>(ErrorCode.OTP_INCORRECT);
@@ -64,7 +69,9 @@ public class PasswordServiceImpl implements PasswordService {
         if (otpSet.get(request.getEmail()).getExpireTime() > System.currentTimeMillis()) {
             return new ApiResponse<>(ErrorCode.OTP_EXPIRED);
         }
-        return new ApiResponse<>();
+        token.put("token", jwtService.generateToken(user));
+        apiResponse.setData(token);
+        return apiResponse;
     }
 
     @Scheduled(fixedRate = 60 * 60 * 1000)

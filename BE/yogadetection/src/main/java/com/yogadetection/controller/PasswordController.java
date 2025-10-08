@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -29,7 +31,7 @@ public class PasswordController {
     }
 
     @PostMapping("/verify-otp")
-    public ApiResponse<String> verifyOTP(@RequestBody VerifyOTPRequest request) {
+    public ApiResponse<Map<String, String>> verifyOTP(@RequestBody VerifyOTPRequest request) {
         return passwordService.verifyOTP(request);
     }
 
