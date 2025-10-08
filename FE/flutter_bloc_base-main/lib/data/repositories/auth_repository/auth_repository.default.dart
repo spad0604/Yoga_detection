@@ -5,6 +5,7 @@ import 'package:flutter_starter/data/entities/request/register_params.dart';
 import 'package:flutter_starter/data/entities/request/request_change_password.dart';
 import 'package:flutter_starter/data/entities/request/verify_otp_request.dart';
 import 'package:flutter_starter/data/entities/response/register_response.dart';
+import 'package:flutter_starter/data/entities/response/verify_otp.dart';
 import 'package:flutter_starter/data/sources/network/base_api_response.dart';
 import 'package:injectable/injectable.dart';
 import 'package:flutter_starter/data/entities/account.dart';
@@ -137,7 +138,7 @@ class DefaultAuthRepository extends AuthRepository {
   }
 
   @override
-  Future<BaseApiResponse<String>> verifyOtp({
+  Future<BaseApiResponse<VerifyOtpResponse>> verifyOtp({
     required String email,
     required String otp,
   }) async {

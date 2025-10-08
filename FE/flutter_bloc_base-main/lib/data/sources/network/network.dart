@@ -4,6 +4,7 @@ import 'package:flutter_starter/data/entities/request/request_change_password.da
 import 'package:flutter_starter/data/entities/request/verify_otp_request.dart';
 import 'package:flutter_starter/data/entities/response/page_response.dart';
 import 'package:flutter_starter/data/entities/response/register_response.dart';
+import 'package:flutter_starter/data/entities/response/verify_otp.dart';
 import 'package:flutter_starter/data/entities/response/yoga_pose_details.dart';
 import 'package:flutter_starter/data/sources/network/base_api_response.dart';
 import 'package:injectable/injectable.dart';
@@ -37,7 +38,7 @@ abstract class NetworkDataSource {
   Future<BaseApiResponse<String>> sendOtp(@Body() RequestChangePassword params);
 
   @POST('api/password/verify-otp')
-  Future<BaseApiResponse<String>> verifyOtp(@Body() VerifyOtpRequest params);
+  Future<BaseApiResponse<VerifyOtpResponse>> verifyOtp(@Body() VerifyOtpRequest params);
 
   @GET('api/yoga-poses')
   Future<BaseApiResponse<PageResponse<YogaPoseDetails>>> getYogaPoses(

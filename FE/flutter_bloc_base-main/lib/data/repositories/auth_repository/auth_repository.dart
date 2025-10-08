@@ -1,5 +1,6 @@
 import 'package:flutter_starter/data/entities/account.dart';
 import 'package:flutter_starter/data/entities/response/register_response.dart';
+import 'package:flutter_starter/data/entities/response/verify_otp.dart';
 import 'package:flutter_starter/data/sources/network/base_api_response.dart';
 
 abstract class AuthRepository {
@@ -28,7 +29,7 @@ abstract class AuthRepository {
     required String email,
   });
 
-  Future<BaseApiResponse<String>> verifyOtp({
+  Future<BaseApiResponse<VerifyOtpResponse>> verifyOtp({
     required String email,
     required String otp,
   });

@@ -173,13 +173,15 @@ class _NetworkDataSource implements NetworkDataSource {
   }
 
   @override
-  Future<BaseApiResponse<String>> verifyOtp(VerifyOtpRequest params) async {
+  Future<BaseApiResponse<VerifyOtpResponse>> verifyOtp(
+    VerifyOtpRequest params,
+  ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(params.toJson());
-    final _options = _setStreamType<BaseApiResponse<String>>(
+    final _options = _setStreamType<BaseApiResponse<VerifyOtpResponse>>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -190,11 +192,11 @@ class _NetworkDataSource implements NetworkDataSource {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late BaseApiResponse<String> _value;
+    late BaseApiResponse<VerifyOtpResponse> _value;
     try {
-      _value = BaseApiResponse<String>.fromJson(
+      _value = BaseApiResponse<VerifyOtpResponse>.fromJson(
         _result.data!,
-        (json) => json as String,
+        (json) => VerifyOtpResponse.fromJson(json as Map<String, dynamic>),
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
