@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_starter/data/usecases/register.dart';
+import 'package:flutter_starter/services/oauth_token_manager/oauth_token_manager.dart';
 import 'package:injectable/injectable.dart';
 import 'package:flutter_starter/core/exception.dart';
 import 'package:flutter_starter/presenter/pages/register/register_event.dart';
@@ -12,8 +13,11 @@ import 'package:flutter_starter/data/entities/request/register_params.dart';
 class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   final RegisterUseCase _register;
 
-  RegisterBloc({required RegisterUseCase register})
+  final OauthTokenManager _oauthTokenManager;
+
+  RegisterBloc({required RegisterUseCase register, required OauthTokenManager oauthTokenManager})
       : _register = register,
+        _oauthTokenManager = oauthTokenManager,
         super(const RegisterState()) {
     on<RegisterErrorOccurred>(_onErrorOccurred);
     on<RegisterStarted>(_onRegisterStarted);
@@ -63,7 +67,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       passwordErr = 'Password must have an uppercase letter and a special character';
     }
 
-      if (event.password != event.confirmPassword) {
+    if (event.password != event.confirmPassword) {
       confirmPasswordErr = 'Confirm password does not match';
     }
 
@@ -79,7 +83,13 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       birthDateErr = 'Birth date must be yyyy-MM-dd';
     }
 
-    final hasError = firstNameErr != null || lastNameErr != null || emailErr != null || phoneErr != null || passwordErr != null || confirmPasswordErr != null || birthDateErr != null;
+    final hasError = firstNameErr != null ||
+        lastNameErr != null ||
+        emailErr != null ||
+        phoneErr != null ||
+        passwordErr != null ||
+        confirmPasswordErr != null ||
+        birthDateErr != null;
 
     if (hasError) {
       emit(state.copyWith(
@@ -98,7 +108,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     emit(state.copyWith(status: RegisterStatus.loading));
 
     try {
-      await _register.call(
+      final response = await _register.call(
         RegisterParams(
           email: event.email,
           password: event.password,
@@ -107,6 +117,9 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
           birthDate: event.birthDate,
         ),
       );
+
+      _oauthTokenManager.saveAccessToken(response.accessToken);
+      _oauthTokenManager.saveRefreshToken(response.refreshToken);
 
       emit(state.copyWith(status: RegisterStatus.success));
     } catch (e) {

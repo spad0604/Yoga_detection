@@ -8,6 +8,7 @@ import 'package:flutter_starter/data/entities/request/verify_otp_request.dart';
 import 'package:flutter_starter/data/usecases/change_password_uc.dart';
 import 'package:flutter_starter/data/usecases/send_otp_uc.dart';
 import 'package:flutter_starter/data/usecases/verify_otp_uc.dart';
+import 'package:flutter_starter/services/oauth_token_manager/oauth_token_manager.dart';
 import 'package:injectable/injectable.dart';
 import 'package:flutter_starter/core/exception.dart';
 import 'package:flutter_starter/presenter/pages/forgot_password/forgot_password_event.dart';
@@ -15,6 +16,8 @@ import 'package:flutter_starter/presenter/pages/forgot_password/forgot_password_
 
 @injectable
 class ForgotPasswordBloc extends Bloc<ForgotPasswordEvent, ForgotPasswordState> {
+  final OauthTokenManager _oauthTokenManager;
+
   final ChangePasswordUseCase _changePassword;
   final SendOtpUc _sendOtpUc;
   final VerifyOtpUc _verifyOtpUc;
@@ -22,10 +25,12 @@ class ForgotPasswordBloc extends Bloc<ForgotPasswordEvent, ForgotPasswordState> 
   ForgotPasswordBloc(
       {required ChangePasswordUseCase changePassword,
       required SendOtpUc sendOtpUc,
-      required VerifyOtpUc verifyOtpUc})
+      required VerifyOtpUc verifyOtpUc,
+      required OauthTokenManager oauthTokenManager})
       : _changePassword = changePassword,
         _sendOtpUc = sendOtpUc,
         _verifyOtpUc = verifyOtpUc,
+        _oauthTokenManager = oauthTokenManager,
         super(const ForgotPasswordState()) {
     on<ForgotPasswordErrorOccurred>(_onErrorOccurred);
 
@@ -52,6 +57,9 @@ class ForgotPasswordBloc extends Bloc<ForgotPasswordEvent, ForgotPasswordState> 
     emit(state.copyWith(status: ForgotPasswordStatus.loading));
 
     await _verifyOtpUc.call(VerifyOtpRequest(email: event.email, otp: event.otp));
+
+    //Hung Todo: Lấy được token rồi thì gọi hàm dưới này để hệ thống lưu Token lại, dùng cho việc truyền vào header sau này
+    //_oauthTokenManager.saveAccessToken(event.token);
     emit(state.copyWith(
       email: event.email,
       status: ForgotPasswordStatus.otpVerifySuccess,

@@ -6,14 +6,18 @@ import 'package:flutter_starter/core/exception.dart';
 import 'package:flutter_starter/data/usecases/login.dart';
 import 'package:flutter_starter/presenter/pages/login/login_event.dart';
 import 'package:flutter_starter/presenter/pages/login/login_state.dart';
+import 'package:flutter_starter/services/oauth_token_manager/oauth_token_manager.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final LoginUseCase _login;
 
-  LoginBloc({required LoginUseCase login})
+  final OauthTokenManager _oauthTokenManager;
+
+  LoginBloc({required LoginUseCase login, required OauthTokenManager oauthTokenManager})
       : _login = login,
+        _oauthTokenManager = oauthTokenManager,
         super(const LoginState()) {
     on<LoginErrorOccurred>(_onErrorOccurred);
     on<LoginEmailChanged>(_onEmailChanged, transformer: droppable());
@@ -105,6 +109,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         password: password,
       ));
 
+      _oauthTokenManager.saveAccessToken(account?.accessToken ?? '');
+      _oauthTokenManager.saveRefreshToken(account?.refreshToken ?? '');
       emit(state.copyWith(
         status: LoginStatus.success,
         account: account,

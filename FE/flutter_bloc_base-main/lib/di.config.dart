@@ -97,6 +97,10 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i856.GetListYogaPosesUc(gh<_i153.YogaPosesRepository>()));
     gh.singleton<_i404.GetYogaPoseDetailsUc>(
         () => _i404.GetYogaPoseDetailsUc(gh<_i153.YogaPosesRepository>()));
+    gh.factory<_i338.RegisterBloc>(() => _i338.RegisterBloc(
+          register: gh<_i686.RegisterUseCase>(),
+          oauthTokenManager: gh<_i132.OauthTokenManager>(),
+        ));
     gh.singleton<_i470.LoginUseCase>(
         () => _i470.LoginUseCase(authRepository: gh<_i344.AuthRepository>()));
     gh.singleton<_i412.VerifyLoginStatusUseCase>(() =>
@@ -106,12 +110,11 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i212.SendOtpUc(authRepository: gh<_i344.AuthRepository>()));
     gh.singleton<_i855.VerifyOtpUc>(
         () => _i855.VerifyOtpUc(authRepository: gh<_i344.AuthRepository>()));
-    gh.factory<_i338.RegisterBloc>(
-        () => _i338.RegisterBloc(register: gh<_i686.RegisterUseCase>()));
     gh.factory<_i132.ForgotPasswordBloc>(() => _i132.ForgotPasswordBloc(
           changePassword: gh<_i1035.ChangePasswordUseCase>(),
           sendOtpUc: gh<_i212.SendOtpUc>(),
           verifyOtpUc: gh<_i855.VerifyOtpUc>(),
+          oauthTokenManager: gh<_i132.OauthTokenManager>(),
         ));
     gh.factory<_i517.SplashBloc>(() => _i517.SplashBloc(
         verifyLoginStatus: gh<_i412.VerifyLoginStatusUseCase>()));
@@ -119,10 +122,12 @@ extension GetItInjectableX on _i174.GetIt {
         _i267.HomePageBloc(getListYogaPoses: gh<_i856.GetListYogaPosesUc>()));
     gh.factory<_i296.SearchYogaPoseBloc>(() => _i296.SearchYogaPoseBloc(
         getListYogaPoses: gh<_i856.GetListYogaPosesUc>()));
+    gh.factory<_i902.LoginBloc>(() => _i902.LoginBloc(
+          login: gh<_i470.LoginUseCase>(),
+          oauthTokenManager: gh<_i132.OauthTokenManager>(),
+        ));
     gh.factory<_i133.PoseDetailsBloc>(() => _i133.PoseDetailsBloc(
         getYogaPoseDetails: gh<_i404.GetYogaPoseDetailsUc>()));
-    gh.factory<_i902.LoginBloc>(
-        () => _i902.LoginBloc(login: gh<_i470.LoginUseCase>()));
     return this;
   }
 }
