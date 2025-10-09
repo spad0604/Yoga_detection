@@ -1,7 +1,6 @@
 package com.yogadetection.controller;
 
 import com.yogadetection.dto.request.ChangeInformationRequest;
-import com.yogadetection.dto.request.ChangePasswordRequest;
 import com.yogadetection.dto.response.ApiResponse;
 import com.yogadetection.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -15,11 +14,6 @@ import java.util.Map;
 @RequestMapping("/api/user")
 public class UserController {
     private final UserService userService;
-
-    @PostMapping("/change-password")
-    public void changePassword(@RequestBody ChangePasswordRequest request) {
-        userService.changePassword(request);
-    }
 
     @GetMapping("/me")
     public ApiResponse<Map<String, String>> getInformation(@RequestHeader("Authorization") String token) {

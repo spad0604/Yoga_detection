@@ -2,14 +2,12 @@ package com.yogadetection.controller;
 
 import com.yogadetection.dto.request.ChangePasswordRequest;
 import com.yogadetection.dto.request.ResetPasswordRequest;
+import com.yogadetection.dto.request.SendOTPRequest;
 import com.yogadetection.dto.request.VerifyOTPRequest;
 import com.yogadetection.dto.response.ApiResponse;
 import com.yogadetection.service.PasswordService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -21,12 +19,12 @@ public class PasswordController {
     private final PasswordService passwordService;
 
     @PostMapping("/change")
-    public ApiResponse<String> changePassword(@RequestBody ChangePasswordRequest request) {
-        return passwordService.changePassword(request);
+    public ApiResponse<String> changePassword(@RequestHeader("Authorization") String token, @RequestBody ChangePasswordRequest request) {
+        return passwordService.changePassword(token, request);
     }
 
     @PostMapping("/send-otp")
-    public ApiResponse<String> sendOTP(@RequestBody ResetPasswordRequest request) {
+    public ApiResponse<String> sendOTP(@RequestBody SendOTPRequest request) {
         return passwordService.sendOTP(request);
     }
 
@@ -35,8 +33,8 @@ public class PasswordController {
         return passwordService.verifyOTP(request);
     }
 
-    @PostMapping("/update-password")
-    public ApiResponse<String> updatePassword(@RequestBody ChangePasswordRequest request) {
-        return passwordService.changePassword(request);
+    @PostMapping("/reset")
+    public ApiResponse<String> resetPassword(@RequestHeader("Authorization") String token, @RequestBody ResetPasswordRequest request) {
+        return  passwordService.resetPassword(token, request);
     }
 }

@@ -26,16 +26,6 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public void changePassword(ChangePasswordRequest request) {
-        User user = userRepository.findByEmail(request.getEmail().toLowerCase()).orElseThrow(() -> new UserNotFoundException());
-
-        if (passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
-            user.setPassword(passwordEncoder.encode(request.getNewPassword()));
-            userRepository.save(user);
-        }
-        else throw new InvalidPasswordException();
-    }
-    @Override
     public ApiResponse <Map< String, String >> getInformation(String token) {
         Map< String, String > map = new HashMap<>();
         ApiResponse apiResponse = new ApiResponse();
@@ -69,7 +59,7 @@ public class UserServiceImpl implements UserService {
 
     public ApiResponse<String> deleteUser(String token) {
         String email = jwtService.extractUsername(token);
-        User user = userRepository.findById(email.toLowerCase()).orElseThrow(() -> new UserNotFoundException());
+        User user = userRepository.findByEmail(email.toLowerCase()).orElseThrow(() -> new UserNotFoundException());
         userRepository.delete(user);
         return new ApiResponse<>();
     }
