@@ -1,7 +1,5 @@
 part of 'account_page.dart';
 
-
-
 class MenuItem extends StatelessWidget {
   final IconData icon;
   final String text;

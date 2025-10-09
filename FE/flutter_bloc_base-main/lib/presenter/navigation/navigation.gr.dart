@@ -43,6 +43,22 @@ class CameraDetectionRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [ChangePasswordPage]
+class ChangePasswordRoute extends PageRouteInfo<void> {
+  const ChangePasswordRoute({List<PageRouteInfo>? children})
+    : super(ChangePasswordRoute.name, initialChildren: children);
+
+  static const String name = 'ChangePasswordRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return WrappedRoute(child: ChangePasswordPage());
+    },
+  );
+}
+
+/// generated route for
 /// [ForgotPasswordPage]
 class ForgotPasswordRoute extends PageRouteInfo<void> {
   const ForgotPasswordRoute({List<PageRouteInfo>? children})

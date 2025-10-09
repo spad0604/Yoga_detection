@@ -3,7 +3,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_starter/di.dart';
 import 'package:flutter_starter/presenter/pages/account_page/account_page_bloc.dart';
-part 'menuItem.dart';
+part 'menu_item.dart';
+
 // TODO: Add the page to the router
 @RoutePage()
 class AccountPagePage extends StatefulWidget implements AutoRouteWrapper {

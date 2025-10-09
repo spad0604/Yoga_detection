@@ -23,7 +23,7 @@ ChangePasswordRequest _$ChangePasswordRequestFromJson(
 mixin _$ChangePasswordRequest {
   @JsonKey(name: 'email')
   String get email => throw _privateConstructorUsedError;
-  @JsonKey(name: 'oldassword')
+  @JsonKey(name: 'oldpassword')
   String get oldPassword => throw _privateConstructorUsedError;
   @JsonKey(name: 'newPassword')
   String get newPassword => throw _privateConstructorUsedError;
@@ -46,7 +46,7 @@ abstract class $ChangePasswordRequestCopyWith<$Res> {
   @useResult
   $Res call(
       {@JsonKey(name: 'email') String email,
-      @JsonKey(name: 'oldassword') String oldPassword,
+      @JsonKey(name: 'oldpassword') String oldPassword,
       @JsonKey(name: 'newPassword') String newPassword});
 }
 
@@ -98,7 +98,7 @@ abstract class _$$ChangePasswordRequestImplCopyWith<$Res>
   @useResult
   $Res call(
       {@JsonKey(name: 'email') String email,
-      @JsonKey(name: 'oldassword') String oldPassword,
+      @JsonKey(name: 'oldpassword') String oldPassword,
       @JsonKey(name: 'newPassword') String newPassword});
 }
 
@@ -142,7 +142,7 @@ class __$$ChangePasswordRequestImplCopyWithImpl<$Res>
 class _$ChangePasswordRequestImpl implements _ChangePasswordRequest {
   const _$ChangePasswordRequestImpl(
       {@JsonKey(name: 'email') required this.email,
-      @JsonKey(name: 'oldassword') required this.oldPassword,
+      @JsonKey(name: 'oldpassword') required this.oldPassword,
       @JsonKey(name: 'newPassword') required this.newPassword});
 
   factory _$ChangePasswordRequestImpl.fromJson(Map<String, dynamic> json) =>
@@ -152,7 +152,7 @@ class _$ChangePasswordRequestImpl implements _ChangePasswordRequest {
   @JsonKey(name: 'email')
   final String email;
   @override
-  @JsonKey(name: 'oldassword')
+  @JsonKey(name: 'oldpassword')
   final String oldPassword;
   @override
   @JsonKey(name: 'newPassword')
@@ -199,7 +199,7 @@ class _$ChangePasswordRequestImpl implements _ChangePasswordRequest {
 abstract class _ChangePasswordRequest implements ChangePasswordRequest {
   const factory _ChangePasswordRequest(
           {@JsonKey(name: 'email') required final String email,
-          @JsonKey(name: 'oldassword') required final String oldPassword,
+          @JsonKey(name: 'oldpassword') required final String oldPassword,
           @JsonKey(name: 'newPassword') required final String newPassword}) =
       _$ChangePasswordRequestImpl;
 
@@ -210,7 +210,7 @@ abstract class _ChangePasswordRequest implements ChangePasswordRequest {
   @JsonKey(name: 'email')
   String get email;
   @override
-  @JsonKey(name: 'oldassword')
+  @JsonKey(name: 'oldpassword')
   String get oldPassword;
   @override
   @JsonKey(name: 'newPassword')
