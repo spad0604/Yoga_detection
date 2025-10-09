@@ -26,14 +26,42 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public void changePassword(ChangePasswordRequest request) {
-        User user = userRepository.findByEmail(request.getEmail().toLowerCase()).orElseThrow(() -> new UserNotFoundException());
+    public ApiResponse <Map< String, String >> getInformation(String token) {
+        Map< String, String > map = new HashMap<>();
+        ApiResponse apiResponse = new ApiResponse();
+        String email = jwtService.extractUsername(token);
+        User user = userRepository.findByEmail(email.toLowerCase()).orElseThrow(() -> new UserNotFoundException());
+        map.put("email", user.getEmail());
+        map.put("id",  user.getId());
+        map.put("firstName", user.getFirstName());
+        map.put("lastName", user.getLastName());
+        map.put("dob", user.getBirthDate().toString());
+        map.put("registerDate", user.getRegisterDate().toString());
+        apiResponse.setData(map);
+        return apiResponse;
+    }
 
-        if (passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
-            user.setPassword(passwordEncoder.encode(request.getNewPassword()));
-            userRepository.save(user);
+    @Override
+    public ApiResponse<String> changeInformation(ChangeInformationRequest request) {
+        User user = userRepository.findByEmail(request.getEmail().toLowerCase()).orElseThrow(() -> new UserNotFoundException());
+        if (request.getDob() != null) {
+            user.setBirthDate(request.getDob());
         }
-        else throw new InvalidPasswordException();
+        if (request.getFirstName() != null) {
+            user.setFirstName(request.getFirstName());
+        }
+        if (request.getLastName() != null) {
+            user.setLastName(request.getLastName());
+        }
+        userRepository.save(user);
+        return new ApiResponse<>();
+    }
+
+    public ApiResponse<String> deleteUser(String token) {
+        String email = jwtService.extractUsername(token);
+        User user = userRepository.findByEmail(email.toLowerCase()).orElseThrow(() -> new UserNotFoundException());
+        userRepository.delete(user);
+        return new ApiResponse<>();
     }
     @Override
     public ApiResponse <Map< String, String >> getInformation(String token) {

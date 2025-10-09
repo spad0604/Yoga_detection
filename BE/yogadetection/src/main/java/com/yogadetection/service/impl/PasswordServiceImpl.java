@@ -3,6 +3,7 @@ package com.yogadetection.service.impl;
 import com.yogadetection.config.ErrorCode;
 import com.yogadetection.dto.request.ChangePasswordRequest;
 import com.yogadetection.dto.request.ResetPasswordRequest;
+import com.yogadetection.dto.request.SendOTPRequest;
 import com.yogadetection.dto.request.VerifyOTPRequest;
 import com.yogadetection.dto.response.ApiResponse;
 import com.yogadetection.dto.response.TokenResponse;
@@ -33,8 +34,12 @@ public class PasswordServiceImpl implements PasswordService {
     private final JwtService jwtService;
 
     @Override
-    public ApiResponse<String> changePassword(ChangePasswordRequest request) {
-        User user = userRepository.findByEmail(request.getEmail().toLowerCase()).orElseThrow(() -> new UserNotFoundException());
+    public ApiResponse<String> changePassword(String token, ChangePasswordRequest request) {
+        if (!request.getConfirmNewPassword().equals(request.getNewPassword())) {
+            return new ApiResponse<>(ErrorCode.PASSWORDS_DO_NOT_MATCH);
+        }
+        String email = jwtService.extractUsername(token);
+        User user = userRepository.findByEmail(email.toLowerCase()).orElseThrow(() -> new UserNotFoundException());
         if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
             throw new InvalidPasswordException();
         }
@@ -44,7 +49,7 @@ public class PasswordServiceImpl implements PasswordService {
     }
 
     @Override
-    public ApiResponse<String> sendOTP(ResetPasswordRequest request) {
+    public ApiResponse<String> sendOTP(SendOTPRequest request) {
         User user = userRepository.findByEmail(request.getEmail().toLowerCase()).orElseThrow(() -> new UserNotFoundException());
         Random random = new Random();
         OTPCode otpCode = new OTPCode();
@@ -72,6 +77,16 @@ public class PasswordServiceImpl implements PasswordService {
         token.put("token", jwtService.generateToken(user));
         apiResponse.setData(token);
         return apiResponse;
+    }
+
+    public ApiResponse<String> resetPassword(String token, ResetPasswordRequest request) {
+        if (!request.getNewPassword().matches(request.getConfirmNewPassword())) {
+            return  new ApiResponse<>(ErrorCode.PASSWORDS_DO_NOT_MATCH);
+        }
+        String email =  jwtService.extractUsername(token);
+        User user = userRepository.findByEmail(email.toLowerCase()).orElseThrow(() -> new UserNotFoundException());
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        return new ApiResponse<>();
     }
 
     @Scheduled(fixedRate = 60 * 60 * 1000)

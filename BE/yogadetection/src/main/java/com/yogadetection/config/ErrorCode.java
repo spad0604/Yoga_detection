@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 public class ErrorCode {
     public static final int SUCCESS = 200;
     public static final int INVALID_PASSWORD = 102;
+    public static final int PASSWORDS_DO_NOT_MATCH = 105;
     public static final int USER_NOT_FOUND = 101;
     public static final int EMAIL_ALREADY_EXISTS = 103;
     public static final int INVALID_TOKEN = 104;
