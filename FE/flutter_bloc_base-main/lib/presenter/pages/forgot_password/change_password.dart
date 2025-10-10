@@ -63,6 +63,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
 
             if (state.status == ForgotPasswordStatus.success) {
               toastification.show(
+                autoCloseDuration: Duration(seconds: 1),
                 context: context,
                 type: ToastificationType.success,
                 title: Text(
@@ -78,6 +79,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
               if (raw != null) {
                 final display = raw.startsWith('Errors.') ? tr(raw) : raw.toString();
                 toastification.show(
+                  autoCloseDuration: Duration(seconds: 1),
                   context: context,
                   type: ToastificationType.error,
                   title: Text(

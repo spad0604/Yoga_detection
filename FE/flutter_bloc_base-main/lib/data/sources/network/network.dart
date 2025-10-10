@@ -1,6 +1,7 @@
 import 'package:flutter_starter/data/entities/request/change_password.dart';
 import 'package:flutter_starter/data/entities/request/register_params.dart';
 import 'package:flutter_starter/data/entities/request/request_change_password.dart';
+import 'package:flutter_starter/data/entities/request/reset_password_request.dart';
 import 'package:flutter_starter/data/entities/request/verify_otp_request.dart';
 import 'package:flutter_starter/data/entities/response/page_response.dart';
 import 'package:flutter_starter/data/entities/response/register_response.dart';
@@ -46,4 +47,7 @@ abstract class NetworkDataSource {
 
   @GET('api/yoga-poses/{code}')
   Future<BaseApiResponse<YogaPoseDetails>> getYogaPoseDetails(@Path('code') String code);
+
+  @POST('api/password/reset')
+  Future<BaseApiResponse<void>> resetPassword(@Body() ResetPasswordRequest params);
 }

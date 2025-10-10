@@ -21,6 +21,8 @@ mixin _$ForgotPasswordEvent {
     required TResult Function(BaseException<dynamic>? error) errorOccurred,
     required TResult Function(String password, String confirmPassword)
         changePassword,
+    required TResult Function(String newPassword, String confirmNewPassword)
+        resetPassword,
     required TResult Function(String email) setEmail,
     required TResult Function(String email) sendOtp,
     required TResult Function(String email, String otp) verifyOtp,
@@ -30,6 +32,8 @@ mixin _$ForgotPasswordEvent {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(BaseException<dynamic>? error)? errorOccurred,
     TResult? Function(String password, String confirmPassword)? changePassword,
+    TResult? Function(String newPassword, String confirmNewPassword)?
+        resetPassword,
     TResult? Function(String email)? setEmail,
     TResult? Function(String email)? sendOtp,
     TResult? Function(String email, String otp)? verifyOtp,
@@ -39,6 +43,8 @@ mixin _$ForgotPasswordEvent {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(BaseException<dynamic>? error)? errorOccurred,
     TResult Function(String password, String confirmPassword)? changePassword,
+    TResult Function(String newPassword, String confirmNewPassword)?
+        resetPassword,
     TResult Function(String email)? setEmail,
     TResult Function(String email)? sendOtp,
     TResult Function(String email, String otp)? verifyOtp,
@@ -49,6 +55,7 @@ mixin _$ForgotPasswordEvent {
   TResult map<TResult extends Object?>({
     required TResult Function(ForgotPasswordErrorOccurred value) errorOccurred,
     required TResult Function(ChangePasswordRequested value) changePassword,
+    required TResult Function(ResetPasswordRequested value) resetPassword,
     required TResult Function(SetEmailEvent value) setEmail,
     required TResult Function(SendOtpRequested value) sendOtp,
     required TResult Function(VerifyOtpRequested value) verifyOtp,
@@ -58,6 +65,7 @@ mixin _$ForgotPasswordEvent {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(ForgotPasswordErrorOccurred value)? errorOccurred,
     TResult? Function(ChangePasswordRequested value)? changePassword,
+    TResult? Function(ResetPasswordRequested value)? resetPassword,
     TResult? Function(SetEmailEvent value)? setEmail,
     TResult? Function(SendOtpRequested value)? sendOtp,
     TResult? Function(VerifyOtpRequested value)? verifyOtp,
@@ -67,6 +75,7 @@ mixin _$ForgotPasswordEvent {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(ForgotPasswordErrorOccurred value)? errorOccurred,
     TResult Function(ChangePasswordRequested value)? changePassword,
+    TResult Function(ResetPasswordRequested value)? resetPassword,
     TResult Function(SetEmailEvent value)? setEmail,
     TResult Function(SendOtpRequested value)? sendOtp,
     TResult Function(VerifyOtpRequested value)? verifyOtp,
@@ -181,6 +190,8 @@ class _$ForgotPasswordErrorOccurredImpl
     required TResult Function(BaseException<dynamic>? error) errorOccurred,
     required TResult Function(String password, String confirmPassword)
         changePassword,
+    required TResult Function(String newPassword, String confirmNewPassword)
+        resetPassword,
     required TResult Function(String email) setEmail,
     required TResult Function(String email) sendOtp,
     required TResult Function(String email, String otp) verifyOtp,
@@ -193,6 +204,8 @@ class _$ForgotPasswordErrorOccurredImpl
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(BaseException<dynamic>? error)? errorOccurred,
     TResult? Function(String password, String confirmPassword)? changePassword,
+    TResult? Function(String newPassword, String confirmNewPassword)?
+        resetPassword,
     TResult? Function(String email)? setEmail,
     TResult? Function(String email)? sendOtp,
     TResult? Function(String email, String otp)? verifyOtp,
@@ -205,6 +218,8 @@ class _$ForgotPasswordErrorOccurredImpl
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(BaseException<dynamic>? error)? errorOccurred,
     TResult Function(String password, String confirmPassword)? changePassword,
+    TResult Function(String newPassword, String confirmNewPassword)?
+        resetPassword,
     TResult Function(String email)? setEmail,
     TResult Function(String email)? sendOtp,
     TResult Function(String email, String otp)? verifyOtp,
@@ -221,6 +236,7 @@ class _$ForgotPasswordErrorOccurredImpl
   TResult map<TResult extends Object?>({
     required TResult Function(ForgotPasswordErrorOccurred value) errorOccurred,
     required TResult Function(ChangePasswordRequested value) changePassword,
+    required TResult Function(ResetPasswordRequested value) resetPassword,
     required TResult Function(SetEmailEvent value) setEmail,
     required TResult Function(SendOtpRequested value) sendOtp,
     required TResult Function(VerifyOtpRequested value) verifyOtp,
@@ -233,6 +249,7 @@ class _$ForgotPasswordErrorOccurredImpl
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(ForgotPasswordErrorOccurred value)? errorOccurred,
     TResult? Function(ChangePasswordRequested value)? changePassword,
+    TResult? Function(ResetPasswordRequested value)? resetPassword,
     TResult? Function(SetEmailEvent value)? setEmail,
     TResult? Function(SendOtpRequested value)? sendOtp,
     TResult? Function(VerifyOtpRequested value)? verifyOtp,
@@ -245,6 +262,7 @@ class _$ForgotPasswordErrorOccurredImpl
   TResult maybeMap<TResult extends Object?>({
     TResult Function(ForgotPasswordErrorOccurred value)? errorOccurred,
     TResult Function(ChangePasswordRequested value)? changePassword,
+    TResult Function(ResetPasswordRequested value)? resetPassword,
     TResult Function(SetEmailEvent value)? setEmail,
     TResult Function(SendOtpRequested value)? sendOtp,
     TResult Function(VerifyOtpRequested value)? verifyOtp,
@@ -368,6 +386,8 @@ class _$ChangePasswordRequestedImpl
     required TResult Function(BaseException<dynamic>? error) errorOccurred,
     required TResult Function(String password, String confirmPassword)
         changePassword,
+    required TResult Function(String newPassword, String confirmNewPassword)
+        resetPassword,
     required TResult Function(String email) setEmail,
     required TResult Function(String email) sendOtp,
     required TResult Function(String email, String otp) verifyOtp,
@@ -380,6 +400,8 @@ class _$ChangePasswordRequestedImpl
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(BaseException<dynamic>? error)? errorOccurred,
     TResult? Function(String password, String confirmPassword)? changePassword,
+    TResult? Function(String newPassword, String confirmNewPassword)?
+        resetPassword,
     TResult? Function(String email)? setEmail,
     TResult? Function(String email)? sendOtp,
     TResult? Function(String email, String otp)? verifyOtp,
@@ -392,6 +414,8 @@ class _$ChangePasswordRequestedImpl
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(BaseException<dynamic>? error)? errorOccurred,
     TResult Function(String password, String confirmPassword)? changePassword,
+    TResult Function(String newPassword, String confirmNewPassword)?
+        resetPassword,
     TResult Function(String email)? setEmail,
     TResult Function(String email)? sendOtp,
     TResult Function(String email, String otp)? verifyOtp,
@@ -408,6 +432,7 @@ class _$ChangePasswordRequestedImpl
   TResult map<TResult extends Object?>({
     required TResult Function(ForgotPasswordErrorOccurred value) errorOccurred,
     required TResult Function(ChangePasswordRequested value) changePassword,
+    required TResult Function(ResetPasswordRequested value) resetPassword,
     required TResult Function(SetEmailEvent value) setEmail,
     required TResult Function(SendOtpRequested value) sendOtp,
     required TResult Function(VerifyOtpRequested value) verifyOtp,
@@ -420,6 +445,7 @@ class _$ChangePasswordRequestedImpl
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(ForgotPasswordErrorOccurred value)? errorOccurred,
     TResult? Function(ChangePasswordRequested value)? changePassword,
+    TResult? Function(ResetPasswordRequested value)? resetPassword,
     TResult? Function(SetEmailEvent value)? setEmail,
     TResult? Function(SendOtpRequested value)? sendOtp,
     TResult? Function(VerifyOtpRequested value)? verifyOtp,
@@ -432,6 +458,7 @@ class _$ChangePasswordRequestedImpl
   TResult maybeMap<TResult extends Object?>({
     TResult Function(ForgotPasswordErrorOccurred value)? errorOccurred,
     TResult Function(ChangePasswordRequested value)? changePassword,
+    TResult Function(ResetPasswordRequested value)? resetPassword,
     TResult Function(SetEmailEvent value)? setEmail,
     TResult Function(SendOtpRequested value)? sendOtp,
     TResult Function(VerifyOtpRequested value)? verifyOtp,
@@ -456,6 +483,203 @@ abstract class ChangePasswordRequested implements ForgotPasswordEvent {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ChangePasswordRequestedImplCopyWith<_$ChangePasswordRequestedImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$ResetPasswordRequestedImplCopyWith<$Res> {
+  factory _$$ResetPasswordRequestedImplCopyWith(
+          _$ResetPasswordRequestedImpl value,
+          $Res Function(_$ResetPasswordRequestedImpl) then) =
+      __$$ResetPasswordRequestedImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({String newPassword, String confirmNewPassword});
+}
+
+/// @nodoc
+class __$$ResetPasswordRequestedImplCopyWithImpl<$Res>
+    extends _$ForgotPasswordEventCopyWithImpl<$Res,
+        _$ResetPasswordRequestedImpl>
+    implements _$$ResetPasswordRequestedImplCopyWith<$Res> {
+  __$$ResetPasswordRequestedImplCopyWithImpl(
+      _$ResetPasswordRequestedImpl _value,
+      $Res Function(_$ResetPasswordRequestedImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of ForgotPasswordEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? newPassword = null,
+    Object? confirmNewPassword = null,
+  }) {
+    return _then(_$ResetPasswordRequestedImpl(
+      newPassword: null == newPassword
+          ? _value.newPassword
+          : newPassword // ignore: cast_nullable_to_non_nullable
+              as String,
+      confirmNewPassword: null == confirmNewPassword
+          ? _value.confirmNewPassword
+          : confirmNewPassword // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$ResetPasswordRequestedImpl
+    with DiagnosticableTreeMixin
+    implements ResetPasswordRequested {
+  const _$ResetPasswordRequestedImpl(
+      {required this.newPassword, required this.confirmNewPassword});
+
+  @override
+  final String newPassword;
+  @override
+  final String confirmNewPassword;
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return 'ForgotPasswordEvent.resetPassword(newPassword: $newPassword, confirmNewPassword: $confirmNewPassword)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'ForgotPasswordEvent.resetPassword'))
+      ..add(DiagnosticsProperty('newPassword', newPassword))
+      ..add(DiagnosticsProperty('confirmNewPassword', confirmNewPassword));
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$ResetPasswordRequestedImpl &&
+            (identical(other.newPassword, newPassword) ||
+                other.newPassword == newPassword) &&
+            (identical(other.confirmNewPassword, confirmNewPassword) ||
+                other.confirmNewPassword == confirmNewPassword));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, newPassword, confirmNewPassword);
+
+  /// Create a copy of ForgotPasswordEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$ResetPasswordRequestedImplCopyWith<_$ResetPasswordRequestedImpl>
+      get copyWith => __$$ResetPasswordRequestedImplCopyWithImpl<
+          _$ResetPasswordRequestedImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(BaseException<dynamic>? error) errorOccurred,
+    required TResult Function(String password, String confirmPassword)
+        changePassword,
+    required TResult Function(String newPassword, String confirmNewPassword)
+        resetPassword,
+    required TResult Function(String email) setEmail,
+    required TResult Function(String email) sendOtp,
+    required TResult Function(String email, String otp) verifyOtp,
+  }) {
+    return resetPassword(newPassword, confirmNewPassword);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(BaseException<dynamic>? error)? errorOccurred,
+    TResult? Function(String password, String confirmPassword)? changePassword,
+    TResult? Function(String newPassword, String confirmNewPassword)?
+        resetPassword,
+    TResult? Function(String email)? setEmail,
+    TResult? Function(String email)? sendOtp,
+    TResult? Function(String email, String otp)? verifyOtp,
+  }) {
+    return resetPassword?.call(newPassword, confirmNewPassword);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(BaseException<dynamic>? error)? errorOccurred,
+    TResult Function(String password, String confirmPassword)? changePassword,
+    TResult Function(String newPassword, String confirmNewPassword)?
+        resetPassword,
+    TResult Function(String email)? setEmail,
+    TResult Function(String email)? sendOtp,
+    TResult Function(String email, String otp)? verifyOtp,
+    required TResult orElse(),
+  }) {
+    if (resetPassword != null) {
+      return resetPassword(newPassword, confirmNewPassword);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(ForgotPasswordErrorOccurred value) errorOccurred,
+    required TResult Function(ChangePasswordRequested value) changePassword,
+    required TResult Function(ResetPasswordRequested value) resetPassword,
+    required TResult Function(SetEmailEvent value) setEmail,
+    required TResult Function(SendOtpRequested value) sendOtp,
+    required TResult Function(VerifyOtpRequested value) verifyOtp,
+  }) {
+    return resetPassword(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(ForgotPasswordErrorOccurred value)? errorOccurred,
+    TResult? Function(ChangePasswordRequested value)? changePassword,
+    TResult? Function(ResetPasswordRequested value)? resetPassword,
+    TResult? Function(SetEmailEvent value)? setEmail,
+    TResult? Function(SendOtpRequested value)? sendOtp,
+    TResult? Function(VerifyOtpRequested value)? verifyOtp,
+  }) {
+    return resetPassword?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(ForgotPasswordErrorOccurred value)? errorOccurred,
+    TResult Function(ChangePasswordRequested value)? changePassword,
+    TResult Function(ResetPasswordRequested value)? resetPassword,
+    TResult Function(SetEmailEvent value)? setEmail,
+    TResult Function(SendOtpRequested value)? sendOtp,
+    TResult Function(VerifyOtpRequested value)? verifyOtp,
+    required TResult orElse(),
+  }) {
+    if (resetPassword != null) {
+      return resetPassword(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class ResetPasswordRequested implements ForgotPasswordEvent {
+  const factory ResetPasswordRequested(
+      {required final String newPassword,
+      required final String confirmNewPassword}) = _$ResetPasswordRequestedImpl;
+
+  String get newPassword;
+  String get confirmNewPassword;
+
+  /// Create a copy of ForgotPasswordEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$ResetPasswordRequestedImplCopyWith<_$ResetPasswordRequestedImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
 
@@ -540,6 +764,8 @@ class _$SetEmailEventImpl
     required TResult Function(BaseException<dynamic>? error) errorOccurred,
     required TResult Function(String password, String confirmPassword)
         changePassword,
+    required TResult Function(String newPassword, String confirmNewPassword)
+        resetPassword,
     required TResult Function(String email) setEmail,
     required TResult Function(String email) sendOtp,
     required TResult Function(String email, String otp) verifyOtp,
@@ -552,6 +778,8 @@ class _$SetEmailEventImpl
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(BaseException<dynamic>? error)? errorOccurred,
     TResult? Function(String password, String confirmPassword)? changePassword,
+    TResult? Function(String newPassword, String confirmNewPassword)?
+        resetPassword,
     TResult? Function(String email)? setEmail,
     TResult? Function(String email)? sendOtp,
     TResult? Function(String email, String otp)? verifyOtp,
@@ -564,6 +792,8 @@ class _$SetEmailEventImpl
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(BaseException<dynamic>? error)? errorOccurred,
     TResult Function(String password, String confirmPassword)? changePassword,
+    TResult Function(String newPassword, String confirmNewPassword)?
+        resetPassword,
     TResult Function(String email)? setEmail,
     TResult Function(String email)? sendOtp,
     TResult Function(String email, String otp)? verifyOtp,
@@ -580,6 +810,7 @@ class _$SetEmailEventImpl
   TResult map<TResult extends Object?>({
     required TResult Function(ForgotPasswordErrorOccurred value) errorOccurred,
     required TResult Function(ChangePasswordRequested value) changePassword,
+    required TResult Function(ResetPasswordRequested value) resetPassword,
     required TResult Function(SetEmailEvent value) setEmail,
     required TResult Function(SendOtpRequested value) sendOtp,
     required TResult Function(VerifyOtpRequested value) verifyOtp,
@@ -592,6 +823,7 @@ class _$SetEmailEventImpl
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(ForgotPasswordErrorOccurred value)? errorOccurred,
     TResult? Function(ChangePasswordRequested value)? changePassword,
+    TResult? Function(ResetPasswordRequested value)? resetPassword,
     TResult? Function(SetEmailEvent value)? setEmail,
     TResult? Function(SendOtpRequested value)? sendOtp,
     TResult? Function(VerifyOtpRequested value)? verifyOtp,
@@ -604,6 +836,7 @@ class _$SetEmailEventImpl
   TResult maybeMap<TResult extends Object?>({
     TResult Function(ForgotPasswordErrorOccurred value)? errorOccurred,
     TResult Function(ChangePasswordRequested value)? changePassword,
+    TResult Function(ResetPasswordRequested value)? resetPassword,
     TResult Function(SetEmailEvent value)? setEmail,
     TResult Function(SendOtpRequested value)? sendOtp,
     TResult Function(VerifyOtpRequested value)? verifyOtp,
@@ -710,6 +943,8 @@ class _$SendOtpRequestedImpl
     required TResult Function(BaseException<dynamic>? error) errorOccurred,
     required TResult Function(String password, String confirmPassword)
         changePassword,
+    required TResult Function(String newPassword, String confirmNewPassword)
+        resetPassword,
     required TResult Function(String email) setEmail,
     required TResult Function(String email) sendOtp,
     required TResult Function(String email, String otp) verifyOtp,
@@ -722,6 +957,8 @@ class _$SendOtpRequestedImpl
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(BaseException<dynamic>? error)? errorOccurred,
     TResult? Function(String password, String confirmPassword)? changePassword,
+    TResult? Function(String newPassword, String confirmNewPassword)?
+        resetPassword,
     TResult? Function(String email)? setEmail,
     TResult? Function(String email)? sendOtp,
     TResult? Function(String email, String otp)? verifyOtp,
@@ -734,6 +971,8 @@ class _$SendOtpRequestedImpl
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(BaseException<dynamic>? error)? errorOccurred,
     TResult Function(String password, String confirmPassword)? changePassword,
+    TResult Function(String newPassword, String confirmNewPassword)?
+        resetPassword,
     TResult Function(String email)? setEmail,
     TResult Function(String email)? sendOtp,
     TResult Function(String email, String otp)? verifyOtp,
@@ -750,6 +989,7 @@ class _$SendOtpRequestedImpl
   TResult map<TResult extends Object?>({
     required TResult Function(ForgotPasswordErrorOccurred value) errorOccurred,
     required TResult Function(ChangePasswordRequested value) changePassword,
+    required TResult Function(ResetPasswordRequested value) resetPassword,
     required TResult Function(SetEmailEvent value) setEmail,
     required TResult Function(SendOtpRequested value) sendOtp,
     required TResult Function(VerifyOtpRequested value) verifyOtp,
@@ -762,6 +1002,7 @@ class _$SendOtpRequestedImpl
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(ForgotPasswordErrorOccurred value)? errorOccurred,
     TResult? Function(ChangePasswordRequested value)? changePassword,
+    TResult? Function(ResetPasswordRequested value)? resetPassword,
     TResult? Function(SetEmailEvent value)? setEmail,
     TResult? Function(SendOtpRequested value)? sendOtp,
     TResult? Function(VerifyOtpRequested value)? verifyOtp,
@@ -774,6 +1015,7 @@ class _$SendOtpRequestedImpl
   TResult maybeMap<TResult extends Object?>({
     TResult Function(ForgotPasswordErrorOccurred value)? errorOccurred,
     TResult Function(ChangePasswordRequested value)? changePassword,
+    TResult Function(ResetPasswordRequested value)? resetPassword,
     TResult Function(SetEmailEvent value)? setEmail,
     TResult Function(SendOtpRequested value)? sendOtp,
     TResult Function(VerifyOtpRequested value)? verifyOtp,
@@ -889,6 +1131,8 @@ class _$VerifyOtpRequestedImpl
     required TResult Function(BaseException<dynamic>? error) errorOccurred,
     required TResult Function(String password, String confirmPassword)
         changePassword,
+    required TResult Function(String newPassword, String confirmNewPassword)
+        resetPassword,
     required TResult Function(String email) setEmail,
     required TResult Function(String email) sendOtp,
     required TResult Function(String email, String otp) verifyOtp,
@@ -901,6 +1145,8 @@ class _$VerifyOtpRequestedImpl
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(BaseException<dynamic>? error)? errorOccurred,
     TResult? Function(String password, String confirmPassword)? changePassword,
+    TResult? Function(String newPassword, String confirmNewPassword)?
+        resetPassword,
     TResult? Function(String email)? setEmail,
     TResult? Function(String email)? sendOtp,
     TResult? Function(String email, String otp)? verifyOtp,
@@ -913,6 +1159,8 @@ class _$VerifyOtpRequestedImpl
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(BaseException<dynamic>? error)? errorOccurred,
     TResult Function(String password, String confirmPassword)? changePassword,
+    TResult Function(String newPassword, String confirmNewPassword)?
+        resetPassword,
     TResult Function(String email)? setEmail,
     TResult Function(String email)? sendOtp,
     TResult Function(String email, String otp)? verifyOtp,
@@ -929,6 +1177,7 @@ class _$VerifyOtpRequestedImpl
   TResult map<TResult extends Object?>({
     required TResult Function(ForgotPasswordErrorOccurred value) errorOccurred,
     required TResult Function(ChangePasswordRequested value) changePassword,
+    required TResult Function(ResetPasswordRequested value) resetPassword,
     required TResult Function(SetEmailEvent value) setEmail,
     required TResult Function(SendOtpRequested value) sendOtp,
     required TResult Function(VerifyOtpRequested value) verifyOtp,
@@ -941,6 +1190,7 @@ class _$VerifyOtpRequestedImpl
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(ForgotPasswordErrorOccurred value)? errorOccurred,
     TResult? Function(ChangePasswordRequested value)? changePassword,
+    TResult? Function(ResetPasswordRequested value)? resetPassword,
     TResult? Function(SetEmailEvent value)? setEmail,
     TResult? Function(SendOtpRequested value)? sendOtp,
     TResult? Function(VerifyOtpRequested value)? verifyOtp,
@@ -953,6 +1203,7 @@ class _$VerifyOtpRequestedImpl
   TResult maybeMap<TResult extends Object?>({
     TResult Function(ForgotPasswordErrorOccurred value)? errorOccurred,
     TResult Function(ChangePasswordRequested value)? changePassword,
+    TResult Function(ResetPasswordRequested value)? resetPassword,
     TResult Function(SetEmailEvent value)? setEmail,
     TResult Function(SendOtpRequested value)? sendOtp,
     TResult Function(VerifyOtpRequested value)? verifyOtp,

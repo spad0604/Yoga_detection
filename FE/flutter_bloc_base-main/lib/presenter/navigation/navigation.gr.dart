@@ -173,6 +173,22 @@ class RegisterRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [ResetPasswordPage]
+class ResetPasswordRoute extends PageRouteInfo<void> {
+  const ResetPasswordRoute({List<PageRouteInfo>? children})
+    : super(ResetPasswordRoute.name, initialChildren: children);
+
+  static const String name = 'ResetPasswordRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return WrappedRoute(child: ResetPasswordPage());
+    },
+  );
+}
+
+/// generated route for
 /// [SearchYogaPosePage]
 class SearchYogaPoseRoute extends PageRouteInfo<void> {
   const SearchYogaPoseRoute({List<PageRouteInfo>? children})

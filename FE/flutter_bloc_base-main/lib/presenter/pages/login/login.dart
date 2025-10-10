@@ -79,6 +79,7 @@ class _LoginPageState extends State<LoginPage> {
     final display = raw.startsWith('Errors.') ? tr(raw) : raw.toString();
 
     toastification.show(
+      autoCloseDuration: Duration(seconds: 1),
       context: context,
       type: ToastificationType.error,
       title: Text(display, maxLines: 2, overflow: TextOverflow.ellipsis),

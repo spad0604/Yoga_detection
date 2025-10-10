@@ -16,6 +16,8 @@ import 'package:flutter_starter/data/sources/network/network.dart';
 import 'package:flutter_starter/core/error_code.dart';
 import 'package:flutter_starter/core/exception.dart';
 
+import '../../entities/request/reset_password_request.dart';
+
 @Singleton(as: AuthRepository)
 class DefaultAuthRepository extends AuthRepository {
   final NetworkDataSource _networkDataSource;
@@ -159,4 +161,33 @@ class DefaultAuthRepository extends AuthRepository {
       rethrow;
     }
   }
+
+  @override
+  Future<BaseApiResponse<void>> resetPassword({
+    required String newPassword,
+    required String confirmNewPassword,
+  }) async {
+    try {
+      final res = await _networkDataSource.resetPassword(
+        ResetPasswordRequest(
+          newPassword: newPassword,
+          confirmNewPassword: confirmNewPassword,
+        ),
+      );
+
+      final code = res.code;
+      if (code != null && code != ErrorCode.SUCCESS.code) {
+        final match = ErrorCode.values.firstWhere(
+              (e) => e.code == code,
+          orElse: () => ErrorCode.INTERNAL_SERVER_ERROR,
+        );
+        throw ServerException(match, data: res);
+      }
+
+      return res;
+    } on DioException {
+      rethrow;
+    }
+  }
+
 }

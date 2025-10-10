@@ -55,6 +55,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
                 if (state.status == ForgotPasswordStatus.otpSendSuccess) {
                   toastification.show(
+                    autoCloseDuration: Duration(seconds: 1),
                     context: context,
                     type: ToastificationType.success,
                     title: const Text('OTP sent successfully'),
@@ -73,6 +74,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   if (raw != null) {
                     final display = raw.startsWith('Errors.') ? tr(raw) : raw.toString();
                     toastification.show(
+                      autoCloseDuration: Duration(seconds: 1),
                       context: context,
                       type: ToastificationType.error,
                       title: Text(display),

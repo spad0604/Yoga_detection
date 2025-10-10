@@ -105,15 +105,16 @@ extension GetItInjectableX on _i174.GetIt {
         ));
     gh.singleton<_i470.LoginUseCase>(
         () => _i470.LoginUseCase(authRepository: gh<_i344.AuthRepository>()));
+    gh.singleton<_i212.SendOtpUc>(
+        () => _i212.SendOtpUc(authRepository: gh<_i344.AuthRepository>()));
     gh.singleton<_i412.VerifyLoginStatusUseCase>(() =>
         _i412.VerifyLoginStatusUseCase(
             authRepository: gh<_i344.AuthRepository>()));
-    gh.singleton<_i212.SendOtpUc>(
-        () => _i212.SendOtpUc(authRepository: gh<_i344.AuthRepository>()));
     gh.singleton<_i855.VerifyOtpUc>(
         () => _i855.VerifyOtpUc(authRepository: gh<_i344.AuthRepository>()));
     gh.factory<_i132.ForgotPasswordBloc>(() => _i132.ForgotPasswordBloc(
           changePassword: gh<_i1035.ChangePasswordUseCase>(),
+          authRepository: gh<_i344.AuthRepository>(),
           sendOtpUc: gh<_i212.SendOtpUc>(),
           verifyOtpUc: gh<_i855.VerifyOtpUc>(),
           oauthTokenManager: gh<_i132.OauthTokenManager>(),

@@ -33,4 +33,9 @@ abstract class AuthRepository {
     required String email,
     required String otp,
   });
+
+  Future<BaseApiResponse<void>> resetPassword({
+    required String newPassword,
+    required String confirmNewPassword,
+  });
 }

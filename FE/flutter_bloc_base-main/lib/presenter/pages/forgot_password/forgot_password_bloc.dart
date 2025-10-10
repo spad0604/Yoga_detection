@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_starter/data/entities/request/change_password.dart';
 import 'package:flutter_starter/data/entities/request/request_change_password.dart';
 import 'package:flutter_starter/data/entities/request/verify_otp_request.dart';
+import 'package:flutter_starter/data/repositories/auth_repository/auth_repository.dart';
 import 'package:flutter_starter/data/usecases/change_password_uc.dart';
 import 'package:flutter_starter/data/usecases/send_otp_uc.dart';
 import 'package:flutter_starter/data/usecases/verify_otp_uc.dart';
@@ -17,6 +18,7 @@ import 'package:flutter_starter/presenter/pages/forgot_password/forgot_password_
 @injectable
 class ForgotPasswordBloc extends Bloc<ForgotPasswordEvent, ForgotPasswordState> {
   final OauthTokenManager _oauthTokenManager;
+  final AuthRepository _authRepository;
 
   final ChangePasswordUseCase _changePassword;
   final SendOtpUc _sendOtpUc;
@@ -24,10 +26,12 @@ class ForgotPasswordBloc extends Bloc<ForgotPasswordEvent, ForgotPasswordState> 
 
   ForgotPasswordBloc(
       {required ChangePasswordUseCase changePassword,
+        required AuthRepository authRepository,
       required SendOtpUc sendOtpUc,
       required VerifyOtpUc verifyOtpUc,
       required OauthTokenManager oauthTokenManager})
       : _changePassword = changePassword,
+        _authRepository = authRepository,
         _sendOtpUc = sendOtpUc,
         _verifyOtpUc = verifyOtpUc,
         _oauthTokenManager = oauthTokenManager,
@@ -41,6 +45,8 @@ class ForgotPasswordBloc extends Bloc<ForgotPasswordEvent, ForgotPasswordState> 
     on<SendOtpRequested>(_onSendOtpRequested);
 
     on<VerifyOtpRequested>(_onVerifyOtpRequested);
+
+    on<ResetPasswordRequested>(_onResetPasswordRequested);
   }
 
   @override
@@ -59,7 +65,7 @@ class ForgotPasswordBloc extends Bloc<ForgotPasswordEvent, ForgotPasswordState> 
     final res = await _verifyOtpUc.call(VerifyOtpRequest(email: event.email, otp: event.otp));
 
     //Hung Todo: Lấy được token rồi thì gọi hàm dưới này để hệ thống lưu Token lại, dùng cho việc truyền vào header sau này
-    _oauthTokenManager.saveAccessToken(res.token);
+     await _oauthTokenManager.saveAccessToken(res.token);
 
     emit(state.copyWith(
       email: event.email,
@@ -110,4 +116,20 @@ class ForgotPasswordBloc extends Bloc<ForgotPasswordEvent, ForgotPasswordState> 
       error: event.error,
     ));
   }
+
+  Future<void> _onResetPasswordRequested(
+      ResetPasswordRequested event,
+      Emitter<ForgotPasswordState> emit,
+      ) async {
+    emit(state.copyWith(status: ForgotPasswordStatus.loading));
+
+    await _authRepository.resetPassword(
+      newPassword: event.newPassword,
+      confirmNewPassword: event.confirmNewPassword,
+    );
+
+    emit(state.copyWith(status: ForgotPasswordStatus.success));
+  }
+
+
 }

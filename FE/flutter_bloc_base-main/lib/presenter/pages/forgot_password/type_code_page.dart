@@ -47,16 +47,18 @@ class _TypeCodePageState extends State<TypeCodePage> {
 
           if (state.status == ForgotPasswordStatus.otpVerifySuccess) {
             toastification.show(
+              autoCloseDuration: Duration(seconds: 1),
               context: context,
               type: ToastificationType.success,
               title: const Text('OTP verified successfully'),
             );
-            context.router.push(const ChangePasswordRoute());
+            context.router.push(const ResetPasswordRoute());
           } else if (state.status == ForgotPasswordStatus.failure) {
             final raw = state.error?.message;
             if (raw != null) {
               final display = raw.startsWith('Errors.') ? tr(raw) : raw.toString();
               toastification.show(
+                autoCloseDuration: Duration(seconds: 1),
                 context: context,
                 type: ToastificationType.error,
                 title: Text(display),
