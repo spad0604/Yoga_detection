@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_starter/di.dart';
+import 'package:flutter_starter/gen/app_images.dart';
 import 'package:flutter_starter/presenter/pages/account_page/account_page_bloc.dart';
+import 'package:flutter_starter/presenter/pages/account_page/account_page_event.dart';
+import 'package:flutter_starter/presenter/themes/colors.dart';
 part 'menu_item.dart';
 
 // TODO: Add the page to the router
@@ -26,13 +29,62 @@ class _AccountPagePageState extends State<AccountPagePage> {
   AccountPageBloc get _bloc => context.read<AccountPageBloc>();
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _bloc.add(AccountPageEvent.getInformation());
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Account Page Page'),
+        title: Text(
+          'My Profile',
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black, fontSize: 30),
+        ),
       ),
-      body: const Center(
-        child: Text('Account Page Page'),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: SafeArea(
+            child: SingleChildScrollView(
+          child: Column(
+            children: [
+              CircleAvatar(
+                maxRadius: 45,
+              ),
+              const SizedBox(
+                height: 40,
+              ),
+              Divider(
+                color: Colors.black,
+                thickness: 1,
+              ),
+              const SizedBox(
+                height: 40,
+              ),
+              MenuItem(
+                  title: 'Full Name',
+                  iconPath: AppImages.ic_indentity,
+                  text:
+                      '${_bloc.state.information?.firstName} ${_bloc.state.information?.lastName}' ??
+                          'Nguyen Van A',
+                  onTap: () {}),
+              MenuItem(
+                  title: 'Email',
+                  iconPath: AppImages.ic_mail,
+                  text: '${_bloc.state.information?.email}' ?? 'giapt2k29@cht.edu.vn',
+                  onTap: () {}),
+              MenuItem(
+                  title: 'Phone Number',
+                  iconPath: AppImages.ic_phone,
+                  text: '0975265932',
+                  onTap: () {}),
+              MenuItem(
+                  title: 'Birthday', iconPath: AppImages.ic_phone, text: '01/01/2000', onTap: () {})
+            ],
+          ),
+        )),
       ),
     );
   }

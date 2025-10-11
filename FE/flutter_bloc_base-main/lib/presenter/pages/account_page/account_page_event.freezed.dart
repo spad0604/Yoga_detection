@@ -16,44 +16,43 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$AccountPageEvent {
-  BaseException<dynamic>? get error => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(BaseException<dynamic>? error) errorOccurred,
+    required TResult Function() getInformation,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(BaseException<dynamic>? error)? errorOccurred,
+    TResult? Function()? getInformation,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(BaseException<dynamic>? error)? errorOccurred,
+    TResult Function()? getInformation,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(AccountPageErrorOccurred value) errorOccurred,
+    required TResult Function(AccountPageGetInformation value) getInformation,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(AccountPageErrorOccurred value)? errorOccurred,
+    TResult? Function(AccountPageGetInformation value)? getInformation,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(AccountPageErrorOccurred value)? errorOccurred,
+    TResult Function(AccountPageGetInformation value)? getInformation,
     required TResult orElse(),
   }) =>
-      throw _privateConstructorUsedError;
-
-  /// Create a copy of AccountPageEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $AccountPageEventCopyWith<AccountPageEvent> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -62,8 +61,6 @@ abstract class $AccountPageEventCopyWith<$Res> {
   factory $AccountPageEventCopyWith(
           AccountPageEvent value, $Res Function(AccountPageEvent) then) =
       _$AccountPageEventCopyWithImpl<$Res, AccountPageEvent>;
-  @useResult
-  $Res call({BaseException<dynamic>? error});
 }
 
 /// @nodoc
@@ -78,28 +75,14 @@ class _$AccountPageEventCopyWithImpl<$Res, $Val extends AccountPageEvent>
 
   /// Create a copy of AccountPageEvent
   /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? error = freezed,
-  }) {
-    return _then(_value.copyWith(
-      error: freezed == error
-          ? _value.error
-          : error // ignore: cast_nullable_to_non_nullable
-              as BaseException<dynamic>?,
-    ) as $Val);
-  }
 }
 
 /// @nodoc
-abstract class _$$AccountPageErrorOccurredImplCopyWith<$Res>
-    implements $AccountPageEventCopyWith<$Res> {
+abstract class _$$AccountPageErrorOccurredImplCopyWith<$Res> {
   factory _$$AccountPageErrorOccurredImplCopyWith(
           _$AccountPageErrorOccurredImpl value,
           $Res Function(_$AccountPageErrorOccurredImpl) then) =
       __$$AccountPageErrorOccurredImplCopyWithImpl<$Res>;
-  @override
   @useResult
   $Res call({BaseException<dynamic>? error});
 }
@@ -166,6 +149,7 @@ class _$AccountPageErrorOccurredImpl implements AccountPageErrorOccurred {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(BaseException<dynamic>? error) errorOccurred,
+    required TResult Function() getInformation,
   }) {
     return errorOccurred(error);
   }
@@ -174,6 +158,7 @@ class _$AccountPageErrorOccurredImpl implements AccountPageErrorOccurred {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(BaseException<dynamic>? error)? errorOccurred,
+    TResult? Function()? getInformation,
   }) {
     return errorOccurred?.call(error);
   }
@@ -182,6 +167,7 @@ class _$AccountPageErrorOccurredImpl implements AccountPageErrorOccurred {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(BaseException<dynamic>? error)? errorOccurred,
+    TResult Function()? getInformation,
     required TResult orElse(),
   }) {
     if (errorOccurred != null) {
@@ -194,6 +180,7 @@ class _$AccountPageErrorOccurredImpl implements AccountPageErrorOccurred {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(AccountPageErrorOccurred value) errorOccurred,
+    required TResult Function(AccountPageGetInformation value) getInformation,
   }) {
     return errorOccurred(this);
   }
@@ -202,6 +189,7 @@ class _$AccountPageErrorOccurredImpl implements AccountPageErrorOccurred {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(AccountPageErrorOccurred value)? errorOccurred,
+    TResult? Function(AccountPageGetInformation value)? getInformation,
   }) {
     return errorOccurred?.call(this);
   }
@@ -210,6 +198,7 @@ class _$AccountPageErrorOccurredImpl implements AccountPageErrorOccurred {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(AccountPageErrorOccurred value)? errorOccurred,
+    TResult Function(AccountPageGetInformation value)? getInformation,
     required TResult orElse(),
   }) {
     if (errorOccurred != null) {
@@ -223,13 +212,120 @@ abstract class AccountPageErrorOccurred implements AccountPageEvent {
   const factory AccountPageErrorOccurred(
       [final BaseException<dynamic>? error]) = _$AccountPageErrorOccurredImpl;
 
-  @override
   BaseException<dynamic>? get error;
 
   /// Create a copy of AccountPageEvent
   /// with the given fields replaced by the non-null parameter values.
-  @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$AccountPageErrorOccurredImplCopyWith<_$AccountPageErrorOccurredImpl>
       get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$AccountPageGetInformationImplCopyWith<$Res> {
+  factory _$$AccountPageGetInformationImplCopyWith(
+          _$AccountPageGetInformationImpl value,
+          $Res Function(_$AccountPageGetInformationImpl) then) =
+      __$$AccountPageGetInformationImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$AccountPageGetInformationImplCopyWithImpl<$Res>
+    extends _$AccountPageEventCopyWithImpl<$Res,
+        _$AccountPageGetInformationImpl>
+    implements _$$AccountPageGetInformationImplCopyWith<$Res> {
+  __$$AccountPageGetInformationImplCopyWithImpl(
+      _$AccountPageGetInformationImpl _value,
+      $Res Function(_$AccountPageGetInformationImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of AccountPageEvent
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+
+class _$AccountPageGetInformationImpl implements AccountPageGetInformation {
+  const _$AccountPageGetInformationImpl();
+
+  @override
+  String toString() {
+    return 'AccountPageEvent.getInformation()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$AccountPageGetInformationImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(BaseException<dynamic>? error) errorOccurred,
+    required TResult Function() getInformation,
+  }) {
+    return getInformation();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(BaseException<dynamic>? error)? errorOccurred,
+    TResult? Function()? getInformation,
+  }) {
+    return getInformation?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(BaseException<dynamic>? error)? errorOccurred,
+    TResult Function()? getInformation,
+    required TResult orElse(),
+  }) {
+    if (getInformation != null) {
+      return getInformation();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(AccountPageErrorOccurred value) errorOccurred,
+    required TResult Function(AccountPageGetInformation value) getInformation,
+  }) {
+    return getInformation(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(AccountPageErrorOccurred value)? errorOccurred,
+    TResult? Function(AccountPageGetInformation value)? getInformation,
+  }) {
+    return getInformation?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(AccountPageErrorOccurred value)? errorOccurred,
+    TResult Function(AccountPageGetInformation value)? getInformation,
+    required TResult orElse(),
+  }) {
+    if (getInformation != null) {
+      return getInformation(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class AccountPageGetInformation implements AccountPageEvent {
+  const factory AccountPageGetInformation() = _$AccountPageGetInformationImpl;
 }

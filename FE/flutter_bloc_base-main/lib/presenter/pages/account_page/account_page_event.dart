@@ -6,4 +6,6 @@ part 'account_page_event.freezed.dart';
 @freezed
 class AccountPageEvent with _$AccountPageEvent {
   const factory AccountPageEvent.errorOccurred([BaseException? error]) = AccountPageErrorOccurred;
+
+  const factory AccountPageEvent.getInformation() = AccountPageGetInformation;
 }

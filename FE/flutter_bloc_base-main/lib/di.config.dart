@@ -30,6 +30,7 @@ import 'data/states/auth/auth_bloc.dart' as _i963;
 import 'data/states/camera_detection/camera_detection_bloc.dart' as _i161;
 import 'data/states/settings/settings_bloc.dart' as _i932;
 import 'data/usecases/change_password_uc.dart' as _i1035;
+import 'data/usecases/get_information_uc.dart' as _i924;
 import 'data/usecases/get_list_yoga_poses_uc.dart' as _i856;
 import 'data/usecases/get_yoga_poses_details.dart' as _i404;
 import 'data/usecases/login.dart' as _i470;
@@ -63,7 +64,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     final registerModule = _$RegisterModule();
     gh.factory<_i161.CameraDetectionBloc>(() => _i161.CameraDetectionBloc());
-    gh.factory<_i8.AccountPageBloc>(() => _i8.AccountPageBloc());
     gh.singleton<_i963.AuthBloc>(() => _i963.AuthBloc());
     gh.singleton<_i932.SettingsBloc>(() => _i932.SettingsBloc());
     gh.singleton<_i558.FlutterSecureStorage>(
@@ -72,6 +72,8 @@ extension GetItInjectableX on _i174.GetIt {
         flutterSecureStorage: gh<_i558.FlutterSecureStorage>()));
     gh.singleton<_i551.AppRouter>(
         () => _i551.AppRouter(authBloc: gh<_i963.AuthBloc>()));
+    gh.factory<_i8.AccountPageBloc>(() =>
+        _i8.AccountPageBloc(getInformationUc: gh<_i924.GetInformationUc>()));
     gh.singleton<_i193.LocalDataSource>(() => _i193.LocalDataSource(
         flutterSecureStorage: gh<_i558.FlutterSecureStorage>()));
     gh.singleton<String>(
@@ -105,11 +107,11 @@ extension GetItInjectableX on _i174.GetIt {
         ));
     gh.singleton<_i470.LoginUseCase>(
         () => _i470.LoginUseCase(authRepository: gh<_i344.AuthRepository>()));
-    gh.singleton<_i212.SendOtpUc>(
-        () => _i212.SendOtpUc(authRepository: gh<_i344.AuthRepository>()));
     gh.singleton<_i412.VerifyLoginStatusUseCase>(() =>
         _i412.VerifyLoginStatusUseCase(
             authRepository: gh<_i344.AuthRepository>()));
+    gh.singleton<_i212.SendOtpUc>(
+        () => _i212.SendOtpUc(authRepository: gh<_i344.AuthRepository>()));
     gh.singleton<_i855.VerifyOtpUc>(
         () => _i855.VerifyOtpUc(authRepository: gh<_i344.AuthRepository>()));
     gh.factory<_i132.ForgotPasswordBloc>(() => _i132.ForgotPasswordBloc(

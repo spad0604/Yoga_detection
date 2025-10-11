@@ -5,6 +5,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_starter/di.dart';
 import 'package:flutter_starter/gen/app_images.dart';
+import 'package:flutter_starter/presenter/navigation/navigation.dart';
 import 'package:flutter_starter/presenter/pages/forgot_password/forgot_password_bloc.dart';
 import 'package:flutter_starter/presenter/pages/forgot_password/forgot_password_event.dart';
 import 'package:flutter_starter/presenter/pages/forgot_password/forgot_password_state.dart';
@@ -45,6 +46,23 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
     super.dispose();
   }
 
+  void _changePasswordSuccess() {
+    context.router.replaceAll([const LoginRoute()]);
+  }
+
+  void _changePasswordFailure(String message) {
+    toastification.show(
+      autoCloseDuration: Duration(seconds: 1),
+      context: context,
+      type: ToastificationType.error,
+      title: Text(
+        message,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocListener(
@@ -75,21 +93,10 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
               );
               // Navigate back to the first page (e.g., login) after success
               Navigator.popUntil(context, (route) => route.isFirst);
-            } else if (state.status == ForgotPasswordStatus.failure) {
-              final raw = state.error?.message;
-              if (raw != null) {
-                final display = raw.startsWith('Errors.') ? tr(raw) : raw.toString();
-                toastification.show(
-                  autoCloseDuration: Duration(seconds: 1),
-                  context: context,
-                  type: ToastificationType.error,
-                  title: Text(
-                    display,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                );
-              }
+            } else if (state.status == ForgotPasswordStatus.changePasswordFailure) {
+              _changePasswordFailure('Change password failed');
+            } else if (state.status == ForgotPasswordStatus.changePasswordSuccess) {
+              _changePasswordSuccess();
             }
           },
         ),

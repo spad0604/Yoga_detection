@@ -10,6 +10,8 @@ enum ForgotPasswordStatus {
   failure,
   otpSendSuccess,
   otpVerifySuccess,
+  changePasswordSuccess,
+  changePasswordFailure,
 }
 
 @freezed

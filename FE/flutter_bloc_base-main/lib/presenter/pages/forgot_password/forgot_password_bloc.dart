@@ -26,7 +26,7 @@ class ForgotPasswordBloc extends Bloc<ForgotPasswordEvent, ForgotPasswordState> 
 
   ForgotPasswordBloc(
       {required ChangePasswordUseCase changePassword,
-        required AuthRepository authRepository,
+      required AuthRepository authRepository,
       required SendOtpUc sendOtpUc,
       required VerifyOtpUc verifyOtpUc,
       required OauthTokenManager oauthTokenManager})
@@ -65,7 +65,7 @@ class ForgotPasswordBloc extends Bloc<ForgotPasswordEvent, ForgotPasswordState> 
     final res = await _verifyOtpUc.call(VerifyOtpRequest(email: event.email, otp: event.otp));
 
     //Hung Todo: Lấy được token rồi thì gọi hàm dưới này để hệ thống lưu Token lại, dùng cho việc truyền vào header sau này
-     await _oauthTokenManager.saveAccessToken(res.token);
+    await _oauthTokenManager.saveAccessToken(res.token);
 
     emit(state.copyWith(
       email: event.email,
@@ -118,18 +118,22 @@ class ForgotPasswordBloc extends Bloc<ForgotPasswordEvent, ForgotPasswordState> 
   }
 
   Future<void> _onResetPasswordRequested(
-      ResetPasswordRequested event,
-      Emitter<ForgotPasswordState> emit,
-      ) async {
+    ResetPasswordRequested event,
+    Emitter<ForgotPasswordState> emit,
+  ) async {
     emit(state.copyWith(status: ForgotPasswordStatus.loading));
 
-    await _authRepository.resetPassword(
-      newPassword: event.newPassword,
-      confirmNewPassword: event.confirmNewPassword,
-    );
+    try {
+      await _authRepository.resetPassword(
+        newPassword: event.newPassword,
+        confirmNewPassword: event.confirmNewPassword,
+      );
+      emit(state.copyWith(status: ForgotPasswordStatus.changePasswordSuccess));
+    } catch (e) {
+      add(ForgotPasswordErrorOccurred(BaseException.from(e)));
 
-    emit(state.copyWith(status: ForgotPasswordStatus.success));
+      emit(state.copyWith(status: ForgotPasswordStatus.changePasswordFailure));
+      return;
+    }
   }
-
-
 }

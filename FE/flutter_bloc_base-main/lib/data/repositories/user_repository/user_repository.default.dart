@@ -1,3 +1,4 @@
+import 'package:flutter_starter/data/entities/response/get_information.dart';
 import 'package:flutter_starter/data/repositories/user_repository/user_repository.dart';
 import 'package:flutter_starter/data/sources/network/network.dart';
 import 'package:flutter_starter/data/entities/request/change_password.dart';
@@ -36,6 +37,25 @@ class UserRepositoryImpl implements UserRepository {
         );
         throw ServerException(match, data: res);
       }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<GetInformation> getInformation() async {
+    try {
+      final BaseApiResponse<GetInformation> res = await _networkDataSource.getInformation();
+
+      final code = res.code;
+      if (code != null && code != ErrorCode.SUCCESS.code) {
+        final match = ErrorCode.values.firstWhere(
+          (e) => e.code == code,
+          orElse: () => ErrorCode.INTERNAL_SERVER_ERROR,
+        );
+        throw ServerException(match, data: res);
+      }
+      return res.data!;
     } catch (e) {
       rethrow;
     }
