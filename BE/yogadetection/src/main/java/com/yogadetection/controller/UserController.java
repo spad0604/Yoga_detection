@@ -2,6 +2,7 @@ package com.yogadetection.controller;
 
 import com.yogadetection.dto.request.ChangeInformationRequest;
 import com.yogadetection.dto.response.ApiResponse;
+import com.yogadetection.dto.response.UserInfoResponse;
 import com.yogadetection.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +17,7 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/me")
-    public ApiResponse<Map<String, String>> getInformation(@RequestHeader("Authorization") String token) {
+    public UserInfoResponse getInformation(@RequestHeader("Authorization") String token) {
         return userService.getInformation(token);
     }
 

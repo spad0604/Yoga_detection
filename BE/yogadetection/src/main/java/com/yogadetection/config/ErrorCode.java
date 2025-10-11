@@ -1,8 +1,6 @@
 package com.yogadetection.config;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.NoArgsConstructor;
-import org.springframework.context.annotation.Bean;
 
 @NoArgsConstructor
 public class ErrorCode {
@@ -13,7 +11,7 @@ public class ErrorCode {
     public static final int EMAIL_ALREADY_EXISTS = 103;
     public static final int INVALID_TOKEN = 104;
     public static final int USER_ALREADY_EXISTS = 100;
-    public static final int INVALID_FORMAT = 400;
+    public static final int WRONG_DATA_FORMAT = 400;
     public static final int UNAUTHORIZED_ERROR = 401;
     public static final int ACCESS_DENIED = 403;
     public static final int NOT_FOUND = 404;

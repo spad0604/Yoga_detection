@@ -5,6 +5,6 @@ import com.yogadetection.config.ErrorCode;
 public class BadRequestException extends BaseException {
 
     public BadRequestException() {
-        super(ErrorCode.INVALID_FORMAT);
+        super(ErrorCode.WRONG_DATA_FORMAT);
     }
 }
