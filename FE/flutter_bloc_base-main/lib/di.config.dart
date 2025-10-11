@@ -42,6 +42,7 @@ import 'di.dart' as _i913;
 import 'presenter/navigation/navigation.dart' as _i551;
 import 'presenter/pages/account_page/account_page_bloc.dart' as _i8;
 import 'presenter/pages/forgot_password/forgot_password_bloc.dart' as _i132;
+import 'presenter/pages/history/history_bloc.dart' as _i313;
 import 'presenter/pages/home_page/home_page_bloc.dart' as _i267;
 import 'presenter/pages/login/login_bloc.dart' as _i902;
 import 'presenter/pages/pose_details/pose_details_bloc.dart' as _i133;
@@ -64,6 +65,7 @@ extension GetItInjectableX on _i174.GetIt {
     );
     final registerModule = _$RegisterModule();
     gh.factory<_i161.CameraDetectionBloc>(() => _i161.CameraDetectionBloc());
+    gh.factory<_i313.HistoryBloc>(() => _i313.HistoryBloc());
     gh.singleton<_i963.AuthBloc>(() => _i963.AuthBloc());
     gh.singleton<_i932.SettingsBloc>(() => _i932.SettingsBloc());
     gh.singleton<_i558.FlutterSecureStorage>(
@@ -109,11 +111,11 @@ extension GetItInjectableX on _i174.GetIt {
         _i8.AccountPageBloc(getInformationUc: gh<_i924.GetInformationUc>()));
     gh.singleton<_i470.LoginUseCase>(
         () => _i470.LoginUseCase(authRepository: gh<_i344.AuthRepository>()));
+    gh.singleton<_i212.SendOtpUc>(
+        () => _i212.SendOtpUc(authRepository: gh<_i344.AuthRepository>()));
     gh.singleton<_i412.VerifyLoginStatusUseCase>(() =>
         _i412.VerifyLoginStatusUseCase(
             authRepository: gh<_i344.AuthRepository>()));
-    gh.singleton<_i212.SendOtpUc>(
-        () => _i212.SendOtpUc(authRepository: gh<_i344.AuthRepository>()));
     gh.singleton<_i855.VerifyOtpUc>(
         () => _i855.VerifyOtpUc(authRepository: gh<_i344.AuthRepository>()));
     gh.factory<_i132.ForgotPasswordBloc>(() => _i132.ForgotPasswordBloc(

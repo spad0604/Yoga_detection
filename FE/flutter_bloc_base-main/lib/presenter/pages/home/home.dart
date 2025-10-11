@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_starter/gen/app_images.dart';
 import 'package:flutter_starter/presenter/pages/account_page/account_page.dart';
 import 'package:flutter_starter/presenter/pages/account_page/account_page_bloc.dart';
+import 'package:flutter_starter/presenter/pages/history/history.dart';
 import 'package:flutter_starter/presenter/pages/home_page/home_page.dart';
 import 'package:flutter_starter/presenter/pages/home_page/home_page_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,28 +17,12 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-/// Simple placeholder for the History tab. Replace with your real History page.
-class HistoryPage extends StatelessWidget {
-  const HistoryPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final textStyle = Theme.of(context).textTheme.titleLarge;
-    return Scaffold(
-      body: Center(
-        child: Text('History', style: textStyle),
-      ),
-    );
-  }
-}
-
 class _HomePageState extends State<HomePage> {
   int currentIndex = 0;
 
   late final List<Widget> _pages;
   late final HomePageBloc _homeBloc;
   late final AccountPageBloc _accountBloc;
-
   @override
   void initState() {
     super.initState();
@@ -49,9 +34,8 @@ class _HomePageState extends State<HomePage> {
         value: _homeBloc,
         child: HomePagePage(),
       ),
-      // History (placeholder) — replace with real page when available
-      // placeholder inserted; actual class defined at file-level below
-      const SizedBox.shrink(),
+      // History (real page with calendar)
+      HistoryPage(),
       // Account
       BlocProvider.value(
         value: _accountBloc,
@@ -59,7 +43,6 @@ class _HomePageState extends State<HomePage> {
       ),
     ];
   }
-
 
   @override
   Widget build(BuildContext context) {

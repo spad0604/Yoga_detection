@@ -73,6 +73,7 @@ dependencies:
 
   # Other
   toastification: ^3.0.3
+  calendar_date_picker2: ^2.0.1
 
 dev_dependencies:
   flutter_test:

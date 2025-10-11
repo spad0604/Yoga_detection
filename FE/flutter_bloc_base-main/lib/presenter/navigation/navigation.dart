@@ -15,6 +15,7 @@ import 'package:flutter_starter/presenter/pages/search_yoga_pose/search_yoga_pos
 import '../pages/register/register.dart';
 import '../pages/forgot_password/reset_password.dart';
 import 'package:flutter_starter/data/entities/response/yoga_pose_details.dart';
+import 'package:flutter_starter/presenter/pages/history/history.dart';
 
 part 'navigation.gr.dart';
 
@@ -40,6 +41,7 @@ class AppRouter extends RootStackRouter {
         AutoRoute(path: '/search-yoga-pose', page: SearchYogaPoseRoute.page),
         AutoRoute(path: '/change-password', page: ChangePasswordRoute.page),
         AutoRoute(path: '/reset-password', page: ResetPasswordRoute.page),
+        AutoRoute(path: '/history', page: HistoryRoute.page),
       ];
 
   bool isUnauthorizedRoute(String routeName) => [
