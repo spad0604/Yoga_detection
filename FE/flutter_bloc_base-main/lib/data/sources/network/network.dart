@@ -3,6 +3,7 @@ import 'package:flutter_starter/data/entities/request/register_params.dart';
 import 'package:flutter_starter/data/entities/request/request_change_password.dart';
 import 'package:flutter_starter/data/entities/request/reset_password_request.dart';
 import 'package:flutter_starter/data/entities/request/verify_otp_request.dart';
+import 'package:flutter_starter/data/entities/response/get_information.dart';
 import 'package:flutter_starter/data/entities/response/page_response.dart';
 import 'package:flutter_starter/data/entities/response/register_response.dart';
 import 'package:flutter_starter/data/entities/response/verify_otp.dart';
@@ -50,4 +51,7 @@ abstract class NetworkDataSource {
 
   @POST('api/password/reset')
   Future<BaseApiResponse<void>> resetPassword(@Body() ResetPasswordRequest params);
+
+  @GET('api/user/me')
+  Future<BaseApiResponse<GetInformation>> getInformation();
 }

@@ -17,6 +17,7 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$AccountPageState {
   AccountPageStatus get status => throw _privateConstructorUsedError;
+  GetInformation? get information => throw _privateConstructorUsedError;
   BaseException<dynamic>? get error => throw _privateConstructorUsedError;
 
   /// Create a copy of AccountPageState
@@ -32,7 +33,12 @@ abstract class $AccountPageStateCopyWith<$Res> {
           AccountPageState value, $Res Function(AccountPageState) then) =
       _$AccountPageStateCopyWithImpl<$Res, AccountPageState>;
   @useResult
-  $Res call({AccountPageStatus status, BaseException<dynamic>? error});
+  $Res call(
+      {AccountPageStatus status,
+      GetInformation? information,
+      BaseException<dynamic>? error});
+
+  $GetInformationCopyWith<$Res>? get information;
 }
 
 /// @nodoc
@@ -51,6 +57,7 @@ class _$AccountPageStateCopyWithImpl<$Res, $Val extends AccountPageState>
   @override
   $Res call({
     Object? status = null,
+    Object? information = freezed,
     Object? error = freezed,
   }) {
     return _then(_value.copyWith(
@@ -58,11 +65,29 @@ class _$AccountPageStateCopyWithImpl<$Res, $Val extends AccountPageState>
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as AccountPageStatus,
+      information: freezed == information
+          ? _value.information
+          : information // ignore: cast_nullable_to_non_nullable
+              as GetInformation?,
       error: freezed == error
           ? _value.error
           : error // ignore: cast_nullable_to_non_nullable
               as BaseException<dynamic>?,
     ) as $Val);
+  }
+
+  /// Create a copy of AccountPageState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $GetInformationCopyWith<$Res>? get information {
+    if (_value.information == null) {
+      return null;
+    }
+
+    return $GetInformationCopyWith<$Res>(_value.information!, (value) {
+      return _then(_value.copyWith(information: value) as $Val);
+    });
   }
 }
 
@@ -74,7 +99,13 @@ abstract class _$$AccountPageStateImplCopyWith<$Res>
       __$$AccountPageStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({AccountPageStatus status, BaseException<dynamic>? error});
+  $Res call(
+      {AccountPageStatus status,
+      GetInformation? information,
+      BaseException<dynamic>? error});
+
+  @override
+  $GetInformationCopyWith<$Res>? get information;
 }
 
 /// @nodoc
@@ -91,6 +122,7 @@ class __$$AccountPageStateImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? status = null,
+    Object? information = freezed,
     Object? error = freezed,
   }) {
     return _then(_$AccountPageStateImpl(
@@ -98,6 +130,10 @@ class __$$AccountPageStateImplCopyWithImpl<$Res>
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as AccountPageStatus,
+      information: freezed == information
+          ? _value.information
+          : information // ignore: cast_nullable_to_non_nullable
+              as GetInformation?,
       error: freezed == error
           ? _value.error
           : error // ignore: cast_nullable_to_non_nullable
@@ -110,17 +146,19 @@ class __$$AccountPageStateImplCopyWithImpl<$Res>
 
 class _$AccountPageStateImpl implements _AccountPageState {
   const _$AccountPageStateImpl(
-      {this.status = AccountPageStatus.initial, this.error});
+      {this.status = AccountPageStatus.initial, this.information, this.error});
 
   @override
   @JsonKey()
   final AccountPageStatus status;
   @override
+  final GetInformation? information;
+  @override
   final BaseException<dynamic>? error;
 
   @override
   String toString() {
-    return 'AccountPageState(status: $status, error: $error)';
+    return 'AccountPageState(status: $status, information: $information, error: $error)';
   }
 
   @override
@@ -129,11 +167,13 @@ class _$AccountPageStateImpl implements _AccountPageState {
         (other.runtimeType == runtimeType &&
             other is _$AccountPageStateImpl &&
             (identical(other.status, status) || other.status == status) &&
+            (identical(other.information, information) ||
+                other.information == information) &&
             (identical(other.error, error) || other.error == error));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, status, error);
+  int get hashCode => Object.hash(runtimeType, status, information, error);
 
   /// Create a copy of AccountPageState
   /// with the given fields replaced by the non-null parameter values.
@@ -148,10 +188,13 @@ class _$AccountPageStateImpl implements _AccountPageState {
 abstract class _AccountPageState implements AccountPageState {
   const factory _AccountPageState(
       {final AccountPageStatus status,
+      final GetInformation? information,
       final BaseException<dynamic>? error}) = _$AccountPageStateImpl;
 
   @override
   AccountPageStatus get status;
+  @override
+  GetInformation? get information;
   @override
   BaseException<dynamic>? get error;
 
