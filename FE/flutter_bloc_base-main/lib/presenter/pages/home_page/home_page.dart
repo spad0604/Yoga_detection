@@ -7,7 +7,9 @@ import 'package:flutter_starter/gen/app_images.dart';
 import 'package:flutter_starter/presenter/navigation/navigation.dart';
 import 'package:flutter_starter/presenter/pages/home_page/home_page_bloc.dart';
 import 'package:flutter_starter/presenter/pages/home_page/home_page_event.dart';
+import 'package:flutter_starter/presenter/pages/home_page/home_page_state.dart';
 import 'package:flutter_starter/presenter/themes/colors.dart';
+import 'package:flutter_starter/data/entities/response/yoga_pose_details.dart';
 
 part 'welcome_banner.dart';
 part 'over_view.dart';
@@ -122,21 +124,34 @@ class _HomePagePageState extends State<HomePagePage> {
                         ],
                       ),
                       const SizedBox(height: 12),
-                      ListView.builder(
-                        itemCount: _bloc.state.yogaPoses.length,
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemBuilder: (context, index) {
-                          final items = _bloc.state.yogaPoses[index];
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 12.0),
-                            child: YogaPosesItem(
-                              code: items.code,
-                              title: items.name,
-                              totalTime: items.totalMinutes.toString(),
-                              level: items.level,
-                              imageUrl: items.imageUrl,
-                            ),
+                      BlocBuilder<HomePageBloc, HomePageState>(
+                        builder: (context, state) {
+                          if (state.status == HomePageStatus.loading && state.yogaPoses.isEmpty) {
+                            return const Center(
+                                child: Padding(
+                              padding: EdgeInsets.symmetric(vertical: 24),
+                              child: CircularProgressIndicator(),
+                            ));
+                          }
+                          if (state.status == HomePageStatus.failure) {
+                            return const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 24),
+                              child: Text('Failed to load poses'),
+                            );
+                          }
+                          return ListView.builder(
+                            itemCount: state.yogaPoses.length,
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              final items = state.yogaPoses[index];
+                              return Padding(
+                                padding: const EdgeInsets.only(bottom: 12.0),
+                                child: YogaPosesItem(
+                                  item: items,
+                                ),
+                              );
+                            },
                           );
                         },
                       ),

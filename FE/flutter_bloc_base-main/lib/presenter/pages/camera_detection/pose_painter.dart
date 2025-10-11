@@ -13,6 +13,51 @@ class _PosePainter extends CustomPainter {
     this.showLabels = false,
   });
 
+  // Define proper skeleton connections for human body
+  static const List<List<PoseLandmarkType>> _poseConnections = [
+    // Face
+    [PoseLandmarkType.leftEar, PoseLandmarkType.leftEye],
+    [PoseLandmarkType.leftEye, PoseLandmarkType.nose],
+    [PoseLandmarkType.nose, PoseLandmarkType.rightEye],
+    [PoseLandmarkType.rightEye, PoseLandmarkType.rightEar],
+
+    // Left arm
+    [PoseLandmarkType.leftShoulder, PoseLandmarkType.leftElbow],
+    [PoseLandmarkType.leftElbow, PoseLandmarkType.leftWrist],
+    [PoseLandmarkType.leftWrist, PoseLandmarkType.leftPinky],
+    [PoseLandmarkType.leftWrist, PoseLandmarkType.leftIndex],
+    [PoseLandmarkType.leftWrist, PoseLandmarkType.leftThumb],
+    [PoseLandmarkType.leftPinky, PoseLandmarkType.leftIndex],
+
+    // Right arm
+    [PoseLandmarkType.rightShoulder, PoseLandmarkType.rightElbow],
+    [PoseLandmarkType.rightElbow, PoseLandmarkType.rightWrist],
+    [PoseLandmarkType.rightWrist, PoseLandmarkType.rightPinky],
+    [PoseLandmarkType.rightWrist, PoseLandmarkType.rightIndex],
+    [PoseLandmarkType.rightWrist, PoseLandmarkType.rightThumb],
+    [PoseLandmarkType.rightPinky, PoseLandmarkType.rightIndex],
+
+    // Body
+    [PoseLandmarkType.leftShoulder, PoseLandmarkType.rightShoulder],
+    [PoseLandmarkType.leftShoulder, PoseLandmarkType.leftHip],
+    [PoseLandmarkType.rightShoulder, PoseLandmarkType.rightHip],
+    [PoseLandmarkType.leftHip, PoseLandmarkType.rightHip],
+
+    // Left leg
+    [PoseLandmarkType.leftHip, PoseLandmarkType.leftKnee],
+    [PoseLandmarkType.leftKnee, PoseLandmarkType.leftAnkle],
+    [PoseLandmarkType.leftAnkle, PoseLandmarkType.leftHeel],
+    [PoseLandmarkType.leftAnkle, PoseLandmarkType.leftFootIndex],
+    [PoseLandmarkType.leftHeel, PoseLandmarkType.leftFootIndex],
+
+    // Right leg
+    [PoseLandmarkType.rightHip, PoseLandmarkType.rightKnee],
+    [PoseLandmarkType.rightKnee, PoseLandmarkType.rightAnkle],
+    [PoseLandmarkType.rightAnkle, PoseLandmarkType.rightHeel],
+    [PoseLandmarkType.rightAnkle, PoseLandmarkType.rightFootIndex],
+    [PoseLandmarkType.rightHeel, PoseLandmarkType.rightFootIndex],
+  ];
+
   @override
   void paint(Canvas canvas, Size size) {
     if (imageSize == Size.zero) return;
@@ -23,13 +68,21 @@ class _PosePainter extends CustomPainter {
 
     final paintLine = Paint()
       ..color = Colors.greenAccent
-      ..strokeWidth = 2.0
-      ..style = PaintingStyle.stroke;
+      ..strokeWidth = 3.0
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
 
-    // Map landmark coordinates (in image space) to the preview size.
-    // Use image width/height directly; CameraPreview handles rotation internally.
+    // Calculate scale factors based on how the image fits in the display
+    // The image might be portrait or landscape, and display size is fixed
     final scaleX = size.width / imageSize.width;
     final scaleY = size.height / imageSize.height;
+
+    // Use uniform scaling to maintain aspect ratio
+    final scale = scaleX < scaleY ? scaleX : scaleY;
+
+    // Calculate offsets to center the image
+    final offsetX = (size.width - imageSize.width * scale) / 2;
+    final offsetY = (size.height - imageSize.height * scale) / 2;
 
     Color _colorFor(String label) {
       if (label.startsWith('left')) return Colors.lightBlueAccent;
@@ -37,55 +90,103 @@ class _PosePainter extends CustomPainter {
       return Colors.greenAccent;
     }
 
+    Color _lineColorFor(PoseLandmarkType type1, PoseLandmarkType type2) {
+      final name1 = type1.toString().split('.').last;
+      final name2 = type2.toString().split('.').last;
+      if (name1.startsWith('left') || name2.startsWith('left')) {
+        return Colors.lightBlueAccent;
+      }
+      if (name1.startsWith('right') || name2.startsWith('right')) {
+        return Colors.pinkAccent;
+      }
+      return Colors.greenAccent;
+    }
+
     for (final pose in poses) {
-      final landmarksMap = pose.landmarks; // Map<PoseLandmarkType, PoseLandmark>
-      final landmarks = landmarksMap.values.toList();
+      final landmarksMap = pose.landmarks;
+
+      // Draw skeleton connections first (so points appear on top)
+      for (final connection in _poseConnections) {
+        if (connection.length != 2) continue;
+        final type1 = connection[0];
+        final type2 = connection[1];
+
+        final lm1 = landmarksMap[type1];
+        final lm2 = landmarksMap[type2];
+
+        if (lm1 == null || lm2 == null) continue;
+
+        // Check likelihood/confidence if available
+        if (lm1.likelihood < 0.5 || lm2.likelihood < 0.5) continue;
+
+        double x1 = lm1.x * scale + offsetX;
+        double y1 = lm1.y * scale + offsetY;
+        double x2 = lm2.x * scale + offsetX;
+        double y2 = lm2.y * scale + offsetY;
+
+        if (isFrontCamera) {
+          x1 = size.width - x1;
+          x2 = size.width - x2;
+        }
+
+        final lineColor = _lineColorFor(type1, type2);
+        canvas.drawLine(
+          Offset(x1, y1),
+          Offset(x2, y2),
+          paintLine..color = lineColor.withOpacity(0.8),
+        );
+      }
 
       // Draw points with optional labels
       for (final entry in landmarksMap.entries) {
         final type = entry.key;
         final lm = entry.value;
-        double dx = lm.x * scaleX;
-        double dy = lm.y * scaleY;
-        if (isFrontCamera) dx = size.width - dx; // mirror horizontally for front camera
 
-        final label = type.toString().split('.').last; // e.g., leftShoulder
+        // Skip low confidence landmarks
+        if (lm.likelihood < 0.5) continue;
+
+        double dx = lm.x * scale + offsetX;
+        double dy = lm.y * scale + offsetY;
+        if (isFrontCamera) dx = size.width - dx;
+
+        final label = type.toString().split('.').last;
         final pointColor = _colorFor(label);
 
-        // draw point
-        canvas.drawCircle(Offset(dx, dy), 4.0, paintPointCenter..color = pointColor);
+        // Draw outer circle for better visibility
+        canvas.drawCircle(
+          Offset(dx, dy),
+          6.0,
+          Paint()
+            ..color = Colors.black.withOpacity(0.5)
+            ..style = PaintingStyle.fill,
+        );
 
-        // draw label if enabled
+        // Draw point
+        canvas.drawCircle(
+          Offset(dx, dy),
+          4.0,
+          paintPointCenter..color = pointColor,
+        );
+
+        // Draw label if enabled
         if (showLabels) {
           final textPainter = TextPainter(
             text: TextSpan(
               text: label,
               style: const TextStyle(
                 color: Colors.white,
-                fontSize: 10,
-                fontWeight: FontWeight.w600,
-                shadows: [Shadow(blurRadius: 2, color: Colors.black, offset: Offset(0, 0))],
+                fontSize: 9,
+                fontWeight: FontWeight.bold,
+                shadows: [
+                  Shadow(blurRadius: 3, color: Colors.black, offset: Offset(0, 0)),
+                  Shadow(blurRadius: 3, color: Colors.black, offset: Offset(1, 1)),
+                ],
               ),
             ),
             textDirection: TextDirection.ltr,
             maxLines: 1,
           )..layout();
-          textPainter.paint(canvas, Offset(dx + 6, dy + 2));
-        }
-      }
-
-      // simple connections (adjacent in the list) - replace with real bone pairs if needed
-      if (landmarks.length > 1) {
-        for (int i = 0; i < landmarks.length - 1; i++) {
-          final a = landmarks[i];
-          final b = landmarks[i + 1];
-          double ax = a.x * scaleX, ay = a.y * scaleY;
-          double bx = b.x * scaleX, by = b.y * scaleY;
-          if (isFrontCamera) {
-            ax = size.width - ax;
-            bx = size.width - bx;
-          }
-          canvas.drawLine(Offset(ax, ay), Offset(bx, by), paintLine);
+          textPainter.paint(canvas, Offset(dx + 7, dy - 5));
         }
       }
     }

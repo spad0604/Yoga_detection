@@ -20,12 +20,18 @@ GetInformation _$GetInformationFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$GetInformation {
+  @JsonKey(name: "firstName")
   String get firstName => throw _privateConstructorUsedError;
+  @JsonKey(name: "lastName")
   String get lastName => throw _privateConstructorUsedError;
-  String get dob => throw _privateConstructorUsedError;
+  @JsonKey(name: "dob")
+  DateTime get dob => throw _privateConstructorUsedError;
+  @JsonKey(name: "id")
   String get id => throw _privateConstructorUsedError;
+  @JsonKey(name: "email")
   String get email => throw _privateConstructorUsedError;
-  String get registerDate => throw _privateConstructorUsedError;
+  @JsonKey(name: "registerDate")
+  DateTime get registerDate => throw _privateConstructorUsedError;
 
   /// Serializes this GetInformation to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -44,12 +50,12 @@ abstract class $GetInformationCopyWith<$Res> {
       _$GetInformationCopyWithImpl<$Res, GetInformation>;
   @useResult
   $Res call(
-      {String firstName,
-      String lastName,
-      String dob,
-      String id,
-      String email,
-      String registerDate});
+      {@JsonKey(name: "firstName") String firstName,
+      @JsonKey(name: "lastName") String lastName,
+      @JsonKey(name: "dob") DateTime dob,
+      @JsonKey(name: "id") String id,
+      @JsonKey(name: "email") String email,
+      @JsonKey(name: "registerDate") DateTime registerDate});
 }
 
 /// @nodoc
@@ -86,7 +92,7 @@ class _$GetInformationCopyWithImpl<$Res, $Val extends GetInformation>
       dob: null == dob
           ? _value.dob
           : dob // ignore: cast_nullable_to_non_nullable
-              as String,
+              as DateTime,
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -98,7 +104,7 @@ class _$GetInformationCopyWithImpl<$Res, $Val extends GetInformation>
       registerDate: null == registerDate
           ? _value.registerDate
           : registerDate // ignore: cast_nullable_to_non_nullable
-              as String,
+              as DateTime,
     ) as $Val);
   }
 }
@@ -112,12 +118,12 @@ abstract class _$$GetInformationImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String firstName,
-      String lastName,
-      String dob,
-      String id,
-      String email,
-      String registerDate});
+      {@JsonKey(name: "firstName") String firstName,
+      @JsonKey(name: "lastName") String lastName,
+      @JsonKey(name: "dob") DateTime dob,
+      @JsonKey(name: "id") String id,
+      @JsonKey(name: "email") String email,
+      @JsonKey(name: "registerDate") DateTime registerDate});
 }
 
 /// @nodoc
@@ -152,7 +158,7 @@ class __$$GetInformationImplCopyWithImpl<$Res>
       dob: null == dob
           ? _value.dob
           : dob // ignore: cast_nullable_to_non_nullable
-              as String,
+              as DateTime,
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -164,7 +170,7 @@ class __$$GetInformationImplCopyWithImpl<$Res>
       registerDate: null == registerDate
           ? _value.registerDate
           : registerDate // ignore: cast_nullable_to_non_nullable
-              as String,
+              as DateTime,
     ));
   }
 }
@@ -173,28 +179,34 @@ class __$$GetInformationImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$GetInformationImpl implements _GetInformation {
   const _$GetInformationImpl(
-      {required this.firstName,
-      required this.lastName,
-      required this.dob,
-      required this.id,
-      required this.email,
-      required this.registerDate});
+      {@JsonKey(name: "firstName") required this.firstName,
+      @JsonKey(name: "lastName") required this.lastName,
+      @JsonKey(name: "dob") required this.dob,
+      @JsonKey(name: "id") required this.id,
+      @JsonKey(name: "email") required this.email,
+      @JsonKey(name: "registerDate") required this.registerDate});
 
   factory _$GetInformationImpl.fromJson(Map<String, dynamic> json) =>
       _$$GetInformationImplFromJson(json);
 
   @override
+  @JsonKey(name: "firstName")
   final String firstName;
   @override
+  @JsonKey(name: "lastName")
   final String lastName;
   @override
-  final String dob;
+  @JsonKey(name: "dob")
+  final DateTime dob;
   @override
+  @JsonKey(name: "id")
   final String id;
   @override
+  @JsonKey(name: "email")
   final String email;
   @override
-  final String registerDate;
+  @JsonKey(name: "registerDate")
+  final DateTime registerDate;
 
   @override
   String toString() {
@@ -241,28 +253,35 @@ class _$GetInformationImpl implements _GetInformation {
 
 abstract class _GetInformation implements GetInformation {
   const factory _GetInformation(
-      {required final String firstName,
-      required final String lastName,
-      required final String dob,
-      required final String id,
-      required final String email,
-      required final String registerDate}) = _$GetInformationImpl;
+      {@JsonKey(name: "firstName") required final String firstName,
+      @JsonKey(name: "lastName") required final String lastName,
+      @JsonKey(name: "dob") required final DateTime dob,
+      @JsonKey(name: "id") required final String id,
+      @JsonKey(name: "email") required final String email,
+      @JsonKey(name: "registerDate")
+      required final DateTime registerDate}) = _$GetInformationImpl;
 
   factory _GetInformation.fromJson(Map<String, dynamic> json) =
       _$GetInformationImpl.fromJson;
 
   @override
+  @JsonKey(name: "firstName")
   String get firstName;
   @override
+  @JsonKey(name: "lastName")
   String get lastName;
   @override
-  String get dob;
+  @JsonKey(name: "dob")
+  DateTime get dob;
   @override
+  @JsonKey(name: "id")
   String get id;
   @override
+  @JsonKey(name: "email")
   String get email;
   @override
-  String get registerDate;
+  @JsonKey(name: "registerDate")
+  DateTime get registerDate;
 
   /// Create a copy of GetInformation
   /// with the given fields replaced by the non-null parameter values.

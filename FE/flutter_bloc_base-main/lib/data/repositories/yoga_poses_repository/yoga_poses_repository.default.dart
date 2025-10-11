@@ -12,15 +12,14 @@ class YogaPosesRepositoryImpl implements YogaPosesRepository {
   }) : _networkDataSource = networkDataSource;
 
   @override
-  Future<YogaPoseDetails> getYogaPoseDetails(String code) {
+  Future<YogaPoseDetails> getYogaPoseDetails(String code) async {
     try {
-      return _networkDataSource.getYogaPoseDetails(code).then((response) {
-        if (response.code == 200 && response.data != null) {
-          return response.data!;
-        } else {
-          throw Exception('Failed to load yoga pose details');
-        }
-      });
+      final res = await _networkDataSource.getYogaPoseDetails(code);
+      if (res.code == 200 && res.data != null) {
+        return res.data!;
+      } else {
+        throw Exception('Failed to load yoga pose details');
+      }
     } catch (e) {
       throw Exception('Failed to load yoga pose details: $e');
     }
@@ -29,13 +28,12 @@ class YogaPosesRepositoryImpl implements YogaPosesRepository {
   @override
   Future<List<YogaPoseDetails>> getYogaPoses(int page, int size, String keyword) async {
     try {
-      return await _networkDataSource.getYogaPoses(page, size, keyword).then((response) {
-        if (response.code == 200 && response.data != null) {
-          return response.data!.items ?? [];
-        } else {
-          throw Exception('Failed to load yoga poses');
-        }
-      });
+      final res = await _networkDataSource.getYogaPoses(page, size, keyword);
+      if (res.code == 200 && res.data != null) {
+        return res.data!.items ?? [];
+      } else {
+        throw Exception('Failed to load yoga poses');
+      }
     } catch (e) {
       throw Exception('Failed to load yoga poses: $e');
     }

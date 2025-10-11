@@ -6,7 +6,6 @@ part 'base_api_response.freezed.dart';
 @Freezed(genericArgumentFactories: true)
 class BaseApiResponse<T> with _$BaseApiResponse<T> {
   const factory BaseApiResponse({
-    @JsonKey(name: 'status') required int? status,
     @JsonKey(name: 'code') required int? code,
     @JsonKey(name: 'data') required T? data,
   }) = _BaseApiResponse<T>;

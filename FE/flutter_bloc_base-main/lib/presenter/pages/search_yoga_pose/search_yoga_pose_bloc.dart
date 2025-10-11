@@ -18,9 +18,7 @@ class SearchYogaPoseBloc extends Bloc<SearchYogaPoseEvent, SearchYogaPoseState> 
         super(const SearchYogaPoseState()) {
     on<SearchYogaPoseErrorOccurred>(_onErrorOccurred);
 
-    on<SearchYogaPoseStarted>((event, emit) {
-      _onFetchStarted(event, emit);
-    });
+    on<SearchYogaPoseStarted>(_onFetchStarted);
   }
 
   @override

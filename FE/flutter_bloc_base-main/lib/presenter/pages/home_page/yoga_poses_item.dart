@@ -1,26 +1,14 @@
 part of 'home_page.dart';
 
 class YogaPosesItem extends StatelessWidget {
-  String code;
-  String title;
-  String totalTime;
-  String level;
-  String imageUrl;
-  YogaPosesItem({
-    super.key,
-    required this.code,
-    required this.title,
-    required this.totalTime,
-    required this.level,
-    required this.imageUrl,
-  });
+  final YogaPoseDetails item;
+  const YogaPosesItem({super.key, required this.item});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.read<HomePageBloc>().add(HomePageFetchYogaPoses(code));
-        context.router.push(PoseDetailsRoute());
+        context.router.push(PoseDetailsRoute(item: item));
       },
       child: Container(
         padding: const EdgeInsets.only(right: 8),
@@ -43,7 +31,8 @@ class YogaPosesItem extends StatelessWidget {
               child: Center(
                 child: Image.network(
                   fit: BoxFit.cover,
-                  imageUrl,
+                  item.imageUrl ??
+                      'https://static.wikia.nocookie.net/wiki-shincau-be-but-chi/images/8/8b/8264.jpg/revision/latest?cb=20160521113814&path-prefix=vi',
                   width: 100,
                   height: 100,
                 ),
@@ -52,19 +41,30 @@ class YogaPosesItem extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8),
               child: Center(
-                child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  Text(
-                    title,
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  Text(
-                    '$totalTime mins     $level',
-                    style: TextStyle(fontSize: 14, color: Colors.grey, fontWeight: FontWeight.w400),
-                  ),
-                ]),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: 200,
+                        child: Text(
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                          item.name,
+                          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      Text(
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        '${item.totalMinutes?.toString() ?? '0'} mins     ${item.level ?? 'Beginner'}',
+                        style: TextStyle(
+                            fontSize: 14, color: Colors.grey, fontWeight: FontWeight.w400),
+                      ),
+                    ]),
               ),
             ),
             Spacer(),

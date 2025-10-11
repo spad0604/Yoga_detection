@@ -8,21 +8,21 @@ part of 'get_information.dart';
 
 _$GetInformationImpl _$$GetInformationImplFromJson(Map<String, dynamic> json) =>
     _$GetInformationImpl(
-      firstName: json['first_name'] as String,
-      lastName: json['last_name'] as String,
-      dob: json['dob'] as String,
+      firstName: json['firstName'] as String,
+      lastName: json['lastName'] as String,
+      dob: DateTime.parse(json['dob'] as String),
       id: json['id'] as String,
       email: json['email'] as String,
-      registerDate: json['register_date'] as String,
+      registerDate: DateTime.parse(json['registerDate'] as String),
     );
 
 Map<String, dynamic> _$$GetInformationImplToJson(
         _$GetInformationImpl instance) =>
     <String, dynamic>{
-      'first_name': instance.firstName,
-      'last_name': instance.lastName,
-      'dob': instance.dob,
+      'firstName': instance.firstName,
+      'lastName': instance.lastName,
+      'dob': instance.dob.toIso8601String(),
       'id': instance.id,
       'email': instance.email,
-      'register_date': instance.registerDate,
+      'registerDate': instance.registerDate.toIso8601String(),
     };

@@ -14,12 +14,12 @@ class GetInformation with _$GetInformation {
   //     "registerDate": "2025-09-27T15:07:13.821312"
   // }
   const factory GetInformation({
-    required String firstName,
-    required String lastName,
-    required String dob,
-    required String id,
-    required String email,
-    required String registerDate,
+    @JsonKey(name: "firstName") required String firstName,
+    @JsonKey(name: "lastName") required String lastName,
+    @JsonKey(name: "dob") required DateTime dob,
+    @JsonKey(name: "id") required String id,
+    @JsonKey(name: "email") required String email,
+    @JsonKey(name: "registerDate") required DateTime registerDate,
   }) = _GetInformation;
 
   factory GetInformation.fromJson(Map<String, Object?> json) => _$GetInformationFromJson(json);

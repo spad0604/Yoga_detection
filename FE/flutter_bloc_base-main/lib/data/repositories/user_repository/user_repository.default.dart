@@ -45,7 +45,7 @@ class UserRepositoryImpl implements UserRepository {
   @override
   Future<GetInformation> getInformation() async {
     try {
-      final BaseApiResponse<GetInformation> res = await _networkDataSource.getInformation();
+      final res = await _networkDataSource.getInformation();
 
       final code = res.code;
       if (code != null && code != ErrorCode.SUCCESS.code) {

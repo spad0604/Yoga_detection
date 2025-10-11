@@ -14,6 +14,7 @@ import 'package:flutter_starter/presenter/pages/pose_details/pose_details.dart';
 import 'package:flutter_starter/presenter/pages/search_yoga_pose/search_yoga_pose.dart';
 import '../pages/register/register.dart';
 import '../pages/forgot_password/reset_password.dart';
+import 'package:flutter_starter/data/entities/response/yoga_pose_details.dart';
 
 part 'navigation.gr.dart';
 

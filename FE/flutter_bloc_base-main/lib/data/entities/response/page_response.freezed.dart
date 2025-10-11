@@ -22,19 +22,19 @@ PageResponse<T> _$PageResponseFromJson<T>(
 /// @nodoc
 mixin _$PageResponse<T> {
   @JsonKey(name: 'items')
-  List<T>? get items => throw _privateConstructorUsedError;
+  List<T> get items => throw _privateConstructorUsedError;
   @JsonKey(name: 'page')
   int get page => throw _privateConstructorUsedError;
   @JsonKey(name: 'pageSize')
   int get pageSize => throw _privateConstructorUsedError;
   @JsonKey(name: 'totalElements')
-  int get totalItems => throw _privateConstructorUsedError;
+  int get totalElements => throw _privateConstructorUsedError;
   @JsonKey(name: 'totalPages')
   int get totalPages => throw _privateConstructorUsedError;
   @JsonKey(name: 'hasNext')
-  bool get isLast => throw _privateConstructorUsedError;
+  bool get hasNext => throw _privateConstructorUsedError;
   @JsonKey(name: 'hasPrevious')
-  bool get isFirst => throw _privateConstructorUsedError;
+  bool get hasPrevious => throw _privateConstructorUsedError;
 
   /// Serializes this PageResponse to a JSON map.
   Map<String, dynamic> toJson(Object? Function(T) toJsonT) =>
@@ -54,13 +54,13 @@ abstract class $PageResponseCopyWith<T, $Res> {
       _$PageResponseCopyWithImpl<T, $Res, PageResponse<T>>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'items') List<T>? items,
+      {@JsonKey(name: 'items') List<T> items,
       @JsonKey(name: 'page') int page,
       @JsonKey(name: 'pageSize') int pageSize,
-      @JsonKey(name: 'totalElements') int totalItems,
+      @JsonKey(name: 'totalElements') int totalElements,
       @JsonKey(name: 'totalPages') int totalPages,
-      @JsonKey(name: 'hasNext') bool isLast,
-      @JsonKey(name: 'hasPrevious') bool isFirst});
+      @JsonKey(name: 'hasNext') bool hasNext,
+      @JsonKey(name: 'hasPrevious') bool hasPrevious});
 }
 
 /// @nodoc
@@ -78,19 +78,19 @@ class _$PageResponseCopyWithImpl<T, $Res, $Val extends PageResponse<T>>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? items = freezed,
+    Object? items = null,
     Object? page = null,
     Object? pageSize = null,
-    Object? totalItems = null,
+    Object? totalElements = null,
     Object? totalPages = null,
-    Object? isLast = null,
-    Object? isFirst = null,
+    Object? hasNext = null,
+    Object? hasPrevious = null,
   }) {
     return _then(_value.copyWith(
-      items: freezed == items
+      items: null == items
           ? _value.items
           : items // ignore: cast_nullable_to_non_nullable
-              as List<T>?,
+              as List<T>,
       page: null == page
           ? _value.page
           : page // ignore: cast_nullable_to_non_nullable
@@ -99,21 +99,21 @@ class _$PageResponseCopyWithImpl<T, $Res, $Val extends PageResponse<T>>
           ? _value.pageSize
           : pageSize // ignore: cast_nullable_to_non_nullable
               as int,
-      totalItems: null == totalItems
-          ? _value.totalItems
-          : totalItems // ignore: cast_nullable_to_non_nullable
+      totalElements: null == totalElements
+          ? _value.totalElements
+          : totalElements // ignore: cast_nullable_to_non_nullable
               as int,
       totalPages: null == totalPages
           ? _value.totalPages
           : totalPages // ignore: cast_nullable_to_non_nullable
               as int,
-      isLast: null == isLast
-          ? _value.isLast
-          : isLast // ignore: cast_nullable_to_non_nullable
+      hasNext: null == hasNext
+          ? _value.hasNext
+          : hasNext // ignore: cast_nullable_to_non_nullable
               as bool,
-      isFirst: null == isFirst
-          ? _value.isFirst
-          : isFirst // ignore: cast_nullable_to_non_nullable
+      hasPrevious: null == hasPrevious
+          ? _value.hasPrevious
+          : hasPrevious // ignore: cast_nullable_to_non_nullable
               as bool,
     ) as $Val);
   }
@@ -128,13 +128,13 @@ abstract class _$$PageResponseImplCopyWith<T, $Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'items') List<T>? items,
+      {@JsonKey(name: 'items') List<T> items,
       @JsonKey(name: 'page') int page,
       @JsonKey(name: 'pageSize') int pageSize,
-      @JsonKey(name: 'totalElements') int totalItems,
+      @JsonKey(name: 'totalElements') int totalElements,
       @JsonKey(name: 'totalPages') int totalPages,
-      @JsonKey(name: 'hasNext') bool isLast,
-      @JsonKey(name: 'hasPrevious') bool isFirst});
+      @JsonKey(name: 'hasNext') bool hasNext,
+      @JsonKey(name: 'hasPrevious') bool hasPrevious});
 }
 
 /// @nodoc
@@ -150,19 +150,19 @@ class __$$PageResponseImplCopyWithImpl<T, $Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? items = freezed,
+    Object? items = null,
     Object? page = null,
     Object? pageSize = null,
-    Object? totalItems = null,
+    Object? totalElements = null,
     Object? totalPages = null,
-    Object? isLast = null,
-    Object? isFirst = null,
+    Object? hasNext = null,
+    Object? hasPrevious = null,
   }) {
     return _then(_$PageResponseImpl<T>(
-      items: freezed == items
+      items: null == items
           ? _value._items
           : items // ignore: cast_nullable_to_non_nullable
-              as List<T>?,
+              as List<T>,
       page: null == page
           ? _value.page
           : page // ignore: cast_nullable_to_non_nullable
@@ -171,21 +171,21 @@ class __$$PageResponseImplCopyWithImpl<T, $Res>
           ? _value.pageSize
           : pageSize // ignore: cast_nullable_to_non_nullable
               as int,
-      totalItems: null == totalItems
-          ? _value.totalItems
-          : totalItems // ignore: cast_nullable_to_non_nullable
+      totalElements: null == totalElements
+          ? _value.totalElements
+          : totalElements // ignore: cast_nullable_to_non_nullable
               as int,
       totalPages: null == totalPages
           ? _value.totalPages
           : totalPages // ignore: cast_nullable_to_non_nullable
               as int,
-      isLast: null == isLast
-          ? _value.isLast
-          : isLast // ignore: cast_nullable_to_non_nullable
+      hasNext: null == hasNext
+          ? _value.hasNext
+          : hasNext // ignore: cast_nullable_to_non_nullable
               as bool,
-      isFirst: null == isFirst
-          ? _value.isFirst
-          : isFirst // ignore: cast_nullable_to_non_nullable
+      hasPrevious: null == hasPrevious
+          ? _value.hasPrevious
+          : hasPrevious // ignore: cast_nullable_to_non_nullable
               as bool,
     ));
   }
@@ -195,28 +195,26 @@ class __$$PageResponseImplCopyWithImpl<T, $Res>
 @JsonSerializable(genericArgumentFactories: true)
 class _$PageResponseImpl<T> implements _PageResponse<T> {
   const _$PageResponseImpl(
-      {@JsonKey(name: 'items') required final List<T>? items,
+      {@JsonKey(name: 'items') required final List<T> items,
       @JsonKey(name: 'page') required this.page,
       @JsonKey(name: 'pageSize') required this.pageSize,
-      @JsonKey(name: 'totalElements') required this.totalItems,
+      @JsonKey(name: 'totalElements') required this.totalElements,
       @JsonKey(name: 'totalPages') required this.totalPages,
-      @JsonKey(name: 'hasNext') required this.isLast,
-      @JsonKey(name: 'hasPrevious') required this.isFirst})
+      @JsonKey(name: 'hasNext') required this.hasNext,
+      @JsonKey(name: 'hasPrevious') required this.hasPrevious})
       : _items = items;
 
   factory _$PageResponseImpl.fromJson(
           Map<String, dynamic> json, T Function(Object?) fromJsonT) =>
       _$$PageResponseImplFromJson(json, fromJsonT);
 
-  final List<T>? _items;
+  final List<T> _items;
   @override
   @JsonKey(name: 'items')
-  List<T>? get items {
-    final value = _items;
-    if (value == null) return null;
+  List<T> get items {
     if (_items is EqualUnmodifiableListView) return _items;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(value);
+    return EqualUnmodifiableListView(_items);
   }
 
   @override
@@ -227,20 +225,20 @@ class _$PageResponseImpl<T> implements _PageResponse<T> {
   final int pageSize;
   @override
   @JsonKey(name: 'totalElements')
-  final int totalItems;
+  final int totalElements;
   @override
   @JsonKey(name: 'totalPages')
   final int totalPages;
   @override
   @JsonKey(name: 'hasNext')
-  final bool isLast;
+  final bool hasNext;
   @override
   @JsonKey(name: 'hasPrevious')
-  final bool isFirst;
+  final bool hasPrevious;
 
   @override
   String toString() {
-    return 'PageResponse<$T>(items: $items, page: $page, pageSize: $pageSize, totalItems: $totalItems, totalPages: $totalPages, isLast: $isLast, isFirst: $isFirst)';
+    return 'PageResponse<$T>(items: $items, page: $page, pageSize: $pageSize, totalElements: $totalElements, totalPages: $totalPages, hasNext: $hasNext, hasPrevious: $hasPrevious)';
   }
 
   @override
@@ -252,12 +250,13 @@ class _$PageResponseImpl<T> implements _PageResponse<T> {
             (identical(other.page, page) || other.page == page) &&
             (identical(other.pageSize, pageSize) ||
                 other.pageSize == pageSize) &&
-            (identical(other.totalItems, totalItems) ||
-                other.totalItems == totalItems) &&
+            (identical(other.totalElements, totalElements) ||
+                other.totalElements == totalElements) &&
             (identical(other.totalPages, totalPages) ||
                 other.totalPages == totalPages) &&
-            (identical(other.isLast, isLast) || other.isLast == isLast) &&
-            (identical(other.isFirst, isFirst) || other.isFirst == isFirst));
+            (identical(other.hasNext, hasNext) || other.hasNext == hasNext) &&
+            (identical(other.hasPrevious, hasPrevious) ||
+                other.hasPrevious == hasPrevious));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -267,10 +266,10 @@ class _$PageResponseImpl<T> implements _PageResponse<T> {
       const DeepCollectionEquality().hash(_items),
       page,
       pageSize,
-      totalItems,
+      totalElements,
       totalPages,
-      isLast,
-      isFirst);
+      hasNext,
+      hasPrevious);
 
   /// Create a copy of PageResponse
   /// with the given fields replaced by the non-null parameter values.
@@ -289,13 +288,13 @@ class _$PageResponseImpl<T> implements _PageResponse<T> {
 
 abstract class _PageResponse<T> implements PageResponse<T> {
   const factory _PageResponse(
-          {@JsonKey(name: 'items') required final List<T>? items,
+          {@JsonKey(name: 'items') required final List<T> items,
           @JsonKey(name: 'page') required final int page,
           @JsonKey(name: 'pageSize') required final int pageSize,
-          @JsonKey(name: 'totalElements') required final int totalItems,
+          @JsonKey(name: 'totalElements') required final int totalElements,
           @JsonKey(name: 'totalPages') required final int totalPages,
-          @JsonKey(name: 'hasNext') required final bool isLast,
-          @JsonKey(name: 'hasPrevious') required final bool isFirst}) =
+          @JsonKey(name: 'hasNext') required final bool hasNext,
+          @JsonKey(name: 'hasPrevious') required final bool hasPrevious}) =
       _$PageResponseImpl<T>;
 
   factory _PageResponse.fromJson(
@@ -304,7 +303,7 @@ abstract class _PageResponse<T> implements PageResponse<T> {
 
   @override
   @JsonKey(name: 'items')
-  List<T>? get items;
+  List<T> get items;
   @override
   @JsonKey(name: 'page')
   int get page;
@@ -313,16 +312,16 @@ abstract class _PageResponse<T> implements PageResponse<T> {
   int get pageSize;
   @override
   @JsonKey(name: 'totalElements')
-  int get totalItems;
+  int get totalElements;
   @override
   @JsonKey(name: 'totalPages')
   int get totalPages;
   @override
   @JsonKey(name: 'hasNext')
-  bool get isLast;
+  bool get hasNext;
   @override
   @JsonKey(name: 'hasPrevious')
-  bool get isFirst;
+  bool get hasPrevious;
 
   /// Create a copy of PageResponse
   /// with the given fields replaced by the non-null parameter values.
