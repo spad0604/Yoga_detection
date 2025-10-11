@@ -3,6 +3,7 @@ package com.yogadetection.service.impl;
 import com.yogadetection.dto.request.ChangeInformationRequest;
 import com.yogadetection.dto.request.ChangePasswordRequest;
 import com.yogadetection.dto.response.ApiResponse;
+import com.yogadetection.dto.response.UserInfoResponse;
 import com.yogadetection.entity.User;
 import com.yogadetection.exception.InvalidPasswordException;
 import com.yogadetection.exception.UserNotFoundException;
@@ -26,19 +27,17 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public ApiResponse <Map< String, String >> getInformation(String token) {
-        Map< String, String > map = new HashMap<>();
-        ApiResponse apiResponse = new ApiResponse();
+    public UserInfoResponse getInformation(String token) {
         String email = jwtService.extractUsername(token);
         User user = userRepository.findByEmail(email.toLowerCase()).orElseThrow(() -> new UserNotFoundException());
-        map.put("email", user.getEmail());
-        map.put("id",  user.getId());
-        map.put("firstName", user.getFirstName());
-        map.put("lastName", user.getLastName());
-        map.put("dob", user.getBirthDate().toString());
-        map.put("registerDate", user.getRegisterDate().toString());
-        apiResponse.setData(map);
-        return apiResponse;
+        return UserInfoResponse.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .dob(user.getBirthDate().toString())
+                .registerDate(user.getRegisterDate().toString())
+                .build();
     }
 
     @Override
@@ -62,5 +61,12 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByEmail(email.toLowerCase()).orElseThrow(() -> new UserNotFoundException());
         userRepository.delete(user);
         return new ApiResponse<>();
+    }
+
+    @Override
+    public String getUserId(String token) {
+        String email = jwtService.extractUsername(token);
+        User user = userRepository.findByEmail(email.toLowerCase()).orElseThrow(() -> new UserNotFoundException());
+        return user.getId();
     }
 }

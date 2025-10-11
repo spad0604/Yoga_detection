@@ -1,5 +1,6 @@
 package com.yogadetection.dto;
 
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.Part;
@@ -20,18 +21,16 @@ public class MultipartHttpServletRequest extends HttpServletRequestWrapper {
         parseRequest(request);
     }
 
-    private void parseRequest(HttpServletRequest request) throws IOException {
+    private void parseRequest(HttpServletRequest request) {
         try {
             Collection<Part> parts = request.getParts();
             for (Part part : parts) {
                 String fileName = part.getSubmittedFileName();
 
                 if (fileName != null) {
-                    // Đây là file upload
                     MultipartFile file = new MultipartFile(part);
                     multipartFiles.put(part.getName(), file);
                 } else {
-                    // Đây là field text
                     try (BufferedReader reader = new BufferedReader(
                             new InputStreamReader(part.getInputStream(), StandardCharsets.UTF_8))) {
                         StringBuilder sb = new StringBuilder();
@@ -43,8 +42,8 @@ public class MultipartHttpServletRequest extends HttpServletRequestWrapper {
                     }
                 }
             }
-        } catch (Exception e) {
-            throw new IOException("Failed to parse multipart request", e);
+        } catch (IOException | ServletException e) {
+            e.printStackTrace();
         }
     }
 

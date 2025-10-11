@@ -20,7 +20,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Object>> handleBadRequest(BadRequestException ex) {
         return ResponseEntity
                 .ok()
-                .body(ApiResponse.error(ErrorCode.INVALID_FORMAT));
+                .body(ApiResponse.error(ErrorCode.WRONG_DATA_FORMAT));
     }
 
     @ExceptionHandler(Exception.class)
@@ -40,7 +40,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Object>> handleIllegalArgument(IllegalArgumentException ex) {
         return ResponseEntity
                 .ok()
-                .body(ApiResponse.error(ErrorCode.INVALID_FORMAT));
+                .body(ApiResponse.error(ErrorCode.WRONG_DATA_FORMAT));
     }
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ApiResponse<Object>> handleAccessDenied(AccessDeniedException ex) {

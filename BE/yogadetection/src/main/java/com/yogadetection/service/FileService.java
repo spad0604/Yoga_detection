@@ -1,8 +1,11 @@
 package com.yogadetection.service;
 
-import org.springframework.web.multipart.MultipartFile;
+
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 public interface FileService {
 
-    void upload(MultipartFile file);
+    void saveFile(String assetId, String url, String token, LocalDateTime createDate);
 }
