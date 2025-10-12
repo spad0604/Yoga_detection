@@ -1,16 +1,17 @@
 import 'package:flutter_starter/core/use_case.dart';
+import 'package:flutter_starter/data/entities/response/page_response.dart';
 import 'package:flutter_starter/data/entities/response/yoga_pose_details.dart';
 import 'package:flutter_starter/data/repositories/yoga_poses_repository/yoga_poses_repository.dart';
 import 'package:injectable/injectable.dart';
 
 @singleton
-class GetListYogaPosesUc extends UseCase<List<YogaPoseDetails>, GetListYogaPosesParams> {
+class GetListYogaPosesUc extends UseCase<PageResponse<YogaPoseDetails>, GetListYogaPosesParams> {
   final YogaPosesRepository _repository;
 
   GetListYogaPosesUc(this._repository);
 
   @override
-  Future<List<YogaPoseDetails>> call(GetListYogaPosesParams params) {
+  Future<PageResponse<YogaPoseDetails>> call(GetListYogaPosesParams params) {
     return _repository.getYogaPoses(params.page, params.size, params.keyword);
   }
 }

@@ -1,3 +1,4 @@
+import 'package:flutter_starter/data/entities/response/page_response.dart';
 import 'package:flutter_starter/data/entities/response/yoga_pose_details.dart';
 import 'package:flutter_starter/data/repositories/yoga_poses_repository/yoga_poses_repository.dart';
 import 'package:flutter_starter/data/sources/network/network.dart';
@@ -26,11 +27,11 @@ class YogaPosesRepositoryImpl implements YogaPosesRepository {
   }
 
   @override
-  Future<List<YogaPoseDetails>> getYogaPoses(int page, int size, String keyword) async {
+  Future<PageResponse<YogaPoseDetails>> getYogaPoses(int page, int size, String keyword) async {
     try {
       final res = await _networkDataSource.getYogaPoses(page, size, keyword);
       if (res.code == 200 && res.data != null) {
-        return res.data!.items ?? [];
+        return res.data!;
       } else {
         throw Exception('Failed to load yoga poses');
       }

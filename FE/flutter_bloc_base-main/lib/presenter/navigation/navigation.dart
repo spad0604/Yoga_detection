@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_starter/data/states/auth/auth_bloc.dart';
+import 'package:flutter_starter/presenter/pages/account_page/overall_account_page.dart';
 import 'package:flutter_starter/presenter/pages/home/home.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_starter/presenter/pages/home_page/home_page.dart';
@@ -16,6 +17,7 @@ import '../pages/register/register.dart';
 import '../pages/forgot_password/reset_password.dart';
 import 'package:flutter_starter/data/entities/response/yoga_pose_details.dart';
 import 'package:flutter_starter/presenter/pages/history/history.dart';
+import 'package:flutter_starter/presenter/pages/account_page/overall_account_page.dart';
 
 part 'navigation.gr.dart';
 
@@ -42,6 +44,7 @@ class AppRouter extends RootStackRouter {
         AutoRoute(path: '/change-password', page: ChangePasswordRoute.page),
         AutoRoute(path: '/reset-password', page: ResetPasswordRoute.page),
         AutoRoute(path: '/history', page: HistoryRoute.page),
+        AutoRoute(path: '/overall-account', page: OverallAccountRoute.page),
       ];
 
   bool isUnauthorizedRoute(String routeName) => [

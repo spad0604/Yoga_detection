@@ -21,4 +21,10 @@ abstract class AppImages {
   static const ic_account = 'assets/images/ic_account.png';
   static const ic_calo = 'assets/images/ic_calo.png';
   static const ic_minutes = 'assets/images/ic_minutes.png';
+  static const ic_fill_setting = 'assets/images/ic_fill_setting.png';
+  static const ic_fill_logout = 'assets/images/ic_fill_logout.png';
+  static const ic_fill_help = 'assets/images/ic_fill_help.png';
+  static const ic_fill_indentity = 'assets/images/ic_fill_indentity.png';
+  static const ic_fill_bell = 'assets/images/ic_fill_bell.png';
+  static const banner_image = 'assets/images/banner_image.png';
 }

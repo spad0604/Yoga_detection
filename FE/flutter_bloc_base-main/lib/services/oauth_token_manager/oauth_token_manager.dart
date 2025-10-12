@@ -12,4 +12,8 @@ abstract class OauthTokenManager {
   Future<void> saveRefreshToken(String? token);
 
   Future<void> removeAllTokens();
+
+  Future<void> isFirstLaunch(bool isFirstLaunch);
+
+  Future<bool> getIsFirstLaunch();
 }

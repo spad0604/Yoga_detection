@@ -1,3 +1,4 @@
+import 'package:flutter_starter/data/entities/response/page_response.dart';
 import 'package:flutter_starter/data/entities/response/yoga_pose_details.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:flutter_starter/core/exception.dart';
@@ -15,7 +16,7 @@ enum HomePageStatus {
 class HomePageState with _$HomePageState {
   const factory HomePageState({
     @Default(HomePageStatus.initial) HomePageStatus status,
-    @Default([]) List<YogaPoseDetails> yogaPoses,
+    PageResponse<YogaPoseDetails>? yogaPoses,
     @Default('') String chooseYogaPose,
     BaseException? error,
   }) = _HomePageState;
