@@ -7,6 +7,23 @@ import 'package:flutter_starter/data/states/bloc_observer.dart';
 import 'package:flutter_starter/di.dart';
 import 'package:flutter_starter/presenter/app.dart';
 import 'package:flutter_starter/presenter/languages/languages.dart';
+import 'package:showcaseview/showcaseview.dart';
+import 'package:flutter_starter/services/oauth_token_manager/oauth_token_manager.dart';
+
+final GlobalKey overViewShowCaseWidget = GlobalKey();
+final GlobalKey listYogaPoseShowCaseWidget = GlobalKey();
+final GlobalKey viewAllYogaPoseShowCaseWidget = GlobalKey();
+final GlobalKey listHistoryShowCaseWidget = GlobalKey();
+final GlobalKey accountShowCaseWidget = GlobalKey();
+final GlobalKey notificationShowCaseWidget = GlobalKey();
+final GlobalKey favoriteShowCaseWidget = GlobalKey();
+final GlobalKey bellShowCaseWidget = GlobalKey();
+final GlobalKey heartShowCaseWidget = GlobalKey();
+final GlobalKey minutesShowCaseWidget = GlobalKey();
+final GlobalKey caloriesShowCaseWidget = GlobalKey();
+final GlobalKey playShowCaseWidget = GlobalKey();
+// Notifier used to signal that the home showcase sequence has been completed by the user
+final ValueNotifier<bool> homeShowcaseCompletedNotifier = ValueNotifier<bool>(false);
 
 void configLoading() {
   EasyLoading.instance
@@ -36,9 +53,23 @@ Future<void> main() async {
   Bloc.observer = AppBlocObserver(provider.get<AuthBloc>());
 
   runApp(
-    const AppLanguages(
+    AppLanguages(
       child: GlobalBlocProviders(
-        child: App(),
+        child: ShowCaseWidget(
+          onComplete: (index, key) {
+            // When the Account step completes in the home sequence, mark showcase as finished
+            if (key == accountShowCaseWidget && homeShowcaseCompletedNotifier.value == false) {
+              homeShowcaseCompletedNotifier.value = true;
+              // Persist that the user has seen the home showcase so it won't run again
+              try {
+                provider.get<OauthTokenManager>().isFirstLaunch(false);
+              } catch (_) {
+                // ignore errors when persisting the flag; non-fatal
+              }
+            }
+          },
+          builder: (context) => App(),
+        ),
       ),
     ),
   );

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:typed_data';
 import 'dart:convert';
 import 'dart:io';
+import 'package:path_provider/path_provider.dart';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
@@ -232,10 +233,18 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
       final jsonData = _posesToJson([pose]);
       debugPrint(jsonEncode(jsonData));
 
-      // Write to file for full data
-      final file = File('pose_data.json');
-      await file.writeAsString(jsonEncode(jsonData));
-      debugPrint('Full JSON written to pose_data.json');
+      // Write to file for full data in the app documents directory (safe on Android/iOS)
+      try {
+        final dir = await getApplicationDocumentsDirectory();
+        final timestamp = DateTime.now().toIso8601String().replaceAll(':', '-');
+        final file = File('${dir.path}${Platform.pathSeparator}pose_data_$timestamp.json');
+        await file.writeAsString(jsonEncode(jsonData));
+        debugPrint('Full JSON written to ${file.path}');
+      } catch (e) {
+        // If filesystem isn't writable (e.g., restricted environment), fall back to printing
+        debugPrint('Failed to write pose JSON to file: $e');
+        debugPrint('Pose JSON:\n${jsonEncode(jsonData)}');
+      }
     }
 
     debugPrint('=' * 60 + '\n');
@@ -657,13 +666,6 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
                                   _isCountingDown ? Colors.grey : Colors.green,
                                   Colors.white,
                                   _isCountingDown ? () {} : _startCountdownAndCapture,
-                                ),
-                                // Stop stream
-                                cameraDetectionButton(
-                                  AppImages.ic_pause,
-                                  Colors.white,
-                                  Colors.black,
-                                  () async => await _stopStream(),
                                 ),
                                 // Close
                                 cameraDetectionButton(

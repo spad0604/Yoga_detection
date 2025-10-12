@@ -157,6 +157,22 @@ class LoginRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [OverallAccountPage]
+class OverallAccountRoute extends PageRouteInfo<void> {
+  const OverallAccountRoute({List<PageRouteInfo>? children})
+    : super(OverallAccountRoute.name, initialChildren: children);
+
+  static const String name = 'OverallAccountRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return WrappedRoute(child: OverallAccountPage());
+    },
+  );
+}
+
+/// generated route for
 /// [PoseDetailsPage]
 class PoseDetailsRoute extends PageRouteInfo<PoseDetailsRouteArgs> {
   PoseDetailsRoute({

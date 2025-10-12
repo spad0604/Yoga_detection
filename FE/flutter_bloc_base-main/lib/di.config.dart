@@ -107,7 +107,7 @@ extension GetItInjectableX on _i174.GetIt {
           register: gh<_i686.RegisterUseCase>(),
           oauthTokenManager: gh<_i132.OauthTokenManager>(),
         ));
-    gh.factory<_i8.AccountPageBloc>(() =>
+    gh.singleton<_i8.AccountPageBloc>(() =>
         _i8.AccountPageBloc(getInformationUc: gh<_i924.GetInformationUc>()));
     gh.singleton<_i470.LoginUseCase>(
         () => _i470.LoginUseCase(authRepository: gh<_i344.AuthRepository>()));

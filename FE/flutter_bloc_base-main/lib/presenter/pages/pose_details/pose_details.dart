@@ -11,6 +11,9 @@ import 'package:flutter_starter/presenter/pages/pose_details/pose_details_state.
 import 'package:flutter_starter/presenter/themes/colors.dart';
 import 'package:flutter_starter/presenter/widget/custom_button.dart';
 import 'package:flutter_starter/data/entities/response/yoga_pose_details.dart';
+import 'package:flutter_starter/main.dart';
+import 'package:showcaseview/showcaseview.dart';
+import 'package:flutter_starter/services/oauth_token_manager/oauth_token_manager.dart';
 
 part 'information_details_items.dart';
 
@@ -42,10 +45,37 @@ class PoseDetailsPage extends StatefulWidget implements AutoRouteWrapper {
 
 class _PoseDetailsPageState extends State<PoseDetailsPage> {
   PoseDetailsBloc get _bloc => context.read<PoseDetailsBloc>();
+  bool _detailsShowcaseStarted = false;
 
   @override
   void initState() {
     _bloc.add(PoseDetailsGetDetails(widget.item.id));
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!_detailsShowcaseStarted) {
+        _detailsShowcaseStarted = true;
+        // Only start the details showcase on first app launch. Use persisted flag.
+        provider.get<OauthTokenManager>().getIsFirstLaunch().then((isFirst) {
+          if (isFirst) {
+            try {
+              ShowCaseWidget.of(context).startShowCase([
+                minutesShowCaseWidget,
+                caloriesShowCaseWidget,
+                playShowCaseWidget,
+              ]);
+            } catch (_) {}
+          }
+        }).catchError((_) {
+          // If checking persistence fails, fall back to starting the showcase
+          try {
+            ShowCaseWidget.of(context).startShowCase([
+              minutesShowCaseWidget,
+              caloriesShowCaseWidget,
+              playShowCaseWidget,
+            ]);
+          } catch (_) {}
+        });
+      }
+    });
 
     super.initState();
   }
@@ -89,15 +119,23 @@ class _PoseDetailsPageState extends State<PoseDetailsPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          InformationDetailsItems(
-                            iconPath: AppImages.ic_minutes,
-                            title: 'Duration',
-                            value: '${widget.item.totalMinutes?.toString() ?? '0'} mins',
+                          Showcase(
+                            key: minutesShowCaseWidget,
+                            description: 'Duration of the session',
+                            child: InformationDetailsItems(
+                              iconPath: AppImages.ic_minutes,
+                              title: 'Duration',
+                              value: '${widget.item.totalMinutes?.toString() ?? '0'} mins',
+                            ),
                           ),
-                          InformationDetailsItems(
-                            iconPath: AppImages.ic_calo,
-                            title: 'Calories',
-                            value: '${widget.item.totalCalories?.toString() ?? '0'} cals',
+                          Showcase(
+                            key: caloriesShowCaseWidget,
+                            description: 'Estimated calories burned',
+                            child: InformationDetailsItems(
+                              iconPath: AppImages.ic_calo,
+                              title: 'Calories',
+                              value: '${widget.item.totalCalories?.toString() ?? '0'} cals',
+                            ),
                           ),
                         ],
                       ),
@@ -130,13 +168,17 @@ class _PoseDetailsPageState extends State<PoseDetailsPage> {
                             color: AppColors.grey),
                       ),
                       const SizedBox(height: 24),
-                      CustomButton(
-                        text: 'Start',
-                        backgroundColor: AppColors.primaryBlue,
-                        textColor: Colors.white,
-                        onPressed: () {
-                          context.router.push(CameraDetectionRoute());
-                        },
+                      Showcase(
+                        key: playShowCaseWidget,
+                        description: 'Start practice',
+                        child: CustomButton(
+                          text: 'Start',
+                          backgroundColor: AppColors.primaryBlue,
+                          textColor: Colors.white,
+                          onPressed: () {
+                            context.router.push(CameraDetectionRoute());
+                          },
+                        ),
                       )
                     ],
                   ),
