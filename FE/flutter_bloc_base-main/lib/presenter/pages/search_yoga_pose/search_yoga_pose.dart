@@ -5,8 +5,10 @@ import 'dart:async';
 import 'package:flutter_starter/data/usecases/get_list_yoga_poses_uc.dart';
 import 'package:flutter_starter/di.dart';
 import 'package:flutter_starter/presenter/pages/home_page/home_page.dart';
+import 'package:flutter_starter/presenter/pages/home_page/home_page_bloc.dart';
 import 'package:flutter_starter/presenter/pages/search_yoga_pose/search_yoga_pose_bloc.dart';
 import 'package:flutter_starter/presenter/pages/search_yoga_pose/search_yoga_pose_event.dart';
+import 'package:flutter_starter/presenter/pages/search_yoga_pose/search_yoga_pose_state.dart';
 import 'package:flutter_starter/presenter/themes/colors.dart';
 
 part 'search_text_field.dart';
@@ -18,8 +20,15 @@ class SearchYogaPosePage extends StatefulWidget implements AutoRouteWrapper {
 
   @override
   Widget wrappedRoute(BuildContext context) {
-    return BlocProvider<SearchYogaPoseBloc>(
-      create: (ctx) => provider.get<SearchYogaPoseBloc>(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<SearchYogaPoseBloc>(
+          create: (ctx) => provider.get<SearchYogaPoseBloc>(),
+        ),
+        BlocProvider<HomePageBloc>(
+          create: (ctx) => provider.get<HomePageBloc>(),
+        ),
+      ],
       child: this,
     );
   }
@@ -94,22 +103,28 @@ class _SearchYogaPosePageState extends State<SearchYogaPosePage> {
             ),
             const SizedBox(height: 16),
             Expanded(
-              child: ListView.builder(
-                controller: _scrollController,
-                itemBuilder: (context, index) {
-                  final items = _bloc.state.yogaPoses[index];
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 16.0, left: 8, right: 8),
-                    child: YogaPosesItem(
-                      code: items.code,
-                      imageUrl: items.imageUrl,
-                      level: items.level,
-                      title: items.name,
-                      totalTime: items.totalMinutes.toString(),
-                    ),
+              child: BlocBuilder<SearchYogaPoseBloc, SearchYogaPoseState>(
+                builder: (context, state) {
+                  if (state.status == SearchYogaPoseStatus.loading && state.yogaPoses.isEmpty) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (state.status == SearchYogaPoseStatus.failure) {
+                    return const Center(child: Text('Failed to load poses'));
+                  }
+                  return ListView.builder(
+                    controller: _scrollController,
+                    itemBuilder: (context, index) {
+                      final items = state.yogaPoses[index];
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 16.0, left: 8, right: 8),
+                        child: YogaPosesItem(
+                          item: items,
+                        ),
+                      );
+                    },
+                    itemCount: state.yogaPoses.length,
                   );
                 },
-                itemCount: _bloc.state.yogaPoses.length,
               ),
             )
           ],

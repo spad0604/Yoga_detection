@@ -7,7 +7,7 @@ import 'package:flutter_starter/core/exception.dart';
 import 'package:flutter_starter/presenter/pages/account_page/account_page_event.dart';
 import 'package:flutter_starter/presenter/pages/account_page/account_page_state.dart';
 
-@injectable
+@singleton
 class AccountPageBloc extends Bloc<AccountPageEvent, AccountPageState> {
   final GetInformationUc _getInformationUc;
 

@@ -5,6 +5,7 @@ import 'package:flutter_starter/di.dart';
 import 'package:flutter_starter/gen/app_images.dart';
 import 'package:flutter_starter/presenter/pages/account_page/account_page_bloc.dart';
 import 'package:flutter_starter/presenter/pages/account_page/account_page_event.dart';
+import 'package:flutter_starter/presenter/pages/account_page/account_page_state.dart';
 import 'package:flutter_starter/presenter/themes/colors.dart';
 part 'menu_item.dart';
 
@@ -47,44 +48,51 @@ class _AccountPagePageState extends State<AccountPagePage> {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: SafeArea(
-            child: SingleChildScrollView(
-          child: Column(
-            children: [
-              CircleAvatar(
-                maxRadius: 45,
-              ),
-              const SizedBox(
-                height: 40,
-              ),
-              Divider(
-                color: Colors.black,
-                thickness: 1,
-              ),
-              const SizedBox(
-                height: 40,
-              ),
-              MenuItem(
-                  title: 'Full Name',
-                  iconPath: AppImages.ic_indentity,
-                  text:
-                      '${_bloc.state.information?.firstName} ${_bloc.state.information?.lastName}' ??
-                          'Nguyen Van A',
-                  onTap: () {}),
-              MenuItem(
-                  title: 'Email',
-                  iconPath: AppImages.ic_mail,
-                  text: '${_bloc.state.information?.email}' ?? 'giapt2k29@cht.edu.vn',
-                  onTap: () {}),
-              MenuItem(
-                  title: 'Phone Number',
-                  iconPath: AppImages.ic_phone,
-                  text: '0975265932',
-                  onTap: () {}),
-              MenuItem(
-                  title: 'Birthday', iconPath: AppImages.ic_phone, text: '01/01/2000', onTap: () {})
-            ],
+          child: BlocBuilder<AccountPageBloc, AccountPageState>(
+            builder: (context, state) {
+              return SingleChildScrollView(
+                child: Column(
+                  children: [
+                    const CircleAvatar(
+                      maxRadius: 45,
+                    ),
+                    const SizedBox(height: 40),
+                    const Divider(color: Colors.black, thickness: 1),
+                    const SizedBox(height: 40),
+                    MenuItem(
+                      title: 'Full Name',
+                      iconPath: AppImages.ic_indentity,
+                      text: ((state.information?.firstName ?? '').isEmpty &&
+                              (state.information?.lastName ?? '').isEmpty)
+                          ? 'Nguyen Van A'
+                          : '${state.information?.firstName ?? ''} ${state.information?.lastName ?? ''}'
+                              .trim(),
+                      onTap: () {},
+                    ),
+                    MenuItem(
+                      title: 'Email',
+                      iconPath: AppImages.ic_mail,
+                      text: state.information?.email ?? 'giapt2k29@cht.edu.vn',
+                      onTap: () {},
+                    ),
+                    MenuItem(
+                      title: 'Phone Number',
+                      iconPath: AppImages.ic_phone,
+                      text: '0975265932',
+                      onTap: () {},
+                    ),
+                    MenuItem(
+                      title: 'Birthday',
+                      iconPath: AppImages.ic_phone,
+                      text: '01/01/2000',
+                      onTap: () {},
+                    ),
+                  ],
+                ),
+              );
+            },
           ),
-        )),
+        ),
       ),
     );
   }

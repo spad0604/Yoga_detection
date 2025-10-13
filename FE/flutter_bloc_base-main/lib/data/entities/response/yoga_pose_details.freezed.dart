@@ -20,20 +20,20 @@ YogaPoseDetails _$YogaPoseDetailsFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$YogaPoseDetails {
-  @JsonKey(name: 'code')
-  String get code => throw _privateConstructorUsedError;
+  @JsonKey(readValue: _readId)
+  String get id => throw _privateConstructorUsedError;
   @JsonKey(name: 'name')
   String get name => throw _privateConstructorUsedError;
   @JsonKey(name: 'description')
-  String get description => throw _privateConstructorUsedError;
-  @JsonKey(name: 'total_minutes')
-  int get totalMinutes => throw _privateConstructorUsedError;
-  @JsonKey(name: 'image_url')
-  String get imageUrl => throw _privateConstructorUsedError;
-  @JsonKey(name: 'total_calos')
-  int get totalCalories => throw _privateConstructorUsedError;
+  String? get description => throw _privateConstructorUsedError;
+  @JsonKey(name: 'minutes')
+  int? get totalMinutes => throw _privateConstructorUsedError;
+  @JsonKey(name: 'imageUrl')
+  String? get imageUrl => throw _privateConstructorUsedError;
+  @JsonKey(name: 'calos')
+  int? get totalCalories => throw _privateConstructorUsedError;
   @JsonKey(name: 'level')
-  String get level => throw _privateConstructorUsedError;
+  String? get level => throw _privateConstructorUsedError;
 
   /// Serializes this YogaPoseDetails to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -52,13 +52,13 @@ abstract class $YogaPoseDetailsCopyWith<$Res> {
       _$YogaPoseDetailsCopyWithImpl<$Res, YogaPoseDetails>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'code') String code,
+      {@JsonKey(readValue: _readId) String id,
       @JsonKey(name: 'name') String name,
-      @JsonKey(name: 'description') String description,
-      @JsonKey(name: 'total_minutes') int totalMinutes,
-      @JsonKey(name: 'image_url') String imageUrl,
-      @JsonKey(name: 'total_calos') int totalCalories,
-      @JsonKey(name: 'level') String level});
+      @JsonKey(name: 'description') String? description,
+      @JsonKey(name: 'minutes') int? totalMinutes,
+      @JsonKey(name: 'imageUrl') String? imageUrl,
+      @JsonKey(name: 'calos') int? totalCalories,
+      @JsonKey(name: 'level') String? level});
 }
 
 /// @nodoc
@@ -76,43 +76,43 @@ class _$YogaPoseDetailsCopyWithImpl<$Res, $Val extends YogaPoseDetails>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? code = null,
+    Object? id = null,
     Object? name = null,
-    Object? description = null,
-    Object? totalMinutes = null,
-    Object? imageUrl = null,
-    Object? totalCalories = null,
-    Object? level = null,
+    Object? description = freezed,
+    Object? totalMinutes = freezed,
+    Object? imageUrl = freezed,
+    Object? totalCalories = freezed,
+    Object? level = freezed,
   }) {
     return _then(_value.copyWith(
-      code: null == code
-          ? _value.code
-          : code // ignore: cast_nullable_to_non_nullable
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
               as String,
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      description: null == description
+      description: freezed == description
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
-              as String,
-      totalMinutes: null == totalMinutes
+              as String?,
+      totalMinutes: freezed == totalMinutes
           ? _value.totalMinutes
           : totalMinutes // ignore: cast_nullable_to_non_nullable
-              as int,
-      imageUrl: null == imageUrl
+              as int?,
+      imageUrl: freezed == imageUrl
           ? _value.imageUrl
           : imageUrl // ignore: cast_nullable_to_non_nullable
-              as String,
-      totalCalories: null == totalCalories
+              as String?,
+      totalCalories: freezed == totalCalories
           ? _value.totalCalories
           : totalCalories // ignore: cast_nullable_to_non_nullable
-              as int,
-      level: null == level
+              as int?,
+      level: freezed == level
           ? _value.level
           : level // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
     ) as $Val);
   }
 }
@@ -126,13 +126,13 @@ abstract class _$$YogaPoseDetailsImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'code') String code,
+      {@JsonKey(readValue: _readId) String id,
       @JsonKey(name: 'name') String name,
-      @JsonKey(name: 'description') String description,
-      @JsonKey(name: 'total_minutes') int totalMinutes,
-      @JsonKey(name: 'image_url') String imageUrl,
-      @JsonKey(name: 'total_calos') int totalCalories,
-      @JsonKey(name: 'level') String level});
+      @JsonKey(name: 'description') String? description,
+      @JsonKey(name: 'minutes') int? totalMinutes,
+      @JsonKey(name: 'imageUrl') String? imageUrl,
+      @JsonKey(name: 'calos') int? totalCalories,
+      @JsonKey(name: 'level') String? level});
 }
 
 /// @nodoc
@@ -148,43 +148,43 @@ class __$$YogaPoseDetailsImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? code = null,
+    Object? id = null,
     Object? name = null,
-    Object? description = null,
-    Object? totalMinutes = null,
-    Object? imageUrl = null,
-    Object? totalCalories = null,
-    Object? level = null,
+    Object? description = freezed,
+    Object? totalMinutes = freezed,
+    Object? imageUrl = freezed,
+    Object? totalCalories = freezed,
+    Object? level = freezed,
   }) {
     return _then(_$YogaPoseDetailsImpl(
-      code: null == code
-          ? _value.code
-          : code // ignore: cast_nullable_to_non_nullable
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
               as String,
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      description: null == description
+      description: freezed == description
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
-              as String,
-      totalMinutes: null == totalMinutes
+              as String?,
+      totalMinutes: freezed == totalMinutes
           ? _value.totalMinutes
           : totalMinutes // ignore: cast_nullable_to_non_nullable
-              as int,
-      imageUrl: null == imageUrl
+              as int?,
+      imageUrl: freezed == imageUrl
           ? _value.imageUrl
           : imageUrl // ignore: cast_nullable_to_non_nullable
-              as String,
-      totalCalories: null == totalCalories
+              as String?,
+      totalCalories: freezed == totalCalories
           ? _value.totalCalories
           : totalCalories // ignore: cast_nullable_to_non_nullable
-              as int,
-      level: null == level
+              as int?,
+      level: freezed == level
           ? _value.level
           : level // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
     ));
   }
 }
@@ -193,42 +193,42 @@ class __$$YogaPoseDetailsImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$YogaPoseDetailsImpl implements _YogaPoseDetails {
   const _$YogaPoseDetailsImpl(
-      {@JsonKey(name: 'code') required this.code,
+      {@JsonKey(readValue: _readId) required this.id,
       @JsonKey(name: 'name') required this.name,
-      @JsonKey(name: 'description') required this.description,
-      @JsonKey(name: 'total_minutes') required this.totalMinutes,
-      @JsonKey(name: 'image_url') required this.imageUrl,
-      @JsonKey(name: 'total_calos') required this.totalCalories,
-      @JsonKey(name: 'level') required this.level});
+      @JsonKey(name: 'description') this.description,
+      @JsonKey(name: 'minutes') this.totalMinutes,
+      @JsonKey(name: 'imageUrl') this.imageUrl,
+      @JsonKey(name: 'calos') this.totalCalories,
+      @JsonKey(name: 'level') this.level});
 
   factory _$YogaPoseDetailsImpl.fromJson(Map<String, dynamic> json) =>
       _$$YogaPoseDetailsImplFromJson(json);
 
   @override
-  @JsonKey(name: 'code')
-  final String code;
+  @JsonKey(readValue: _readId)
+  final String id;
   @override
   @JsonKey(name: 'name')
   final String name;
   @override
   @JsonKey(name: 'description')
-  final String description;
+  final String? description;
   @override
-  @JsonKey(name: 'total_minutes')
-  final int totalMinutes;
+  @JsonKey(name: 'minutes')
+  final int? totalMinutes;
   @override
-  @JsonKey(name: 'image_url')
-  final String imageUrl;
+  @JsonKey(name: 'imageUrl')
+  final String? imageUrl;
   @override
-  @JsonKey(name: 'total_calos')
-  final int totalCalories;
+  @JsonKey(name: 'calos')
+  final int? totalCalories;
   @override
   @JsonKey(name: 'level')
-  final String level;
+  final String? level;
 
   @override
   String toString() {
-    return 'YogaPoseDetails(code: $code, name: $name, description: $description, totalMinutes: $totalMinutes, imageUrl: $imageUrl, totalCalories: $totalCalories, level: $level)';
+    return 'YogaPoseDetails(id: $id, name: $name, description: $description, totalMinutes: $totalMinutes, imageUrl: $imageUrl, totalCalories: $totalCalories, level: $level)';
   }
 
   @override
@@ -236,7 +236,7 @@ class _$YogaPoseDetailsImpl implements _YogaPoseDetails {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$YogaPoseDetailsImpl &&
-            (identical(other.code, code) || other.code == code) &&
+            (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.description, description) ||
                 other.description == description) &&
@@ -251,7 +251,7 @@ class _$YogaPoseDetailsImpl implements _YogaPoseDetails {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, code, name, description,
+  int get hashCode => Object.hash(runtimeType, id, name, description,
       totalMinutes, imageUrl, totalCalories, level);
 
   /// Create a copy of YogaPoseDetails
@@ -273,39 +273,38 @@ class _$YogaPoseDetailsImpl implements _YogaPoseDetails {
 
 abstract class _YogaPoseDetails implements YogaPoseDetails {
   const factory _YogaPoseDetails(
-          {@JsonKey(name: 'code') required final String code,
-          @JsonKey(name: 'name') required final String name,
-          @JsonKey(name: 'description') required final String description,
-          @JsonKey(name: 'total_minutes') required final int totalMinutes,
-          @JsonKey(name: 'image_url') required final String imageUrl,
-          @JsonKey(name: 'total_calos') required final int totalCalories,
-          @JsonKey(name: 'level') required final String level}) =
-      _$YogaPoseDetailsImpl;
+      {@JsonKey(readValue: _readId) required final String id,
+      @JsonKey(name: 'name') required final String name,
+      @JsonKey(name: 'description') final String? description,
+      @JsonKey(name: 'minutes') final int? totalMinutes,
+      @JsonKey(name: 'imageUrl') final String? imageUrl,
+      @JsonKey(name: 'calos') final int? totalCalories,
+      @JsonKey(name: 'level') final String? level}) = _$YogaPoseDetailsImpl;
 
   factory _YogaPoseDetails.fromJson(Map<String, dynamic> json) =
       _$YogaPoseDetailsImpl.fromJson;
 
   @override
-  @JsonKey(name: 'code')
-  String get code;
+  @JsonKey(readValue: _readId)
+  String get id;
   @override
   @JsonKey(name: 'name')
   String get name;
   @override
   @JsonKey(name: 'description')
-  String get description;
+  String? get description;
   @override
-  @JsonKey(name: 'total_minutes')
-  int get totalMinutes;
+  @JsonKey(name: 'minutes')
+  int? get totalMinutes;
   @override
-  @JsonKey(name: 'image_url')
-  String get imageUrl;
+  @JsonKey(name: 'imageUrl')
+  String? get imageUrl;
   @override
-  @JsonKey(name: 'total_calos')
-  int get totalCalories;
+  @JsonKey(name: 'calos')
+  int? get totalCalories;
   @override
   @JsonKey(name: 'level')
-  String get level;
+  String? get level;
 
   /// Create a copy of YogaPoseDetails
   /// with the given fields replaced by the non-null parameter values.

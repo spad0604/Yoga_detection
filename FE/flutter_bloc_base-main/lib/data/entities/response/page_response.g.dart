@@ -11,13 +11,13 @@ _$PageResponseImpl<T> _$$PageResponseImplFromJson<T>(
   T Function(Object? json) fromJsonT,
 ) =>
     _$PageResponseImpl<T>(
-      items: (json['items'] as List<dynamic>?)?.map(fromJsonT).toList(),
+      items: (json['items'] as List<dynamic>).map(fromJsonT).toList(),
       page: (json['page'] as num).toInt(),
       pageSize: (json['pageSize'] as num).toInt(),
-      totalItems: (json['totalElements'] as num).toInt(),
+      totalElements: (json['totalElements'] as num).toInt(),
       totalPages: (json['totalPages'] as num).toInt(),
-      isLast: json['hasNext'] as bool,
-      isFirst: json['hasPrevious'] as bool,
+      hasNext: json['hasNext'] as bool,
+      hasPrevious: json['hasPrevious'] as bool,
     );
 
 Map<String, dynamic> _$$PageResponseImplToJson<T>(
@@ -25,11 +25,11 @@ Map<String, dynamic> _$$PageResponseImplToJson<T>(
   Object? Function(T value) toJsonT,
 ) =>
     <String, dynamic>{
-      'items': instance.items?.map(toJsonT).toList(),
+      'items': instance.items.map(toJsonT).toList(),
       'page': instance.page,
       'pageSize': instance.pageSize,
-      'totalElements': instance.totalItems,
+      'totalElements': instance.totalElements,
       'totalPages': instance.totalPages,
-      'hasNext': instance.isLast,
-      'hasPrevious': instance.isFirst,
+      'hasNext': instance.hasNext,
+      'hasPrevious': instance.hasPrevious,
     };

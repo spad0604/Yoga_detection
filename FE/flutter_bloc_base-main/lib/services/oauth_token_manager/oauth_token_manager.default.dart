@@ -16,8 +16,7 @@ class DefaultOauthTokenManager extends OauthTokenManager {
   String get _refreshTokenKey => "$_storagePrefix/refreshToken";
 
   @override
-  Future<Map<String, dynamic>?> getAuthenticatedHeaders(
-      Map<String, dynamic> headers) async {
+  Future<Map<String, dynamic>?> getAuthenticatedHeaders(Map<String, dynamic> headers) async {
     final accessToken = await getAccessToken();
 
     if (accessToken == null) {
@@ -54,5 +53,17 @@ class DefaultOauthTokenManager extends OauthTokenManager {
   Future<void> removeAllTokens() async {
     await _storage.delete(key: _accessTokenKey);
     await _storage.delete(key: _refreshTokenKey);
+  }
+
+  @override
+  Future<void> isFirstLaunch(bool isFirstLaunch) async {
+    await _storage.write(key: 'isFirstLaunch', value: isFirstLaunch.toString());
+  }
+
+  @override
+  Future<bool> getIsFirstLaunch() async {
+    final value = await _storage.read(key: 'isFirstLaunch');
+    if (value == null) return true;
+    return value.toLowerCase() == 'true';
   }
 }

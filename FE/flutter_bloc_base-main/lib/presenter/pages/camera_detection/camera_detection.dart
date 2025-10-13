@@ -1,4 +1,8 @@
+import 'dart:async';
 import 'dart:typed_data';
+import 'dart:convert';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
@@ -53,15 +57,19 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
   Size? _previewSize;
   CameraLensDirection _currentLensDirection = CameraLensDirection.back;
 
+  // Countdown and capture state
+  int _countdown = 0;
+  bool _isCountingDown = false;
+  XFile? _capturedImage;
+  List<Pose> _detectedPoses = [];
+  bool _showResult = false;
+  Size? _capturedImageSize; // Store actual captured image size
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _initializeCameraAndDetector().then((_) {
-      if (mounted) {
-        _startStream();
-      }
-    });
+    _initializeCameraAndDetector();
   }
 
   @override
@@ -72,7 +80,7 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
     if (state == AppLifecycleState.inactive) {
       _stopStream();
     } else if (state == AppLifecycleState.resumed) {
-      _startStream();
+      if (!_showResult) _startStream();
     }
   }
 
@@ -85,9 +93,8 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
   }
 
   Future<void> _switchCamera() async {
-    if (_cameraController == null) return;
+    if (_cameraController == null || _isCountingDown) return;
 
-    // Stop current stream and dispose controller
     await _stopStream();
     await _cameraController!.dispose();
     _cameraController = null;
@@ -99,9 +106,159 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
 
     // Reinitialize with new camera
     await _initializeCameraAndDetector();
-    if (mounted) {
+
+    // Clear previous results
+    setState(() {
+      _showResult = false;
+      _capturedImage = null;
+      _capturedImageSize = null;
+      _detectedPoses = [];
+    });
+
+    // Restart stream
+    await _startStream();
+  }
+
+  // Start countdown and capture after 5 seconds
+  Future<void> _startCountdownAndCapture() async {
+    if (_cameraController == null || _isCountingDown) return;
+
+    setState(() {
+      _isCountingDown = true;
+      _countdown = 5;
+      _showResult = false;
+    });
+
+    // Countdown from 5 to 1
+    for (int i = 5; i > 0; i--) {
+      if (!mounted || !_isCountingDown) return;
+      setState(() => _countdown = i);
+      await Future.delayed(const Duration(seconds: 1));
+    }
+
+    // Capture image
+    await _captureAndDetect();
+
+    setState(() {
+      _isCountingDown = false;
+      _countdown = 0;
+    });
+  }
+
+  // Capture image and detect pose
+  Future<void> _captureAndDetect() async {
+    if (_cameraController == null || _poseDetector == null) return;
+
+    try {
+      // Stop stream before capturing
+      await _stopStream();
+
+      // Take picture
+      final XFile imageFile = await _cameraController!.takePicture();
+      debugPrint('📸 Image captured: ${imageFile.path}');
+
+      // Get actual image dimensions
+      final imageBytes = await imageFile.readAsBytes();
+      final decodedImage = await decodeImageFromList(imageBytes);
+      final actualImageSize = Size(
+        decodedImage.width.toDouble(),
+        decodedImage.height.toDouble(),
+      );
+
+      debugPrint('📐 Image size: ${actualImageSize.width}x${actualImageSize.height}');
+      debugPrint('📐 Preview size: ${_previewSize?.width}x${_previewSize?.height}');
+
+      // Process image with ML Kit
+      final inputImage = InputImage.fromFilePath(imageFile.path);
+      final poses = await _poseDetector!.processImage(inputImage);
+
+      setState(() {
+        _capturedImage = imageFile;
+        _capturedImageSize = actualImageSize;
+        _detectedPoses = poses;
+        _showResult = true;
+      });
+
+      // Print pose data
+      await _printPoseData(poses);
+    } catch (e) {
+      debugPrint('❌ Error capturing/detecting: $e');
+      _showError('Failed to capture or detect pose: $e');
+      setState(() {
+        _isCountingDown = false;
+        _countdown = 0;
+        _showResult = false;
+        _capturedImageSize = null;
+      });
+      // Restart stream on error
       await _startStream();
     }
+  }
+
+  // Print detailed pose data
+  Future<void> _printPoseData(List<Pose> poses) async {
+    if (poses.isEmpty) {
+      debugPrint('\n⚠️ NO POSES DETECTED');
+      debugPrint('=' * 60);
+      return;
+    }
+
+    debugPrint('\n' + '=' * 60);
+    debugPrint('🎯 POSE DETECTION RESULTS');
+    debugPrint('=' * 60);
+    debugPrint('Total poses detected: ${poses.length}');
+
+    for (int i = 0; i < poses.length; i++) {
+      final pose = poses[i];
+      debugPrint('\n--- Pose #${i + 1} ---');
+      debugPrint('Total landmarks: ${pose.landmarks.length}');
+      debugPrint('\nLandmark coordinates:');
+
+      // Sort landmarks by type name for better readability
+      final sortedEntries = pose.landmarks.entries.toList()
+        ..sort((a, b) => a.key.toString().compareTo(b.key.toString()));
+
+      for (final entry in sortedEntries) {
+        final typeName = entry.key.toString().split('.').last;
+        final lm = entry.value;
+        debugPrint('  $typeName: '
+            'x=${lm.x.toStringAsFixed(2)}, '
+            'y=${lm.y.toStringAsFixed(2)}, '
+            'z=${lm.z.toStringAsFixed(2)}, '
+            'likelihood=${lm.likelihood.toStringAsFixed(3)}');
+      }
+
+      // Print JSON format
+      debugPrint('\nJSON format:');
+      final jsonData = _posesToJson([pose]);
+      debugPrint(jsonEncode(jsonData));
+
+      // Write to file for full data in the app documents directory (safe on Android/iOS)
+      try {
+        final dir = await getApplicationDocumentsDirectory();
+        final timestamp = DateTime.now().toIso8601String().replaceAll(':', '-');
+        final file = File('${dir.path}${Platform.pathSeparator}pose_data_$timestamp.json');
+        await file.writeAsString(jsonEncode(jsonData));
+        debugPrint('Full JSON written to ${file.path}');
+      } catch (e) {
+        // If filesystem isn't writable (e.g., restricted environment), fall back to printing
+        debugPrint('Failed to write pose JSON to file: $e');
+        debugPrint('Pose JSON:\n${jsonEncode(jsonData)}');
+      }
+    }
+
+    debugPrint('=' * 60 + '\n');
+  }
+
+  // Reset to live preview mode
+  Future<void> _resetToLiveMode() async {
+    setState(() {
+      _showResult = false;
+      _capturedImage = null;
+      _capturedImageSize = null;
+      _detectedPoses = [];
+    });
+    await _startStream();
   }
 
   Future<void> _initializeCameraAndDetector() async {
@@ -130,12 +287,27 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
       try {
         final controller = CameraController(
           selectedCamera,
-          ResolutionPreset.low, // Start with lowest resolution
+          ResolutionPreset.high, // Use high resolution for better pose detection
           enableAudio: false,
           imageFormatGroup: ImageFormatGroup.yuv420,
         );
 
         await controller.initialize();
+
+        // Try to enable autofocus/exposure for a sharper preview
+        try {
+          await controller.setFocusMode(FocusMode.auto);
+        } catch (_) {}
+        try {
+          // Center focus/exposure point (normalized 0..1)
+          await controller.setFocusPoint(const Offset(0.5, 0.5));
+        } catch (_) {}
+        try {
+          await controller.setExposureMode(ExposureMode.auto);
+        } catch (_) {}
+        try {
+          await controller.setExposurePoint(const Offset(0.5, 0.5));
+        } catch (_) {}
 
         if (controller.value.isInitialized) {
           _cameraController = controller;
@@ -151,7 +323,21 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
       }
 
       _previewSize = _cameraController!.value.previewSize;
-      _poseDetector = PoseDetector(options: PoseDetectorOptions(mode: PoseDetectionMode.stream));
+
+      // Use accurate pose detection for better results
+      _poseDetector = PoseDetector(
+        options: PoseDetectorOptions(
+          mode: PoseDetectionMode.stream,
+          model: PoseDetectionModel.accurate,
+        ),
+      );
+
+      debugPrint('Camera initialized: ${_previewSize?.width}x${_previewSize?.height}');
+
+      // Auto-start stream for live preview
+      if (mounted) {
+        await _startStream();
+      }
     } catch (e) {
       _showError('Failed to initialize camera: ${e.toString()}');
     }
@@ -190,12 +376,61 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
 
       final poses = await _poseDetector!.processImage(inputImage);
 
+      // Log detection results
+      if (poses.isNotEmpty) {
+        debugPrint(
+            '✅ Detected ${poses.length} pose(s) with ${poses.first.landmarks.length} landmarks');
+
+        // Optionally log JSON data for debugging (currently disabled for performance)
+        // Uncomment to see full pose data:
+        // try {
+        //   final jsonData = _posesToJson(poses);
+        //   debugPrint(jsonEncode(jsonData));
+        // } catch (_) {
+        //   // ignore serialization errors
+        // }
+      } else {
+        // Only log occasionally to avoid spam
+        if (DateTime.now().millisecondsSinceEpoch % 30 == 0) {
+          debugPrint('⚠️ No poses detected - ensure person is fully visible in frame');
+        }
+      }
+
       _bloc.add(CameraDetectionEvent.posesUpdated(poses));
     } catch (e) {
       _bloc.add(const CameraDetectionEvent.errorOccurred());
     } finally {
       _isProcessing = false;
     }
+  }
+
+  // Convert the detected poses into a JSON-friendly structure.
+  // Example output:
+  // [
+  //   {
+  //     "landmarks": [
+  //       {"type": "leftShoulder", "x": 123.4, "y": 567.8, "z": 0.0},
+  //       ...
+  //     ]
+  //   }
+  // ]
+  List<Map<String, dynamic>> _posesToJson(List<Pose> poses) {
+    return poses.map((pose) {
+      final landmarksMap = pose.landmarks; // Map<PoseLandmarkType, PoseLandmark>
+      final landmarksJson = landmarksMap.entries.map((entry) {
+        final typeName = entry.key.toString().split('.').last;
+        final lm = entry.value;
+        return {
+          'type': typeName,
+          'x': lm.x,
+          'y': lm.y,
+          'z': lm.z,
+        };
+      }).toList();
+      return {
+        'landmarks': landmarksJson,
+      };
+    }).toList();
   }
 
   Future<void> _startStream() async {
@@ -239,7 +474,7 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
                     height: 50,
                     child: Center(
                       child: Text(
-                        'Live',
+                        _showResult ? 'Pose Detected' : 'Live Camera',
                         style: Theme.of(context)
                             .textTheme
                             .titleLarge
@@ -257,37 +492,125 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
                         child: Stack(
                           fit: StackFit.expand,
                           children: [
-                            CameraPreview(_controller),
-                            BlocBuilder<CameraDetectionBloc, CameraDetectionState>(
-                              builder: (context, state) {
-                                final poses = state.poseList;
-                                if (_previewSize == null || poses.isEmpty) {
-                                  return const SizedBox.shrink();
-                                }
-                                return CustomPaint(
-                                  painter: _PosePainter(
-                                    poses: poses,
-                                    imageSize: _previewSize!,
-                                    isFrontCamera: _controller.description.lensDirection ==
-                                        CameraLensDirection.front,
-                                    showLabels: true,
+                            // Show captured image or live camera preview
+                            if (_showResult && _capturedImage != null)
+                              Image.file(
+                                File(_capturedImage!.path),
+                                fit: BoxFit.contain, // Use contain to maintain aspect ratio
+                              )
+                            else
+                              CameraPreview(_controller),
+
+                            // Show pose skeleton when available
+                            if (_showResult &&
+                                _detectedPoses.isNotEmpty &&
+                                _capturedImageSize != null)
+                              CustomPaint(
+                                painter: _PosePainter(
+                                  poses: _detectedPoses,
+                                  imageSize: _capturedImageSize!, // Use actual captured image size
+                                  isFrontCamera: _controller.description.lensDirection ==
+                                      CameraLensDirection.front,
+                                  showLabels: true, // Show labels on captured image
+                                ),
+                              )
+                            else if (!_showResult)
+                              BlocBuilder<CameraDetectionBloc, CameraDetectionState>(
+                                builder: (context, state) {
+                                  final poses = state.poseList;
+                                  if (_previewSize == null || poses.isEmpty) {
+                                    return const SizedBox.shrink();
+                                  }
+
+                                  return CustomPaint(
+                                    painter: _PosePainter(
+                                      poses: poses,
+                                      imageSize: _previewSize!,
+                                      isFrontCamera: _controller.description.lensDirection ==
+                                          CameraLensDirection.front,
+                                      showLabels: false,
+                                    ),
+                                  );
+                                },
+                              ),
+
+                            // Countdown overlay (mờ ở giữa màn hình)
+                            if (_isCountingDown && _countdown > 0)
+                              Container(
+                                color: Colors.black.withOpacity(0.3),
+                                child: Center(
+                                  child: Container(
+                                    width: 150,
+                                    height: 150,
+                                    decoration: BoxDecoration(
+                                      color: Colors.black.withOpacity(0.6),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        '$_countdown',
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 72,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
                                   ),
-                                );
-                              },
-                            ),
-                            // Camera rotation button
-                            Positioned(
-                              bottom: 20,
-                              right: 20,
-                              child: FloatingActionButton(
-                                onPressed: _switchCamera,
-                                backgroundColor: Colors.black.withOpacity(0.7),
-                                child: const Icon(
-                                  Icons.flip_camera_ios,
-                                  color: Colors.white,
                                 ),
                               ),
-                            ),
+
+                            // No pose detected message (only on result view)
+                            if (_showResult && _detectedPoses.isEmpty)
+                              Center(
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+                                  decoration: BoxDecoration(
+                                    color: Colors.red.withOpacity(0.8),
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  child: const Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(Icons.error_outline, color: Colors.white, size: 48),
+                                      SizedBox(height: 10),
+                                      Text(
+                                        'No Pose Detected',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      SizedBox(height: 5),
+                                      Text(
+                                        'Please try again with better positioning',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+                            // Camera flip button (only in live mode)
+                            if (!_showResult && !_isCountingDown)
+                              Positioned(
+                                bottom: 20,
+                                right: 20,
+                                child: FloatingActionButton(
+                                  onPressed: _switchCamera,
+                                  backgroundColor: Colors.black.withOpacity(0.7),
+                                  child: const Icon(
+                                    Icons.flip_camera_ios,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
                           ],
                         ),
                       ),
@@ -297,22 +620,65 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
                   SafeArea(
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          cameraDetectionButton(AppImages.ic_video, Colors.white, Colors.black,
-                              () async => await _startStream()),
-                          cameraDetectionButton(
-                              AppImages.ic_present, Colors.white, Colors.black, () {}),
-                          cameraDetectionButton(AppImages.ic_pause, Colors.white, Colors.black,
-                              () async => await _stopStream()),
-                          cameraDetectionButton(AppImages.ic_close, Colors.red, Colors.white,
-                              () async {
-                            await _stopStream();
-                            context.router.maybePop();
-                          })
-                        ],
-                      ),
+                      child: _showResult
+                          ? Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                // Back to live view
+                                cameraDetectionButton(
+                                  AppImages.ic_video,
+                                  Colors.blue,
+                                  Colors.white,
+                                  _resetToLiveMode,
+                                ),
+                                // Capture again
+                                cameraDetectionButton(
+                                  AppImages.ic_present,
+                                  Colors.green,
+                                  Colors.white,
+                                  () async {
+                                    await _resetToLiveMode();
+                                    await _startCountdownAndCapture();
+                                  },
+                                ),
+                                // Close
+                                cameraDetectionButton(
+                                  AppImages.ic_close,
+                                  Colors.red,
+                                  Colors.white,
+                                  () => context.router.maybePop(),
+                                ),
+                              ],
+                            )
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                // Start stream
+                                cameraDetectionButton(
+                                  AppImages.ic_video,
+                                  Colors.white,
+                                  Colors.black,
+                                  () async => await _startStream(),
+                                ),
+                                // Capture with countdown
+                                cameraDetectionButton(
+                                  AppImages.ic_present,
+                                  _isCountingDown ? Colors.grey : Colors.green,
+                                  Colors.white,
+                                  _isCountingDown ? () {} : _startCountdownAndCapture,
+                                ),
+                                // Close
+                                cameraDetectionButton(
+                                  AppImages.ic_close,
+                                  Colors.red,
+                                  Colors.white,
+                                  () async {
+                                    await _stopStream();
+                                    context.router.maybePop();
+                                  },
+                                )
+                              ],
+                            ),
                     ),
                   )
                 ],

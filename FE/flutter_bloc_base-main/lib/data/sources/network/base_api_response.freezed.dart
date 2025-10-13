@@ -21,8 +21,6 @@ BaseApiResponse<T> _$BaseApiResponseFromJson<T>(
 
 /// @nodoc
 mixin _$BaseApiResponse<T> {
-  @JsonKey(name: 'status')
-  int? get status => throw _privateConstructorUsedError;
   @JsonKey(name: 'code')
   int? get code => throw _privateConstructorUsedError;
   @JsonKey(name: 'data')
@@ -45,10 +43,7 @@ abstract class $BaseApiResponseCopyWith<T, $Res> {
           BaseApiResponse<T> value, $Res Function(BaseApiResponse<T>) then) =
       _$BaseApiResponseCopyWithImpl<T, $Res, BaseApiResponse<T>>;
   @useResult
-  $Res call(
-      {@JsonKey(name: 'status') int? status,
-      @JsonKey(name: 'code') int? code,
-      @JsonKey(name: 'data') T? data});
+  $Res call({@JsonKey(name: 'code') int? code, @JsonKey(name: 'data') T? data});
 }
 
 /// @nodoc
@@ -66,15 +61,10 @@ class _$BaseApiResponseCopyWithImpl<T, $Res, $Val extends BaseApiResponse<T>>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? status = freezed,
     Object? code = freezed,
     Object? data = freezed,
   }) {
     return _then(_value.copyWith(
-      status: freezed == status
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
-              as int?,
       code: freezed == code
           ? _value.code
           : code // ignore: cast_nullable_to_non_nullable
@@ -95,10 +85,7 @@ abstract class _$$BaseApiResponseImplCopyWith<T, $Res>
       __$$BaseApiResponseImplCopyWithImpl<T, $Res>;
   @override
   @useResult
-  $Res call(
-      {@JsonKey(name: 'status') int? status,
-      @JsonKey(name: 'code') int? code,
-      @JsonKey(name: 'data') T? data});
+  $Res call({@JsonKey(name: 'code') int? code, @JsonKey(name: 'data') T? data});
 }
 
 /// @nodoc
@@ -114,15 +101,10 @@ class __$$BaseApiResponseImplCopyWithImpl<T, $Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? status = freezed,
     Object? code = freezed,
     Object? data = freezed,
   }) {
     return _then(_$BaseApiResponseImpl<T>(
-      status: freezed == status
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
-              as int?,
       code: freezed == code
           ? _value.code
           : code // ignore: cast_nullable_to_non_nullable
@@ -139,17 +121,13 @@ class __$$BaseApiResponseImplCopyWithImpl<T, $Res>
 @JsonSerializable(genericArgumentFactories: true)
 class _$BaseApiResponseImpl<T> implements _BaseApiResponse<T> {
   const _$BaseApiResponseImpl(
-      {@JsonKey(name: 'status') required this.status,
-      @JsonKey(name: 'code') required this.code,
+      {@JsonKey(name: 'code') required this.code,
       @JsonKey(name: 'data') required this.data});
 
   factory _$BaseApiResponseImpl.fromJson(
           Map<String, dynamic> json, T Function(Object?) fromJsonT) =>
       _$$BaseApiResponseImplFromJson(json, fromJsonT);
 
-  @override
-  @JsonKey(name: 'status')
-  final int? status;
   @override
   @JsonKey(name: 'code')
   final int? code;
@@ -159,7 +137,7 @@ class _$BaseApiResponseImpl<T> implements _BaseApiResponse<T> {
 
   @override
   String toString() {
-    return 'BaseApiResponse<$T>(status: $status, code: $code, data: $data)';
+    return 'BaseApiResponse<$T>(code: $code, data: $data)';
   }
 
   @override
@@ -167,15 +145,14 @@ class _$BaseApiResponseImpl<T> implements _BaseApiResponse<T> {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$BaseApiResponseImpl<T> &&
-            (identical(other.status, status) || other.status == status) &&
             (identical(other.code, code) || other.code == code) &&
             const DeepCollectionEquality().equals(other.data, data));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, status, code, const DeepCollectionEquality().hash(data));
+  int get hashCode =>
+      Object.hash(runtimeType, code, const DeepCollectionEquality().hash(data));
 
   /// Create a copy of BaseApiResponse
   /// with the given fields replaced by the non-null parameter values.
@@ -194,8 +171,7 @@ class _$BaseApiResponseImpl<T> implements _BaseApiResponse<T> {
 
 abstract class _BaseApiResponse<T> implements BaseApiResponse<T> {
   const factory _BaseApiResponse(
-          {@JsonKey(name: 'status') required final int? status,
-          @JsonKey(name: 'code') required final int? code,
+          {@JsonKey(name: 'code') required final int? code,
           @JsonKey(name: 'data') required final T? data}) =
       _$BaseApiResponseImpl<T>;
 
@@ -203,9 +179,6 @@ abstract class _BaseApiResponse<T> implements BaseApiResponse<T> {
           Map<String, dynamic> json, T Function(Object?) fromJsonT) =
       _$BaseApiResponseImpl<T>.fromJson;
 
-  @override
-  @JsonKey(name: 'status')
-  int? get status;
   @override
   @JsonKey(name: 'code')
   int? get code;

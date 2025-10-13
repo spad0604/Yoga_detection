@@ -75,6 +75,22 @@ class ForgotPasswordRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [HistoryPage]
+class HistoryRoute extends PageRouteInfo<void> {
+  const HistoryRoute({List<PageRouteInfo>? children})
+    : super(HistoryRoute.name, initialChildren: children);
+
+  static const String name = 'HistoryRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return WrappedRoute(child: const HistoryPage());
+    },
+  );
+}
+
+/// generated route for
 /// [HomePage]
 class HomeRoute extends PageRouteInfo<HomeRouteArgs> {
   HomeRoute({Key? key, List<PageRouteInfo>? children})
@@ -141,19 +157,53 @@ class LoginRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [OverallAccountPage]
+class OverallAccountRoute extends PageRouteInfo<void> {
+  const OverallAccountRoute({List<PageRouteInfo>? children})
+    : super(OverallAccountRoute.name, initialChildren: children);
+
+  static const String name = 'OverallAccountRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return WrappedRoute(child: OverallAccountPage());
+    },
+  );
+}
+
+/// generated route for
 /// [PoseDetailsPage]
-class PoseDetailsRoute extends PageRouteInfo<void> {
-  const PoseDetailsRoute({List<PageRouteInfo>? children})
-    : super(PoseDetailsRoute.name, initialChildren: children);
+class PoseDetailsRoute extends PageRouteInfo<PoseDetailsRouteArgs> {
+  PoseDetailsRoute({
+    required YogaPoseDetails item,
+    List<PageRouteInfo>? children,
+  }) : super(
+         PoseDetailsRoute.name,
+         args: PoseDetailsRouteArgs(item: item),
+         initialChildren: children,
+       );
 
   static const String name = 'PoseDetailsRoute';
 
   static PageInfo page = PageInfo(
     name,
     builder: (data) {
-      return WrappedRoute(child: PoseDetailsPage());
+      final args = data.argsAs<PoseDetailsRouteArgs>();
+      return WrappedRoute(child: PoseDetailsPage(item: args.item));
     },
   );
+}
+
+class PoseDetailsRouteArgs {
+  const PoseDetailsRouteArgs({required this.item});
+
+  final YogaPoseDetails item;
+
+  @override
+  String toString() {
+    return 'PoseDetailsRouteArgs{item: $item}';
+  }
 }
 
 /// generated route for

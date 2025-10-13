@@ -24,3 +24,28 @@ extension TextStyleExtension on TextStyle {
 
   TextStyle withWeight(FontWeight? weight) => merge(TextStyle(fontWeight: weight));
 }
+
+extension DateTimeExtension on DateTime {
+  String dateTimeToDayMonDay() {
+    // Converts DateTime to 'Sat, Dec 06' format (capitalize first letter)
+    final List<String> days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    final List<String> months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec'
+    ];
+    String dayStr = days[weekday % 7];
+    String monthStr = months[month - 1];
+    String dayNumStr = day.toString().padLeft(2, '0');
+    return '$dayStr, $monthStr $dayNumStr';
+  }
+}

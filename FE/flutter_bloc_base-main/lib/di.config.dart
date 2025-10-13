@@ -42,6 +42,7 @@ import 'di.dart' as _i913;
 import 'presenter/navigation/navigation.dart' as _i551;
 import 'presenter/pages/account_page/account_page_bloc.dart' as _i8;
 import 'presenter/pages/forgot_password/forgot_password_bloc.dart' as _i132;
+import 'presenter/pages/history/history_bloc.dart' as _i313;
 import 'presenter/pages/home_page/home_page_bloc.dart' as _i267;
 import 'presenter/pages/login/login_bloc.dart' as _i902;
 import 'presenter/pages/pose_details/pose_details_bloc.dart' as _i133;
@@ -64,6 +65,7 @@ extension GetItInjectableX on _i174.GetIt {
     );
     final registerModule = _$RegisterModule();
     gh.factory<_i161.CameraDetectionBloc>(() => _i161.CameraDetectionBloc());
+    gh.factory<_i313.HistoryBloc>(() => _i313.HistoryBloc());
     gh.singleton<_i963.AuthBloc>(() => _i963.AuthBloc());
     gh.singleton<_i932.SettingsBloc>(() => _i932.SettingsBloc());
     gh.singleton<_i558.FlutterSecureStorage>(
@@ -72,8 +74,6 @@ extension GetItInjectableX on _i174.GetIt {
         flutterSecureStorage: gh<_i558.FlutterSecureStorage>()));
     gh.singleton<_i551.AppRouter>(
         () => _i551.AppRouter(authBloc: gh<_i963.AuthBloc>()));
-    gh.factory<_i8.AccountPageBloc>(() =>
-        _i8.AccountPageBloc(getInformationUc: gh<_i924.GetInformationUc>()));
     gh.singleton<_i193.LocalDataSource>(() => _i193.LocalDataSource(
         flutterSecureStorage: gh<_i558.FlutterSecureStorage>()));
     gh.singleton<String>(
@@ -93,6 +93,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.singleton<_i1035.ChangePasswordUseCase>(() =>
         _i1035.ChangePasswordUseCase(
             userRepository: gh<_i971.UserRepository>()));
+    gh.singleton<_i924.GetInformationUc>(() =>
+        _i924.GetInformationUc(userRepository: gh<_i971.UserRepository>()));
     gh.singleton<_i344.AuthRepository>(() => _i522.DefaultAuthRepository(
         networkDataSource: gh<_i536.NetworkDataSource>()));
     gh.singleton<_i686.RegisterUseCase>(
@@ -105,13 +107,15 @@ extension GetItInjectableX on _i174.GetIt {
           register: gh<_i686.RegisterUseCase>(),
           oauthTokenManager: gh<_i132.OauthTokenManager>(),
         ));
+    gh.singleton<_i8.AccountPageBloc>(() =>
+        _i8.AccountPageBloc(getInformationUc: gh<_i924.GetInformationUc>()));
     gh.singleton<_i470.LoginUseCase>(
         () => _i470.LoginUseCase(authRepository: gh<_i344.AuthRepository>()));
+    gh.singleton<_i212.SendOtpUc>(
+        () => _i212.SendOtpUc(authRepository: gh<_i344.AuthRepository>()));
     gh.singleton<_i412.VerifyLoginStatusUseCase>(() =>
         _i412.VerifyLoginStatusUseCase(
             authRepository: gh<_i344.AuthRepository>()));
-    gh.singleton<_i212.SendOtpUc>(
-        () => _i212.SendOtpUc(authRepository: gh<_i344.AuthRepository>()));
     gh.singleton<_i855.VerifyOtpUc>(
         () => _i855.VerifyOtpUc(authRepository: gh<_i344.AuthRepository>()));
     gh.factory<_i132.ForgotPasswordBloc>(() => _i132.ForgotPasswordBloc(
@@ -123,10 +127,10 @@ extension GetItInjectableX on _i174.GetIt {
         ));
     gh.factory<_i517.SplashBloc>(() => _i517.SplashBloc(
         verifyLoginStatus: gh<_i412.VerifyLoginStatusUseCase>()));
-    gh.factory<_i267.HomePageBloc>(() =>
-        _i267.HomePageBloc(getListYogaPoses: gh<_i856.GetListYogaPosesUc>()));
     gh.factory<_i296.SearchYogaPoseBloc>(() => _i296.SearchYogaPoseBloc(
         getListYogaPoses: gh<_i856.GetListYogaPosesUc>()));
+    gh.singleton<_i267.HomePageBloc>(() =>
+        _i267.HomePageBloc(getListYogaPoses: gh<_i856.GetListYogaPosesUc>()));
     gh.factory<_i902.LoginBloc>(() => _i902.LoginBloc(
           login: gh<_i470.LoginUseCase>(),
           oauthTokenManager: gh<_i132.OauthTokenManager>(),

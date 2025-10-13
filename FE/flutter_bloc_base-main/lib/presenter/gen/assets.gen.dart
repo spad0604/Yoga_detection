@@ -54,6 +54,10 @@ class $AssetsImagesGen {
   /// File path: assets/images/.gitkeep
   String get aGitkeep => 'assets/images/.gitkeep';
 
+  /// File path: assets/images/banner_image.png
+  AssetGenImage get bannerImage =>
+      const AssetGenImage('assets/images/banner_image.png');
+
   /// File path: assets/images/ic_account.png
   AssetGenImage get icAccount =>
       const AssetGenImage('assets/images/ic_account.png');
@@ -87,6 +91,26 @@ class $AssetsImagesGen {
   /// File path: assets/images/ic_facebook.png
   AssetGenImage get icFacebook =>
       const AssetGenImage('assets/images/ic_facebook.png');
+
+  /// File path: assets/images/ic_fill_bell.png
+  AssetGenImage get icFillBell =>
+      const AssetGenImage('assets/images/ic_fill_bell.png');
+
+  /// File path: assets/images/ic_fill_help.png
+  AssetGenImage get icFillHelp =>
+      const AssetGenImage('assets/images/ic_fill_help.png');
+
+  /// File path: assets/images/ic_fill_indentity.png
+  AssetGenImage get icFillIndentity =>
+      const AssetGenImage('assets/images/ic_fill_indentity.png');
+
+  /// File path: assets/images/ic_fill_logout.png
+  AssetGenImage get icFillLogout =>
+      const AssetGenImage('assets/images/ic_fill_logout.png');
+
+  /// File path: assets/images/ic_fill_setting.png
+  AssetGenImage get icFillSetting =>
+      const AssetGenImage('assets/images/ic_fill_setting.png');
 
   /// File path: assets/images/ic_google.png
   AssetGenImage get icGoogle =>
@@ -132,6 +156,7 @@ class $AssetsImagesGen {
   /// List of all assets
   List<dynamic> get values => [
         aGitkeep,
+        bannerImage,
         icAccount,
         icBell,
         icCalendar,
@@ -141,6 +166,11 @@ class $AssetsImagesGen {
         icEyeOff,
         icEyeOn,
         icFacebook,
+        icFillBell,
+        icFillHelp,
+        icFillIndentity,
+        icFillLogout,
+        icFillSetting,
         icGoogle,
         icHeartCircle,
         icHome,

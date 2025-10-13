@@ -1,3 +1,4 @@
+import 'package:flutter_starter/data/entities/response/page_response.dart';
 import 'package:flutter_starter/data/entities/response/yoga_pose_details.dart';
 import 'package:flutter_starter/data/repositories/yoga_poses_repository/yoga_poses_repository.dart';
 import 'package:flutter_starter/data/sources/network/network.dart';
@@ -12,30 +13,28 @@ class YogaPosesRepositoryImpl implements YogaPosesRepository {
   }) : _networkDataSource = networkDataSource;
 
   @override
-  Future<YogaPoseDetails> getYogaPoseDetails(String code) {
+  Future<YogaPoseDetails> getYogaPoseDetails(String code) async {
     try {
-      return _networkDataSource.getYogaPoseDetails(code).then((response) {
-        if (response.code == 200 && response.data != null) {
-          return response.data!;
-        } else {
-          throw Exception('Failed to load yoga pose details');
-        }
-      });
+      final res = await _networkDataSource.getYogaPoseDetails(code);
+      if (res.code == 200 && res.data != null) {
+        return res.data!;
+      } else {
+        throw Exception('Failed to load yoga pose details');
+      }
     } catch (e) {
       throw Exception('Failed to load yoga pose details: $e');
     }
   }
 
   @override
-  Future<List<YogaPoseDetails>> getYogaPoses(int page, int size, String keyword) async {
+  Future<PageResponse<YogaPoseDetails>> getYogaPoses(int page, int size, String keyword) async {
     try {
-      return await _networkDataSource.getYogaPoses(page, size, keyword).then((response) {
-        if (response.code == 200 && response.data != null) {
-          return response.data!.items ?? [];
-        } else {
-          throw Exception('Failed to load yoga poses');
-        }
-      });
+      final res = await _networkDataSource.getYogaPoses(page, size, keyword);
+      if (res.code == 200 && res.data != null) {
+        return res.data!;
+      } else {
+        throw Exception('Failed to load yoga poses');
+      }
     } catch (e) {
       throw Exception('Failed to load yoga poses: $e');
     }

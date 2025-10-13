@@ -18,9 +18,7 @@ class SearchYogaPoseBloc extends Bloc<SearchYogaPoseEvent, SearchYogaPoseState> 
         super(const SearchYogaPoseState()) {
     on<SearchYogaPoseErrorOccurred>(_onErrorOccurred);
 
-    on<SearchYogaPoseStarted>((event, emit) {
-      _onFetchStarted(event, emit);
-    });
+    on<SearchYogaPoseStarted>(_onFetchStarted);
   }
 
   @override
@@ -41,7 +39,8 @@ class SearchYogaPoseBloc extends Bloc<SearchYogaPoseEvent, SearchYogaPoseState> 
 
     try {
       final yogaPoses = await _getListYogaPoses.call(event.params);
-      final combined = event.params.page > 1 ? [...state.yogaPoses, ...yogaPoses] : yogaPoses;
+      final combined =
+          event.params.page > 1 ? [...state.yogaPoses, ...yogaPoses.items] : yogaPoses.items;
 
       emit(state.copyWith(
         status: SearchYogaPoseStatus.success,

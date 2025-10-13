@@ -30,20 +30,21 @@ class PoseDetailsBloc extends Bloc<PoseDetailsEvent, PoseDetailsState> {
   FutureOr<void> _onStarted(
     PoseDetailsGetDetails event,
     Emitter<PoseDetailsState> emit,
-  ) {
+  ) async {
     emit(state.copyWith(status: PoseDetailsStatus.loading));
 
-    _getYogaPoseDetails(event.code).then((yogaPoseDetails) {
+    try {
+      final yogaPoseDetails = await _getYogaPoseDetails.call(event.code);
       emit(state.copyWith(
         status: PoseDetailsStatus.success,
         yogaPoseDetails: yogaPoseDetails,
       ));
-    }).catchError((error) {
+    } catch (error) {
       emit(state.copyWith(
         status: PoseDetailsStatus.failure,
         error: BaseException.from(error),
       ));
-    });
+    }
   }
 
   FutureOr<void> _onErrorOccurred(
