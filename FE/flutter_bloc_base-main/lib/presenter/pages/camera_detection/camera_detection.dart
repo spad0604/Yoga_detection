@@ -2,14 +2,13 @@ import 'dart:async';
 import 'dart:typed_data';
 import 'dart:convert';
 import 'dart:io';
-import 'package:path_provider/path_provider.dart';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:flutter_starter/data/states/camera_detection/camera_detection_event.dart';
 import 'package:flutter_starter/data/states/camera_detection/camera_detection_state.dart';
 import 'package:flutter_starter/di.dart';
@@ -203,6 +202,20 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
       return;
     }
 
+    // Try to get poseId from ModalRoute (if available)
+    int poseId = -1;
+    try {
+      final route = ModalRoute.of(context);
+      if (route != null && route.settings.arguments is Map) {
+        final args = route.settings.arguments as Map;
+        if (args['item'] != null && args['item'].id != null) {
+          poseId = args['item'].id as int;
+        } else if (args['poseId'] != null) {
+          poseId = args['poseId'] as int;
+        }
+      }
+    } catch (_) {}
+
     debugPrint('\n' + '=' * 60);
     debugPrint('🎯 POSE DETECTION RESULTS');
     debugPrint('=' * 60);
@@ -230,7 +243,7 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
 
       // Print JSON format
       debugPrint('\nJSON format:');
-      final jsonData = _posesToJson([pose]);
+      final jsonData = _posesToJson([pose], poseId: poseId);
       debugPrint(jsonEncode(jsonData));
 
       // Write to file for full data in the app documents directory (safe on Android/iOS)
@@ -414,20 +427,22 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
   //     ]
   //   }
   // ]
-  List<Map<String, dynamic>> _posesToJson(List<Pose> poses) {
+  List<Map<String, dynamic>> _posesToJson(List<Pose> poses, {required int poseId}) {
+    final allTypes = PoseLandmarkType.values;
     return poses.map((pose) {
-      final landmarksMap = pose.landmarks; // Map<PoseLandmarkType, PoseLandmark>
-      final landmarksJson = landmarksMap.entries.map((entry) {
-        final typeName = entry.key.toString().split('.').last;
-        final lm = entry.value;
+      final landmarksMap = pose.landmarks;
+      final landmarksJson = allTypes.map((type) {
+        final typeName = type.toString().split('.').last;
+        final lm = landmarksMap[type];
         return {
           'type': typeName,
-          'x': lm.x,
-          'y': lm.y,
-          'z': lm.z,
+          'x': lm?.x ?? -1,
+          'y': lm?.y ?? -1,
+          'z': lm?.z ?? -1,
         };
       }).toList();
       return {
+        'poseId': poseId,
         'landmarks': landmarksJson,
       };
     }).toList();
