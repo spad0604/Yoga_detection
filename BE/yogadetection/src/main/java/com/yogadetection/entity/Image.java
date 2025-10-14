@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class Image {
     @Column(name = "url", nullable = false)
     private String url;
 
-    @Column(name = "create_date", nullable = false, updatable = false)
-    private LocalDateTime createDate;
+    @Column(name = "create_at", nullable = false, updatable = false)
+    private OffsetDateTime createAt;
 
 }

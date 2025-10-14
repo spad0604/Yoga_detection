@@ -6,43 +6,52 @@ import com.yogadetection.dto.MultipartHttpServletRequest;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Part;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.MessageDigest;
+import java.util.HashMap;
 import java.util.Map;
 
 
 @Service
-@AllArgsConstructor
 @SuppressWarnings("unchecked")
+@AllArgsConstructor
+@Slf4j
 public class UploadService {
-    @Value("${cloudinary.cloud_name}")
-    private static String CLOUD_NAME;
 
-    @Value("${cloudinary.api_key}")
-    private static String API_KEY;
-
-    @Value("${cloudinary.api_secret}")
-    private static String API_SECRET;
+    private final Cloudinary cloudinary;
 
     public Map<String, Object> callExternalAPI(MultipartHttpServletRequest request) throws ServletException, IOException {
-
-        Part filePart = request.getPart("image");
+        Part filePart = request.getPart("file");
+        Map<String, Object> response = new HashMap<String, Object>();
         try (InputStream inputStream = filePart.getInputStream()) {
-
-            Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
-                    "cloud_name", CLOUD_NAME,
-                    "api_key", API_KEY,
-                    "api_secret", API_SECRET
-            ));
-
-            return cloudinary.uploader().upload(
-                    inputStream,
+            byte[] bytes = inputStream.readAllBytes();
+            response = cloudinary.uploader().upload(
+                    bytes,
                     ObjectUtils.emptyMap()
             );
 
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+
+    public static String sign(long timestamp, String apiSecret) {
+        try {
+            String data = "timestamp=" + timestamp + apiSecret;
+            MessageDigest md = MessageDigest.getInstance("SHA-1");
+            byte[] bytes = md.digest(data.getBytes());
+            StringBuilder sb = new StringBuilder();
+            for (byte b : bytes) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (Exception e) {
+            throw new RuntimeException("Error generating Cloudinary signature", e);
         }
     }
 

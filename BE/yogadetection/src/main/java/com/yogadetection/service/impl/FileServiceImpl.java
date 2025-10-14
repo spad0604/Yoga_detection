@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Service
 @AllArgsConstructor
@@ -17,8 +18,8 @@ public class FileServiceImpl implements FileService {
     private final ImageRepository imageRepository;
 
     @Override
-    public void saveFile(String assetId, String url, String token, LocalDateTime createDate) {
+    public void saveFile(String assetId, String url, String token, OffsetDateTime createAt) {
         String userId = userService.getUserId(token);
-        imageRepository.save(new Image(assetId, userId, url, createDate));
+        imageRepository.save(new Image(assetId, userId, url, createAt));
     }
 }
