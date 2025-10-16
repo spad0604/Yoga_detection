@@ -1,13 +1,18 @@
 package com.yogadetection.service.impl;
 
+import com.yogadetection.dto.MultipartFile;
 import com.yogadetection.service.DeepSeekService;
+import com.yogadetection.service.UploadService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Map;
 
+@Service
 public class DeepSeekServiceImpl implements DeepSeekService {
     @Value("${deepseek.api.key}")
     private String apiKey;
@@ -15,10 +20,12 @@ public class DeepSeekServiceImpl implements DeepSeekService {
     @Value("${deepseek.api.url}")
     private String apiUrl;
 
-    @Override
-    public String ask(String prompt) {
-        RestTemplate restTemplate = new RestTemplate();
+    private UploadService uploadService;
 
+    @Override
+    public String ask(String imageUrl) {
+        RestTemplate restTemplate = new RestTemplate();
+        String prompt = "This is image url: " + imageUrl;
         Map<String, Object> userMessage = Map.of(
                 "role", "user",
                 "content", prompt

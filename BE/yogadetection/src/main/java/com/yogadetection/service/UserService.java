@@ -10,7 +10,7 @@ import java.util.Map;
 
 public interface UserService {
     UserInfoResponse getInformation(String token);
-    ApiResponse <String> changeInformation(ChangeInformationRequest request);
-    ApiResponse <String> deleteUser(String token);
+    void changeInformation(ChangeInformationRequest request);
+    void deleteUser(String token);
     String getUserId(String token);
 }
