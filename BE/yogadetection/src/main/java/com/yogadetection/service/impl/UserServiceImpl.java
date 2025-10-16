@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ApiResponse<String> changeInformation(ChangeInformationRequest request) {
+    public void changeInformation(ChangeInformationRequest request) {
         User user = userRepository.findByEmail(request.getEmail().toLowerCase()).orElseThrow(() -> new UserNotFoundException());
         if (request.getDob() != null) {
             user.setBirthDate(request.getDob());
@@ -54,13 +54,11 @@ public class UserServiceImpl implements UserService {
             user.setLastName(request.getLastName());
         }
         userRepository.save(user);
-        return new ApiResponse<>();
     }
 
-    public ApiResponse<String> deleteUser(String token) {
+    public void deleteUser(String token) {
         String email = jwtService.extractUsername(token);
         User user = userRepository.findByEmail(email.toLowerCase()).orElseThrow(() -> new UserNotFoundException());
         userRepository.delete(user);
-        return new ApiResponse<>();
     }
 }

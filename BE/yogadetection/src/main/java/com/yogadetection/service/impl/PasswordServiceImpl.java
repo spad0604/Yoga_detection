@@ -9,8 +9,7 @@ import com.yogadetection.dto.response.ApiResponse;
 import com.yogadetection.dto.response.TokenResponse;
 import com.yogadetection.entity.OTPCode;
 import com.yogadetection.entity.User;
-import com.yogadetection.exception.InvalidPasswordException;
-import com.yogadetection.exception.UserNotFoundException;
+import com.yogadetection.exception.*;
 import com.yogadetection.repository.UserRepository;
 import com.yogadetection.service.JwtService;
 import com.yogadetection.service.MailService;
@@ -34,9 +33,9 @@ public class PasswordServiceImpl implements PasswordService {
     private final JwtService jwtService;
 
     @Override
-    public ApiResponse<String> changePassword(String token, ChangePasswordRequest request) {
+    public void changePassword(String token, ChangePasswordRequest request) {
         if (!request.getConfirmNewPassword().equals(request.getNewPassword())) {
-            return new ApiResponse<>(ErrorCode.PASSWORDS_DO_NOT_MATCH);
+            throw new PasswordsDoNotMatchException();
         }
         String email = jwtService.extractUsername(token);
         User user = userRepository.findByEmail(email.toLowerCase()).orElseThrow(() -> new UserNotFoundException());
@@ -45,15 +44,14 @@ public class PasswordServiceImpl implements PasswordService {
         }
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         userRepository.save(user);
-        return new ApiResponse<>();
     }
 
     @Override
-    public ApiResponse<String> sendOTP(SendOTPRequest request) {
+    public void sendOTP(SendOTPRequest request) {
         User user = userRepository.findByEmail(request.getEmail().toLowerCase()).orElseThrow(() -> new UserNotFoundException());
         Random random = new Random();
         OTPCode otpCode = new OTPCode();
-        String newOtp = String.valueOf(random.nextInt(100000));
+        String newOtp = String.valueOf(random.nextInt(1000000));
         while (newOtp.length() < 6) {
             newOtp = "0" + newOtp;
         }
@@ -61,32 +59,33 @@ public class PasswordServiceImpl implements PasswordService {
         otpCode.setExpireTime((int)System.currentTimeMillis() / 1000 + 60);
         otpSet.put(request.getEmail(), otpCode);
         mailService.sendEmail(request.getEmail(), "OTP CODE", "Your otp code is: " + newOtp);
-        return new ApiResponse<>();
     }
 
-    public ApiResponse<Map<String, String>> verifyOTP(VerifyOTPRequest request) {
+    public void verifyOTP(VerifyOTPRequest request) {
         ApiResponse<Map<String, String>> apiResponse = new ApiResponse<>();
         Map<String, String> token = new HashMap<>();
         User user = userRepository.findByEmail(request.getEmail().toLowerCase()).orElseThrow(() -> new UserNotFoundException());
         if (!otpSet.containsKey(request.getEmail())) {
-            return new ApiResponse<>(ErrorCode.OTP_INCORRECT);
+            throw new OtpIncorrectException();
         }
         if (otpSet.get(request.getEmail()).getExpireTime() > System.currentTimeMillis()) {
-            return new ApiResponse<>(ErrorCode.OTP_EXPIRED);
+            throw new OtpExpiredException();
         }
+        if (!otpSet.get(request.getEmail()).getCode().equals(request.getOtp())) {
+            throw new OtpIncorrectException();
+        }
+        otpSet.remove(request.getEmail());
         token.put("token", jwtService.generateToken(user));
         apiResponse.setData(token);
-        return apiResponse;
     }
 
-    public ApiResponse<String> resetPassword(String token, ResetPasswordRequest request) {
+    public void resetPassword(String token, ResetPasswordRequest request) {
         if (!request.getNewPassword().matches(request.getConfirmNewPassword())) {
-            return  new ApiResponse<>(ErrorCode.PASSWORDS_DO_NOT_MATCH);
+            throw new PasswordsDoNotMatchException();
         }
         String email =  jwtService.extractUsername(token);
         User user = userRepository.findByEmail(email.toLowerCase()).orElseThrow(() -> new UserNotFoundException());
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
-        return new ApiResponse<>();
     }
 
     @Scheduled(fixedRate = 60 * 60 * 1000)
