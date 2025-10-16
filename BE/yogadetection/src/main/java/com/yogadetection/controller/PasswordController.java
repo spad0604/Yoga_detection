@@ -21,22 +21,22 @@ public class PasswordController {
     private final PasswordService passwordService;
 
     @PostMapping("/change")
-    public ApiResponse<String> changePassword(@RequestHeader("Authorization") String token, @RequestBody ChangePasswordRequest request) {
-        return passwordService.changePassword(token, request);
+    public void changePassword(@RequestHeader("Authorization") String token, @RequestBody ChangePasswordRequest request) {
+        passwordService.changePassword(token, request);
     }
 
     @PostMapping("/send-otp")
-    public ApiResponse<String> sendOTP(@RequestBody SendOTPRequest request) {
-        return passwordService.sendOTP(request);
+    public void sendOTP(@RequestBody SendOTPRequest request) {
+        passwordService.sendOTP(request);
     }
 
     @PostMapping("/verify-otp")
-    public ApiResponse<Map<String, String>> verifyOTP(@RequestBody VerifyOTPRequest request) {
-        return passwordService.verifyOTP(request);
+    public void verifyOTP(@RequestBody VerifyOTPRequest request) {
+        passwordService.verifyOTP(request);
     }
 
     @PostMapping("/reset")
-    public ApiResponse<String> resetPassword(@RequestHeader("Authorization") String token, @RequestBody ResetPasswordRequest request) {
-        return  passwordService.resetPassword(token, request);
+    public void resetPassword(@RequestHeader("Authorization") String token, @RequestBody ResetPasswordRequest request) {
+        passwordService.resetPassword(token, request);
     }
 }

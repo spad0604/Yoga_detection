@@ -9,8 +9,8 @@ import com.yogadetection.dto.response.ApiResponse;
 import java.util.Map;
 
 public interface PasswordService {
-    ApiResponse<String> changePassword(String token, ChangePasswordRequest request);
-    ApiResponse<String> sendOTP(SendOTPRequest request);
-    ApiResponse<Map<String, String>> verifyOTP(VerifyOTPRequest request);
-    ApiResponse<String> resetPassword(String token, ResetPasswordRequest request);
+    void changePassword(String token, ChangePasswordRequest request);
+    void sendOTP(SendOTPRequest request);
+    void verifyOTP(VerifyOTPRequest request);
+    void resetPassword(String token, ResetPasswordRequest request);
 }

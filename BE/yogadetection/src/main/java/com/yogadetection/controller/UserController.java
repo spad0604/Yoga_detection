@@ -22,12 +22,12 @@ public class UserController {
     }
 
     @PostMapping("/change")
-    public ApiResponse<String> changeInformation(@RequestBody ChangeInformationRequest request) {
-        return userService.changeInformation(request);
+    public void changeInformation(@RequestBody ChangeInformationRequest request) {
+        userService.changeInformation(request);
     }
 
     @DeleteMapping
-    public ApiResponse<String> deleteUser(@RequestHeader("Authorization") String token) {
-        return userService.deleteUser(token);
+    public void deleteUser(@RequestHeader("Authorization") String token) {
+        userService.deleteUser(token);
     }
 }
