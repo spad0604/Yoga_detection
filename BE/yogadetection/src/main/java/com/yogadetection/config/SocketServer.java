@@ -30,8 +30,6 @@ public class SocketServer {
     private final ConnectSocketEvent connectSocketEvent;
     private final DisconnectSocketEvent disconnectSocketEvent;
 
-    private final JwtService jwtService;
-
     public static final Map<String, String> CONNECTION_STATE = new HashMap<>();
 
     public void start() {
@@ -44,20 +42,5 @@ public class SocketServer {
 
     public void stop() {
         server.stop();
-    }
-
-    private String getUserId(SocketIOClient client) {
-        String token = client.getHandshakeData().getUrlParams().get(ParamKey.TOKEN).get(0);
-        return jwtService.extractUserId(token);
-    }
-
-    public void onConnect(SocketIOClient socketIOClient) {
-        String userId = getUserId(socketIOClient);
-        CONNECTION_STATE.put(userId, socketIOClient.getSessionId().toString());
-    }
-
-    public void onDisconnect(SocketIOClient socketIOClient) {
-        String userId = getUserId(socketIOClient);
-        CONNECTION_STATE.remove(userId);
     }
 }

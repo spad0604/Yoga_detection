@@ -2,6 +2,7 @@ package com.yogadetection.utils;
 
 public class ParamKey {
     public static final String ID = "id";
+    public static final String USER_ID = "user_id";
     public static final String TOKEN = "token";
     public static final String CREATED_AT = "created_at";
     public static final String OWNER_ID = "owner_id";
@@ -14,5 +15,6 @@ public class ParamKey {
     public static final String FILE_NAME = "file_name";
     public static final String CODE = "code";
     public static final String DATA = "data";
+    public static final String AUTHORIZATION = "Authorization";
 
 }
