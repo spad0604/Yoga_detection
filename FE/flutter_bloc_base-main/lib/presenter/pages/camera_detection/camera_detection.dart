@@ -355,7 +355,7 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
       debugPrint('Event name: send_data');
       debugPrint(
           'Payload size: ${fullJson.length} chars (~${(fullJson.length / 1024).toStringAsFixed(1)} KB)');
-      
+
       // Write to file for full payload (console may truncate large base64)
       try {
         final dir = await getApplicationDocumentsDirectory();
