@@ -1,24 +1,21 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'dart:isolate';
 import 'dart:typed_data';
 
 import 'package:flutter/widgets.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
-/// WebSocket isolate helper.
+/// Socket.IO isolate helper.
 ///
-/// Commands accepted by isolate:
-/// - { cmd: 'connect', url: String }
+/// Commands accepted by isolate (messages sent to the isolate SendPort):
+/// - { cmd: 'connect', url: String, headers?: Map<String,String> }
 /// - { cmd: 'send_pose', json: String }
 /// - { cmd: 'send_image', data: Uint8List }
+/// - { cmd: 'ping', payload: String }
 /// - { cmd: 'disconnect' }
 ///
-/// Messages sent back to main isolate are Maps with a `type` field, e.g.:
-/// { type: 'connected', url: 'ws://...' }
-/// { type: 'message', data: '...', raw: true }
-/// { type: 'binary', length: 123 }
-/// { type: 'error', message: '...' }
+/// Events emitted back to the main isolate are Maps with a `type` field.
 class WebSocketIsolate {
   Isolate? _isolate;
   SendPort? _sendPort;
@@ -27,26 +24,24 @@ class WebSocketIsolate {
 
   Stream<Map<String, dynamic>> get events => _events.stream;
 
-  /// Start the isolate and connect to [url]. Waits for the isolate send-port
-  /// to be available before sending the connect command (with a timeout).
-  Future<void> start(String url, {Duration timeout = const Duration(seconds: 5)}) async {
+  Future<void> start(String url,
+      {Map<String, String>? headers, Duration timeout = const Duration(seconds: 5)}) async {
     _receivePort.listen(_handleMessage, onDone: () {
       _events.close();
     });
 
-    _isolate = await Isolate.spawn(_socketEntry, _receivePort.sendPort);
+    _isolate = await Isolate.spawn(_isolateEntry, _receivePort.sendPort);
 
-    // Wait until sendPort is available (from the isolate) or timeout
+    // wait for sendPort
     final sw = Stopwatch()..start();
     while (_sendPort == null) {
-      if (sw.elapsed > timeout) {
-        throw TimeoutException('Timed out waiting for isolate sendPort');
-      }
+      if (sw.elapsed > timeout) throw TimeoutException('Timed out waiting for isolate sendPort');
       await Future.delayed(const Duration(milliseconds: 50));
     }
 
-    // Now request connection
-    _sendPort?.send({'cmd': 'connect', 'url': url});
+    final payload = <String, dynamic>{'cmd': 'connect', 'url': url};
+    if (headers != null) payload['headers'] = headers;
+    _sendPort!.send(payload);
   }
 
   void _handleMessage(dynamic message) {
@@ -54,35 +49,42 @@ class WebSocketIsolate {
       _sendPort = message;
       debugPrint('Socket isolate sendPort received');
     } else if (message is Map) {
-      // structured event
       _events.add(Map<String, dynamic>.from(message));
       debugPrint('Event from isolate: $message');
     } else {
-      debugPrint('Message received in main isolate: $message');
       _events.add({'type': 'raw', 'data': message.toString()});
     }
   }
 
-  /// Send pose JSON (stringified). [posesJson] should be a JSON array string
-  /// or you can pass Map/List and it will be encoded.
   void sendPoseRequests(dynamic posesJsonOrObject) {
     if (_sendPort == null) throw StateError('Isolate not started');
-    String jsonString;
-    if (posesJsonOrObject is String) {
-      jsonString = posesJsonOrObject;
-    } else {
-      jsonString = jsonEncode(posesJsonOrObject);
-    }
+    final jsonString =
+        posesJsonOrObject is String ? posesJsonOrObject : jsonEncode(posesJsonOrObject);
     _sendPort!.send({'cmd': 'send_pose', 'json': jsonString});
   }
 
-  /// Send raw image bytes (Uint8List)
   void sendImage(Uint8List imageData) {
     if (_sendPort == null) throw StateError('Isolate not started');
     _sendPort!.send({'cmd': 'send_image', 'data': imageData});
   }
 
-  /// Gracefully disconnect and stop the isolate
+  void sendPing([String payload = 'ping']) {
+    if (_sendPort == null) throw StateError('Isolate not started');
+    _sendPort!.send({'cmd': 'ping', 'payload': payload});
+  }
+
+  /// Schedule periodic pings from the isolate side.
+  /// interval: how often to ping. If null or Duration.zero, cancels any existing periodic pings.
+  void setPingInterval(Duration? interval, {String payload = 'ping'}) {
+    if (_sendPort == null) throw StateError('Isolate not started');
+    if (interval == null || interval == Duration.zero) {
+      _sendPort!.send({'cmd': 'set_ping_interval', 'interval_ms': 0});
+    } else {
+      _sendPort!.send(
+          {'cmd': 'set_ping_interval', 'interval_ms': interval.inMilliseconds, 'payload': payload});
+    }
+  }
+
   Future<void> stop() async {
     try {
       _sendPort?.send({'cmd': 'disconnect'});
@@ -90,18 +92,20 @@ class WebSocketIsolate {
     try {
       _isolate?.kill(priority: Isolate.immediate);
     } catch (_) {}
-  _isolate = null;
-  _receivePort.close();
+    _isolate = null;
+    _receivePort.close();
   }
 
-  static Future<void> _socketEntry(SendPort mainSendPort) async {
-    final isoLateReceive = ReceivePort();
-    // first message is the SendPort back to main isolate
-    mainSendPort.send(isoLateReceive.sendPort);
+  // Isolate entry
+  static Future<void> _isolateEntry(SendPort mainSendPort) async {
+    final port = ReceivePort();
+    mainSendPort.send(port.sendPort);
 
-    WebSocket? websocket;
+    IO.Socket? socket;
 
-    isoLateReceive.listen((dynamic message) async {
+    Timer? periodicTimer;
+
+    port.listen((dynamic message) async {
       try {
         if (message is! Map || message['cmd'] == null) {
           mainSendPort.send({'type': 'error', 'message': 'Invalid message format'});
@@ -116,28 +120,30 @@ class WebSocketIsolate {
             mainSendPort.send({'type': 'error', 'message': 'Missing url for connect'});
             return;
           }
-          try {
-            websocket = await WebSocket.connect(url).timeout(const Duration(seconds: 10));
-            mainSendPort.send({'type': 'connected', 'url': url});
 
-            websocket!.listen((data) {
-              // deliver structured messages back to main isolate
-              if (data is String) {
-                // try parse JSON
-                try {
-                  final parsed = jsonDecode(data);
-                  mainSendPort.send({'type': 'message', 'data': parsed});
-                } catch (_) {
-                  mainSendPort.send({'type': 'message', 'data': data});
-                }
-              } else if (data is List<int>) {
-                mainSendPort.send({'type': 'binary', 'length': data.length});
-              }
-            }, onDone: () {
-              mainSendPort.send({'type': 'closed'});
-            }, onError: (e) {
-              mainSendPort.send({'type': 'error', 'message': e.toString()});
-            });
+          Map<String, dynamic>? headersMap;
+          final rawHeaders = message['headers'];
+          if (rawHeaders is Map) {
+            headersMap = Map<String, dynamic>.from(rawHeaders);
+          }
+
+          try {
+            final opts = <String, dynamic>{
+              'transports': ['websocket'],
+              'path': '/socket.io',
+            };
+            if (headersMap != null && headersMap.isNotEmpty) opts['extraHeaders'] = headersMap;
+
+            socket = IO.io(url, opts);
+
+            socket?.on('connect', (_) => mainSendPort.send({'type': 'connected', 'url': url}));
+            socket?.on('disconnect', (_) => mainSendPort.send({'type': 'disconnected'}));
+            socket?.on('connect_error',
+                (err) => mainSendPort.send({'type': 'error', 'message': 'Connect failed: $err'}));
+
+            socket?.on(
+                'response_data', (data) => mainSendPort.send({'type': 'message', 'data': data}));
+            socket?.on('message', (data) => mainSendPort.send({'type': 'message', 'data': data}));
           } catch (e) {
             mainSendPort.send({'type': 'error', 'message': 'Connect failed: $e'});
           }
@@ -148,7 +154,7 @@ class WebSocketIsolate {
             return;
           }
           try {
-            websocket?.add(jsonString);
+            socket?.emit('send_data', jsonDecode(jsonString));
             mainSendPort.send({'type': 'sent', 'what': 'pose', 'bytes': jsonString.length});
           } catch (e) {
             mainSendPort.send({'type': 'error', 'message': 'Send pose failed: $e'});
@@ -157,7 +163,7 @@ class WebSocketIsolate {
           final data = message['data'];
           if (data is List<int>) {
             try {
-              websocket?.add(data);
+              socket?.emit('send_image', data);
               mainSendPort.send({'type': 'sent', 'what': 'image', 'bytes': data.length});
             } catch (e) {
               mainSendPort.send({'type': 'error', 'message': 'Send image failed: $e'});
@@ -165,9 +171,40 @@ class WebSocketIsolate {
           } else {
             mainSendPort.send({'type': 'error', 'message': 'Invalid image data type'});
           }
+        } else if (cmd == 'ping') {
+          final payload = (message['payload'] as String?) ?? 'ping';
+          try {
+            socket?.emit('ping', payload);
+            mainSendPort.send({'type': 'sent', 'what': 'ping', 'bytes': payload.length});
+          } catch (e) {
+            mainSendPort.send({'type': 'error', 'message': 'Send ping failed: $e'});
+          }
+        } else if (cmd == 'set_ping_interval') {
+          try {
+            final ms = (message['interval_ms'] as int?) ?? 0;
+            final payload = (message['payload'] as String?) ?? 'ping';
+            // cancel existing
+            periodicTimer?.cancel();
+            periodicTimer = null;
+            if (ms > 0) {
+              periodicTimer = Timer.periodic(Duration(milliseconds: ms), (_) {
+                try {
+                  socket?.emit('ping', payload);
+                  mainSendPort.send({'type': 'sent', 'what': 'ping', 'bytes': payload.length});
+                } catch (e) {
+                  mainSendPort.send({'type': 'error', 'message': 'Periodic ping failed: $e'});
+                }
+              });
+              mainSendPort.send({'type': 'info', 'message': 'Ping interval set', 'ms': ms});
+            } else {
+              mainSendPort.send({'type': 'info', 'message': 'Ping interval cleared'});
+            }
+          } catch (e) {
+            mainSendPort.send({'type': 'error', 'message': 'Set ping interval failed: $e'});
+          }
         } else if (cmd == 'disconnect') {
           try {
-            await websocket?.close();
+            socket?.disconnect();
             mainSendPort.send({'type': 'disconnected'});
           } catch (e) {
             mainSendPort.send({'type': 'error', 'message': 'Disconnect failed: $e'});

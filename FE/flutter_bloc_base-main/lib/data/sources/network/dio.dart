@@ -34,6 +34,24 @@ class NetworkDio extends DioForNative implements Interceptor {
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
+    try {
+      final path = options.path.toLowerCase();
+      final publicPaths = [
+        'api/auth/login',
+        'api/auth/register',
+        'api/auth/verify',
+        'api/password/send-otp',
+        'api/password/verify-otp',
+        'api/password/reset',
+      ];
+
+      final isPublic = publicPaths.any((p) => path.contains(p));
+
+      if (isPublic) {
+        return handler.next(options);
+      }
+    } catch (_) {}
+
     return handler.next(options.copyWith(
       headers: await _tokenManager.getAuthenticatedHeaders(options.headers),
     ));

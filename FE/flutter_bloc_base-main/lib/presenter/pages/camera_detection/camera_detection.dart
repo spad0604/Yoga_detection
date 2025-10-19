@@ -16,6 +16,7 @@ import 'package:flutter_starter/data/states/camera_detection/camera_detection_bl
 import 'package:flutter_starter/gen/app_images.dart';
 import 'package:google_mlkit_pose_detection/google_mlkit_pose_detection.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_starter/core/socket_isolate.dart';
 
 // ignore: depend_on_referenced_packages
 import 'package:google_mlkit_commons/google_mlkit_commons.dart'
@@ -64,11 +65,25 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
   bool _showResult = false;
   Size? _capturedImageSize; // Store actual captured image size
 
+  // Socket isolate fields
+  final WebSocketIsolate _ws = WebSocketIsolate();
+  StreamSubscription<Map<String, dynamic>>? _wsSub;
+  bool _wsConnected = false;
+  String? _jwtToken;
+  String? _wsBase; // e.g., ws://host:9080
+  bool _usingAuthHeader = false;
+  int? _poseIdFromArgs;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _initializeCameraAndDetector();
+
+    // Extract route args (token, poseId, optional base) and connect socket once ready
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _extractRouteArgsAndConnect();
+    });
   }
 
   @override
@@ -81,6 +96,125 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
     } else if (state == AppLifecycleState.resumed) {
       if (!_showResult) _startStream();
     }
+  }
+
+  Future<void> _extractRouteArgsAndConnect() async {
+    try {
+      final route = ModalRoute.of(context);
+      if (route != null && route.settings.arguments is Map) {
+        final args = route.settings.arguments as Map;
+        // Common keys: token, poseId or item.id, optional wsBase
+        _jwtToken = args['token'] as String? ?? _jwtToken;
+        _wsBase = args['wsBase'] as String? ?? _wsBase; // e.g. ws://13.211.229.143:9080
+        if (args['poseId'] is int) _poseIdFromArgs = args['poseId'] as int;
+        if (args['item'] != null && args['item'].id != null) {
+          _poseIdFromArgs = args['item'].id as int;
+        }
+      }
+    } catch (_) {}
+
+    // Default base if not provided
+    _wsBase ??= 'http://13.211.229.143:9080';
+
+    // Subscribe to events once
+    _wsSub ??= _ws.events.listen((event) {
+      final type = event['type'];
+      if (type == 'connected') {
+        _wsConnected = true;
+        debugPrint('WS connected: ${event['url']}');
+        // Configure heartbeat and send a quick ping
+        try {
+          _ws.setPingInterval(const Duration(seconds: 15));
+          _ws.sendPing('ping');
+        } catch (_) {}
+      } else if (type == 'closed' || type == 'disconnected') {
+        _wsConnected = false;
+        debugPrint('WS ${event['type']}');
+      } else if (type == 'error') {
+        _wsConnected = false;
+        debugPrint('WS error: ${event['message']}');
+      } else if (type == 'message') {
+        debugPrint('  WS message: ${event['data']}');
+      } else if (type == 'sent') {
+        debugPrint('WS sent ${event['what']} ${event['bytes']} bytes');
+      }
+    });
+
+    // Start isolate and connect (only once) — prefer Authorization header
+    if (_jwtToken != null && _jwtToken!.isNotEmpty) {
+      final headers = {'Authorization': 'Bearer ${_jwtToken!}'};
+      try {
+        // Use full ws url including /ws/pose when using headers
+        final wsUrl = '${_prepareWsUrlFromBase(_wsBase!)}/ws/pose';
+        await _ws.start(wsUrl, headers: headers);
+        _usingAuthHeader = true;
+      } catch (e) {
+        debugPrint('Failed to start WS with /ws/pose using headers: $e');
+        // Try fallbacks: base, /ws, /socket
+        _usingAuthHeader = false;
+        final base = _prepareWsUrlFromBase(_wsBase!);
+        final fallbacks = [
+          base, // root e.g. ws://host:port
+          '$base/ws',
+          '$base/socket',
+        ];
+        var connected = false;
+        for (final candidate in fallbacks) {
+          try {
+            debugPrint('Trying fallback WS url: $candidate');
+            await _ws.start(candidate, headers: headers);
+            connected = true;
+            _usingAuthHeader = true;
+            break;
+          } catch (e2) {
+            debugPrint('Fallback $candidate failed: $e2');
+          }
+        }
+        if (!connected) {
+          debugPrint('All header-based WS attempts failed, falling back to token-in-url');
+          _connectSocketIfNeeded(_buildPoseWsUrl());
+        }
+      }
+    } else {
+      _connectSocketIfNeeded(_buildPoseWsUrl());
+    }
+  }
+
+  String _buildPoseWsUrl() {
+    final base = _prepareWsUrlFromBase(_wsBase ?? 'http://13.211.229.143:9080');
+    final tokenPart = (!_usingAuthHeader && _jwtToken != null && _jwtToken!.isNotEmpty)
+        ? '?token=${Uri.encodeQueryComponent(_jwtToken!)}'
+        : '';
+    return '$base/ws/pose$tokenPart';
+  }
+
+  String _prepareWsUrlFromBase(String base) {
+    // Convert http(s) to ws(s) and strip trailing slashes
+    final trimmed = base.trim();
+    if (trimmed.startsWith('http://')) {
+      return trimmed.replaceFirst('http://', 'ws://').replaceAll(RegExp(r'/*$'), '');
+    }
+    if (trimmed.startsWith('https://')) {
+      return trimmed.replaceFirst('https://', 'wss://').replaceAll(RegExp(r'/*$'), '');
+    }
+    // assume already ws:// or wss://
+    return trimmed.replaceAll(RegExp(r'/*$'), '');
+  }
+
+  Future<void> _connectSocketIfNeeded(String url) async {
+    if (_wsConnected) return;
+    try {
+      await _ws.start(url);
+    } catch (e) {
+      debugPrint('Failed to start/connect WS: $e');
+    }
+  }
+
+  Future<void> _disconnectSocket() async {
+    try {
+      await _ws.stop();
+    } catch (_) {}
+    _wsConnected = false;
   }
 
   void _showError(String message) {
@@ -180,6 +314,9 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
 
       // Print pose data
       await _printPoseData(poses);
+
+      // Send pose over WebSocket isolate (after countdown capture)
+      await _sendPoseOverSocket(poses, imageBytes);
     } catch (e) {
       debugPrint('❌ Error capturing/detecting: $e');
       _showError('Failed to capture or detect pose: $e');
@@ -192,6 +329,75 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
       // Restart stream on error
       await _startStream();
     }
+  }
+
+  Future<void> _sendPoseOverSocket(List<Pose> poses, Uint8List imageBytes) async {
+    if (poses.isEmpty) return;
+    // Build payload array with poseId, landmarks, imageBase64
+    final poseId = _poseIdFromArgs ?? _readPoseIdFromRoute();
+    final baseList = _posesToJson(poses, poseId: poseId);
+    final b64 = base64Encode(imageBytes);
+    final ts = DateTime.now().toIso8601String();
+    final payload = baseList
+        .map((e) => {
+              ...e,
+              'imageBase64': b64,
+              'timestamp': ts,
+            })
+        .toList();
+
+    // Print FULL JSON payload for backend team (including complete base64)
+    try {
+      final fullJson = jsonEncode(payload);
+      debugPrint('\n${'=' * 60}');
+      debugPrint('📤 FULL SOCKET PAYLOAD (send_data event)');
+      debugPrint('${'=' * 60}');
+      debugPrint('Event name: send_data');
+      debugPrint(
+          'Payload size: ${fullJson.length} chars (~${(fullJson.length / 1024).toStringAsFixed(1)} KB)');
+      
+      // Write to file for full payload (console may truncate large base64)
+      try {
+        final dir = await getApplicationDocumentsDirectory();
+        final timestamp = DateTime.now().toIso8601String().replaceAll(':', '-');
+        final file = File('${dir.path}${Platform.pathSeparator}socket_payload_$timestamp.json');
+        await file.writeAsString(fullJson);
+        debugPrint('✅ Full JSON payload written to: ${file.path}');
+        debugPrint('   Copy this file to share with backend team');
+      } catch (e) {
+        debugPrint('Failed to write payload to file: $e');
+        // Fallback: print first 2000 chars
+        debugPrint('JSON payload (first 2000 chars):');
+        debugPrint(fullJson.substring(0, fullJson.length > 2000 ? 2000 : fullJson.length));
+      }
+      debugPrint('${'=' * 60}\n');
+    } catch (e) {
+      debugPrint('Failed to encode full JSON for logging: $e');
+    }
+
+    final url = _buildPoseWsUrl();
+    await _connectSocketIfNeeded(url);
+    try {
+      _ws.sendPoseRequests(payload);
+    } catch (e) {
+      debugPrint('Failed to send pose over WS: $e');
+    }
+  }
+
+  int _readPoseIdFromRoute() {
+    int poseId = -1;
+    try {
+      final route = ModalRoute.of(context);
+      if (route != null && route.settings.arguments is Map) {
+        final args = route.settings.arguments as Map;
+        if (args['item'] != null && args['item'].id != null) {
+          poseId = args['item'].id as int;
+        } else if (args['poseId'] != null) {
+          poseId = args['poseId'] as int;
+        }
+      }
+    } catch (_) {}
+    return poseId;
   }
 
   // Print detailed pose data
@@ -471,6 +677,8 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
     _stopStream(); // Stop stream first
     _cameraController?.dispose();
     _poseDetector?.close();
+    _wsSub?.cancel();
+    _disconnectSocket();
     super.dispose();
   }
 

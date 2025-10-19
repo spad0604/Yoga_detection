@@ -75,6 +75,7 @@ dependencies:
   toastification: ^3.0.3
   calendar_date_picker2: ^2.0.1
   showcaseview: ^5.0.0
+  socket_io_client: ^3.1.2
 
 dev_dependencies:
   flutter_test:
