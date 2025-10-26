@@ -2,14 +2,18 @@ package com.yogadetection.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yogadetection.dto.request.PoseLandmarkRequest;
+import com.yogadetection.entity.User;
 import com.yogadetection.entity.YogaPoseAttempt;
 import com.yogadetection.entity.YogaPoseDetails;
 import com.yogadetection.exception.EntityNotFoundException;
 import com.yogadetection.exception.UnauthorizedException;
+import com.yogadetection.repository.UserRepository;
 import com.yogadetection.repository.YogaPoseAttemptRepository;
 import com.yogadetection.repository.YogaPoseDetailsRepository;
 import com.yogadetection.service.AIPoseEvaluationService;
+import com.yogadetection.service.FcmService;
 import com.yogadetection.service.ImageService;
+import com.yogadetection.service.SocketIOService;
 import com.yogadetection.service.YogaPoseAttemptService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,9 +35,12 @@ public class YogaPoseAttemptServiceImpl implements YogaPoseAttemptService {
     
     private final YogaPoseAttemptRepository attemptRepository;
     private final YogaPoseDetailsRepository poseDetailsRepository;
+    private final UserRepository userRepository;
     private final ImageService imageService;
     private final ObjectMapper objectMapper;
     private final AIPoseEvaluationService aiEvaluationService;
+    private final FcmService fcmService;
+    private final SocketIOService socketIOService;
 
     @Override
     @Transactional
@@ -89,7 +96,50 @@ public class YogaPoseAttemptServiceImpl implements YogaPoseAttemptService {
         log.info("Created pose attempt {} for user {} with AI score {}", 
                 attempt.getId(), userId, attempt.getScore());
         
+        // Gửi kết quả về client qua WebSocket và FCM
+        sendResultToClient(userId, attempt);
+        
         return attempt;
+    }
+    
+    /**
+     * Gửi kết quả chấm điểm về client qua Socket.IO và Firebase
+     */
+    private void sendResultToClient(String userId, YogaPoseAttempt attempt) {
+        try {
+            // Lấy thông tin user để gửi notification
+            User user = userRepository.findById(userId)
+                    .orElse(null);
+            
+            if (user != null) {
+                // 1. Gửi qua Socket.IO (real-time)
+                boolean socketSent = socketIOService.sendPoseResult(
+                        userId,
+                        attempt.getId(),
+                        attempt.getPoseName(),
+                        attempt.getScore(),
+                        attempt.getFeedback()
+                );
+                log.info("Socket.IO result sent: {} for attempt {}", socketSent, attempt.getId());
+                
+                // 2. Gửi qua Firebase Cloud Messaging (push notification)
+                if (user.getFcmToken() != null && !user.getFcmToken().isEmpty()) {
+                    String title = String.format("🎯 Kết quả: %s", attempt.getPoseName());
+                    String body = String.format("Điểm: %.1f/100 - %s", 
+                            attempt.getScore() != null ? attempt.getScore() : 0.0,
+                            attempt.getFeedback() != null && attempt.getFeedback().length() > 50 
+                                ? attempt.getFeedback().substring(0, 50) + "..." 
+                                : attempt.getFeedback());
+                    
+                    boolean fcmSent = fcmService.sendNotification(user.getFcmToken(), title, body);
+                    log.info("FCM notification sent: {} for attempt {}", fcmSent, attempt.getId());
+                }
+            }
+        } catch (Exception e) {
+            log.error("Failed to send result to client for attempt {}: {}", 
+                    attempt.getId(), e.getMessage(), e);
+            // Không throw exception để không ảnh hưởng đến việc lưu attempt
+        }
     }
 
     @Override

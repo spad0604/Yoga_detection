@@ -92,8 +92,45 @@ public class PoseWebSocketHandler extends TextWebSocketHandler {
         log.info("Processing pose data for user: {}, poseId: {}, landmarks count: {}", 
                 email, request.getPoseId(), request.getLandmarks().size());
         
+        // Socket giờ chỉ nhận để debug, không xử lý gì
+        // Tất cả xử lý chính qua REST API POST /api/pose-attempts
     }
 
+    /**
+     * Gửi kết quả chấm điểm về cho user qua WebSocket
+     * @param email Email của user
+     * @param attemptId ID của attempt vừa tạo
+     * @param score Điểm số từ AI (0-100)
+     * @param feedback Feedback từ AI
+     * @param poseName Tên tư thế
+     */
+    public void sendPoseResultToUser(String email, String attemptId, Double score, String feedback, String poseName) {
+        WebSocketSession session = activeSessions.get(email);
+        if (session != null && session.isOpen()) {
+            try {
+                Map<String, Object> result = Map.of(
+                        "type", "pose_result",
+                        "attemptId", attemptId,
+                        "poseName", poseName,
+                        "score", score != null ? score : 0.0,
+                        "feedback", feedback != null ? feedback : "",
+                        "timestamp", System.currentTimeMillis()
+                );
+                
+                String message = objectMapper.writeValueAsString(result);
+                session.sendMessage(new TextMessage(message));
+                log.info("Pose result sent to user {} via WebSocket: score={}", email, score);
+            } catch (Exception e) {
+                log.error("Failed to send pose result to user {}: {}", email, e.getMessage());
+            }
+        } else {
+            log.warn("User {} is not connected to WebSocket, result not sent", email);
+        }
+    }
+
+    /**
+     * Gửi message tùy chỉnh cho user
+     */
     public void sendMessageToUser(String email, String message) {
         WebSocketSession session = activeSessions.get(email);
         if (session != null && session.isOpen()) {
