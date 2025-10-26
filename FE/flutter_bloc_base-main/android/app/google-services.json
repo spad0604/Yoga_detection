@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "908506209823",
+    "project_id": "yoga-detection-d6687",
+    "storage_bucket": "yoga-detection-d6687.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:908506209823:android:b99e6d7fc876a0a10e3f2a",
+        "android_client_info": {
+          "package_name": "com.flutter.nextai.dev"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBY2AylGQ5UFiGiZWjiDpxXCc-ggefIGOU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,4 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -25,6 +27,10 @@ final GlobalKey playShowCaseWidget = GlobalKey();
 // Notifier used to signal that the home showcase sequence has been completed by the user
 final ValueNotifier<bool> homeShowcaseCompletedNotifier = ValueNotifier<bool>(false);
 
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+}
+
 void configLoading() {
   EasyLoading.instance
     ..displayDuration = const Duration(milliseconds: 2000)
@@ -47,6 +53,10 @@ Future<void> main() async {
   await EasyLocalization.ensureInitialized();
 
   await configureDependencies();
+
+  await Firebase.initializeApp();
+
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   configLoading();
 

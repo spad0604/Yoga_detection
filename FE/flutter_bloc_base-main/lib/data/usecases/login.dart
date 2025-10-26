@@ -5,7 +5,7 @@ import 'package:injectable/injectable.dart';
 import 'package:flutter_starter/core/use_case.dart';
 import 'package:flutter_starter/data/repositories/auth_repository/auth_repository.dart';
 
-typedef LoginParams = ({String email, String password});
+typedef LoginParams = ({String email, String password, String? fcmToken});
 
 @singleton
 class LoginUseCase extends UseCase<RegisterResponse?, LoginParams> {
@@ -20,6 +20,7 @@ class LoginUseCase extends UseCase<RegisterResponse?, LoginParams> {
     final res = await _authRepository.login(
       email: params.email,
       password: params.password,
+      fcmToken: params.fcmToken,
     );
 
     return res.data;

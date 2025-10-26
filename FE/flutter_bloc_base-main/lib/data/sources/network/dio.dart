@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_starter/core/exception.dart';
+import 'package:flutter_starter/core/error_code.dart';
 import 'package:injectable/injectable.dart';
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
@@ -39,7 +40,7 @@ class NetworkDio extends DioForNative implements Interceptor {
       final publicPaths = [
         'api/auth/login',
         'api/auth/register',
-        'api/auth/verify',
+        'api/auth/refresh',
         'api/password/send-otp',
         'api/password/verify-otp',
         'api/password/reset',
@@ -83,7 +84,60 @@ class NetworkDio extends DioForNative implements Interceptor {
       return handler.next(err);
     }
 
-    // TODO: Refreshing the token when it expires
+    // Refresh the token when it expires (401)
+    if (err.response?.statusCode == 401) {
+      try {
+        final refreshToken = await _tokenManager.getRefreshToken();
+        if (refreshToken == null) {
+          await _tokenManager.removeAllTokens();
+          return handler.next(ServerException(ErrorCode.UNAUTHORIZED, data: err.response?.data));
+        }
+
+        // Use a fresh Dio instance without interceptors to call refresh endpoint
+        final Dio refreshDio = Dio(BaseOptions(
+          baseUrl: this.options.baseUrl,
+          contentType: 'application/json; charset=utf-8',
+          connectTimeout: const Duration(seconds: 30),
+          receiveTimeout: const Duration(seconds: 30),
+        ));
+
+        final refreshResponse =
+            await refreshDio.post('api/auth/refresh', data: {'refreshToken': refreshToken});
+
+        if (refreshResponse.data is Map && refreshResponse.data['data'] is Map) {
+          final data = refreshResponse.data['data'];
+          final newAccess = data['accessToken']?.toString();
+          final newRefresh = data['refreshToken']?.toString();
+
+          if (newAccess != null) {
+            await _tokenManager.saveAccessToken(newAccess);
+            if (newRefresh != null) await _tokenManager.saveRefreshToken(newRefresh);
+
+            // retry original request with new auth header
+            final opts = err.requestOptions;
+            final updatedHeaders = await _tokenManager.getAuthenticatedHeaders(opts.headers);
+
+            final retryResponse = await refreshDio.request(
+              opts.path,
+              data: opts.data,
+              queryParameters: opts.queryParameters,
+              options: Options(method: opts.method, headers: updatedHeaders),
+              cancelToken: opts.cancelToken,
+              onReceiveProgress: opts.onReceiveProgress,
+            );
+
+            return handler.resolve(retryResponse);
+          }
+        }
+
+        // Refresh failed
+        await _tokenManager.removeAllTokens();
+        return handler.next(ServerException(ErrorCode.UNAUTHORIZED, data: refreshResponse.data));
+      } catch (e) {
+        await _tokenManager.removeAllTokens();
+        return handler.next(BaseException.from(e));
+      }
+    }
 
     // TODO: Removing access token after logging out
     // if (err.response?.statusCode == 401 || responseData['messageCode'] == UnauthorizedException.messageCode) {

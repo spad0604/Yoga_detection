@@ -10,7 +10,9 @@ import 'package:flutter_starter/data/sources/network/base_api_response.dart';
 import 'package:injectable/injectable.dart';
 import 'package:flutter_starter/data/entities/account.dart';
 import 'package:flutter_starter/data/entities/request/login_params.dart';
+import 'package:flutter_starter/data/entities/request/refresh_token_request.dart';
 import 'package:flutter_starter/data/repositories/auth_repository/auth_repository.dart';
+import 'package:flutter_starter/services/oauth_token_manager/oauth_token_manager.dart';
 import 'package:flutter_starter/data/repositories/auth_repository/exceptions.dart';
 import 'package:flutter_starter/data/sources/network/network.dart';
 import 'package:flutter_starter/core/error_code.dart';
@@ -22,20 +24,23 @@ import '../../entities/request/reset_password_request.dart';
 class DefaultAuthRepository extends AuthRepository {
   final NetworkDataSource _networkDataSource;
 
+  final OauthTokenManager _tokenManager;
+
   DefaultAuthRepository({
     required NetworkDataSource networkDataSource,
-  }) : _networkDataSource = networkDataSource;
+    required OauthTokenManager tokenManager,
+  })  : _networkDataSource = networkDataSource,
+        _tokenManager = tokenManager;
 
   @override
   Future<BaseApiResponse<RegisterResponse>> login({
     required String email,
     required String password,
+    String? fcmToken,
   }) async {
     try {
-      final res = await _networkDataSource.login(LoginParams(
-        email: email,
-        password: password,
-      ));
+      final res = await _networkDataSource
+          .login(LoginParams(email: email, password: password, fcmToken: fcmToken));
 
       final code = res.code;
       if (code != null && code != ErrorCode.SUCCESS.code) {
@@ -54,7 +59,39 @@ class DefaultAuthRepository extends AuthRepository {
 
   @override
   Future<Account> verifyLoginStatus() async {
-    return await _networkDataSource.verifyLoginStatus();
+    // Instead of calling the unused verify endpoint directly on app start,
+    // attempt to refresh tokens using stored refresh token, then verify.
+    final refreshToken = await _tokenManager.getRefreshToken();
+    if (refreshToken == null) {
+      throw ServerException(ErrorCode.UNAUTHORIZED);
+    }
+
+    try {
+      final res =
+          await _networkDataSource.refreshToken(RefreshTokenRequest(refreshToken: refreshToken));
+
+      final code = res.code;
+      if (code != null && code != ErrorCode.SUCCESS.code) {
+        final match = ErrorCode.values.firstWhere(
+          (e) => e.code == code,
+          orElse: () => ErrorCode.INTERNAL_SERVER_ERROR,
+        );
+        throw ServerException(match, data: res);
+      }
+
+      final payload = res.data;
+      final newAccess = payload?.accessToken;
+      final newRefresh = payload?.refreshToken;
+
+      if (newAccess != null) await _tokenManager.saveAccessToken(newAccess);
+      if (newRefresh != null) await _tokenManager.saveRefreshToken(newRefresh);
+
+      // Now call verify endpoint to get account info (requires Authorization)
+      return await _networkDataSource.verifyLoginStatus();
+    } on DioException {
+      await _tokenManager.removeAllTokens();
+      rethrow;
+    }
   }
 
   @override
@@ -178,7 +215,7 @@ class DefaultAuthRepository extends AuthRepository {
       final code = res.code;
       if (code != null && code != ErrorCode.SUCCESS.code) {
         final match = ErrorCode.values.firstWhere(
-              (e) => e.code == code,
+          (e) => e.code == code,
           orElse: () => ErrorCode.INTERNAL_SERVER_ERROR,
         );
         throw ServerException(match, data: res);
@@ -189,5 +226,4 @@ class DefaultAuthRepository extends AuthRepository {
       rethrow;
     }
   }
-
 }

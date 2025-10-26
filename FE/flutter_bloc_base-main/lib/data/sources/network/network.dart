@@ -1,11 +1,14 @@
 import 'package:flutter_starter/data/entities/request/change_password.dart';
+import 'package:flutter_starter/data/entities/request/post_yoga_pose_model.dart';
 import 'package:flutter_starter/data/entities/request/register_params.dart';
 import 'package:flutter_starter/data/entities/request/request_change_password.dart';
 import 'package:flutter_starter/data/entities/request/reset_password_request.dart';
+import 'package:flutter_starter/data/entities/request/refresh_token_request.dart';
 import 'package:flutter_starter/data/entities/request/verify_otp_request.dart';
 import 'package:flutter_starter/data/entities/response/get_information.dart';
 import 'package:flutter_starter/data/entities/response/page_response.dart';
 import 'package:flutter_starter/data/entities/response/register_response.dart';
+import 'package:flutter_starter/data/entities/response/user_yoga_pose_model.dart';
 import 'package:flutter_starter/data/entities/response/verify_otp.dart';
 import 'package:flutter_starter/data/entities/response/yoga_pose_details.dart';
 import 'package:flutter_starter/data/sources/network/base_api_response.dart';
@@ -52,6 +55,22 @@ abstract class NetworkDataSource {
   @POST('api/password/reset')
   Future<BaseApiResponse<void>> resetPassword(@Body() ResetPasswordRequest params);
 
+  @POST('api/auth/refresh')
+  Future<BaseApiResponse<RegisterResponse>> refreshToken(@Body() RefreshTokenRequest params);
+
   @GET('api/user/me')
   Future<BaseApiResponse<GetInformation>> getInformation();
+
+  @POST('api/pose-attempts')
+  Future<BaseApiResponse<void>> postYogaPose(
+      @Body() PostYogaPoseModel model, @Part() MultipartFile image);
+
+  @GET("api/pose-attempts/by-date")
+  Future<BaseApiResponse<PageResponse<UserYogaPoseModel>>> getUserYogaPosesByDate(
+      @Query("page") int page,
+      @Query("startDate") String startDate,
+      @Query("endDate") String endDate);
+
+  @GET('api/pose-attempts/{id}')
+  Future<BaseApiResponse<UserYogaPoseModel>> getUserYogaPoseById(@Path('id') String id);
 }

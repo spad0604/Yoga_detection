@@ -17,6 +17,8 @@ import 'package:flutter_starter/gen/app_images.dart';
 import 'package:google_mlkit_pose_detection/google_mlkit_pose_detection.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_starter/core/socket_isolate.dart';
+import 'package:flutter_starter/data/entities/request/post_yoga_pose_model.dart';
+import 'package:flutter_starter/data/usecases/post_yoga_pose_uc.dart';
 
 // ignore: depend_on_referenced_packages
 import 'package:google_mlkit_commons/google_mlkit_commons.dart'
@@ -137,6 +139,8 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
         debugPrint('  WS message: ${event['data']}');
       } else if (type == 'sent') {
         debugPrint('WS sent ${event['what']} ${event['bytes']} bytes');
+      } else if (type == 'pose_result') {
+        _handlePoseResult(event['data']);
       }
     });
 
@@ -222,6 +226,51 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(message)),
       );
+    }
+  }
+
+  void _handlePoseResult(dynamic data) {
+    debugPrint('\n${'=' * 60}');
+    debugPrint('✅ POSE RESULT RECEIVED VIA SOCKET.IO');
+    debugPrint('${'=' * 60}');
+    debugPrint('Result data: $data');
+
+    if (data is Map) {
+      final attemptId = data['attemptId'];
+      final poseName = data['poseName'];
+      final score = data['score'];
+      final feedback = data['feedback'];
+      final timestamp = data['timestamp'];
+
+      debugPrint('Attempt ID: $attemptId');
+      debugPrint('Pose Name: $poseName');
+      debugPrint('Score: $score');
+      debugPrint('Feedback: $feedback');
+      debugPrint('Timestamp: $timestamp');
+      debugPrint('${'=' * 60}\n');
+
+      // Show result to user
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Pose Result: $poseName - Score: $score'),
+            duration: const Duration(seconds: 5),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+
+      // TODO: Navigate to result screen or show result dialog
+      // Navigator.push(context, MaterialPageRoute(
+      //   builder: (_) => PoseResultScreen(
+      //     attemptId: attemptId,
+      //     poseName: poseName,
+      //     score: score,
+      //     feedback: feedback,
+      //   ),
+      // ));
+    } else {
+      debugPrint('Unexpected pose_result format: $data');
     }
   }
 
@@ -333,54 +382,64 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
 
   Future<void> _sendPoseOverSocket(List<Pose> poses, Uint8List imageBytes) async {
     if (poses.isEmpty) return;
-    // Build payload array with poseId, landmarks, imageBase64
+
+    // Build landmark data
     final poseId = _poseIdFromArgs ?? _readPoseIdFromRoute();
-    final baseList = _posesToJson(poses, poseId: poseId);
-    final b64 = base64Encode(imageBytes);
-    final ts = DateTime.now().toIso8601String();
-    final payload = baseList
-        .map((e) => {
-              ...e,
-              'imageBase64': b64,
-              'timestamp': ts,
-            })
-        .toList();
+    final landmarksJson = _posesToJson(poses, poseId: poseId);
 
-    // Print FULL JSON payload for backend team (including complete base64)
+    // Save image to temp file
     try {
-      final fullJson = jsonEncode(payload);
+      final dir = await getApplicationDocumentsDirectory();
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+      final imagePath = '${dir.path}${Platform.pathSeparator}pose_image_$timestamp.jpg';
+      await File(imagePath).writeAsBytes(imageBytes);
+
+      // Create model with landmarks
+      final landmarks = landmarksJson.isNotEmpty
+          ? (landmarksJson.first['landmarks'] as List)
+              .map((lm) => PoseLandmarkData(
+                    type: lm['type'],
+                    x: lm['x'].toDouble(),
+                    y: lm['y'].toDouble(),
+                    z: lm['z'].toDouble(),
+                  ))
+              .toList()
+          : <PoseLandmarkData>[];
+
+      final model = PostYogaPoseModel(
+        poseId: poseId,
+        landmarks: landmarks,
+        timestamp: DateTime.now().toIso8601String(),
+      );
+
+      // Upload via HTTP
       debugPrint('\n${'=' * 60}');
-      debugPrint('📤 FULL SOCKET PAYLOAD (send_data event)');
+      debugPrint('📤 UPLOADING POSE VIA HTTP');
       debugPrint('${'=' * 60}');
-      debugPrint('Event name: send_data');
-      debugPrint(
-          'Payload size: ${fullJson.length} chars (~${(fullJson.length / 1024).toStringAsFixed(1)} KB)');
-
-      // Write to file for full payload (console may truncate large base64)
-      try {
-        final dir = await getApplicationDocumentsDirectory();
-        final timestamp = DateTime.now().toIso8601String().replaceAll(':', '-');
-        final file = File('${dir.path}${Platform.pathSeparator}socket_payload_$timestamp.json');
-        await file.writeAsString(fullJson);
-        debugPrint('✅ Full JSON payload written to: ${file.path}');
-        debugPrint('   Copy this file to share with backend team');
-      } catch (e) {
-        debugPrint('Failed to write payload to file: $e');
-        // Fallback: print first 2000 chars
-        debugPrint('JSON payload (first 2000 chars):');
-        debugPrint(fullJson.substring(0, fullJson.length > 2000 ? 2000 : fullJson.length));
-      }
+      debugPrint('Pose ID: $poseId');
+      debugPrint('Image path: $imagePath');
+      debugPrint('Landmarks count: ${landmarks.length}');
+      debugPrint('Waiting for result via Socket.IO...');
       debugPrint('${'=' * 60}\n');
-    } catch (e) {
-      debugPrint('Failed to encode full JSON for logging: $e');
-    }
 
-    final url = _buildPoseWsUrl();
-    await _connectSocketIfNeeded(url);
-    try {
-      _ws.sendPoseRequests(payload);
+      final useCase = provider<PostYogaPoseUC>();
+      await useCase(PostYogaPoseParams(
+        imagePath: imagePath,
+        model: model,
+      ));
+
+      debugPrint(
+          '✅ Pose uploaded successfully. Result will arrive via Socket.IO event "pose_result"');
+
+      // Clean up temp file
+      try {
+        await File(imagePath).delete();
+      } catch (e) {
+        debugPrint('Failed to delete temp image: $e');
+      }
     } catch (e) {
-      debugPrint('Failed to send pose over WS: $e');
+      debugPrint('❌ Failed to upload pose via HTTP: $e');
+      _showError('Failed to upload pose: $e');
     }
   }
 
@@ -729,7 +788,7 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
                                 _detectedPoses.isNotEmpty &&
                                 _capturedImageSize != null)
                               CustomPaint(
-                                painter: _PosePainter(
+                                painter: PosePainter(
                                   poses: _detectedPoses,
                                   imageSize: _capturedImageSize!, // Use actual captured image size
                                   isFrontCamera: _controller.description.lensDirection ==
@@ -746,7 +805,7 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
                                   }
 
                                   return CustomPaint(
-                                    painter: _PosePainter(
+                                    painter: PosePainter(
                                       poses: poses,
                                       imageSize: _previewSize!,
                                       isFrontCamera: _controller.description.lensDirection ==

@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_starter/data/entities/response/yoga_pose_details.dart';
 import 'package:flutter_starter/di.dart';
 import 'package:flutter_starter/presenter/pages/history/history_bloc.dart';
+import 'package:flutter_starter/presenter/pages/history/history_event.dart';
+import 'package:flutter_starter/presenter/pages/history/history_state.dart';
 import 'package:flutter_starter/presenter/pages/home_page/home_page.dart';
 import 'package:flutter_starter/presenter/themes/colors.dart';
 import 'package:flutter_starter/presenter/themes/extensions.dart';
@@ -29,21 +31,42 @@ class HistoryPage extends StatefulWidget implements AutoRouteWrapper {
 }
 
 class _HistoryPageState extends State<HistoryPage> {
+  HistoryBloc get _bloc => context.read<HistoryBloc>();
+
   DateTime? _selectedDate;
 
-  List<DateTime?> _selectedDates = [
-    // Sample dates to highlight like in the image (December 2025)
-    DateTime(2025, 12, 1), // 1st December
-    DateTime(2025, 12, 4), // 4th December
-    DateTime(2025, 12, 5), // 5th December
-    DateTime(2025, 12, 6), // 6th December
-    DateTime(2025, 12, 17), // 17th December
-  ];
+  List<DateTime?> _selectedDates = [];
+
+  @override
+  void initState() {
+    super.initState();
+    // Load current month data by default
+    final now = DateTime.now();
+    final startOfMonth = DateTime(now.year, now.month, 1);
+    final endOfMonth = DateTime(now.year, now.month + 1, 0);
+    _bloc.add(HistoryEvent.loadPosesByDate(
+      startDate: startOfMonth,
+      endDate: endOfMonth,
+    ));
+  }
 
   void _onDateSelected(List<DateTime?> selectedDates) {
     setState(() {
       _selectedDates = selectedDates;
+      _selectedDate = selectedDates.isNotEmpty ? selectedDates.first : null;
     });
+
+    // Load poses for selected date range
+    if (selectedDates.isNotEmpty && selectedDates.first != null) {
+      final startDate = selectedDates.first!;
+      final endDate =
+          selectedDates.length > 1 && selectedDates.last != null ? selectedDates.last! : startDate;
+
+      _bloc.add(HistoryEvent.loadPosesByDate(
+        startDate: startDate,
+        endDate: endDate,
+      ));
+    }
   }
 
   @override
@@ -73,48 +96,100 @@ class _HistoryPageState extends State<HistoryPage> {
                   color: Colors.white,
                 ),
                 padding: const EdgeInsets.all(16),
-                child: Column(
-                  children: [
-                    Row(
+                child: BlocBuilder<HistoryBloc, HistoryState>(
+                  builder: (context, state) {
+                    return Column(
                       children: [
-                        Text(
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                          _selectedDate?.dateTimeToDayMonDay() ?? '',
-                          style: TextStyle(
-                              fontSize: 17, fontWeight: FontWeight.w400, color: Colors.black),
-                        ),
-                        const Spacer(),
                         Row(
                           children: [
-                            _totalWidget(
-                                Icons.check_circle, 'Total Sessions', 10, AppColors.primaryBlue),
-                            const SizedBox(width: 16),
-                            _totalWidget(Icons.access_time, 'Total Time', 10, Colors.lightGreen),
+                            Text(
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              _selectedDate?.dateTimeToDayMonDay() ?? 'Select a date',
+                              style: const TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.w400, color: Colors.black),
+                            ),
+                            const Spacer(),
+                            Row(
+                              children: [
+                                _totalWidget(Icons.check_circle, 'Total', state.poses.length,
+                                    AppColors.primaryBlue),
+                                const SizedBox(width: 16),
+                                _totalWidget(
+                                    Icons.star,
+                                    'Avg Score',
+                                    state.poses.isEmpty
+                                        ? 0
+                                        : (state.poses.map((p) => p.score).reduce((a, b) => a + b) /
+                                                state.poses.length)
+                                            .round(),
+                                    Colors.amber),
+                              ],
+                            )
                           ],
-                        )
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    const Divider(color: AppColors.grey600),
-                    const SizedBox(height: 16),
-                    Expanded(
-                      // ListView can now expand properly
-                      child: ListView.builder(
-                          padding: const EdgeInsets.only(top: 16),
-                          itemBuilder: (context, index) => Padding(
-                                padding: const EdgeInsets.only(bottom: 16),
-                                child: YogaPosesItem(
-                                    item: YogaPoseDetails(
-                                        id: '',
-                                        name: 'Bay phòng',
-                                        totalMinutes: 10,
-                                        totalCalories: 10,
-                                        level: '')),
+                        ),
+                        const SizedBox(height: 16),
+                        const Divider(color: AppColors.grey600),
+                        const SizedBox(height: 16),
+                        if (state.status == HistoryStatus.loading)
+                          const Expanded(
+                            child: Center(child: CircularProgressIndicator()),
+                          )
+                        else if (state.status == HistoryStatus.failure)
+                          Expanded(
+                            child: Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(Icons.error_outline, size: 48, color: Colors.red),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    state.error?.message ?? 'Failed to load history',
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
                               ),
-                          itemCount: 100),
-                    )
-                  ],
+                            ),
+                          )
+                        else if (state.poses.isEmpty)
+                          const Expanded(
+                            child: Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.calendar_today, size: 48, color: Colors.grey),
+                                  SizedBox(height: 16),
+                                  Text(
+                                    'No poses found for selected date',
+                                    style: TextStyle(color: Colors.grey),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
+                        else
+                          Expanded(
+                            child: ListView.builder(
+                              padding: const EdgeInsets.only(top: 16),
+                              itemCount: state.poses.length,
+                              itemBuilder: (context, index) {
+                                final pose = state.poses[index];
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 16),
+                                  child: YogaPosesItem(
+                                      item: YogaPoseDetails(
+                                          id: pose.id,
+                                          name: pose.poseCode,
+                                          totalMinutes: 0,
+                                          totalCalories: 0,
+                                          level: '')),
+                                );
+                              },
+                            ),
+                          )
+                      ],
+                    );
+                  },
                 ),
               ),
             )

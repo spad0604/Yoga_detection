@@ -1,12 +1,12 @@
 part of 'camera_detection.dart';
 
-class _PosePainter extends CustomPainter {
+class PosePainter extends CustomPainter {
   final List<Pose> poses;
   final Size imageSize;
   final bool isFrontCamera;
   final bool showLabels;
 
-  _PosePainter({
+  PosePainter({
     required this.poses,
     required this.imageSize,
     required this.isFrontCamera,
@@ -193,5 +193,5 @@ class _PosePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _PosePainter oldDelegate) => oldDelegate.poses != poses;
+  bool shouldRepaint(covariant PosePainter oldDelegate) => oldDelegate.poses != poses;
 }

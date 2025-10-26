@@ -9,6 +9,7 @@ class LoginParams with _$LoginParams {
   const factory LoginParams({
     @JsonKey(name: 'email') required String email,
     @JsonKey(name: 'password') required String password,
+    @JsonKey(name: 'fcmToken') String? fcmToken,
   }) = _LoginParams;
 
   factory LoginParams.fromJson(Map<String, Object?> json) => _$LoginParamsFromJson(json);

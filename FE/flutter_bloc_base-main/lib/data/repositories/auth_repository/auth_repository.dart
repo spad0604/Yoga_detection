@@ -9,6 +9,7 @@ abstract class AuthRepository {
   Future<BaseApiResponse<RegisterResponse>> login({
     required String email,
     required String password,
+    String? fcmToken,
   });
 
   Future<BaseApiResponse<RegisterResponse>> register({

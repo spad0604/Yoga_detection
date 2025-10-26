@@ -144,6 +144,10 @@ class WebSocketIsolate {
             socket?.on(
                 'response_data', (data) => mainSendPort.send({'type': 'message', 'data': data}));
             socket?.on('message', (data) => mainSendPort.send({'type': 'message', 'data': data}));
+
+            // Listen for pose_result event from backend
+            socket?.on(
+                'pose_result', (data) => mainSendPort.send({'type': 'pose_result', 'data': data}));
           } catch (e) {
             mainSendPort.send({'type': 'error', 'message': 'Connect failed: $e'});
           }

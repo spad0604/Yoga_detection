@@ -24,6 +24,8 @@ mixin _$LoginParams {
   String get email => throw _privateConstructorUsedError;
   @JsonKey(name: 'password')
   String get password => throw _privateConstructorUsedError;
+  @JsonKey(name: 'fcmToken')
+  String? get fcmToken => throw _privateConstructorUsedError;
 
   /// Serializes this LoginParams to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -43,7 +45,8 @@ abstract class $LoginParamsCopyWith<$Res> {
   @useResult
   $Res call(
       {@JsonKey(name: 'email') String email,
-      @JsonKey(name: 'password') String password});
+      @JsonKey(name: 'password') String password,
+      @JsonKey(name: 'fcmToken') String? fcmToken});
 }
 
 /// @nodoc
@@ -63,6 +66,7 @@ class _$LoginParamsCopyWithImpl<$Res, $Val extends LoginParams>
   $Res call({
     Object? email = null,
     Object? password = null,
+    Object? fcmToken = freezed,
   }) {
     return _then(_value.copyWith(
       email: null == email
@@ -73,6 +77,10 @@ class _$LoginParamsCopyWithImpl<$Res, $Val extends LoginParams>
           ? _value.password
           : password // ignore: cast_nullable_to_non_nullable
               as String,
+      fcmToken: freezed == fcmToken
+          ? _value.fcmToken
+          : fcmToken // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -87,7 +95,8 @@ abstract class _$$LoginParamsImplCopyWith<$Res>
   @useResult
   $Res call(
       {@JsonKey(name: 'email') String email,
-      @JsonKey(name: 'password') String password});
+      @JsonKey(name: 'password') String password,
+      @JsonKey(name: 'fcmToken') String? fcmToken});
 }
 
 /// @nodoc
@@ -105,6 +114,7 @@ class __$$LoginParamsImplCopyWithImpl<$Res>
   $Res call({
     Object? email = null,
     Object? password = null,
+    Object? fcmToken = freezed,
   }) {
     return _then(_$LoginParamsImpl(
       email: null == email
@@ -115,6 +125,10 @@ class __$$LoginParamsImplCopyWithImpl<$Res>
           ? _value.password
           : password // ignore: cast_nullable_to_non_nullable
               as String,
+      fcmToken: freezed == fcmToken
+          ? _value.fcmToken
+          : fcmToken // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -124,7 +138,8 @@ class __$$LoginParamsImplCopyWithImpl<$Res>
 class _$LoginParamsImpl with DiagnosticableTreeMixin implements _LoginParams {
   const _$LoginParamsImpl(
       {@JsonKey(name: 'email') required this.email,
-      @JsonKey(name: 'password') required this.password});
+      @JsonKey(name: 'password') required this.password,
+      @JsonKey(name: 'fcmToken') this.fcmToken});
 
   factory _$LoginParamsImpl.fromJson(Map<String, dynamic> json) =>
       _$$LoginParamsImplFromJson(json);
@@ -135,10 +150,13 @@ class _$LoginParamsImpl with DiagnosticableTreeMixin implements _LoginParams {
   @override
   @JsonKey(name: 'password')
   final String password;
+  @override
+  @JsonKey(name: 'fcmToken')
+  final String? fcmToken;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'LoginParams(email: $email, password: $password)';
+    return 'LoginParams(email: $email, password: $password, fcmToken: $fcmToken)';
   }
 
   @override
@@ -147,7 +165,8 @@ class _$LoginParamsImpl with DiagnosticableTreeMixin implements _LoginParams {
     properties
       ..add(DiagnosticsProperty('type', 'LoginParams'))
       ..add(DiagnosticsProperty('email', email))
-      ..add(DiagnosticsProperty('password', password));
+      ..add(DiagnosticsProperty('password', password))
+      ..add(DiagnosticsProperty('fcmToken', fcmToken));
   }
 
   @override
@@ -157,12 +176,14 @@ class _$LoginParamsImpl with DiagnosticableTreeMixin implements _LoginParams {
             other is _$LoginParamsImpl &&
             (identical(other.email, email) || other.email == email) &&
             (identical(other.password, password) ||
-                other.password == password));
+                other.password == password) &&
+            (identical(other.fcmToken, fcmToken) ||
+                other.fcmToken == fcmToken));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, email, password);
+  int get hashCode => Object.hash(runtimeType, email, password, fcmToken);
 
   /// Create a copy of LoginParams
   /// with the given fields replaced by the non-null parameter values.
@@ -182,9 +203,9 @@ class _$LoginParamsImpl with DiagnosticableTreeMixin implements _LoginParams {
 
 abstract class _LoginParams implements LoginParams {
   const factory _LoginParams(
-          {@JsonKey(name: 'email') required final String email,
-          @JsonKey(name: 'password') required final String password}) =
-      _$LoginParamsImpl;
+      {@JsonKey(name: 'email') required final String email,
+      @JsonKey(name: 'password') required final String password,
+      @JsonKey(name: 'fcmToken') final String? fcmToken}) = _$LoginParamsImpl;
 
   factory _LoginParams.fromJson(Map<String, dynamic> json) =
       _$LoginParamsImpl.fromJson;
@@ -195,6 +216,9 @@ abstract class _LoginParams implements LoginParams {
   @override
   @JsonKey(name: 'password')
   String get password;
+  @override
+  @JsonKey(name: 'fcmToken')
+  String? get fcmToken;
 
   /// Create a copy of LoginParams
   /// with the given fields replaced by the non-null parameter values.

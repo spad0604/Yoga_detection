@@ -312,6 +312,39 @@ class _NetworkDataSource implements NetworkDataSource {
   }
 
   @override
+  Future<BaseApiResponse<RegisterResponse>> refreshToken(
+    RefreshTokenRequest params,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(params.toJson());
+    final _options = _setStreamType<BaseApiResponse<RegisterResponse>>(
+      Options(method: 'POST', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            'api/auth/refresh',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseApiResponse<RegisterResponse> _value;
+    try {
+      _value = BaseApiResponse<RegisterResponse>.fromJson(
+        _result.data!,
+        (json) => RegisterResponse.fromJson(json as Map<String, dynamic>),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
   Future<BaseApiResponse<GetInformation>> getInformation() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -333,6 +366,110 @@ class _NetworkDataSource implements NetworkDataSource {
       _value = BaseApiResponse<GetInformation>.fromJson(
         _result.data!,
         (json) => GetInformation.fromJson(json as Map<String, dynamic>),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<BaseApiResponse<void>> postYogaPose(
+    PostYogaPoseModel model,
+    MultipartFile image,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(model.toJson());
+    final _options = _setStreamType<BaseApiResponse<void>>(
+      Options(method: 'POST', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            'api/pose-attempts',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseApiResponse<void> _value;
+    try {
+      _value = BaseApiResponse<void>.fromJson(_result.data!, (json) => () {}());
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<BaseApiResponse<PageResponse<UserYogaPoseModel>>>
+      getUserYogaPosesByDate(int page, String startDate, String endDate) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'page': page,
+      r'startDate': startDate,
+      r'endDate': endDate,
+    };
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options =
+        _setStreamType<BaseApiResponse<PageResponse<UserYogaPoseModel>>>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            'api/pose-attempts/by-date',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(
+            baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
+          ),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseApiResponse<PageResponse<UserYogaPoseModel>> _value;
+    try {
+      _value = BaseApiResponse<PageResponse<UserYogaPoseModel>>.fromJson(
+        _result.data!,
+        (json) => PageResponse<UserYogaPoseModel>.fromJson(
+          json as Map<String, dynamic>,
+          (json) => UserYogaPoseModel.fromJson(json as Map<String, dynamic>),
+        ),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<BaseApiResponse<UserYogaPoseModel>> getUserYogaPoseById(
+    String id,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<BaseApiResponse<UserYogaPoseModel>>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            'api/pose-attempts/${id}',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseApiResponse<UserYogaPoseModel> _value;
+    try {
+      _value = BaseApiResponse<UserYogaPoseModel>.fromJson(
+        _result.data!,
+        (json) => UserYogaPoseModel.fromJson(json as Map<String, dynamic>),
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);

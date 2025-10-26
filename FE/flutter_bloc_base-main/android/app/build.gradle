@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'dev.flutter.flutter-gradle-plugin'
+    id 'com.google.gms.google-services'
 }
 
 // Configure Flutter plugin source path for the new Gradle plugin
@@ -53,7 +54,7 @@ android {
 
     defaultConfig {
         applicationId "com.flutter.nextai"
-        minSdkVersion flutter.minSdkVersion
+        minSdkVersion 23
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutter.versionCode
         versionName flutter.versionName
@@ -71,4 +72,7 @@ android {
 
 dependencies {
     // Kotlin stdlib provided via plugin; add your libs below if needed
+    implementation platform('com.google.firebase:firebase-bom:34.4.0')
+    implementation 'com.google.firebase:firebase-messaging'
+    implementation 'com.google.firebase:firebase-analytics'
 }
