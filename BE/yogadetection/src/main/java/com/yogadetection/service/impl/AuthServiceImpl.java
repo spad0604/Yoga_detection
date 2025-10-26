@@ -31,6 +31,7 @@ public class AuthServiceImpl implements AuthService {
         User user = userRepository.findByEmail(request.getEmail().toLowerCase()).orElseThrow(() -> new UserNotFoundException());
 
         if (passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            userRepository.saveFcmToken(request.getFcmToken(), request.getEmail().toLowerCase());
             return new TokenResponse(jwtService.generateToken(user));
         }
         else throw new InvalidPasswordException();

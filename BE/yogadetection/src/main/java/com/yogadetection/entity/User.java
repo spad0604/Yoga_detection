@@ -44,6 +44,9 @@ public class User implements UserDetails {
     @Column(name = "reg_date", nullable = false, updatable = false)
     private LocalDateTime registerDate;
 
+    @Column(name = "fcmToken", nullable = true, updatable = true)
+    private String fcmToken;
+
     @PrePersist
     protected void onCreate() {
         this.registerDate = LocalDateTime.now();
