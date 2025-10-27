@@ -19,13 +19,24 @@ import java.util.function.Function;
 public class JwtServiceImpl implements JwtService {
 //    private static final String SECRET_KEY = System.getenv("JWT_SECRET");
     private static final String SECRET_KEY = "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970";
-    private static final long EXPIRATION_TIME = 86400000;
+    private static final long EXPIRATION_TIME = 86400000; 
+    private static final long REFRESH_EXPIRATION_TIME = 604800000; 
 
     @Override
     public String generateToken(User user) {
         Map<String, Object> extraClaims = new HashMap<>();
         extraClaims.put("username", user.getUsername());
-        String token = generateToken(extraClaims, user);
+        extraClaims.put("type", "access");
+        String token = generateToken(extraClaims, user, EXPIRATION_TIME);
+        return token;
+    }
+
+    @Override
+    public String generateRefreshToken(User user) {
+        Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("username", user.getUsername());
+        extraClaims.put("type", "refresh");
+        String token = generateToken(extraClaims, user, REFRESH_EXPIRATION_TIME);
         return token;
     }
 
@@ -40,14 +51,14 @@ public class JwtServiceImpl implements JwtService {
         return token;
     }
 
-    private String generateToken(Map<String, Object> extraClaims, User user) {
+    private String generateToken(Map<String, Object> extraClaims, User user, long expirationTime) {
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
                 .setId(user.getId())
                 .setSubject(user.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }

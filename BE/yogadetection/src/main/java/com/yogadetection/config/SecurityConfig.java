@@ -71,6 +71,9 @@ public class SecurityConfig {
                     .requestMatchers("/api/password/reset").permitAll()
                     .requestMatchers("/api/yoga-poses/**").permitAll()
                     .requestMatchers("/api/user/**").permitAll()
+                    .requestMatchers("/swagger-ui/**").permitAll()
+                    .requestMatchers("/swagger-ui.html").permitAll()
+                    .requestMatchers("/v3/api-docs/**").permitAll()
                     .anyRequest().authenticated()
             )
             .sessionManagement(session -> session

@@ -4,6 +4,7 @@ import com.yogadetection.entity.User;
 
 public interface JwtService {
     String generateToken(User user);
+    String generateRefreshToken(User user);
     String extractUsername(String token);
     String extractUserId(String token);
     boolean isTokenValid(String token, User user);
