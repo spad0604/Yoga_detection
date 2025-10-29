@@ -19,6 +19,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_starter/core/socket_isolate.dart';
 import 'package:flutter_starter/data/entities/request/post_yoga_pose_model.dart';
 import 'package:flutter_starter/data/usecases/post_yoga_pose_uc.dart';
+import 'package:flutter_starter/data/entities/response/yoga_pose_details.dart';
 
 // ignore: depend_on_referenced_packages
 import 'package:google_mlkit_commons/google_mlkit_commons.dart'
@@ -36,7 +37,10 @@ part 'pose_painter.dart';
 // TODO: Add the page to the router
 @RoutePage()
 class CameraDetectionPage extends StatefulWidget implements AutoRouteWrapper {
-  const CameraDetectionPage();
+  final String? poseId;
+  final YogaPoseDetails? item;
+
+  const CameraDetectionPage({super.key, this.poseId, this.item});
 
   @override
   Widget wrappedRoute(BuildContext context) {
@@ -74,7 +78,7 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
   String? _jwtToken;
   String? _wsBase; // e.g., ws://host:9080
   bool _usingAuthHeader = false;
-  int? _poseIdFromArgs;
+  String? _poseIdFromArgs;
 
   @override
   void initState() {
@@ -108,9 +112,9 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
         // Common keys: token, poseId or item.id, optional wsBase
         _jwtToken = args['token'] as String? ?? _jwtToken;
         _wsBase = args['wsBase'] as String? ?? _wsBase; // e.g. ws://13.211.229.143:9080
-        if (args['poseId'] is int) _poseIdFromArgs = args['poseId'] as int;
+        if (args['poseId'] is String) _poseIdFromArgs = args['poseId'] as String;
         if (args['item'] != null && args['item'].id != null) {
-          _poseIdFromArgs = args['item'].id as int;
+          _poseIdFromArgs = args['item'].id as String;
         }
       }
     } catch (_) {}
@@ -407,7 +411,7 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
           : <PoseLandmarkData>[];
 
       final model = PostYogaPoseModel(
-        poseId: poseId,
+        poseId: poseId ?? '',
         landmarks: landmarks,
         timestamp: DateTime.now().toIso8601String(),
       );
@@ -443,16 +447,19 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
     }
   }
 
-  int _readPoseIdFromRoute() {
-    int poseId = -1;
+  String _readPoseIdFromRoute() {
+    // First try to get from widget parameters
+    if (widget.poseId != null) return widget.poseId ?? '';
+
+    String poseId = '';
     try {
       final route = ModalRoute.of(context);
       if (route != null && route.settings.arguments is Map) {
         final args = route.settings.arguments as Map;
         if (args['item'] != null && args['item'].id != null) {
-          poseId = args['item'].id as int;
+          poseId = args['item'].id;
         } else if (args['poseId'] != null) {
-          poseId = args['poseId'] as int;
+          poseId = args['poseId'];
         }
       }
     } catch (_) {}
@@ -468,15 +475,15 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
     }
 
     // Try to get poseId from ModalRoute (if available)
-    int poseId = -1;
+    String poseId = '';
     try {
       final route = ModalRoute.of(context);
       if (route != null && route.settings.arguments is Map) {
         final args = route.settings.arguments as Map;
         if (args['item'] != null && args['item'].id != null) {
-          poseId = args['item'].id as int;
+          poseId = args['item'].id;
         } else if (args['poseId'] != null) {
-          poseId = args['poseId'] as int;
+          poseId = args['poseId'];
         }
       }
     } catch (_) {}
@@ -692,7 +699,7 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
   //     ]
   //   }
   // ]
-  List<Map<String, dynamic>> _posesToJson(List<Pose> poses, {required int poseId}) {
+  List<Map<String, dynamic>> _posesToJson(List<Pose> poses, {required String poseId}) {
     final allTypes = PoseLandmarkType.values;
     return poses.map((pose) {
       final landmarksMap = pose.landmarks;

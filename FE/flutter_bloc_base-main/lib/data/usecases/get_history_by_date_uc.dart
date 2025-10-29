@@ -15,8 +15,8 @@ class GetHistoryByDateUC extends UseCase<PageResponse<UserYogaPoseModel>, GetHis
 
   @override
   FutureOr<PageResponse<UserYogaPoseModel>> call(params) {
-    final res = _historyRepository.getUserYogaPosesByDate(
-        params.page, params.startDate.toIso8601String(), params.endDate.toIso8601String());
+    final res =
+        _historyRepository.getUserYogaPosesByDate(params.page, params.startDate, params.endDate);
 
     return res;
   }

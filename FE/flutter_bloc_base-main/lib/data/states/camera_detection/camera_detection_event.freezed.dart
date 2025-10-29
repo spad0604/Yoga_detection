@@ -32,7 +32,7 @@ mixin _$CameraDetectionEvent {
     required TResult Function(
             String imagePath, Uint8List imageBytes, List<Pose> poses)
         captureImage,
-    required TResult Function(int poseId, String imagePath,
+    required TResult Function(String poseId, String imagePath,
             Uint8List imageBytes, List<Pose> poses)
         uploadPose,
     required TResult Function() uploadSuccess,
@@ -55,7 +55,7 @@ mixin _$CameraDetectionEvent {
     TResult? Function(int remaining)? countdownTick,
     TResult? Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
         captureImage,
-    TResult? Function(int poseId, String imagePath, Uint8List imageBytes,
+    TResult? Function(String poseId, String imagePath, Uint8List imageBytes,
             List<Pose> poses)?
         uploadPose,
     TResult? Function()? uploadSuccess,
@@ -77,7 +77,7 @@ mixin _$CameraDetectionEvent {
     TResult Function(int remaining)? countdownTick,
     TResult Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
         captureImage,
-    TResult Function(int poseId, String imagePath, Uint8List imageBytes,
+    TResult Function(String poseId, String imagePath, Uint8List imageBytes,
             List<Pose> poses)?
         uploadPose,
     TResult Function()? uploadSuccess,
@@ -235,7 +235,7 @@ class _$CameraDetectionInitializeImpl implements CameraDetectionInitialize {
     required TResult Function(
             String imagePath, Uint8List imageBytes, List<Pose> poses)
         captureImage,
-    required TResult Function(int poseId, String imagePath,
+    required TResult Function(String poseId, String imagePath,
             Uint8List imageBytes, List<Pose> poses)
         uploadPose,
     required TResult Function() uploadSuccess,
@@ -261,7 +261,7 @@ class _$CameraDetectionInitializeImpl implements CameraDetectionInitialize {
     TResult? Function(int remaining)? countdownTick,
     TResult? Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
         captureImage,
-    TResult? Function(int poseId, String imagePath, Uint8List imageBytes,
+    TResult? Function(String poseId, String imagePath, Uint8List imageBytes,
             List<Pose> poses)?
         uploadPose,
     TResult? Function()? uploadSuccess,
@@ -286,7 +286,7 @@ class _$CameraDetectionInitializeImpl implements CameraDetectionInitialize {
     TResult Function(int remaining)? countdownTick,
     TResult Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
         captureImage,
-    TResult Function(int poseId, String imagePath, Uint8List imageBytes,
+    TResult Function(String poseId, String imagePath, Uint8List imageBytes,
             List<Pose> poses)?
         uploadPose,
     TResult Function()? uploadSuccess,
@@ -439,7 +439,7 @@ class _$CameraDetectionStartImpl implements CameraDetectionStart {
     required TResult Function(
             String imagePath, Uint8List imageBytes, List<Pose> poses)
         captureImage,
-    required TResult Function(int poseId, String imagePath,
+    required TResult Function(String poseId, String imagePath,
             Uint8List imageBytes, List<Pose> poses)
         uploadPose,
     required TResult Function() uploadSuccess,
@@ -465,7 +465,7 @@ class _$CameraDetectionStartImpl implements CameraDetectionStart {
     TResult? Function(int remaining)? countdownTick,
     TResult? Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
         captureImage,
-    TResult? Function(int poseId, String imagePath, Uint8List imageBytes,
+    TResult? Function(String poseId, String imagePath, Uint8List imageBytes,
             List<Pose> poses)?
         uploadPose,
     TResult? Function()? uploadSuccess,
@@ -490,7 +490,7 @@ class _$CameraDetectionStartImpl implements CameraDetectionStart {
     TResult Function(int remaining)? countdownTick,
     TResult Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
         captureImage,
-    TResult Function(int poseId, String imagePath, Uint8List imageBytes,
+    TResult Function(String poseId, String imagePath, Uint8List imageBytes,
             List<Pose> poses)?
         uploadPose,
     TResult Function()? uploadSuccess,
@@ -643,7 +643,7 @@ class _$CameraDetectionStopImpl implements CameraDetectionStop {
     required TResult Function(
             String imagePath, Uint8List imageBytes, List<Pose> poses)
         captureImage,
-    required TResult Function(int poseId, String imagePath,
+    required TResult Function(String poseId, String imagePath,
             Uint8List imageBytes, List<Pose> poses)
         uploadPose,
     required TResult Function() uploadSuccess,
@@ -669,7 +669,7 @@ class _$CameraDetectionStopImpl implements CameraDetectionStop {
     TResult? Function(int remaining)? countdownTick,
     TResult? Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
         captureImage,
-    TResult? Function(int poseId, String imagePath, Uint8List imageBytes,
+    TResult? Function(String poseId, String imagePath, Uint8List imageBytes,
             List<Pose> poses)?
         uploadPose,
     TResult? Function()? uploadSuccess,
@@ -694,7 +694,7 @@ class _$CameraDetectionStopImpl implements CameraDetectionStop {
     TResult Function(int remaining)? countdownTick,
     TResult Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
         captureImage,
-    TResult Function(int poseId, String imagePath, Uint8List imageBytes,
+    TResult Function(String poseId, String imagePath, Uint8List imageBytes,
             List<Pose> poses)?
         uploadPose,
     TResult Function()? uploadSuccess,
@@ -884,7 +884,7 @@ class _$CameraDetectionPosesUpdatedImpl implements CameraDetectionPosesUpdated {
     required TResult Function(
             String imagePath, Uint8List imageBytes, List<Pose> poses)
         captureImage,
-    required TResult Function(int poseId, String imagePath,
+    required TResult Function(String poseId, String imagePath,
             Uint8List imageBytes, List<Pose> poses)
         uploadPose,
     required TResult Function() uploadSuccess,
@@ -910,7 +910,7 @@ class _$CameraDetectionPosesUpdatedImpl implements CameraDetectionPosesUpdated {
     TResult? Function(int remaining)? countdownTick,
     TResult? Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
         captureImage,
-    TResult? Function(int poseId, String imagePath, Uint8List imageBytes,
+    TResult? Function(String poseId, String imagePath, Uint8List imageBytes,
             List<Pose> poses)?
         uploadPose,
     TResult? Function()? uploadSuccess,
@@ -935,7 +935,7 @@ class _$CameraDetectionPosesUpdatedImpl implements CameraDetectionPosesUpdated {
     TResult Function(int remaining)? countdownTick,
     TResult Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
         captureImage,
-    TResult Function(int poseId, String imagePath, Uint8List imageBytes,
+    TResult Function(String poseId, String imagePath, Uint8List imageBytes,
             List<Pose> poses)?
         uploadPose,
     TResult Function()? uploadSuccess,
@@ -1147,7 +1147,7 @@ class _$CameraDetectionConnectSocketImpl
     required TResult Function(
             String imagePath, Uint8List imageBytes, List<Pose> poses)
         captureImage,
-    required TResult Function(int poseId, String imagePath,
+    required TResult Function(String poseId, String imagePath,
             Uint8List imageBytes, List<Pose> poses)
         uploadPose,
     required TResult Function() uploadSuccess,
@@ -1173,7 +1173,7 @@ class _$CameraDetectionConnectSocketImpl
     TResult? Function(int remaining)? countdownTick,
     TResult? Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
         captureImage,
-    TResult? Function(int poseId, String imagePath, Uint8List imageBytes,
+    TResult? Function(String poseId, String imagePath, Uint8List imageBytes,
             List<Pose> poses)?
         uploadPose,
     TResult? Function()? uploadSuccess,
@@ -1198,7 +1198,7 @@ class _$CameraDetectionConnectSocketImpl
     TResult Function(int remaining)? countdownTick,
     TResult Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
         captureImage,
-    TResult Function(int poseId, String imagePath, Uint8List imageBytes,
+    TResult Function(String poseId, String imagePath, Uint8List imageBytes,
             List<Pose> poses)?
         uploadPose,
     TResult Function()? uploadSuccess,
@@ -1367,7 +1367,7 @@ class _$CameraDetectionSocketConnectedImpl
     required TResult Function(
             String imagePath, Uint8List imageBytes, List<Pose> poses)
         captureImage,
-    required TResult Function(int poseId, String imagePath,
+    required TResult Function(String poseId, String imagePath,
             Uint8List imageBytes, List<Pose> poses)
         uploadPose,
     required TResult Function() uploadSuccess,
@@ -1393,7 +1393,7 @@ class _$CameraDetectionSocketConnectedImpl
     TResult? Function(int remaining)? countdownTick,
     TResult? Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
         captureImage,
-    TResult? Function(int poseId, String imagePath, Uint8List imageBytes,
+    TResult? Function(String poseId, String imagePath, Uint8List imageBytes,
             List<Pose> poses)?
         uploadPose,
     TResult? Function()? uploadSuccess,
@@ -1418,7 +1418,7 @@ class _$CameraDetectionSocketConnectedImpl
     TResult Function(int remaining)? countdownTick,
     TResult Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
         captureImage,
-    TResult Function(int poseId, String imagePath, Uint8List imageBytes,
+    TResult Function(String poseId, String imagePath, Uint8List imageBytes,
             List<Pose> poses)?
         uploadPose,
     TResult Function()? uploadSuccess,
@@ -1576,7 +1576,7 @@ class _$CameraDetectionSocketDisconnectedImpl
     required TResult Function(
             String imagePath, Uint8List imageBytes, List<Pose> poses)
         captureImage,
-    required TResult Function(int poseId, String imagePath,
+    required TResult Function(String poseId, String imagePath,
             Uint8List imageBytes, List<Pose> poses)
         uploadPose,
     required TResult Function() uploadSuccess,
@@ -1602,7 +1602,7 @@ class _$CameraDetectionSocketDisconnectedImpl
     TResult? Function(int remaining)? countdownTick,
     TResult? Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
         captureImage,
-    TResult? Function(int poseId, String imagePath, Uint8List imageBytes,
+    TResult? Function(String poseId, String imagePath, Uint8List imageBytes,
             List<Pose> poses)?
         uploadPose,
     TResult? Function()? uploadSuccess,
@@ -1627,7 +1627,7 @@ class _$CameraDetectionSocketDisconnectedImpl
     TResult Function(int remaining)? countdownTick,
     TResult Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
         captureImage,
-    TResult Function(int poseId, String imagePath, Uint8List imageBytes,
+    TResult Function(String poseId, String imagePath, Uint8List imageBytes,
             List<Pose> poses)?
         uploadPose,
     TResult Function()? uploadSuccess,
@@ -1821,7 +1821,7 @@ class _$CameraDetectionPoseResultReceivedImpl
     required TResult Function(
             String imagePath, Uint8List imageBytes, List<Pose> poses)
         captureImage,
-    required TResult Function(int poseId, String imagePath,
+    required TResult Function(String poseId, String imagePath,
             Uint8List imageBytes, List<Pose> poses)
         uploadPose,
     required TResult Function() uploadSuccess,
@@ -1847,7 +1847,7 @@ class _$CameraDetectionPoseResultReceivedImpl
     TResult? Function(int remaining)? countdownTick,
     TResult? Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
         captureImage,
-    TResult? Function(int poseId, String imagePath, Uint8List imageBytes,
+    TResult? Function(String poseId, String imagePath, Uint8List imageBytes,
             List<Pose> poses)?
         uploadPose,
     TResult? Function()? uploadSuccess,
@@ -1872,7 +1872,7 @@ class _$CameraDetectionPoseResultReceivedImpl
     TResult Function(int remaining)? countdownTick,
     TResult Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
         captureImage,
-    TResult Function(int poseId, String imagePath, Uint8List imageBytes,
+    TResult Function(String poseId, String imagePath, Uint8List imageBytes,
             List<Pose> poses)?
         uploadPose,
     TResult Function()? uploadSuccess,
@@ -2041,7 +2041,7 @@ class _$CameraDetectionStartCountdownImpl
     required TResult Function(
             String imagePath, Uint8List imageBytes, List<Pose> poses)
         captureImage,
-    required TResult Function(int poseId, String imagePath,
+    required TResult Function(String poseId, String imagePath,
             Uint8List imageBytes, List<Pose> poses)
         uploadPose,
     required TResult Function() uploadSuccess,
@@ -2067,7 +2067,7 @@ class _$CameraDetectionStartCountdownImpl
     TResult? Function(int remaining)? countdownTick,
     TResult? Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
         captureImage,
-    TResult? Function(int poseId, String imagePath, Uint8List imageBytes,
+    TResult? Function(String poseId, String imagePath, Uint8List imageBytes,
             List<Pose> poses)?
         uploadPose,
     TResult? Function()? uploadSuccess,
@@ -2092,7 +2092,7 @@ class _$CameraDetectionStartCountdownImpl
     TResult Function(int remaining)? countdownTick,
     TResult Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
         captureImage,
-    TResult Function(int poseId, String imagePath, Uint8List imageBytes,
+    TResult Function(String poseId, String imagePath, Uint8List imageBytes,
             List<Pose> poses)?
         uploadPose,
     TResult Function()? uploadSuccess,
@@ -2279,7 +2279,7 @@ class _$CameraDetectionCountdownTickImpl
     required TResult Function(
             String imagePath, Uint8List imageBytes, List<Pose> poses)
         captureImage,
-    required TResult Function(int poseId, String imagePath,
+    required TResult Function(String poseId, String imagePath,
             Uint8List imageBytes, List<Pose> poses)
         uploadPose,
     required TResult Function() uploadSuccess,
@@ -2305,7 +2305,7 @@ class _$CameraDetectionCountdownTickImpl
     TResult? Function(int remaining)? countdownTick,
     TResult? Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
         captureImage,
-    TResult? Function(int poseId, String imagePath, Uint8List imageBytes,
+    TResult? Function(String poseId, String imagePath, Uint8List imageBytes,
             List<Pose> poses)?
         uploadPose,
     TResult? Function()? uploadSuccess,
@@ -2330,7 +2330,7 @@ class _$CameraDetectionCountdownTickImpl
     TResult Function(int remaining)? countdownTick,
     TResult Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
         captureImage,
-    TResult Function(int poseId, String imagePath, Uint8List imageBytes,
+    TResult Function(String poseId, String imagePath, Uint8List imageBytes,
             List<Pose> poses)?
         uploadPose,
     TResult Function()? uploadSuccess,
@@ -2554,7 +2554,7 @@ class _$CameraDetectionCaptureImageImpl implements CameraDetectionCaptureImage {
     required TResult Function(
             String imagePath, Uint8List imageBytes, List<Pose> poses)
         captureImage,
-    required TResult Function(int poseId, String imagePath,
+    required TResult Function(String poseId, String imagePath,
             Uint8List imageBytes, List<Pose> poses)
         uploadPose,
     required TResult Function() uploadSuccess,
@@ -2580,7 +2580,7 @@ class _$CameraDetectionCaptureImageImpl implements CameraDetectionCaptureImage {
     TResult? Function(int remaining)? countdownTick,
     TResult? Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
         captureImage,
-    TResult? Function(int poseId, String imagePath, Uint8List imageBytes,
+    TResult? Function(String poseId, String imagePath, Uint8List imageBytes,
             List<Pose> poses)?
         uploadPose,
     TResult? Function()? uploadSuccess,
@@ -2605,7 +2605,7 @@ class _$CameraDetectionCaptureImageImpl implements CameraDetectionCaptureImage {
     TResult Function(int remaining)? countdownTick,
     TResult Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
         captureImage,
-    TResult Function(int poseId, String imagePath, Uint8List imageBytes,
+    TResult Function(String poseId, String imagePath, Uint8List imageBytes,
             List<Pose> poses)?
         uploadPose,
     TResult Function()? uploadSuccess,
@@ -2723,7 +2723,10 @@ abstract class _$$CameraDetectionUploadPoseImplCopyWith<$Res> {
       __$$CameraDetectionUploadPoseImplCopyWithImpl<$Res>;
   @useResult
   $Res call(
-      {int poseId, String imagePath, Uint8List imageBytes, List<Pose> poses});
+      {String poseId,
+      String imagePath,
+      Uint8List imageBytes,
+      List<Pose> poses});
 }
 
 /// @nodoc
@@ -2750,7 +2753,7 @@ class __$$CameraDetectionUploadPoseImplCopyWithImpl<$Res>
       poseId: null == poseId
           ? _value.poseId
           : poseId // ignore: cast_nullable_to_non_nullable
-              as int,
+              as String,
       imagePath: null == imagePath
           ? _value.imagePath
           : imagePath // ignore: cast_nullable_to_non_nullable
@@ -2778,7 +2781,7 @@ class _$CameraDetectionUploadPoseImpl implements CameraDetectionUploadPose {
       : _poses = poses;
 
   @override
-  final int poseId;
+  final String poseId;
   @override
   final String imagePath;
   @override
@@ -2843,7 +2846,7 @@ class _$CameraDetectionUploadPoseImpl implements CameraDetectionUploadPose {
     required TResult Function(
             String imagePath, Uint8List imageBytes, List<Pose> poses)
         captureImage,
-    required TResult Function(int poseId, String imagePath,
+    required TResult Function(String poseId, String imagePath,
             Uint8List imageBytes, List<Pose> poses)
         uploadPose,
     required TResult Function() uploadSuccess,
@@ -2869,7 +2872,7 @@ class _$CameraDetectionUploadPoseImpl implements CameraDetectionUploadPose {
     TResult? Function(int remaining)? countdownTick,
     TResult? Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
         captureImage,
-    TResult? Function(int poseId, String imagePath, Uint8List imageBytes,
+    TResult? Function(String poseId, String imagePath, Uint8List imageBytes,
             List<Pose> poses)?
         uploadPose,
     TResult? Function()? uploadSuccess,
@@ -2894,7 +2897,7 @@ class _$CameraDetectionUploadPoseImpl implements CameraDetectionUploadPose {
     TResult Function(int remaining)? countdownTick,
     TResult Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
         captureImage,
-    TResult Function(int poseId, String imagePath, Uint8List imageBytes,
+    TResult Function(String poseId, String imagePath, Uint8List imageBytes,
             List<Pose> poses)?
         uploadPose,
     TResult Function()? uploadSuccess,
@@ -2989,12 +2992,12 @@ class _$CameraDetectionUploadPoseImpl implements CameraDetectionUploadPose {
 
 abstract class CameraDetectionUploadPose implements CameraDetectionEvent {
   const factory CameraDetectionUploadPose(
-      {required final int poseId,
+      {required final String poseId,
       required final String imagePath,
       required final Uint8List imageBytes,
       required final List<Pose> poses}) = _$CameraDetectionUploadPoseImpl;
 
-  int get poseId;
+  String get poseId;
   String get imagePath;
   Uint8List get imageBytes;
   List<Pose> get poses;
@@ -3066,7 +3069,7 @@ class _$CameraDetectionUploadSuccessImpl
     required TResult Function(
             String imagePath, Uint8List imageBytes, List<Pose> poses)
         captureImage,
-    required TResult Function(int poseId, String imagePath,
+    required TResult Function(String poseId, String imagePath,
             Uint8List imageBytes, List<Pose> poses)
         uploadPose,
     required TResult Function() uploadSuccess,
@@ -3092,7 +3095,7 @@ class _$CameraDetectionUploadSuccessImpl
     TResult? Function(int remaining)? countdownTick,
     TResult? Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
         captureImage,
-    TResult? Function(int poseId, String imagePath, Uint8List imageBytes,
+    TResult? Function(String poseId, String imagePath, Uint8List imageBytes,
             List<Pose> poses)?
         uploadPose,
     TResult? Function()? uploadSuccess,
@@ -3117,7 +3120,7 @@ class _$CameraDetectionUploadSuccessImpl
     TResult Function(int remaining)? countdownTick,
     TResult Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
         captureImage,
-    TResult Function(int poseId, String imagePath, Uint8List imageBytes,
+    TResult Function(String poseId, String imagePath, Uint8List imageBytes,
             List<Pose> poses)?
         uploadPose,
     TResult Function()? uploadSuccess,
@@ -3303,7 +3306,7 @@ class _$CameraDetectionErrorOccurredImpl
     required TResult Function(
             String imagePath, Uint8List imageBytes, List<Pose> poses)
         captureImage,
-    required TResult Function(int poseId, String imagePath,
+    required TResult Function(String poseId, String imagePath,
             Uint8List imageBytes, List<Pose> poses)
         uploadPose,
     required TResult Function() uploadSuccess,
@@ -3329,7 +3332,7 @@ class _$CameraDetectionErrorOccurredImpl
     TResult? Function(int remaining)? countdownTick,
     TResult? Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
         captureImage,
-    TResult? Function(int poseId, String imagePath, Uint8List imageBytes,
+    TResult? Function(String poseId, String imagePath, Uint8List imageBytes,
             List<Pose> poses)?
         uploadPose,
     TResult? Function()? uploadSuccess,
@@ -3354,7 +3357,7 @@ class _$CameraDetectionErrorOccurredImpl
     TResult Function(int remaining)? countdownTick,
     TResult Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
         captureImage,
-    TResult Function(int poseId, String imagePath, Uint8List imageBytes,
+    TResult Function(String poseId, String imagePath, Uint8List imageBytes,
             List<Pose> poses)?
         uploadPose,
     TResult Function()? uploadSuccess,
@@ -3521,7 +3524,7 @@ class _$CameraDetectionResetToLiveImpl implements CameraDetectionResetToLive {
     required TResult Function(
             String imagePath, Uint8List imageBytes, List<Pose> poses)
         captureImage,
-    required TResult Function(int poseId, String imagePath,
+    required TResult Function(String poseId, String imagePath,
             Uint8List imageBytes, List<Pose> poses)
         uploadPose,
     required TResult Function() uploadSuccess,
@@ -3547,7 +3550,7 @@ class _$CameraDetectionResetToLiveImpl implements CameraDetectionResetToLive {
     TResult? Function(int remaining)? countdownTick,
     TResult? Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
         captureImage,
-    TResult? Function(int poseId, String imagePath, Uint8List imageBytes,
+    TResult? Function(String poseId, String imagePath, Uint8List imageBytes,
             List<Pose> poses)?
         uploadPose,
     TResult? Function()? uploadSuccess,
@@ -3572,7 +3575,7 @@ class _$CameraDetectionResetToLiveImpl implements CameraDetectionResetToLive {
     TResult Function(int remaining)? countdownTick,
     TResult Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
         captureImage,
-    TResult Function(int poseId, String imagePath, Uint8List imageBytes,
+    TResult Function(String poseId, String imagePath, Uint8List imageBytes,
             List<Pose> poses)?
         uploadPose,
     TResult Function()? uploadSuccess,

@@ -33,7 +33,7 @@ class CameraDetectionEvent with _$CameraDetectionEvent {
 
   // Upload event
   const factory CameraDetectionEvent.uploadPose({
-    required int poseId,
+    required String poseId,
     required String imagePath,
     required Uint8List imageBytes,
     required List<Pose> poses,

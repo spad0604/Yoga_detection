@@ -16,47 +16,69 @@ class AppThemeTypography {
   const AppThemeTypography({
     this.headingLarge = const TextStyle(
       fontSize: 32,
-      fontWeight: FontWeight.w500,
+      fontWeight: FontWeight.w700,
+      height: 1.2,
+      letterSpacing: -0.5,
     ),
     this.heading = const TextStyle(
       fontSize: 24,
-      fontWeight: FontWeight.w500,
+      fontWeight: FontWeight.w700,
+      height: 1.3,
+      letterSpacing: -0.3,
     ),
     this.headingSmall = const TextStyle(
       fontSize: 20,
-      fontWeight: FontWeight.w500,
+      fontWeight: FontWeight.w600,
+      height: 1.4,
+      letterSpacing: -0.2,
     ),
     this.bodyExtraLarge = const TextStyle(
       fontSize: 20,
       fontWeight: FontWeight.w500,
+      height: 1.5,
+      letterSpacing: 0,
     ),
     this.bodyLarge = const TextStyle(
       fontSize: 18,
       fontWeight: FontWeight.w500,
+      height: 1.5,
+      letterSpacing: 0,
     ),
     this.body = const TextStyle(
       fontSize: 16,
       fontWeight: FontWeight.w400,
+      height: 1.5,
+      letterSpacing: 0.1,
     ),
     this.bodySmall = const TextStyle(
       fontSize: 14,
       fontWeight: FontWeight.w400,
+      height: 1.5,
+      letterSpacing: 0.1,
     ),
     this.bodyExtraSmall = const TextStyle(
       fontSize: 12,
       fontWeight: FontWeight.w400,
+      height: 1.4,
+      letterSpacing: 0.2,
     ),
     this.captionLarge = const TextStyle(
       fontSize: 14,
       fontWeight: FontWeight.w700,
+      height: 1.4,
+      letterSpacing: 0.2,
     ),
     this.caption = const TextStyle(
       fontSize: 12,
       fontWeight: FontWeight.w600,
+      height: 1.4,
+      letterSpacing: 0.3,
     ),
     this.captionSmall = const TextStyle(
       fontSize: 10,
       fontWeight: FontWeight.w600,
+      height: 1.4,
+      letterSpacing: 0.3,
     ),
   });
 

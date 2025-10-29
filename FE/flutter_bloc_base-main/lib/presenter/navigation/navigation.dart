@@ -17,7 +17,13 @@ import '../pages/register/register.dart';
 import '../pages/forgot_password/reset_password.dart';
 import 'package:flutter_starter/data/entities/response/yoga_pose_details.dart';
 import 'package:flutter_starter/presenter/pages/history/history.dart';
-import 'package:flutter_starter/presenter/pages/account_page/overall_account_page.dart';
+import 'package:flutter_starter/presenter/pages/notification_page/notification_page.dart';
+import 'package:flutter_starter/presenter/pages/routines_page/routines_page.dart';
+import 'package:flutter_starter/presenter/pages/routine_details/routine_details_page.dart';
+import 'package:flutter_starter/presenter/pages/friends_page/friends_page.dart';
+import 'package:flutter_starter/presenter/pages/groups_page/groups_page.dart';
+import 'package:flutter_starter/presenter/pages/activities_page/activities_page.dart';
+import 'package:flutter_starter/presenter/pages/my_body_page/my_body_page.dart';
 
 part 'navigation.gr.dart';
 
@@ -45,6 +51,13 @@ class AppRouter extends RootStackRouter {
         AutoRoute(path: '/reset-password', page: ResetPasswordRoute.page),
         AutoRoute(path: '/history', page: HistoryRoute.page),
         AutoRoute(path: '/overall-account', page: OverallAccountRoute.page),
+        AutoRoute(path: '/notifications', page: NotificationRouteRoute.page),
+        AutoRoute(path: '/routines', page: RoutinesRoute.page),
+        AutoRoute(path: '/routine-details/:id', page: RoutineDetailsRoute.page),
+        AutoRoute(path: '/friends', page: FriendsRoute.page),
+        AutoRoute(path: '/groups', page: GroupsRoute.page),
+        AutoRoute(path: '/activities', page: ActivitiesRoute.page),
+        AutoRoute(path: '/my-body', page: MyBodyRoute.page),
       ];
 
   bool isUnauthorizedRoute(String routeName) => [

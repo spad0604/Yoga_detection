@@ -103,9 +103,59 @@ class AppThemeColors {
 abstract class AppColors {
   const AppColors._();
 
+  // Base colors
   static const Color white = Colors.white;
   static const Color black = Colors.black;
   static const Color transparent = Colors.transparent;
+
+  // Modern Yoga-themed color palette
+  // Primary - Calming Purple/Violet (meditation, spirituality)
+  static const Color primaryPurple = Color(0xFF7B68EE);
+  static const Color primaryPurpleDark = Color(0xFF5E4DB2);
+  static const Color primaryPurpleLight = Color(0xFFA294F9);
+
+  // Secondary - Peaceful Teal (balance, tranquility)
+  static const Color secondaryTeal = Color(0xFF4ECDC4);
+  static const Color secondaryTealDark = Color(0xFF3AAFA9);
+  static const Color secondaryTealLight = Color(0xFF7EDDD8);
+
+  // Accent - Energizing Coral (vitality, warmth)
+  static const Color accentCoral = Color(0xFFFF6B6B);
+  static const Color accentCoralLight = Color(0xFFFF8E8E);
+
+  // Neutral colors
+  static const Color backgroundLight = Color(0xFFFAFAFA);
+  static const Color backgroundCard = Color(0xFFFFFFFF);
+  static const Color backgroundDark = Color(0xFFF5F5F7);
+
+  // Text colors
+  static const Color textPrimary = Color(0xFF2D3142);
+  static const Color textSecondary = Color(0xFF6B7280);
+  static const Color textHint = Color(0xFF9CA3AF);
+  static const Color textOnPrimary = Color(0xFFFFFFFF);
+
+  // Border & Divider
+  static const Color border = Color(0xFFE5E7EB);
+  static const Color borderFocused = Color(0xFF7B68EE);
+  static const Color divider = Color(0xFFEFEFEF);
+
+  // Status colors
+  static const Color success = Color(0xFF10B981);
+  static const Color successLight = Color(0xFFD1FAE5);
+  static const Color error = Color(0xFFEF4444);
+  static const Color errorLight = Color(0xFFFEE2E2);
+  static const Color warning = Color(0xFFF59E0B);
+  static const Color warningLight = Color(0xFFFEF3C7);
+  static const Color info = Color(0xFF3B82F6);
+  static const Color infoLight = Color(0xFFDBEAFE);
+
+  // Gradient colors
+  static const List<Color> gradientPurple = [Color(0xFF7B68EE), Color(0xFFA294F9)];
+  static const List<Color> gradientTeal = [Color(0xFF4ECDC4), Color(0xFF7EDDD8)];
+  static const List<Color> gradientSunset = [Color(0xFFFF6B6B), Color(0xFFFFB347)];
+  static const List<Color> gradientCalm = [Color(0xFF667EEA), Color(0xFF764BA2)];
+
+  // Legacy colors (kept for backward compatibility)
   static const Color red = Color(0xFFFA6555);
   static const Color grey600 = Color(0xFF9EA1A8);
   static const Color primaryBlue = Color(0xFF2489F4);

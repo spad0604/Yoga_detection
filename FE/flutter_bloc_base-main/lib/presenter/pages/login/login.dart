@@ -17,6 +17,7 @@ import 'package:flutter_starter/presenter/themes/colors.dart';
 // ...existing code...
 import 'package:flutter_starter/presenter/widget/custom_button.dart';
 import 'package:flutter_starter/presenter/widget/custom_text_field.dart';
+import 'package:flutter_starter/presenter/widget/social_login_button.dart';
 import 'package:flutter_starter/data/states/auth/auth_bloc.dart';
 import 'package:toastification/toastification.dart';
 // ...existing code...
@@ -96,143 +97,280 @@ class _LoginPageState extends State<LoginPage> {
         LoginLoadingListener(listener: _loading),
       ],
       child: Scaffold(
-        body: Center(
-          child: Container(
-            constraints: BoxConstraints(maxWidth: 512),
-            padding: const EdgeInsets.all(24),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                spacing: 16,
-                children: [
-                  Center(
-                    child: Image.asset(
-                      AppImages.logo,
-                      width: 117.w,
-                      height: 107.h,
-                    ),
-                  ),
-                  Center(
-                    child: Text(
-                      'Yoga Detection',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 36, color: Colors.black),
-                    ),
-                  ),
-                  Text(
-                    'Email',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 20.w,
-                    ),
-                  ),
-                  BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
-                    final emailError = state.emailError;
-
-                    return CustomTextField(
-                      controller: _usernameController,
-                      hintText: tr("enter_username"),
-                      onChanged: (v) => _bloc.add(LoginEmailChanged(v)),
-                      errorText: emailError,
-                    );
-                  }),
-                  Text(
-                    tr("Password"),
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 20.w,
-                    ),
-                  ),
-                  BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
-                    final passwordError = state.passwordError;
-
-                    return CustomTextField(
-                      isPassword: _isObscure,
-                      controller: _passwordController,
-                      hintText: tr("enter_password"),
-                      onChanged: (v) => _bloc.add(LoginPasswordChanged(v)),
-                      errorText: passwordError,
-                      suffixIcon: _isObscure ? AppImages.ic_eye_off : AppImages.ic_eye_on,
-                      onTapSuffix: () {
-                        setState(() {
-                          _isObscure = !_isObscure;
-                        });
-                      },
-                    );
-                  }),
-                  Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Checkbox(
-                          value: true,
-                          onChanged: (value) {},
-                          checkColor: AppColors.lightBlue,
-                          activeColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4.0),
-                            side: BorderSide(color: AppColors.grey600),
-                          ),
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                AppColors.primaryPurpleLight.withOpacity(0.3),
+                AppColors.secondaryTealLight.withOpacity(0.2),
+                AppColors.white,
+              ],
+            ),
+          ),
+          child: SafeArea(
+            child: Center(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Container(
+                    constraints: const BoxConstraints(maxWidth: 480),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(32),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primaryPurple.withOpacity(0.1),
+                          blurRadius: 40,
+                          offset: const Offset(0, 10),
                         ),
-                        Text('Remember me', style: TextStyle(fontSize: 14.w, color: Colors.grey)),
                       ],
                     ),
-                    16.verticalSpace,
-                    GestureDetector(
-                      onTap: () {
-                        context.router.pushNamed('/forgot-password');
-                      },
-                      child: Text(
-                        'Forgot Password?',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14.w,
-                          color: AppColors.lightBlue,
-                        ),
-                      ),
-                    ),
-                  ]),
-                  CustomButton(
-                    text: tr("Login"),
-                    onPressed: _onLoginPressed,
-                  ),
-                  Row(
-                    children: [
-                      Expanded(child: Divider(color: AppColors.lightGray, thickness: 1)),
-                      Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Text('OR',
-                              style:
-                                  TextStyle(color: AppColors.gray, fontWeight: FontWeight.w600))),
-                      Expanded(child: Divider(color: AppColors.lightGray, thickness: 1)),
-                    ],
-                  ),
-                  AnotherLoginButton(imagePath: AppImages.facebook, text: 'Continue with Facebook'),
-                  AnotherLoginButton(imagePath: AppImages.google, text: 'Continue with Google'),
-                  Center(
-                    child: GestureDetector(
-                      onTap: () {
-                        context.router.pushNamed('/register');
-                      },
-                      child: RichText(
-                          text: TextSpan(
-                        text: 'Don’t have an account? ',
-                        style: TextStyle(fontSize: 14.w, color: Colors.grey),
-                        children: [
-                          TextSpan(
-                            text: 'Sign Up',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 14.w,
-                              color: AppColors.lightBlue,
+                    padding: const EdgeInsets.all(32),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        // Logo with subtle animation effect
+                        Hero(
+                          tag: 'app_logo',
+                          child: Container(
+                            width: 112,
+                            height: 112,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: LinearGradient(
+                                colors: AppColors.gradientPurple,
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppColors.primaryPurple.withOpacity(0.3),
+                                  blurRadius: 20,
+                                  offset: const Offset(0, 8),
+                                ),
+                              ],
+                            ),
+                            child: Center(
+                              child: ClipOval(
+                                child: Image.asset(
+                                  AppImages.logo,
+                                  width: 80,
+                                  height: 80,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
                             ),
                           ),
-                        ],
-                      )),
+                        ),
+                        const SizedBox(height: 24),
+
+                        // Title with gradient
+                        ShaderMask(
+                          shaderCallback: (bounds) => LinearGradient(
+                            colors: AppColors.gradientPurple,
+                          ).createShader(bounds),
+                          child: const Text(
+                            'Yoga Detection',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 32,
+                              color: Colors.white,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Welcome back! Please login to your account',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: AppColors.textSecondary,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(height: 32),
+
+                        // Email field
+                        BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
+                          final emailError = state.emailError;
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Email',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14,
+                                  color: AppColors.textPrimary,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              CustomTextField(
+                                controller: _usernameController,
+                                hintText: 'Enter your email',
+                                onChanged: (v) => _bloc.add(LoginEmailChanged(v)),
+                                errorText: emailError,
+                                prefixIcon: Icons.email_outlined,
+                                keyboardType: TextInputType.emailAddress,
+                              ),
+                            ],
+                          );
+                        }),
+                        const SizedBox(height: 20),
+
+                        // Password field
+                        BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
+                          final passwordError = state.passwordError;
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Password',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14,
+                                  color: AppColors.textPrimary,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              CustomTextField(
+                                isPassword: _isObscure,
+                                controller: _passwordController,
+                                hintText: 'Enter your password',
+                                onChanged: (v) => _bloc.add(LoginPasswordChanged(v)),
+                                errorText: passwordError,
+                                suffixIcon: _isObscure ? AppImages.ic_eye_off : AppImages.ic_eye_on,
+                                onTapSuffix: () {
+                                  setState(() {
+                                    _isObscure = !_isObscure;
+                                  });
+                                },
+                              ),
+                            ],
+                          );
+                        }),
+                        const SizedBox(height: 16),
+
+                        // Remember me & Forgot password
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: Checkbox(
+                                    value: true,
+                                    onChanged: (value) {},
+                                    side: const BorderSide(color: AppColors.border, width: 1.5),
+                                    activeColor: AppColors.primaryPurple,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  'Remember me',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    color: AppColors.textSecondary,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            GestureDetector(
+                              onTap: () => context.router.pushNamed('/forgot-password'),
+                              child: Text(
+                                'Forgot Password?',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 13,
+                                  color: AppColors.primaryPurple,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 28),
+
+                        // Login button
+                        CustomButton(
+                          text: 'Login',
+                          onPressed: _onLoginPressed,
+                          icon: Icons.login_rounded,
+                        ),
+                        const SizedBox(height: 24),
+
+                        // Divider
+                        Row(
+                          children: [
+                            Expanded(child: Divider(color: AppColors.border, thickness: 1)),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16),
+                              child: Text(
+                                'OR',
+                                style: TextStyle(
+                                  color: AppColors.textSecondary,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ),
+                            Expanded(child: Divider(color: AppColors.border, thickness: 1)),
+                          ],
+                        ),
+                        const SizedBox(height: 24),
+
+                        // Social login buttons
+                        SocialLoginButton(
+                          imagePath: AppImages.facebook,
+                          text: 'Continue with Facebook',
+                        ),
+                        const SizedBox(height: 12),
+                        SocialLoginButton(
+                          imagePath: AppImages.google,
+                          text: 'Continue with Google',
+                        ),
+                        const SizedBox(height: 24),
+
+                        // Sign up link
+                        Center(
+                          child: GestureDetector(
+                            onTap: () => context.router.pushNamed('/register'),
+                            child: RichText(
+                              text: TextSpan(
+                                text: 'Don\'t have an account? ',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: AppColors.textSecondary,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                children: [
+                                  TextSpan(
+                                    text: 'Sign Up',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 14,
+                                      color: AppColors.primaryPurple,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
+                ),
               ),
             ),
           ),

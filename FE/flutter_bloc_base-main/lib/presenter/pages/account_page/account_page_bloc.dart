@@ -32,8 +32,7 @@ class AccountPageBloc extends Bloc<AccountPageEvent, AccountPageState> {
 
   @override
   void onError(Object error, StackTrace stackTrace) {
-    add(AccountPageErrorOccurred(BaseException.from(error)));
-
+    // Avoid re-dispatching events here to prevent error loops
     super.onError(error, stackTrace);
   }
 

@@ -51,7 +51,7 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
   Size? _capturedImageSize;
   CameraLensDirection _currentLensDirection = CameraLensDirection.back;
 
-  int? _poseIdFromArgs;
+  String? _poseIdFromArgs;
   String? _jwtToken;
   String? _wsBase;
 
@@ -86,9 +86,9 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
         final args = route.settings.arguments as Map;
         _jwtToken = args['token'] as String? ?? _jwtToken;
         _wsBase = args['wsBase'] as String? ?? _wsBase;
-        if (args['poseId'] is int) _poseIdFromArgs = args['poseId'] as int;
+        if (args['poseId'] is String) _poseIdFromArgs = args['poseId'] as String;
         if (args['item'] != null && args['item'].id != null) {
-          _poseIdFromArgs = args['item'].id as int;
+          _poseIdFromArgs = args['item'].id as String;
         }
       }
     } catch (_) {}
@@ -185,7 +185,7 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
       ));
 
       // Upload via BLoC
-      final poseId = _poseIdFromArgs ?? -1;
+      final poseId = _poseIdFromArgs ?? '-1';
       _bloc.add(CameraDetectionEvent.uploadPose(
         poseId: poseId,
         imagePath: imageFile.path,

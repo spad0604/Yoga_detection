@@ -6,7 +6,6 @@ import 'package:flutter_starter/core/exception.dart';
 import 'package:flutter_starter/data/repositories/yoga_poses_repository/yoga_poses_repository.dart';
 import 'package:flutter_starter/presenter/pages/history/history_event.dart';
 import 'package:flutter_starter/presenter/pages/history/history_state.dart';
-import 'package:intl/intl.dart';
 
 @injectable
 class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
@@ -26,9 +25,8 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
       emit(state.copyWith(status: HistoryStatus.loading));
 
       // Format dates to ISO 8601 strings
-      final dateFormat = DateFormat('yyyy-MM-dd');
-      final startDateStr = dateFormat.format(event.startDate);
-      final endDateStr = dateFormat.format(event.endDate);
+      final startDateStr = event.startDate;
+      final endDateStr = event.endDate;
 
       final response = await _repository.getUserYogaPosesByDate(
         event.page,

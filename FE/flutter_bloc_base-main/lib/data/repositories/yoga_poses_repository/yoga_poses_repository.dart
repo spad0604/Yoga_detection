@@ -11,7 +11,7 @@ abstract class YogaPosesRepository {
   Future<UserYogaPoseModel> getUserYogaPoseById(String id);
 
   Future<PageResponse<UserYogaPoseModel>> getUserYogaPosesByDate(
-      int page, String startDate, String endDate);
+      int page, DateTime startDate, DateTime endDate);
 
   Future<void> postYogaPose(PostYogaPoseModel model, String imagePath);
 }

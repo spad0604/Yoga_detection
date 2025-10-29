@@ -2,18 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_starter/di.dart';
-import 'package:flutter_starter/gen/app_images.dart';
-import 'package:flutter_starter/presenter/navigation/navigation.dart';
 import 'package:flutter_starter/presenter/pages/home_page/home_page_bloc.dart';
 import 'package:flutter_starter/presenter/pages/pose_details/pose_details_bloc.dart';
 import 'package:flutter_starter/presenter/pages/pose_details/pose_details_event.dart';
 import 'package:flutter_starter/presenter/pages/pose_details/pose_details_state.dart';
 import 'package:flutter_starter/presenter/themes/colors.dart';
-import 'package:flutter_starter/presenter/widget/custom_button.dart';
 import 'package:flutter_starter/data/entities/response/yoga_pose_details.dart';
 import 'package:flutter_starter/main.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:flutter_starter/services/oauth_token_manager/oauth_token_manager.dart';
+import 'package:flutter_starter/presenter/pages/camera_detection/camera_detection.dart';
+import 'package:flutter_starter/data/states/camera_detection/camera_detection_bloc.dart';
 
 part 'information_details_items.dart';
 
@@ -84,110 +83,303 @@ class _PoseDetailsPageState extends State<PoseDetailsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: BlocBuilder<PoseDetailsBloc, PoseDetailsState>(builder: (context, state) {
-        return SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: double.infinity,
-                height: 240,
-                child: Image.network(
-                  widget.item.imageUrl ??
-                      'https://genk.mediacdn.vn/2019/9/10/image014-15680981147321515432907.png',
-                  fit: BoxFit.cover,
-                ),
-              ),
-              const SizedBox(height: 16),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Center(
-                        child: Text(
-                          widget.item.name,
-                          style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+        return CustomScrollView(
+          slivers: [
+            // Modern SliverAppBar with image
+            SliverAppBar(
+              expandedHeight: 300,
+              pinned: true,
+              elevation: 0,
+              backgroundColor: AppColors.primaryPurple,
+              flexibleSpace: FlexibleSpaceBar(
+                background: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Image.network(
+                      widget.item.imageUrl ??
+                          'https://genk.mediacdn.vn/2019/9/10/image014-15680981147321515432907.png',
+                      fit: BoxFit.cover,
+                    ),
+                    // Gradient overlay
+                    Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.transparent,
+                            Colors.black.withOpacity(0.7),
+                          ],
                         ),
                       ),
-                      const SizedBox(height: 16),
-                      const Divider(
-                        color: Colors.black,
-                        thickness: 1,
-                      ),
-                      const SizedBox(height: 16),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Showcase(
+                    ),
+                  ],
+                ),
+                title: Text(
+                  widget.item.name,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                titlePadding: const EdgeInsets.only(left: 56, bottom: 16),
+              ),
+            ),
+            // Content
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Stats Cards
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Showcase(
                             key: minutesShowCaseWidget,
                             description: 'Duration of the session',
-                            child: InformationDetailsItems(
-                              iconPath: AppImages.ic_minutes,
+                            child: _buildStatCard(
+                              icon: Icons.timer,
                               title: 'Duration',
-                              value: '${widget.item.totalMinutes?.toString() ?? '0'} mins',
+                              value: '${widget.item.totalMinutes ?? 0}',
+                              unit: 'mins',
+                              color: AppColors.primaryPurple,
                             ),
                           ),
-                          Showcase(
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Showcase(
                             key: caloriesShowCaseWidget,
                             description: 'Estimated calories burned',
-                            child: InformationDetailsItems(
-                              iconPath: AppImages.ic_calo,
+                            child: _buildStatCard(
+                              icon: Icons.local_fire_department,
                               title: 'Calories',
-                              value: '${widget.item.totalCalories?.toString() ?? '0'} cals',
+                              value: '${widget.item.totalCalories ?? 0}',
+                              unit: 'cals',
+                              color: AppColors.accentCoral,
                             ),
                           ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        'Description:',
-                        style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        _bloc.state.yogaPoseDetails?.description ?? '',
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                            height: 1.5,
-                            color: AppColors.grey),
-                      ),
-                      const SizedBox(height: 24),
-                      Text(
-                        'Benefits:',
-                        style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'From a standing position, the legs are in a wide stance with the feet aligned and flat on the earth. The back foot is in a 60-degree angle toward the front. The hips are squared. The inner thighs are rotated toward each other. The front knee is bent in a 90-degree angle directly above the ankle. The arms extend up to the sky with the biceps by the ears. The hands can be together or separated and facing each other with the fingers spread wide. The ribcage is lifted and the pelvis tucked. The gaze is forward.',
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                            height: 1.5,
-                            color: AppColors.grey),
-                      ),
-                      const SizedBox(height: 24),
-                      Showcase(
-                        key: playShowCaseWidget,
-                        description: 'Start practice',
-                        child: CustomButton(
-                          text: 'Start',
-                          backgroundColor: AppColors.primaryBlue,
-                          textColor: Colors.white,
-                          onPressed: () {
-                            context.router.push(CameraDetectionRoute());
-                          },
                         ),
-                      )
-                    ],
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+
+                    // Description Section
+                    _buildSection(
+                      title: 'Description',
+                      icon: Icons.description,
+                      content: _bloc.state.yogaPoseDetails?.description ??
+                          'A detailed yoga pose that helps improve flexibility and balance.',
+                    ),
+                    const SizedBox(height: 20),
+
+                    // Benefits Section
+                    _buildSection(
+                      title: 'Benefits',
+                      icon: Icons.favorite,
+                      content: _bloc.state.yogaPoseDetails?.description ??
+                          'Improves flexibility, balance, and strength. Helps reduce stress and anxiety while promoting better posture and body awareness.',
+                    ),
+                    const SizedBox(height: 24),
+
+                    // Start Button
+                    Showcase(
+                      key: playShowCaseWidget,
+                      description: 'Start practice',
+                      child: Container(
+                        width: double.infinity,
+                        height: 56,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: AppColors.gradientPurple,
+                          ),
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.primaryPurple.withOpacity(0.4),
+                              blurRadius: 12,
+                              offset: const Offset(0, 6),
+                            ),
+                          ],
+                        ),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(16),
+                            onTap: () {
+                              // Navigate with BlocProvider wrapped
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => BlocProvider<CameraDetectionBloc>(
+                                    create: (ctx) => provider.get<CameraDetectionBloc>(),
+                                    child: CameraDetectionPage(
+                                      poseId: widget.item.id.toString(),
+                                      item: widget.item,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                            child: const Center(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.play_circle_filled,
+                                    color: Colors.white,
+                                    size: 28,
+                                  ),
+                                  SizedBox(width: 12),
+                                  Text(
+                                    'Start Practice',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        );
+      }),
+    );
+  }
+
+  Widget _buildStatCard({
+    required IconData icon,
+    required String title,
+    required String value,
+    required String unit,
+    required Color color,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: color.withOpacity(0.2)),
+        boxShadow: [
+          BoxShadow(
+            color: color.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(icon, color: color, size: 28),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 13,
+              color: Colors.grey.shade600,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                value,
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: color,
+                ),
+              ),
+              const SizedBox(width: 4),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 3),
+                child: Text(
+                  unit,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey.shade600,
                   ),
                 ),
               ),
             ],
           ),
-        );
-      }),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSection({
+    required String title,
+    required IconData icon,
+    required String content,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade50,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: AppColors.primaryPurple.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(
+                  icon,
+                  color: AppColors.primaryPurple,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(
+            content,
+            style: TextStyle(
+              fontSize: 15,
+              height: 1.6,
+              color: Colors.grey.shade700,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

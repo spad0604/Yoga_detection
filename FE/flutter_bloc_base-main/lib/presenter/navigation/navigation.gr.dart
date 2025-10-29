@@ -27,6 +27,22 @@ class AccountRouteRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [ActivitiesPage]
+class ActivitiesRoute extends PageRouteInfo<void> {
+  const ActivitiesRoute({List<PageRouteInfo>? children})
+    : super(ActivitiesRoute.name, initialChildren: children);
+
+  static const String name = 'ActivitiesRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return WrappedRoute(child: const ActivitiesPage());
+    },
+  );
+}
+
+/// generated route for
 /// [CameraDetectionPage]
 class CameraDetectionRoute extends PageRouteInfo<void> {
   const CameraDetectionRoute({List<PageRouteInfo>? children})
@@ -70,6 +86,38 @@ class ForgotPasswordRoute extends PageRouteInfo<void> {
     name,
     builder: (data) {
       return WrappedRoute(child: ForgotPasswordPage());
+    },
+  );
+}
+
+/// generated route for
+/// [FriendsPage]
+class FriendsRoute extends PageRouteInfo<void> {
+  const FriendsRoute({List<PageRouteInfo>? children})
+    : super(FriendsRoute.name, initialChildren: children);
+
+  static const String name = 'FriendsRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return WrappedRoute(child: const FriendsPage());
+    },
+  );
+}
+
+/// generated route for
+/// [GroupsPage]
+class GroupsRoute extends PageRouteInfo<void> {
+  const GroupsRoute({List<PageRouteInfo>? children})
+    : super(GroupsRoute.name, initialChildren: children);
+
+  static const String name = 'GroupsRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return WrappedRoute(child: const GroupsPage());
     },
   );
 }
@@ -157,6 +205,38 @@ class LoginRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [MyBodyPage]
+class MyBodyRoute extends PageRouteInfo<void> {
+  const MyBodyRoute({List<PageRouteInfo>? children})
+    : super(MyBodyRoute.name, initialChildren: children);
+
+  static const String name = 'MyBodyRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return WrappedRoute(child: const MyBodyPage());
+    },
+  );
+}
+
+/// generated route for
+/// [NotificationPagePage]
+class NotificationRouteRoute extends PageRouteInfo<void> {
+  const NotificationRouteRoute({List<PageRouteInfo>? children})
+    : super(NotificationRouteRoute.name, initialChildren: children);
+
+  static const String name = 'NotificationRouteRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const NotificationPagePage();
+    },
+  );
+}
+
+/// generated route for
 /// [OverallAccountPage]
 class OverallAccountRoute extends PageRouteInfo<void> {
   const OverallAccountRoute({List<PageRouteInfo>? children})
@@ -234,6 +314,61 @@ class ResetPasswordRoute extends PageRouteInfo<void> {
     name,
     builder: (data) {
       return WrappedRoute(child: ResetPasswordPage());
+    },
+  );
+}
+
+/// generated route for
+/// [RoutineDetailsPage]
+class RoutineDetailsRoute extends PageRouteInfo<RoutineDetailsRouteArgs> {
+  RoutineDetailsRoute({
+    Key? key,
+    required String routineId,
+    List<PageRouteInfo>? children,
+  }) : super(
+         RoutineDetailsRoute.name,
+         args: RoutineDetailsRouteArgs(key: key, routineId: routineId),
+         initialChildren: children,
+       );
+
+  static const String name = 'RoutineDetailsRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<RoutineDetailsRouteArgs>();
+      return WrappedRoute(
+        child: RoutineDetailsPage(key: args.key, routineId: args.routineId),
+      );
+    },
+  );
+}
+
+class RoutineDetailsRouteArgs {
+  const RoutineDetailsRouteArgs({this.key, required this.routineId});
+
+  final Key? key;
+
+  final String routineId;
+
+  @override
+  String toString() {
+    return 'RoutineDetailsRouteArgs{key: $key, routineId: $routineId}';
+  }
+}
+
+/// generated route for
+/// [RoutinesPage]
+class RoutinesRoute extends PageRouteInfo<void> {
+  const RoutinesRoute({List<PageRouteInfo>? children})
+    : super(RoutinesRoute.name, initialChildren: children);
+
+  static const String name = 'RoutinesRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return WrappedRoute(child: const RoutinesPage());
     },
   );
 }

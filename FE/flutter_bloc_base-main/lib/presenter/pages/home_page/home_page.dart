@@ -116,66 +116,145 @@ class _HomePagePageState extends State<HomePagePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              AppColors.backgroundLight,
+              AppColors.white,
+            ],
+          ),
+        ),
+        child: SafeArea(
           child: Column(
             children: [
+              // Modern Header - softer gradient
               Container(
-                height: 50,
-                color: Colors.white,
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.primaryPurple.withOpacity(0.08),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
                 child: Row(
-                  mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Image.asset(
-                      AppImages.logo,
-                      width: 40.w,
-                      height: 40.h,
-                    ),
-                    Center(
-                      child: Text(
-                        'Yoga',
-                        style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
+                    // Logo with gradient circle background
+                    Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: AppColors.gradientPurple,
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.primaryPurple.withOpacity(0.3),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Center(
+                        child: ClipOval(
+                          child: Image.asset(
+                            AppImages.logo,
+                            width: 32,
+                            height: 32,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ),
                     ),
+
+                    // Title with gradient text
+                    ShaderMask(
+                      shaderCallback: (bounds) => LinearGradient(
+                        colors: AppColors.gradientPurple,
+                      ).createShader(bounds),
+                      child: const Text(
+                        'Yoga',
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          letterSpacing: 1.2,
+                        ),
+                      ),
+                    ),
+
+                    // Action buttons
                     Row(
                       children: [
                         Showcase(
                           key: bellShowCaseWidget,
                           description: 'Notifications',
-                          child: Image.asset(
-                            AppImages.ic_bell,
-                            width: 30.w,
-                            height: 30.h,
+                          child: InkWell(
+                            onTap: () {
+                              context.router.push(const NotificationRouteRoute());
+                            },
+                            borderRadius: BorderRadius.circular(24),
+                            child: Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: AppColors.primaryPurpleLight.withOpacity(0.1),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                Icons.notifications_outlined,
+                                color: AppColors.primaryPurple,
+                                size: 22,
+                              ),
+                            ),
                           ),
                         ),
-                        SizedBox(
-                          width: 16,
-                        ),
+                        const SizedBox(width: 12),
                         Showcase(
                           key: heartShowCaseWidget,
                           description: 'Favorites',
-                          child: Image.asset(
-                            AppImages.ic_heart_circle,
-                            width: 30.w,
-                            height: 30.h,
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.2),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons.favorite_outline,
+                              color: Colors.white,
+                              size: 24,
+                            ),
                           ),
                         ),
                       ],
-                    )
+                    ),
                   ],
                 ),
               ),
+
+              // Scrollable content
               Expanded(
                 child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 20),
+
+                      // Welcome Banner
                       WelcomeBanner(),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 20),
+
+                      // Overview Card
                       BlocBuilder<HomePageBloc, HomePageState>(
                         builder: (context, state) => Showcase(
                           key: overViewShowCaseWidget,
@@ -186,11 +265,18 @@ class _HomePagePageState extends State<HomePagePage> {
                         ),
                       ),
                       const SizedBox(height: 24),
+
+                      // Yoga Poses Section Header
                       Row(
                         children: [
                           const Text(
                             'Yoga Poses',
-                            style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.textPrimary,
+                              letterSpacing: 0.5,
+                            ),
                           ),
                           const Spacer(),
                           Showcase(
@@ -200,34 +286,110 @@ class _HomePagePageState extends State<HomePagePage> {
                               onTap: () {
                                 context.router.push(const SearchYogaPoseRoute());
                               },
-                              child: Text(
-                                'View All',
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    color: AppColors.primaryBlue,
-                                    fontWeight: FontWeight.w600),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: AppColors.gradientPurple,
+                                  ),
+                                  borderRadius: BorderRadius.circular(20),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: AppColors.primaryPurple.withOpacity(0.3),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: const [
+                                    Text(
+                                      'View All',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    SizedBox(width: 4),
+                                    Icon(
+                                      Icons.arrow_forward_rounded,
+                                      size: 16,
+                                      color: Colors.white,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
-                          const SizedBox(width: 8),
-                          const Icon(Icons.arrow_forward, size: 16, color: AppColors.primaryBlue),
                         ],
                       ),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: 16),
                       BlocBuilder<HomePageBloc, HomePageState>(
                         builder: (context, state) {
                           final items = state.yogaPoses?.items ?? const <YogaPoseDetails>[];
+
                           if (state.status == HomePageStatus.loading && items.isEmpty) {
-                            return const Center(
-                                child: Padding(
-                              padding: EdgeInsets.symmetric(vertical: 24),
-                              child: CircularProgressIndicator(),
-                            ));
+                            return Center(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 40),
+                                child: Column(
+                                  children: [
+                                    SizedBox(
+                                      width: 50,
+                                      height: 50,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 3,
+                                        valueColor: AlwaysStoppedAnimation<Color>(
+                                          AppColors.primaryPurple,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 16),
+                                    Text(
+                                      'Loading poses...',
+                                      style: TextStyle(
+                                        color: AppColors.textSecondary,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
                           }
+
                           if (state.status == HomePageStatus.failure) {
-                            return const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 24),
-                              child: Text('Failed to load poses'),
+                            return Container(
+                              padding: const EdgeInsets.all(24),
+                              margin: const EdgeInsets.symmetric(vertical: 20),
+                              decoration: BoxDecoration(
+                                color: AppColors.errorLight,
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(
+                                  color: AppColors.error.withOpacity(0.3),
+                                  width: 1,
+                                ),
+                              ),
+                              child: Column(
+                                children: [
+                                  Icon(
+                                    Icons.error_outline,
+                                    color: AppColors.error,
+                                    size: 48,
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Text(
+                                    'Failed to load poses',
+                                    style: TextStyle(
+                                      color: AppColors.error,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             );
                           }
 
@@ -262,7 +424,36 @@ class _HomePagePageState extends State<HomePagePage> {
                           }
 
                           if (items.isEmpty) {
-                            return const SizedBox.shrink();
+                            return Container(
+                              padding: const EdgeInsets.all(32),
+                              margin: const EdgeInsets.symmetric(vertical: 20),
+                              decoration: BoxDecoration(
+                                color: AppColors.backgroundCard,
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(
+                                  color: AppColors.border,
+                                  width: 1,
+                                ),
+                              ),
+                              child: Column(
+                                children: [
+                                  Icon(
+                                    Icons.self_improvement_outlined,
+                                    color: AppColors.textSecondary,
+                                    size: 64,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    'No poses available',
+                                    style: TextStyle(
+                                      color: AppColors.textSecondary,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
                           }
 
                           return ListView.builder(
@@ -289,6 +480,7 @@ class _HomePagePageState extends State<HomePagePage> {
                           );
                         },
                       ),
+                      const SizedBox(height: 20),
                     ],
                   ),
                 ),

@@ -20,9 +20,13 @@ Account _$AccountFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Account {
+  @JsonKey(name: 'id')
   String get id => throw _privateConstructorUsedError;
+  @JsonKey(name: 'email')
   String get email => throw _privateConstructorUsedError;
-  String get name => throw _privateConstructorUsedError;
+  @JsonKey(name: 'name')
+  String? get name => throw _privateConstructorUsedError;
+  @JsonKey(name: 'avatar')
   String? get avatar => throw _privateConstructorUsedError;
 
   /// Serializes this Account to a JSON map.
@@ -39,7 +43,11 @@ abstract class $AccountCopyWith<$Res> {
   factory $AccountCopyWith(Account value, $Res Function(Account) then) =
       _$AccountCopyWithImpl<$Res, Account>;
   @useResult
-  $Res call({String id, String email, String name, String? avatar});
+  $Res call(
+      {@JsonKey(name: 'id') String id,
+      @JsonKey(name: 'email') String email,
+      @JsonKey(name: 'name') String? name,
+      @JsonKey(name: 'avatar') String? avatar});
 }
 
 /// @nodoc
@@ -59,7 +67,7 @@ class _$AccountCopyWithImpl<$Res, $Val extends Account>
   $Res call({
     Object? id = null,
     Object? email = null,
-    Object? name = null,
+    Object? name = freezed,
     Object? avatar = freezed,
   }) {
     return _then(_value.copyWith(
@@ -71,10 +79,10 @@ class _$AccountCopyWithImpl<$Res, $Val extends Account>
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
               as String,
-      name: null == name
+      name: freezed == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       avatar: freezed == avatar
           ? _value.avatar
           : avatar // ignore: cast_nullable_to_non_nullable
@@ -90,7 +98,11 @@ abstract class _$$AccountImplCopyWith<$Res> implements $AccountCopyWith<$Res> {
       __$$AccountImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String id, String email, String name, String? avatar});
+  $Res call(
+      {@JsonKey(name: 'id') String id,
+      @JsonKey(name: 'email') String email,
+      @JsonKey(name: 'name') String? name,
+      @JsonKey(name: 'avatar') String? avatar});
 }
 
 /// @nodoc
@@ -108,7 +120,7 @@ class __$$AccountImplCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? email = null,
-    Object? name = null,
+    Object? name = freezed,
     Object? avatar = freezed,
   }) {
     return _then(_$AccountImpl(
@@ -120,10 +132,10 @@ class __$$AccountImplCopyWithImpl<$Res>
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
               as String,
-      name: null == name
+      name: freezed == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       avatar: freezed == avatar
           ? _value.avatar
           : avatar // ignore: cast_nullable_to_non_nullable
@@ -136,18 +148,25 @@ class __$$AccountImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$AccountImpl with DiagnosticableTreeMixin implements _Account {
   const _$AccountImpl(
-      {required this.id, required this.email, required this.name, this.avatar});
+      {@JsonKey(name: 'id') required this.id,
+      @JsonKey(name: 'email') required this.email,
+      @JsonKey(name: 'name') this.name,
+      @JsonKey(name: 'avatar') this.avatar});
 
   factory _$AccountImpl.fromJson(Map<String, dynamic> json) =>
       _$$AccountImplFromJson(json);
 
   @override
+  @JsonKey(name: 'id')
   final String id;
   @override
+  @JsonKey(name: 'email')
   final String email;
   @override
-  final String name;
+  @JsonKey(name: 'name')
+  final String? name;
   @override
+  @JsonKey(name: 'avatar')
   final String? avatar;
 
   @override
@@ -199,20 +218,24 @@ class _$AccountImpl with DiagnosticableTreeMixin implements _Account {
 
 abstract class _Account implements Account {
   const factory _Account(
-      {required final String id,
-      required final String email,
-      required final String name,
-      final String? avatar}) = _$AccountImpl;
+      {@JsonKey(name: 'id') required final String id,
+      @JsonKey(name: 'email') required final String email,
+      @JsonKey(name: 'name') final String? name,
+      @JsonKey(name: 'avatar') final String? avatar}) = _$AccountImpl;
 
   factory _Account.fromJson(Map<String, dynamic> json) = _$AccountImpl.fromJson;
 
   @override
+  @JsonKey(name: 'id')
   String get id;
   @override
+  @JsonKey(name: 'email')
   String get email;
   @override
-  String get name;
+  @JsonKey(name: 'name')
+  String? get name;
   @override
+  @JsonKey(name: 'avatar')
   String? get avatar;
 
   /// Create a copy of Account

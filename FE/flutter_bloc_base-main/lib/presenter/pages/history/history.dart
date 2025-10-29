@@ -72,11 +72,31 @@ class _HistoryPageState extends State<HistoryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: AppColors.backgroundLight,
         appBar: AppBar(
-          iconTheme: const IconThemeData(color: Colors.black),
-          title: const Text(
-            'History',
-            style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: Colors.black),
+          backgroundColor: Colors.white,
+          elevation: 0,
+          iconTheme: IconThemeData(color: AppColors.primaryPurple),
+          title: ShaderMask(
+            shaderCallback: (bounds) => LinearGradient(
+              colors: AppColors.gradientPurple,
+            ).createShader(bounds),
+            child: const Text(
+              'Workout History',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+                letterSpacing: 0.5,
+              ),
+            ),
+          ),
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(1),
+            child: Container(
+              height: 1,
+              color: AppColors.textSecondary.withOpacity(0.1),
+            ),
           ),
         ),
         body: Padding(
@@ -91,46 +111,94 @@ class _HistoryPageState extends State<HistoryPage> {
               // Make the container expand to fill remaining space
               child: Container(
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: AppColors.grey600),
+                  borderRadius: BorderRadius.circular(16),
                   color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.primaryPurple.withOpacity(0.08),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
                 ),
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(20),
                 child: BlocBuilder<HistoryBloc, HistoryState>(
                   builder: (context, state) {
                     return Column(
                       children: [
-                        Row(
-                          children: [
-                            Text(
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              _selectedDate?.dateTimeToDayMonDay() ?? 'Select a date',
-                              style: const TextStyle(
-                                  fontSize: 17, fontWeight: FontWeight.w400, color: Colors.black),
+                        // Date header with gradient
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors:
+                                  AppColors.gradientPurple.map((c) => c.withOpacity(0.1)).toList(),
                             ),
-                            const Spacer(),
-                            Row(
-                              children: [
-                                _totalWidget(Icons.check_circle, 'Total', state.poses.length,
-                                    AppColors.primaryBlue),
-                                const SizedBox(width: 16),
-                                _totalWidget(
-                                    Icons.star,
-                                    'Avg Score',
-                                    state.poses.isEmpty
-                                        ? 0
-                                        : (state.poses.map((p) => p.score).reduce((a, b) => a + b) /
-                                                state.poses.length)
-                                            .round(),
-                                    Colors.amber),
-                              ],
-                            )
-                          ],
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(Icons.calendar_today, color: AppColors.primaryPurple, size: 20),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  _selectedDate?.dateTimeToDayMonDay() ?? 'Select a date',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.textPrimary,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                         const SizedBox(height: 16),
-                        const Divider(color: AppColors.grey600),
+
+                        // Stats cards
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _statsCard(
+                                icon: Icons.fitness_center,
+                                label: 'Total',
+                                value: state.poses.length.toString(),
+                                color: AppColors.primaryPurple,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: _statsCard(
+                                icon: Icons.star,
+                                label: 'Avg Score',
+                                value: state.poses.isEmpty
+                                    ? '0'
+                                    : (state.poses.map((p) => p.score).reduce((a, b) => a + b) /
+                                            state.poses.length)
+                                        .toStringAsFixed(1),
+                                color: Colors.amber,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+
+                        Divider(color: AppColors.textSecondary.withOpacity(0.2), height: 1),
                         const SizedBox(height: 16),
+
+                        // Poses list header
+                        if (state.poses.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: Text(
+                              'Workout Sessions',
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.textPrimary,
+                              ),
+                            ),
+                          ),
                         if (state.status == HistoryStatus.loading)
                           const Expanded(
                             child: Center(child: CircularProgressIndicator()),
@@ -138,32 +206,73 @@ class _HistoryPageState extends State<HistoryPage> {
                         else if (state.status == HistoryStatus.failure)
                           Expanded(
                             child: Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Icon(Icons.error_outline, size: 48, color: Colors.red),
-                                  const SizedBox(height: 16),
-                                  Text(
-                                    state.error?.message ?? 'Failed to load history',
-                                    textAlign: TextAlign.center,
+                              child: SingleChildScrollView(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(24),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Icon(Icons.error_outline, size: 48, color: Colors.red),
+                                      const SizedBox(height: 16),
+                                      Text(
+                                        state.error?.message ?? 'Failed to load history',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: AppColors.textSecondary,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ],
+                                ),
                               ),
                             ),
                           )
                         else if (state.poses.isEmpty)
-                          const Expanded(
+                          Expanded(
                             child: Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.calendar_today, size: 48, color: Colors.grey),
-                                  SizedBox(height: 16),
-                                  Text(
-                                    'No poses found for selected date',
-                                    style: TextStyle(color: Colors.grey),
-                                  ),
-                                ],
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.all(20),
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          colors: AppColors.gradientPurple
+                                              .map((c) => c.withOpacity(0.1))
+                                              .toList(),
+                                        ),
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Icon(
+                                        Icons.calendar_today,
+                                        size: 40,
+                                        color: AppColors.primaryPurple.withOpacity(0.5),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 16),
+                                    Text(
+                                      'No workouts yet',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.textPrimary,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Text(
+                                      'Start practicing yoga',
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        color: AppColors.textSecondary,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           )
@@ -197,26 +306,43 @@ class _HistoryPageState extends State<HistoryPage> {
         ));
   }
 
-  Widget _totalWidget(IconData icon, String title, int value, Color iconColor) {
+  Widget _statsCard({
+    required IconData icon,
+    required String label,
+    required String value,
+    required Color color,
+  }) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: color.withOpacity(0.2),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: iconColor, size: 16),
-          const SizedBox(width: 4),
+          Icon(icon, color: color, size: 24),
+          const SizedBox(height: 8),
           Text(
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
-            value.toString(),
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+            value,
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
           ),
-          const SizedBox(width: 4),
+          const SizedBox(height: 4),
           Text(
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
-            title,
-            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
+            label,
+            style: TextStyle(
+              fontSize: 13,
+              color: AppColors.textSecondary,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ],
       ),

@@ -224,7 +224,7 @@ PostYogaPoseModel _$PostYogaPoseModelFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$PostYogaPoseModel {
   @JsonKey(name: "poseId")
-  int get poseId => throw _privateConstructorUsedError;
+  String get poseId => throw _privateConstructorUsedError;
   @JsonKey(name: "landmarks")
   List<PoseLandmarkData> get landmarks => throw _privateConstructorUsedError;
   @JsonKey(name: "imageBase64")
@@ -249,7 +249,7 @@ abstract class $PostYogaPoseModelCopyWith<$Res> {
       _$PostYogaPoseModelCopyWithImpl<$Res, PostYogaPoseModel>;
   @useResult
   $Res call(
-      {@JsonKey(name: "poseId") int poseId,
+      {@JsonKey(name: "poseId") String poseId,
       @JsonKey(name: "landmarks") List<PoseLandmarkData> landmarks,
       @JsonKey(name: "imageBase64") String? imageBase64,
       @JsonKey(name: "timestamp") String timestamp});
@@ -279,7 +279,7 @@ class _$PostYogaPoseModelCopyWithImpl<$Res, $Val extends PostYogaPoseModel>
       poseId: null == poseId
           ? _value.poseId
           : poseId // ignore: cast_nullable_to_non_nullable
-              as int,
+              as String,
       landmarks: null == landmarks
           ? _value.landmarks
           : landmarks // ignore: cast_nullable_to_non_nullable
@@ -305,7 +305,7 @@ abstract class _$$PostYogaPoseModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: "poseId") int poseId,
+      {@JsonKey(name: "poseId") String poseId,
       @JsonKey(name: "landmarks") List<PoseLandmarkData> landmarks,
       @JsonKey(name: "imageBase64") String? imageBase64,
       @JsonKey(name: "timestamp") String timestamp});
@@ -333,7 +333,7 @@ class __$$PostYogaPoseModelImplCopyWithImpl<$Res>
       poseId: null == poseId
           ? _value.poseId
           : poseId // ignore: cast_nullable_to_non_nullable
-              as int,
+              as String,
       landmarks: null == landmarks
           ? _value._landmarks
           : landmarks // ignore: cast_nullable_to_non_nullable
@@ -366,7 +366,7 @@ class _$PostYogaPoseModelImpl implements _PostYogaPoseModel {
 
   @override
   @JsonKey(name: "poseId")
-  final int poseId;
+  final String poseId;
   final List<PoseLandmarkData> _landmarks;
   @override
   @JsonKey(name: "landmarks")
@@ -426,7 +426,7 @@ class _$PostYogaPoseModelImpl implements _PostYogaPoseModel {
 
 abstract class _PostYogaPoseModel implements PostYogaPoseModel {
   const factory _PostYogaPoseModel(
-          {@JsonKey(name: "poseId") required final int poseId,
+          {@JsonKey(name: "poseId") required final String poseId,
           @JsonKey(name: "landmarks")
           required final List<PoseLandmarkData> landmarks,
           @JsonKey(name: "imageBase64") final String? imageBase64,
@@ -438,7 +438,7 @@ abstract class _PostYogaPoseModel implements PostYogaPoseModel {
 
   @override
   @JsonKey(name: "poseId")
-  int get poseId;
+  String get poseId;
   @override
   @JsonKey(name: "landmarks")
   List<PoseLandmarkData> get landmarks;

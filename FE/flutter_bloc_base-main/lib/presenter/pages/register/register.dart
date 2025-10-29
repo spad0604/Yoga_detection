@@ -56,36 +56,89 @@ class _RegisterPageState extends State<RegisterPage> {
         }
       },
       child: Scaffold(
-        appBar: AppBar(),
-        body: SafeArea(
-          child: Container(
-            height: MediaQuery.of(context).size.height,
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Colors.white,
+                AppColors.primaryPurpleLight.withOpacity(0.1),
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
+          child: SafeArea(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(24),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Header
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
-                          Text('Register',
-                              style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold)),
-                          SizedBox(height: 16),
-                          Text('Create an account to continue!',
-                              style: TextStyle(fontSize: 14, color: Colors.grey)),
-                        ],
+                  // Header with gradient
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: AppColors.gradientPurple,
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
                       ),
-                      Image.asset(AppImages.logo, width: 106, height: 96),
-                    ],
+                      borderRadius: BorderRadius.circular(24),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primaryPurple.withOpacity(0.3),
+                          blurRadius: 20,
+                          offset: const Offset(0, 8),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ShaderMask(
+                                shaderCallback: (bounds) => LinearGradient(
+                                  colors: [Colors.white, Colors.white.withOpacity(0.9)],
+                                ).createShader(bounds),
+                                child: const Text(
+                                  'Register',
+                                  style: TextStyle(
+                                    fontSize: 36,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Create an account to continue!',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.white.withOpacity(0.9),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Image.asset(
+                            AppImages.logo,
+                            width: 80,
+                            height: 80,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
 
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 32),
 
                   // Name row
                   Row(
@@ -123,7 +176,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     );
                   }),
 
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 16),
 
                   // Phone
                   BlocBuilder<RegisterBloc, RegisterState>(builder: (context, state) {
@@ -136,7 +189,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     );
                   }),
 
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 16),
 
                   // Birth date (picker)
                   GestureDetector(
@@ -168,7 +221,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
 
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 16),
 
                   // Password
                   BlocBuilder<RegisterBloc, RegisterState>(builder: (context, state) {
@@ -187,7 +240,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     );
                   }),
 
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 16),
 
                   // Confirm password
                   BlocBuilder<RegisterBloc, RegisterState>(builder: (context, state) {
@@ -207,46 +260,81 @@ class _RegisterPageState extends State<RegisterPage> {
                     );
                   }),
 
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 28),
 
                   // Register button
-                  CustomButton(
-                    text: 'Register',
-                    onPressed: () {
-                      final firstName = _firstNameController.text.trim();
-                      final lastName = _lastNameController.text.trim();
-                      final email = _emailController.text.trim();
-                      final password = _passwordController.text;
-                      final confirmPassword = _confirmPasswordController.text;
-                      final phone = _phoneNumberController.text.trim();
-                      final birthDate = _dateOfBirthController.text;
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      gradient: LinearGradient(
+                        colors: AppColors.gradientPurple,
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primaryPurple.withOpacity(0.4),
+                          blurRadius: 15,
+                          offset: const Offset(0, 8),
+                        ),
+                      ],
+                    ),
+                    child: CustomButton(
+                      text: 'Register',
+                      textColor: Colors.white,
+                      backgroundColor: Colors.transparent,
+                      onPressed: () {
+                        final firstName = _firstNameController.text.trim();
+                        final lastName = _lastNameController.text.trim();
+                        final email = _emailController.text.trim();
+                        final password = _passwordController.text;
+                        final confirmPassword = _confirmPasswordController.text;
+                        final phone = _phoneNumberController.text.trim();
+                        final birthDate = _dateOfBirthController.text;
 
-                      _bloc.add(RegisterStarted(
-                        firstName: firstName,
-                        lastName: lastName,
-                        email: email,
-                        password: password,
-                        confirmPassword: confirmPassword,
-                        phone: phone,
-                        birthDate: birthDate,
-                      ));
-                    },
+                        _bloc.add(RegisterStarted(
+                          firstName: firstName,
+                          lastName: lastName,
+                          email: email,
+                          password: password,
+                          confirmPassword: confirmPassword,
+                          phone: phone,
+                          birthDate: birthDate,
+                        ));
+                      },
+                    ),
                   ),
 
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 24),
 
                   // Footer
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text('Already have an account? ', style: TextStyle(color: Colors.grey)),
-                      GestureDetector(
-                        onTap: () => context.router.popAndPush(LoginRoute()),
-                        child: const Text('Log in',
-                            style:
-                                TextStyle(color: AppColors.lightBlue, fontWeight: FontWeight.bold)),
-                      ),
-                    ],
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: Colors.grey.shade200),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Already have an account? ',
+                          style: TextStyle(color: Colors.grey.shade700),
+                        ),
+                        GestureDetector(
+                          onTap: () => context.router.popAndPush(LoginRoute()),
+                          child: Text(
+                            'Log in',
+                            style: TextStyle(
+                              color: AppColors.primaryPurple,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),

@@ -40,107 +40,266 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(),
-        body: MultiBlocListener(
-          listeners: [
-            BlocListener<ForgotPasswordBloc, ForgotPasswordState>(
-              listenWhen: (prev, curr) => prev.status != curr.status,
-              listener: (context, state) {
-                if (state.status == ForgotPasswordStatus.loading) {
-                  EasyLoading.show(status: 'loading...');
-                  return;
-                }
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Colors.white,
+                AppColors.primaryBlue.withOpacity(0.1),
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
+          child: MultiBlocListener(
+            listeners: [
+              BlocListener<ForgotPasswordBloc, ForgotPasswordState>(
+                listenWhen: (prev, curr) => prev.status != curr.status,
+                listener: (context, state) {
+                  if (state.status == ForgotPasswordStatus.loading) {
+                    EasyLoading.show(status: 'loading...');
+                    return;
+                  }
 
-                EasyLoading.dismiss();
+                  EasyLoading.dismiss();
 
-                if (state.status == ForgotPasswordStatus.otpSendSuccess) {
-                  toastification.show(
-                    autoCloseDuration: Duration(seconds: 1),
-                    context: context,
-                    type: ToastificationType.success,
-                    title: const Text('OTP sent successfully'),
-                  );
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => BlocProvider.value(
-                        value: _bloc,
-                        child: TypeCodePage(),
+                  if (state.status == ForgotPasswordStatus.otpSendSuccess) {
+                    toastification.show(
+                      autoCloseDuration: const Duration(seconds: 1),
+                      context: context,
+                      type: ToastificationType.success,
+                      title: const Text('OTP sent successfully'),
+                    );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => BlocProvider.value(
+                          value: _bloc,
+                          child: TypeCodePage(),
+                        ),
+                      ),
+                    );
+                  } else if (state.status == ForgotPasswordStatus.failure) {
+                    final raw = state.error?.message;
+                    if (raw != null) {
+                      final display = raw.startsWith('Errors.') ? tr(raw) : raw.toString();
+                      toastification.show(
+                        autoCloseDuration: const Duration(seconds: 1),
+                        context: context,
+                        type: ToastificationType.error,
+                        title: Text(display),
+                      );
+                    }
+                  }
+                },
+              ),
+            ],
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SizedBox(height: 20),
+                  // Header with gradient
+                  Container(
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          AppColors.primaryBlue,
+                          AppColors.primaryBlue.withOpacity(0.8),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(24),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primaryBlue.withOpacity(0.3),
+                          blurRadius: 20,
+                          offset: const Offset(0, 8),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ShaderMask(
+                                shaderCallback: (bounds) => LinearGradient(
+                                  colors: [Colors.white, Colors.white.withOpacity(0.9)],
+                                ).createShader(bounds),
+                                child: const Text(
+                                  'Forgot\nPassword',
+                                  style: TextStyle(
+                                    fontSize: 36,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    height: 1.2,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              Text(
+                                'Don\'t worry, we\'ll help you reset it!',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.white.withOpacity(0.9),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Image.asset(
+                            AppImages.logo,
+                            width: 80,
+                            height: 80,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+                  // Instructions card
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: Colors.grey.shade200),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: AppColors.primaryBlue.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Icon(
+                                Icons.info_outline,
+                                color: AppColors.primaryBlue,
+                                size: 20,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            const Expanded(
+                              child: Text(
+                                'Type your registered email',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        CustomTextField(
+                          hintText: 'Enter your email',
+                          controller: _emailController,
+                          isPassword: false,
+                          suffixIcon: AppImages.ic_mail,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  // Info box
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.shade50,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: Colors.blue.shade200),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(Icons.lightbulb_outline, color: Colors.blue.shade700, size: 20),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            'We\'ll send you a verification code to reset your password',
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.blue.shade900,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+                  // Send button
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      gradient: LinearGradient(
+                        colors: [
+                          AppColors.primaryBlue,
+                          AppColors.primaryBlue.withOpacity(0.8),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primaryBlue.withOpacity(0.4),
+                          blurRadius: 15,
+                          offset: const Offset(0, 8),
+                        ),
+                      ],
+                    ),
+                    child: CustomButton(
+                      text: 'Send Verification Code',
+                      backgroundColor: Colors.transparent,
+                      textColor: Colors.white,
+                      onPressed: () {
+                        _bloc.add(SetEmailEvent(_emailController.text));
+                        _bloc.add(SendOtpRequested(_emailController.text));
+                      },
+                    ),
+                  ),
+                  const Spacer(),
+                  // Back to login
+                  Center(
+                    child: TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text(
+                        'Back to Login',
+                        style: TextStyle(
+                          color: AppColors.primaryBlue,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                        ),
                       ),
                     ),
-                  );
-                } else if (state.status == ForgotPasswordStatus.failure) {
-                  final raw = state.error?.message;
-                  if (raw != null) {
-                    final display = raw.startsWith('Errors.') ? tr(raw) : raw.toString();
-                    toastification.show(
-                      autoCloseDuration: Duration(seconds: 1),
-                      context: context,
-                      type: ToastificationType.error,
-                      title: Text(display),
-                    );
-                  }
-                }
-              },
-            ),
-          ],
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text('Forgot\nPassword',
-                        style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold)),
-                    Image.asset(
-                      AppImages.logo,
-                      width: 106,
-                      height: 96,
-                    )
-                  ],
-                ),
-                const SizedBox(height: 32),
-                Text(
-                  'Type your registered email',
-                  style: TextStyle(fontSize: 16, color: Colors.grey, fontWeight: FontWeight.w600),
-                ),
-                const SizedBox(height: 16),
-                CustomTextField(
-                  hintText: 'Enter your email',
-                  controller: _emailController,
-                  isPassword: false,
-                  suffixIcon: AppImages.ic_mail,
-                ),
-                const SizedBox(height: 32),
-                RichText(
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text: '* ',
-                        style: TextStyle(color: Colors.red, fontSize: 16),
-                      ),
-                      TextSpan(
-                        text: 'We texted you a code to verify your email',
-                        style: TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),
-                      ),
-                    ],
                   ),
-                ),
-                const SizedBox(height: 24),
-                CustomButton(
-                  text: 'Send',
-                  backgroundColor: AppColors.primaryBlue,
-                  textColor: Colors.white,
-                  onPressed: () {
-                    _bloc.add(SetEmailEvent(_emailController.text));
-                    _bloc.add(SendOtpRequested(_emailController.text));
-                  },
-                )
-              ],
+                ],
+              ),
             ),
           ),
         ),

@@ -21,14 +21,22 @@ class NetworkDio extends DioForNative implements Interceptor {
     final BaseOptions options = BaseOptions(
       baseUrl: baseUrl,
       contentType: 'application/json; charset=utf-8',
-      connectTimeout: const Duration(seconds: 30),
-      receiveTimeout: const Duration(seconds: 30),
+      connectTimeout: const Duration(seconds: 60),
+      receiveTimeout: const Duration(seconds: 60),
       sendTimeout: const Duration(minutes: 5),
     );
 
     final instance = NetworkDio._(tokenManager, options);
 
+    // Add the auth interceptor (this) and a log interceptor for debugging requests/responses
     instance.interceptors.add(instance);
+    instance.interceptors.add(LogInterceptor(
+      request: true,
+      requestBody: true,
+      responseBody: true,
+      responseHeader: false,
+      error: true,
+    ));
 
     return instance;
   }

@@ -10,7 +10,7 @@ _$AccountImpl _$$AccountImplFromJson(Map<String, dynamic> json) =>
     _$AccountImpl(
       id: json['id'] as String,
       email: json['email'] as String,
-      name: json['name'] as String,
+      name: json['name'] as String?,
       avatar: json['avatar'] as String?,
     );
 

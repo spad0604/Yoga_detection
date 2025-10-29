@@ -1,16 +1,28 @@
 import 'package:flutter_starter/data/entities/request/change_password.dart';
-import 'package:flutter_starter/data/entities/request/post_yoga_pose_model.dart';
 import 'package:flutter_starter/data/entities/request/register_params.dart';
 import 'package:flutter_starter/data/entities/request/request_change_password.dart';
 import 'package:flutter_starter/data/entities/request/reset_password_request.dart';
 import 'package:flutter_starter/data/entities/request/refresh_token_request.dart';
+import 'package:flutter_starter/data/entities/request/create_group_request.dart';
+import 'package:flutter_starter/data/entities/request/update_routine_progress_request.dart';
+import 'package:flutter_starter/data/entities/request/create_body_progress_request.dart';
+import 'package:flutter_starter/data/entities/request/update_body_progress_request.dart';
 import 'package:flutter_starter/data/entities/request/verify_otp_request.dart';
+import 'package:flutter_starter/data/entities/response/friend_response.dart';
 import 'package:flutter_starter/data/entities/response/get_information.dart';
+import 'package:flutter_starter/data/entities/response/user_activity_response.dart';
+import 'package:flutter_starter/data/entities/response/yoga_group_response.dart';
+import 'package:flutter_starter/data/entities/response/notification_response.dart';
 import 'package:flutter_starter/data/entities/response/page_response.dart';
+import 'package:flutter_starter/data/entities/response/pose_history_attempts.dart';
+import 'package:flutter_starter/data/entities/response/pose_statistics.dart';
 import 'package:flutter_starter/data/entities/response/register_response.dart';
+import 'package:flutter_starter/data/entities/response/user_routine_progress.dart';
 import 'package:flutter_starter/data/entities/response/user_yoga_pose_model.dart';
+import 'package:flutter_starter/data/entities/response/body_progress_response.dart';
 import 'package:flutter_starter/data/entities/response/verify_otp.dart';
 import 'package:flutter_starter/data/entities/response/yoga_pose_details.dart';
+import 'package:flutter_starter/data/entities/response/yoga_routine.dart';
 import 'package:flutter_starter/data/sources/network/base_api_response.dart';
 import 'package:injectable/injectable.dart';
 import 'package:dio/dio.dart';
@@ -61,9 +73,9 @@ abstract class NetworkDataSource {
   @GET('api/user/me')
   Future<BaseApiResponse<GetInformation>> getInformation();
 
+  @MultiPart()
   @POST('api/pose-attempts')
-  Future<BaseApiResponse<void>> postYogaPose(
-      @Body() PostYogaPoseModel model, @Part() MultipartFile image);
+  Future<BaseApiResponse<void>> postYogaPose(@Body() FormData formData);
 
   @GET("api/pose-attempts/by-date")
   Future<BaseApiResponse<PageResponse<UserYogaPoseModel>>> getUserYogaPosesByDate(
@@ -73,4 +85,156 @@ abstract class NetworkDataSource {
 
   @GET('api/pose-attempts/{id}')
   Future<BaseApiResponse<UserYogaPoseModel>> getUserYogaPoseById(@Path('id') String id);
+
+  @GET('api/pose-attempts/statistics/{poseCode}')
+  Future<BaseApiResponse<PoseStatistics>> getPoseStatistics(@Path('poseCode') String poseCode);
+
+  @GET('api/pose-attempts/by-pose/{poseCode}')
+  Future<BaseApiResponse<PageResponse<PoseHistoryAttempts>>> getPoseAttemptsByPose(
+    @Path('poseCode') String poseCode,
+    @Query('page') int page,
+    @Query('pageSize') int pageSize,
+  );
+
+  @GET('api/notifications')
+  Future<BaseApiResponse<PageResponse<NotificationResponse>>> getNotifications(
+      @Query('page') int page, @Query('size') int size);
+
+  @GET('api/notifications/{id}')
+  Future<BaseApiResponse<NotificationResponse>> getNotificationById(@Path('id') String id);
+
+  // Routine APIs
+  @GET('api/routines')
+  Future<BaseApiResponse<PageResponse<YogaRoutine>>> getAllRoutines(
+      @Query('page') int page, @Query('size') int size);
+
+  @GET('api/routines/{id}')
+  Future<BaseApiResponse<YogaRoutine>> getRoutineById(@Path('id') String id);
+
+  @GET('api/routines/level/{level}')
+  Future<BaseApiResponse<PageResponse<YogaRoutine>>> getRoutinesByLevel(
+      @Path('level') String level, @Query('page') int page, @Query('size') int size);
+
+  @GET('api/routines/search')
+  Future<BaseApiResponse<PageResponse<YogaRoutine>>> searchRoutines(
+      @Query('keyword') String keyword, @Query('page') int page, @Query('size') int size);
+
+  @GET('api/routines/filter')
+  Future<BaseApiResponse<PageResponse<YogaRoutine>>> filterRoutines({
+    @Query('level') String? level,
+    @Query('isPremium') bool? isPremium,
+    @Query('page') required int page,
+    @Query('size') required int size,
+  });
+
+  // Routine Progress APIs
+  @POST('api/routines/progress/start/{routineId}')
+  Future<BaseApiResponse<UserRoutineProgress>> startOrContinueRoutine(
+      @Path('routineId') String routineId);
+
+  @PUT('api/routines/progress/update')
+  Future<BaseApiResponse<UserRoutineProgress>> updateRoutineProgress(
+      @Body() UpdateRoutineProgressRequest request);
+
+  @GET('api/routines/progress/{routineId}')
+  Future<BaseApiResponse<UserRoutineProgress>> getRoutineProgress(
+      @Path('routineId') String routineId);
+
+  @GET('api/routines/progress/in-progress')
+  Future<BaseApiResponse<PageResponse<UserRoutineProgress>>> getInProgressRoutines(
+      @Query('page') int page, @Query('size') int size);
+
+  @GET('api/routines/progress/completed')
+  Future<BaseApiResponse<PageResponse<UserRoutineProgress>>> getCompletedRoutines(
+      @Query('page') int page, @Query('size') int size);
+
+  @DELETE('api/routines/progress/{routineId}')
+  Future<BaseApiResponse<void>> resetRoutineProgress(@Path('routineId') String routineId);
+
+  @GET('api/routines/progress/statistics')
+  Future<BaseApiResponse<UserRoutineStatistics>> getUserRoutineStatistics();
+
+  // Social APIs - Friends
+  @POST('api/social/friends/request')
+  Future<BaseApiResponse<void>> sendFriendRequest(@Query('friendEmail') String friendEmail);
+
+  @POST('api/social/friends/accept/{friendshipId}')
+  Future<BaseApiResponse<void>> acceptFriendRequest(@Path('friendshipId') String friendshipId);
+
+  @POST('api/social/friends/reject/{friendshipId}')
+  Future<BaseApiResponse<void>> rejectFriendRequest(@Path('friendshipId') String friendshipId);
+
+  @DELETE('api/social/friends/{friendshipId}')
+  Future<BaseApiResponse<void>> removeFriend(@Path('friendshipId') String friendshipId);
+
+  @GET('api/social/friends')
+  Future<BaseApiResponse<PageResponse<FriendResponse>>> getFriends(
+      @Query('page') int page, @Query('size') int size);
+
+  @GET('api/social/friends/pending')
+  Future<BaseApiResponse<PageResponse<FriendResponse>>> getPendingFriendRequests(
+      @Query('page') int page, @Query('size') int size);
+
+  // Social APIs - Groups
+  @POST('api/social/groups')
+  Future<BaseApiResponse<YogaGroupResponse>> createGroup(@Body() CreateGroupRequest request);
+
+  @GET('api/social/groups/{id}')
+  Future<BaseApiResponse<YogaGroupResponse>> getGroupById(@Path('id') String id);
+
+  @GET('api/social/groups')
+  Future<BaseApiResponse<PageResponse<YogaGroupResponse>>> getPublicGroups(
+      @Query('page') int page, @Query('size') int size);
+
+  @GET('api/social/groups/my')
+  Future<BaseApiResponse<PageResponse<YogaGroupResponse>>> getMyGroups(
+      @Query('page') int page, @Query('size') int size);
+
+  @GET('api/social/groups/search')
+  Future<BaseApiResponse<PageResponse<YogaGroupResponse>>> searchGroups(
+      @Query('keyword') String keyword, @Query('page') int page, @Query('size') int size);
+
+  @POST('api/social/groups/{groupId}/join')
+  Future<BaseApiResponse<void>> joinGroup(@Path('groupId') String groupId);
+
+  @POST('api/social/groups/{groupId}/leave')
+  Future<BaseApiResponse<void>> leaveGroup(@Path('groupId') String groupId);
+
+  // Social APIs - Activities
+  @GET('api/social/activities/friends')
+  Future<BaseApiResponse<PageResponse<UserActivityResponse>>> getFriendActivities(
+      @Query('page') int page, @Query('size') int size);
+
+  @GET('api/social/activities/me')
+  Future<BaseApiResponse<PageResponse<UserActivityResponse>>> getMyActivities(
+      @Query('page') int page, @Query('size') int size);
+
+  // Body Progress APIs
+  @POST('api/body-progress')
+  Future<BaseApiResponse<BodyProgressResponse>> createBodyProgress(
+      @Body() CreateBodyProgressRequest request);
+
+  @PUT('api/body-progress/{id}')
+  Future<BaseApiResponse<BodyProgressResponse>> updateBodyProgress(
+      @Path('id') String id, @Body() UpdateBodyProgressRequest request);
+
+  @DELETE('api/body-progress/{id}')
+  Future<BaseApiResponse<void>> deleteBodyProgress(@Path('id') String id);
+
+  @GET('api/body-progress/{id}')
+  Future<BaseApiResponse<BodyProgressResponse>> getBodyProgressById(@Path('id') String id);
+
+  @GET('api/body-progress')
+  Future<BaseApiResponse<PageResponse<BodyProgressResponse>>> getUserBodyProgress(
+      @Query('page') int page, @Query('size') int size);
+
+  @GET('api/body-progress/all')
+  Future<BaseApiResponse<List<BodyProgressResponse>>> getAllUserBodyProgress();
+
+  @GET('api/body-progress/latest')
+  Future<BaseApiResponse<BodyProgressResponse>> getLatestBodyProgress();
+
+  @GET('api/body-progress/range')
+  Future<BaseApiResponse<List<BodyProgressResponse>>> getBodyProgressByDateRange(
+      @Query('startDate') String startDate, @Query('endDate') String endDate);
 }

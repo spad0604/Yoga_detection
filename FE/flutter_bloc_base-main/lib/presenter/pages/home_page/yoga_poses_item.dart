@@ -1,73 +1,184 @@
 part of 'home_page.dart';
 
-class YogaPosesItem extends StatelessWidget {
+class YogaPosesItem extends StatefulWidget {
   final YogaPoseDetails item;
   const YogaPosesItem({super.key, required this.item});
 
   @override
+  State<YogaPosesItem> createState() => _YogaPosesItemState();
+}
+
+class _YogaPosesItemState extends State<YogaPosesItem> {
+  bool _isPressed = false;
+
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        context.router.push(PoseDetailsRoute(item: item));
+      onTapDown: (_) => setState(() => _isPressed = true),
+      onTapUp: (_) {
+        setState(() => _isPressed = false);
+        context.router.push(PoseDetailsRoute(item: widget.item));
       },
-      child: Container(
-        padding: const EdgeInsets.all(8),
-        height: 100,
-        width: double.infinity,
+      onTapCancel: () => setState(() => _isPressed = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        transform: Matrix4.identity()..scale(_isPressed ? 0.98 : 1.0),
         decoration: BoxDecoration(
-          color: AppColors.lightCyan,
-          borderRadius: BorderRadius.circular(10),
+          gradient: LinearGradient(
+            colors: [
+              Colors.white,
+              AppColors.primaryPurpleLight.withOpacity(0.05),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: _isPressed ? AppColors.primaryPurple.withOpacity(0.3) : AppColors.border,
+            width: 1.5,
+          ),
+          boxShadow: _isPressed
+              ? []
+              : [
+                  BoxShadow(
+                    color: AppColors.primaryPurple.withOpacity(0.08),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
         ),
+        padding: const EdgeInsets.all(12),
         child: Row(
           children: [
+            // Image container
             Container(
-              width: 84, // Reduced from 100
-              height: 84, // Reduced from 100
+              width: 90,
+              height: 90,
               decoration: BoxDecoration(
-                color: AppColors.cyan,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(12),
+                gradient: LinearGradient(
+                  colors: AppColors.gradientPurple,
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primaryPurple.withOpacity(0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
-              child: Center(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
                 child: Image.network(
-                  fit: BoxFit.cover,
-                  item.imageUrl ??
+                  widget.item.imageUrl ??
                       'https://static.wikia.nocookie.net/wiki-shincau-be-but-chi/images/8/8b/8264.jpg/revision/latest?cb=20160521113814&path-prefix=vi',
-                  width: 84,
-                  height: 84,
+                  width: 90,
+                  height: 90,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    color: AppColors.primaryPurpleLight.withOpacity(0.3),
+                    child: Icon(
+                      Icons.self_improvement_outlined,
+                      color: AppColors.primaryPurple,
+                      size: 40,
+                    ),
+                  ),
                 ),
               ),
             ),
+            const SizedBox(width: 14),
+
+            // Content
             Expanded(
-              // Use Expanded instead of fixed width
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    widget.item.name,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    style: const TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary,
+                      letterSpacing: 0.2,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+
+                  // Info chips
+                  Row(
                     children: [
-                      Text(
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                        item.name,
-                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.primaryPurpleLight.withOpacity(0.15),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.access_time_rounded,
+                              size: 14,
+                              color: AppColors.primaryPurple,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              '${widget.item.totalMinutes?.toString() ?? '0'} min',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: AppColors.primaryPurple,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                        '${item.totalMinutes?.toString() ?? '0'} mins • ${item.level ?? 'Beginner'}',
-                        style: const TextStyle(
-                            fontSize: 12, color: Colors.grey, fontWeight: FontWeight.w400),
+                      const SizedBox(width: 6),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.secondaryTealLight.withOpacity(0.15),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          widget.item.level ?? 'Beginner',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: AppColors.secondaryTeal,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                       ),
-                    ]),
+                    ],
+                  ),
+                ],
               ),
             ),
-            const Icon(
-              Icons.arrow_forward_ios,
-              size: 16,
-              color: Colors.black,
+
+            // Arrow icon
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: AppColors.primaryPurpleLight.withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: 16,
+                color: AppColors.primaryPurple,
+              ),
             ),
-            const SizedBox(width: 8), // Add some spacing at the end
           ],
         ),
       ),

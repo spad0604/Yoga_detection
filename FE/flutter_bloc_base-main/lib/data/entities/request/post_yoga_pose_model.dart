@@ -18,7 +18,7 @@ class PoseLandmarkData with _$PoseLandmarkData {
 @freezed
 class PostYogaPoseModel with _$PostYogaPoseModel {
   const factory PostYogaPoseModel({
-    @JsonKey(name: "poseId") required int poseId,
+    @JsonKey(name: "poseId") required String poseId,
     @JsonKey(name: "landmarks") required List<PoseLandmarkData> landmarks,
     @JsonKey(name: "imageBase64") String? imageBase64,
     @JsonKey(name: "timestamp") required String timestamp,

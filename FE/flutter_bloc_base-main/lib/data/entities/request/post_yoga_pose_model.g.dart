@@ -27,7 +27,7 @@ Map<String, dynamic> _$$PoseLandmarkDataImplToJson(
 _$PostYogaPoseModelImpl _$$PostYogaPoseModelImplFromJson(
         Map<String, dynamic> json) =>
     _$PostYogaPoseModelImpl(
-      poseId: (json['poseId'] as num).toInt(),
+      poseId: json['poseId'] as String,
       landmarks: (json['landmarks'] as List<dynamic>)
           .map((e) => PoseLandmarkData.fromJson(e as Map<String, dynamic>))
           .toList(),
