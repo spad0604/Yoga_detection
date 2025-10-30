@@ -109,24 +109,38 @@ class YogaPosesRepositoryImpl implements YogaPosesRepository {
         );
       }
 
-      // Wrap landmarks as backend expects: { "landmarks": [ ... ] }
-      final String wrappedLandmarks = jsonEncode({
-        'landmarks': model.landmarks.map((e) => e.toJson()).toList(),
-      });
-
-      final formData = FormData.fromMap({
+      // Build request JSON as backend expects inside a multipart field named 'request'
+      final Map<String, dynamic> requestMap = {
         'poseCode': poseCode,
-        'landmarkData': wrappedLandmarks,
+        'landmarks': model.landmarks.map((e) => e.toJson()).toList(),
+        'timestamp': model.timestamp,
+      };
+
+      final String requestJson = jsonEncode(requestMap);
+
+      // Create a multipart part for the JSON request with explicit content-type
+      final requestPart = MultipartFile.fromString(
+        requestJson,
+        filename: 'request.json',
+        contentType: MediaType('application', 'json'),
+      );
+
+      // Some server implementations expect poseCode as a top-level form field
+      // in addition to the JSON 'request' part — include both to satisfy server.
+      final formData = FormData.fromMap({
+        'request': requestPart,
+        'poseCode': poseCode,
         if (image != null) 'image': image,
       });
 
       // Verbose logging to debug server 500
       print('📋 FormData contents:');
-      print('  poseCode: "$poseCode"');
-      print('  landmarkData length: ${wrappedLandmarks.length} chars');
-      print('  landmarkData preview: ${wrappedLandmarks.substring(0, wrappedLandmarks.length > 100 ? 100 : wrappedLandmarks.length)}...');
+      print('  request JSON length: ${requestJson.length} chars');
+      print(
+          '  request JSON preview: ${requestJson.substring(0, requestJson.length > 200 ? 200 : requestJson.length)}...');
       if (image != null) {
-        print('  image: filename="${image.filename}", contentType=${image.contentType}, length=${image.length}');
+        print(
+            '  image: filename="${image.filename}", contentType=${image.contentType}, length=${image.length}');
       } else {
         print('  image: null');
       }
