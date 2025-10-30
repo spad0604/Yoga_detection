@@ -21,23 +21,38 @@ BodyProgressResponse _$BodyProgressResponseFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$BodyProgressResponse {
   String get id => throw _privateConstructorUsedError;
+  @JsonKey(name: 'userId')
   String get userId => throw _privateConstructorUsedError; // Basic measurements
+  @JsonKey(name: 'weightKg')
   double? get weightKg => throw _privateConstructorUsedError;
+  @JsonKey(name: 'heightCm')
   double? get heightCm => throw _privateConstructorUsedError;
   double? get bmi => throw _privateConstructorUsedError; // Body composition
+  @JsonKey(name: 'bodyFatPercentage')
   double? get bodyFatPercentage => throw _privateConstructorUsedError;
+  @JsonKey(name: 'muscleMassKg')
   double? get muscleMassKg => throw _privateConstructorUsedError;
+  @JsonKey(name: 'bodyWaterPercentage')
   double? get bodyWaterPercentage =>
       throw _privateConstructorUsedError; // Body measurements (circumferences)
+  @JsonKey(name: 'chestCm')
   double? get chestCm => throw _privateConstructorUsedError;
+  @JsonKey(name: 'waistCm')
   double? get waistCm => throw _privateConstructorUsedError;
+  @JsonKey(name: 'hipCm')
   double? get hipCm => throw _privateConstructorUsedError;
+  @JsonKey(name: 'armCm')
   double? get armCm => throw _privateConstructorUsedError;
+  @JsonKey(name: 'thighCm')
   double? get thighCm => throw _privateConstructorUsedError; // Additional info
   String? get notes => throw _privateConstructorUsedError;
+  @JsonKey(name: 'photoUrl')
   String? get photoUrl => throw _privateConstructorUsedError;
+  @JsonKey(name: 'recordedAt')
   DateTime get recordedAt => throw _privateConstructorUsedError;
+  @JsonKey(name: 'createdAt')
   DateTime? get createdAt => throw _privateConstructorUsedError;
+  @JsonKey(name: 'updatedAt')
   DateTime? get updatedAt => throw _privateConstructorUsedError;
 
   /// Serializes this BodyProgressResponse to a JSON map.
@@ -58,23 +73,23 @@ abstract class $BodyProgressResponseCopyWith<$Res> {
   @useResult
   $Res call(
       {String id,
-      String userId,
-      double? weightKg,
-      double? heightCm,
+      @JsonKey(name: 'userId') String userId,
+      @JsonKey(name: 'weightKg') double? weightKg,
+      @JsonKey(name: 'heightCm') double? heightCm,
       double? bmi,
-      double? bodyFatPercentage,
-      double? muscleMassKg,
-      double? bodyWaterPercentage,
-      double? chestCm,
-      double? waistCm,
-      double? hipCm,
-      double? armCm,
-      double? thighCm,
+      @JsonKey(name: 'bodyFatPercentage') double? bodyFatPercentage,
+      @JsonKey(name: 'muscleMassKg') double? muscleMassKg,
+      @JsonKey(name: 'bodyWaterPercentage') double? bodyWaterPercentage,
+      @JsonKey(name: 'chestCm') double? chestCm,
+      @JsonKey(name: 'waistCm') double? waistCm,
+      @JsonKey(name: 'hipCm') double? hipCm,
+      @JsonKey(name: 'armCm') double? armCm,
+      @JsonKey(name: 'thighCm') double? thighCm,
       String? notes,
-      String? photoUrl,
-      DateTime recordedAt,
-      DateTime? createdAt,
-      DateTime? updatedAt});
+      @JsonKey(name: 'photoUrl') String? photoUrl,
+      @JsonKey(name: 'recordedAt') DateTime recordedAt,
+      @JsonKey(name: 'createdAt') DateTime? createdAt,
+      @JsonKey(name: 'updatedAt') DateTime? updatedAt});
 }
 
 /// @nodoc
@@ -199,23 +214,23 @@ abstract class _$$BodyProgressResponseImplCopyWith<$Res>
   @useResult
   $Res call(
       {String id,
-      String userId,
-      double? weightKg,
-      double? heightCm,
+      @JsonKey(name: 'userId') String userId,
+      @JsonKey(name: 'weightKg') double? weightKg,
+      @JsonKey(name: 'heightCm') double? heightCm,
       double? bmi,
-      double? bodyFatPercentage,
-      double? muscleMassKg,
-      double? bodyWaterPercentage,
-      double? chestCm,
-      double? waistCm,
-      double? hipCm,
-      double? armCm,
-      double? thighCm,
+      @JsonKey(name: 'bodyFatPercentage') double? bodyFatPercentage,
+      @JsonKey(name: 'muscleMassKg') double? muscleMassKg,
+      @JsonKey(name: 'bodyWaterPercentage') double? bodyWaterPercentage,
+      @JsonKey(name: 'chestCm') double? chestCm,
+      @JsonKey(name: 'waistCm') double? waistCm,
+      @JsonKey(name: 'hipCm') double? hipCm,
+      @JsonKey(name: 'armCm') double? armCm,
+      @JsonKey(name: 'thighCm') double? thighCm,
       String? notes,
-      String? photoUrl,
-      DateTime recordedAt,
-      DateTime? createdAt,
-      DateTime? updatedAt});
+      @JsonKey(name: 'photoUrl') String? photoUrl,
+      @JsonKey(name: 'recordedAt') DateTime recordedAt,
+      @JsonKey(name: 'createdAt') DateTime? createdAt,
+      @JsonKey(name: 'updatedAt') DateTime? updatedAt});
 }
 
 /// @nodoc
@@ -332,23 +347,23 @@ class __$$BodyProgressResponseImplCopyWithImpl<$Res>
 class _$BodyProgressResponseImpl implements _BodyProgressResponse {
   const _$BodyProgressResponseImpl(
       {required this.id,
-      required this.userId,
-      this.weightKg,
-      this.heightCm,
+      @JsonKey(name: 'userId') required this.userId,
+      @JsonKey(name: 'weightKg') this.weightKg,
+      @JsonKey(name: 'heightCm') this.heightCm,
       this.bmi,
-      this.bodyFatPercentage,
-      this.muscleMassKg,
-      this.bodyWaterPercentage,
-      this.chestCm,
-      this.waistCm,
-      this.hipCm,
-      this.armCm,
-      this.thighCm,
+      @JsonKey(name: 'bodyFatPercentage') this.bodyFatPercentage,
+      @JsonKey(name: 'muscleMassKg') this.muscleMassKg,
+      @JsonKey(name: 'bodyWaterPercentage') this.bodyWaterPercentage,
+      @JsonKey(name: 'chestCm') this.chestCm,
+      @JsonKey(name: 'waistCm') this.waistCm,
+      @JsonKey(name: 'hipCm') this.hipCm,
+      @JsonKey(name: 'armCm') this.armCm,
+      @JsonKey(name: 'thighCm') this.thighCm,
       this.notes,
-      this.photoUrl,
-      required this.recordedAt,
-      this.createdAt,
-      this.updatedAt});
+      @JsonKey(name: 'photoUrl') this.photoUrl,
+      @JsonKey(name: 'recordedAt') required this.recordedAt,
+      @JsonKey(name: 'createdAt') this.createdAt,
+      @JsonKey(name: 'updatedAt') this.updatedAt});
 
   factory _$BodyProgressResponseImpl.fromJson(Map<String, dynamic> json) =>
       _$$BodyProgressResponseImplFromJson(json);
@@ -356,42 +371,57 @@ class _$BodyProgressResponseImpl implements _BodyProgressResponse {
   @override
   final String id;
   @override
+  @JsonKey(name: 'userId')
   final String userId;
 // Basic measurements
   @override
+  @JsonKey(name: 'weightKg')
   final double? weightKg;
   @override
+  @JsonKey(name: 'heightCm')
   final double? heightCm;
   @override
   final double? bmi;
 // Body composition
   @override
+  @JsonKey(name: 'bodyFatPercentage')
   final double? bodyFatPercentage;
   @override
+  @JsonKey(name: 'muscleMassKg')
   final double? muscleMassKg;
   @override
+  @JsonKey(name: 'bodyWaterPercentage')
   final double? bodyWaterPercentage;
 // Body measurements (circumferences)
   @override
+  @JsonKey(name: 'chestCm')
   final double? chestCm;
   @override
+  @JsonKey(name: 'waistCm')
   final double? waistCm;
   @override
+  @JsonKey(name: 'hipCm')
   final double? hipCm;
   @override
+  @JsonKey(name: 'armCm')
   final double? armCm;
   @override
+  @JsonKey(name: 'thighCm')
   final double? thighCm;
 // Additional info
   @override
   final String? notes;
   @override
+  @JsonKey(name: 'photoUrl')
   final String? photoUrl;
   @override
+  @JsonKey(name: 'recordedAt')
   final DateTime recordedAt;
   @override
+  @JsonKey(name: 'createdAt')
   final DateTime? createdAt;
   @override
+  @JsonKey(name: 'updatedAt')
   final DateTime? updatedAt;
 
   @override
@@ -477,22 +507,23 @@ class _$BodyProgressResponseImpl implements _BodyProgressResponse {
 abstract class _BodyProgressResponse implements BodyProgressResponse {
   const factory _BodyProgressResponse(
       {required final String id,
-      required final String userId,
-      final double? weightKg,
-      final double? heightCm,
+      @JsonKey(name: 'userId') required final String userId,
+      @JsonKey(name: 'weightKg') final double? weightKg,
+      @JsonKey(name: 'heightCm') final double? heightCm,
       final double? bmi,
-      final double? bodyFatPercentage,
-      final double? muscleMassKg,
-      final double? bodyWaterPercentage,
-      final double? chestCm,
-      final double? waistCm,
-      final double? hipCm,
-      final double? armCm,
-      final double? thighCm,
+      @JsonKey(name: 'bodyFatPercentage') final double? bodyFatPercentage,
+      @JsonKey(name: 'muscleMassKg') final double? muscleMassKg,
+      @JsonKey(name: 'bodyWaterPercentage') final double? bodyWaterPercentage,
+      @JsonKey(name: 'chestCm') final double? chestCm,
+      @JsonKey(name: 'waistCm') final double? waistCm,
+      @JsonKey(name: 'hipCm') final double? hipCm,
+      @JsonKey(name: 'armCm') final double? armCm,
+      @JsonKey(name: 'thighCm') final double? thighCm,
       final String? notes,
-      final String? photoUrl,
-      required final DateTime recordedAt,
-      final DateTime? createdAt,
+      @JsonKey(name: 'photoUrl') final String? photoUrl,
+      @JsonKey(name: 'recordedAt') required final DateTime recordedAt,
+      @JsonKey(name: 'createdAt') final DateTime? createdAt,
+      @JsonKey(name: 'updatedAt')
       final DateTime? updatedAt}) = _$BodyProgressResponseImpl;
 
   factory _BodyProgressResponse.fromJson(Map<String, dynamic> json) =
@@ -501,38 +532,53 @@ abstract class _BodyProgressResponse implements BodyProgressResponse {
   @override
   String get id;
   @override
+  @JsonKey(name: 'userId')
   String get userId; // Basic measurements
   @override
+  @JsonKey(name: 'weightKg')
   double? get weightKg;
   @override
+  @JsonKey(name: 'heightCm')
   double? get heightCm;
   @override
   double? get bmi; // Body composition
   @override
+  @JsonKey(name: 'bodyFatPercentage')
   double? get bodyFatPercentage;
   @override
+  @JsonKey(name: 'muscleMassKg')
   double? get muscleMassKg;
   @override
+  @JsonKey(name: 'bodyWaterPercentage')
   double? get bodyWaterPercentage; // Body measurements (circumferences)
   @override
+  @JsonKey(name: 'chestCm')
   double? get chestCm;
   @override
+  @JsonKey(name: 'waistCm')
   double? get waistCm;
   @override
+  @JsonKey(name: 'hipCm')
   double? get hipCm;
   @override
+  @JsonKey(name: 'armCm')
   double? get armCm;
   @override
+  @JsonKey(name: 'thighCm')
   double? get thighCm; // Additional info
   @override
   String? get notes;
   @override
+  @JsonKey(name: 'photoUrl')
   String? get photoUrl;
   @override
+  @JsonKey(name: 'recordedAt')
   DateTime get recordedAt;
   @override
+  @JsonKey(name: 'createdAt')
   DateTime? get createdAt;
   @override
+  @JsonKey(name: 'updatedAt')
   DateTime? get updatedAt;
 
   /// Create a copy of BodyProgressResponse

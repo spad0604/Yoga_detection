@@ -1,39 +1,22 @@
 package com.yogadetection.controller;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.yogadetection.dto.request.CreateGroupRequest;
-import com.yogadetection.dto.response.ApiResponse;
-import com.yogadetection.dto.response.FriendResponse;
-import com.yogadetection.dto.response.PagedResponse;
-import com.yogadetection.dto.response.UserActivityResponse;
-import com.yogadetection.dto.response.YogaGroupResponse;
+import com.yogadetection.dto.response.*;
 import com.yogadetection.service.JwtService;
 import com.yogadetection.service.SocialService;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/social")
 public class SocialController {
-    
+
     private final SocialService socialService;
     private final JwtService jwtService;
 
     // ============ FRIENDS ENDPOINTS ============
-    
-    /**
-     * POST /api/social/friends/request - Gửi lời mời kết bạn
-     */
+
     @PostMapping("/friends/request")
     public ApiResponse<Void> sendFriendRequest(
             @RequestParam String friendEmail,
@@ -44,9 +27,6 @@ public class SocialController {
         return ApiResponse.defaultResponse();
     }
 
-    /**
-     * POST /api/social/friends/accept/{friendshipId} - Chấp nhận lời mời
-     */
     @PostMapping("/friends/accept/{friendshipId}")
     public ApiResponse<Void> acceptFriendRequest(
             @PathVariable String friendshipId,
@@ -57,9 +37,6 @@ public class SocialController {
         return ApiResponse.defaultResponse();
     }
 
-    /**
-     * POST /api/social/friends/reject/{friendshipId} - Từ chối lời mời
-     */
     @PostMapping("/friends/reject/{friendshipId}")
     public ApiResponse<Void> rejectFriendRequest(
             @PathVariable String friendshipId,
@@ -70,9 +47,6 @@ public class SocialController {
         return ApiResponse.defaultResponse();
     }
 
-    /**
-     * DELETE /api/social/friends/{friendshipId} - Xóa bạn bè
-     */
     @DeleteMapping("/friends/{friendshipId}")
     public ApiResponse<Void> removeFriend(
             @PathVariable String friendshipId,
@@ -83,101 +57,84 @@ public class SocialController {
         return ApiResponse.defaultResponse();
     }
 
-    /**
-     * GET /api/social/friends - Lấy danh sách bạn bè
-     */
     @GetMapping("/friends")
-    public PagedResponse<FriendResponse> getFriends(
+    public ApiResponse<PagedResponse<FriendResponse>> getFriends(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             @RequestHeader("Authorization") String authHeader
     ) {
         String userId = extractUserId(authHeader);
-        return socialService.getFriends(userId, page, size);
+        PagedResponse<FriendResponse> response = socialService.getFriends(userId, page, size);
+        return ApiResponse.success(response);
     }
 
-    /**
-     * GET /api/social/friends/pending - Lấy lời mời kết bạn đang chờ
-     */
     @GetMapping("/friends/pending")
-    public PagedResponse<FriendResponse> getPendingRequests(
+    public ApiResponse<PagedResponse<FriendResponse>> getPendingRequests(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             @RequestHeader("Authorization") String authHeader
     ) {
         String userId = extractUserId(authHeader);
-        return socialService.getPendingRequests(userId, page, size);
+        PagedResponse<FriendResponse> response = socialService.getPendingRequests(userId, page, size);
+        return ApiResponse.success(response);
     }
 
     // ============ GROUPS ENDPOINTS ============
-    
-    /**
-     * POST /api/social/groups - Tạo nhóm mới
-     */
+
     @PostMapping("/groups")
-    public YogaGroupResponse createGroup(
+    public ApiResponse<YogaGroupResponse> createGroup(
             @RequestBody CreateGroupRequest request,
             @RequestHeader("Authorization") String authHeader
     ) {
         String userId = extractUserId(authHeader);
-        return socialService.createGroup(userId, request);
+        YogaGroupResponse response = socialService.createGroup(userId, request);
+        return ApiResponse.success(response);
     }
 
-    /**
-     * GET /api/social/groups/{id} - Lấy chi tiết nhóm
-     */
     @GetMapping("/groups/{id}")
-    public YogaGroupResponse getGroupById(
+    public ApiResponse<YogaGroupResponse> getGroupById(
             @PathVariable String id,
             @RequestHeader("Authorization") String authHeader
     ) {
         String userId = extractUserId(authHeader);
-        return socialService.getGroupById(id, userId);
+        YogaGroupResponse response = socialService.getGroupById(id, userId);
+        return ApiResponse.success(response);
     }
 
-    /**
-     * GET /api/social/groups - Lấy danh sách nhóm công khai
-     */
     @GetMapping("/groups")
-    public PagedResponse<YogaGroupResponse> getPublicGroups(
+    public ApiResponse<PagedResponse<YogaGroupResponse>> getPublicGroups(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             @RequestHeader("Authorization") String authHeader
     ) {
         String userId = extractUserId(authHeader);
-        return socialService.getPublicGroups(page, size, userId);
+        PagedResponse<YogaGroupResponse> response = socialService.getPublicGroups(page, size, userId);
+        return ApiResponse.success(response);
     }
 
-    /**
-     * GET /api/social/groups/my - Lấy nhóm mà user đã join
-     */
     @GetMapping("/groups/my")
-    public PagedResponse<YogaGroupResponse> getMyGroups(
+    public ApiResponse<PagedResponse<YogaGroupResponse>> getMyGroups(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             @RequestHeader("Authorization") String authHeader
     ) {
         String userId = extractUserId(authHeader);
-        return socialService.getMyGroups(userId, page, size);
+        PagedResponse<YogaGroupResponse> response = socialService.getMyGroups(userId, page, size);
+        return ApiResponse.success(response);
     }
 
-    /**
-     * GET /api/social/groups/search - Tìm kiếm nhóm
-     */
     @GetMapping("/groups/search")
-    public PagedResponse<YogaGroupResponse> searchGroups(
+    public ApiResponse<PagedResponse<YogaGroupResponse>> searchGroups(
             @RequestParam String keyword,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             @RequestHeader("Authorization") String authHeader
     ) {
         String userId = extractUserId(authHeader);
-        return socialService.searchGroups(keyword, page, size, userId);
+        PagedResponse<YogaGroupResponse> response = socialService.searchGroups(keyword, page, size, userId);
+        return ApiResponse.success(response);
     }
 
-    /**
-     * POST /api/social/groups/{groupId}/join - Tham gia nhóm
-     */
     @PostMapping("/groups/{groupId}/join")
     public ApiResponse<Void> joinGroup(
             @PathVariable String groupId,
@@ -188,9 +145,6 @@ public class SocialController {
         return ApiResponse.defaultResponse();
     }
 
-    /**
-     * POST /api/social/groups/{groupId}/leave - Rời khỏi nhóm
-     */
     @PostMapping("/groups/{groupId}/leave")
     public ApiResponse<Void> leaveGroup(
             @PathVariable String groupId,
@@ -202,32 +156,30 @@ public class SocialController {
     }
 
     // ============ ACTIVITY FEED ENDPOINTS ============
-    
-    /**
-     * GET /api/social/activities/friends - Xem hoạt động của bạn bè
-     */
+
     @GetMapping("/activities/friends")
-    public PagedResponse<UserActivityResponse> getFriendActivities(
+    public ApiResponse<PagedResponse<UserActivityResponse>> getFriendActivities(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             @RequestHeader("Authorization") String authHeader
     ) {
         String userId = extractUserId(authHeader);
-        return socialService.getFriendActivities(userId, page, size);
+        PagedResponse<UserActivityResponse> response = socialService.getFriendActivities(userId, page, size);
+        return ApiResponse.success(response);
     }
 
-    /**
-     * GET /api/social/activities/me - Xem hoạt động của mình
-     */
     @GetMapping("/activities/me")
-    public PagedResponse<UserActivityResponse> getMyActivities(
+    public ApiResponse<PagedResponse<UserActivityResponse>> getMyActivities(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             @RequestHeader("Authorization") String authHeader
     ) {
         String userId = extractUserId(authHeader);
-        return socialService.getMyActivities(userId, page, size);
+        PagedResponse<UserActivityResponse> response = socialService.getMyActivities(userId, page, size);
+        return ApiResponse.success(response);
     }
+
+    // ============ PRIVATE UTILS ============
 
     private String extractUserId(String authHeader) {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
@@ -237,4 +189,3 @@ public class SocialController {
         throw new IllegalArgumentException("Invalid authorization header");
     }
 }
-

@@ -212,11 +212,16 @@ class _GroupsPageState extends State<GroupsPage> with SingleTickerProviderStateM
     final nameController = TextEditingController();
     final descriptionController = TextEditingController();
     bool isPrivate = false;
+    // Capture the page-level context so we can read providers that are
+    // ancestors of this widget. The dialog's BuildContext can be different
+    // (and may not have access to the same providers), so use `pageContext`
+    // when dispatching bloc events.
+    final pageContext = context;
 
     showDialog(
       context: context,
       builder: (dialogContext) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
+        builder: (innerContext, setState) => AlertDialog(
           title: const Text('Create Group'),
           content: SingleChildScrollView(
             child: Column(
@@ -257,7 +262,9 @@ class _GroupsPageState extends State<GroupsPage> with SingleTickerProviderStateM
             ElevatedButton(
               onPressed: () {
                 if (nameController.text.isNotEmpty) {
-                  context.read<GroupsBloc>().add(
+                  // Use the captured pageContext so the GroupsBloc provider
+                  // (which wraps this page) can be found.
+                  pageContext.read<GroupsBloc>().add(
                         GroupsCreateGroup(
                           name: nameController.text.trim(),
                           description: descriptionController.text.trim().isEmpty
@@ -267,7 +274,7 @@ class _GroupsPageState extends State<GroupsPage> with SingleTickerProviderStateM
                         ),
                       );
                   Navigator.pop(dialogContext);
-                  ScaffoldMessenger.of(context).showSnackBar(
+                  ScaffoldMessenger.of(pageContext).showSnackBar(
                     const SnackBar(
                       content: Text('Group created successfully!'),
                       backgroundColor: Colors.green,
@@ -361,9 +368,7 @@ class _GroupCard extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
-                          color: group.userRole == 'OWNER'
-                              ? Colors.amber
-                              : Colors.blue,
+                          color: group.userRole == 'OWNER' ? Colors.amber : Colors.blue,
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
@@ -410,4 +415,3 @@ class _GroupCard extends StatelessWidget {
     );
   }
 }
-

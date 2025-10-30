@@ -154,60 +154,91 @@ abstract class NetworkDataSource {
   @GET('api/routines/progress/statistics')
   Future<BaseApiResponse<UserRoutineStatistics>> getUserRoutineStatistics();
 
-  // Social APIs - Friends
+// ========== Friends ==========
   @POST('api/social/friends/request')
-  Future<BaseApiResponse<void>> sendFriendRequest(@Query('friendEmail') String friendEmail);
+  Future<BaseApiResponse<void>> sendFriendRequest(
+    @Query('friendEmail') String friendEmail,
+  );
 
   @POST('api/social/friends/accept/{friendshipId}')
-  Future<BaseApiResponse<void>> acceptFriendRequest(@Path('friendshipId') String friendshipId);
+  Future<BaseApiResponse<void>> acceptFriendRequest(
+    @Path('friendshipId') String friendshipId,
+  );
 
   @POST('api/social/friends/reject/{friendshipId}')
-  Future<BaseApiResponse<void>> rejectFriendRequest(@Path('friendshipId') String friendshipId);
+  Future<BaseApiResponse<void>> rejectFriendRequest(
+    @Path('friendshipId') String friendshipId,
+  );
 
   @DELETE('api/social/friends/{friendshipId}')
-  Future<BaseApiResponse<void>> removeFriend(@Path('friendshipId') String friendshipId);
+  Future<BaseApiResponse<void>> removeFriend(
+    @Path('friendshipId') String friendshipId,
+  );
 
   @GET('api/social/friends')
   Future<BaseApiResponse<PageResponse<FriendResponse>>> getFriends(
-      @Query('page') int page, @Query('size') int size);
+    @Query('page') int page,
+    @Query('size') int size,
+  );
 
   @GET('api/social/friends/pending')
   Future<BaseApiResponse<PageResponse<FriendResponse>>> getPendingFriendRequests(
-      @Query('page') int page, @Query('size') int size);
+    @Query('page') int page,
+    @Query('size') int size,
+  );
 
-  // Social APIs - Groups
+// ========== Groups ==========
   @POST('api/social/groups')
-  Future<BaseApiResponse<YogaGroupResponse>> createGroup(@Body() CreateGroupRequest request);
+  Future<BaseApiResponse<YogaGroupResponse>> createGroup(
+    @Body() CreateGroupRequest request,
+  );
 
   @GET('api/social/groups/{id}')
-  Future<BaseApiResponse<YogaGroupResponse>> getGroupById(@Path('id') String id);
+  Future<BaseApiResponse<YogaGroupResponse>> getGroupById(
+    @Path('id') String id,
+  );
 
   @GET('api/social/groups')
   Future<BaseApiResponse<PageResponse<YogaGroupResponse>>> getPublicGroups(
-      @Query('page') int page, @Query('size') int size);
+    @Query('page') int page,
+    @Query('size') int size,
+  );
 
   @GET('api/social/groups/my')
   Future<BaseApiResponse<PageResponse<YogaGroupResponse>>> getMyGroups(
-      @Query('page') int page, @Query('size') int size);
+    @Query('page') int page,
+    @Query('size') int size,
+  );
 
   @GET('api/social/groups/search')
   Future<BaseApiResponse<PageResponse<YogaGroupResponse>>> searchGroups(
-      @Query('keyword') String keyword, @Query('page') int page, @Query('size') int size);
+    @Query('keyword') String keyword,
+    @Query('page') int page,
+    @Query('size') int size,
+  );
 
   @POST('api/social/groups/{groupId}/join')
-  Future<BaseApiResponse<void>> joinGroup(@Path('groupId') String groupId);
+  Future<BaseApiResponse<void>> joinGroup(
+    @Path('groupId') String groupId,
+  );
 
   @POST('api/social/groups/{groupId}/leave')
-  Future<BaseApiResponse<void>> leaveGroup(@Path('groupId') String groupId);
+  Future<BaseApiResponse<void>> leaveGroup(
+    @Path('groupId') String groupId,
+  );
 
-  // Social APIs - Activities
+// ========== Activities ==========
   @GET('api/social/activities/friends')
   Future<BaseApiResponse<PageResponse<UserActivityResponse>>> getFriendActivities(
-      @Query('page') int page, @Query('size') int size);
+    @Query('page') int page,
+    @Query('size') int size,
+  );
 
   @GET('api/social/activities/me')
   Future<BaseApiResponse<PageResponse<UserActivityResponse>>> getMyActivities(
-      @Query('page') int page, @Query('size') int size);
+    @Query('page') int page,
+    @Query('size') int size,
+  );
 
   // Body Progress APIs
   @POST('api/body-progress')

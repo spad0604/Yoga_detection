@@ -7,30 +7,29 @@ part 'body_progress_response.g.dart';
 class BodyProgressResponse with _$BodyProgressResponse {
   const factory BodyProgressResponse({
     required String id,
-    required String userId,
+    @JsonKey(name: 'userId') required String userId,
     // Basic measurements
-    double? weightKg,
-    double? heightCm,
+    @JsonKey(name: 'weightKg') double? weightKg,
+    @JsonKey(name: 'heightCm') double? heightCm,
     double? bmi,
     // Body composition
-    double? bodyFatPercentage,
-    double? muscleMassKg,
-    double? bodyWaterPercentage,
+    @JsonKey(name: 'bodyFatPercentage') double? bodyFatPercentage,
+    @JsonKey(name: 'muscleMassKg') double? muscleMassKg,
+    @JsonKey(name: 'bodyWaterPercentage') double? bodyWaterPercentage,
     // Body measurements (circumferences)
-    double? chestCm,
-    double? waistCm,
-    double? hipCm,
-    double? armCm,
-    double? thighCm,
+    @JsonKey(name: 'chestCm') double? chestCm,
+    @JsonKey(name: 'waistCm') double? waistCm,
+    @JsonKey(name: 'hipCm') double? hipCm,
+    @JsonKey(name: 'armCm') double? armCm,
+    @JsonKey(name: 'thighCm') double? thighCm,
     // Additional info
     String? notes,
-    String? photoUrl,
-    required DateTime recordedAt,
-    DateTime? createdAt,
-    DateTime? updatedAt,
+    @JsonKey(name: 'photoUrl') String? photoUrl,
+    @JsonKey(name: 'recordedAt') required DateTime recordedAt,
+    @JsonKey(name: 'createdAt') DateTime? createdAt,
+    @JsonKey(name: 'updatedAt') DateTime? updatedAt,
   }) = _BodyProgressResponse;
 
   factory BodyProgressResponse.fromJson(Map<String, dynamic> json) =>
       _$BodyProgressResponseFromJson(json);
 }
-

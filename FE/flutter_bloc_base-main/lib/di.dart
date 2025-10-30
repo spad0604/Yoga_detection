@@ -27,7 +27,7 @@ abstract class RegisterModule {
 
   @Named('baseUrl')
   @singleton
-  String get baseUrl => "http://3.107.194.22/";
+  String get baseUrl => "http://3.107.194.22:9090/";
 }
 
 class GlobalBlocProviders extends StatelessWidget {

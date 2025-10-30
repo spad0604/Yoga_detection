@@ -65,8 +65,9 @@ class YogaPosesRepositoryImpl implements YogaPosesRepository {
   Future<PageResponse<UserYogaPoseModel>> getUserYogaPosesByDate(
       int page, DateTime startDate, DateTime endDate) {
     try {
+      // Ensure dates are sent in UTC ISO8601 format with trailing 'Z' as the backend expects
       final res = _networkDataSource.getUserYogaPosesByDate(
-          page, startDate.toIso8601String(), endDate.toIso8601String());
+          page, startDate.toUtc().toIso8601String(), endDate.toUtc().toIso8601String());
       return res.then((value) {
         if (value.code == 200 && value.data != null) {
           return value.data!;

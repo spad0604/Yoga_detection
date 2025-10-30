@@ -85,6 +85,9 @@ class _MyBodyPageState extends State<MyBodyPage> {
             );
           }
 
+          // Show all progress records; display 0 for null numeric fields
+          final visibleProgress = state.bodyProgressList;
+
           return RefreshIndicator(
             onRefresh: () async {
               context.read<MyBodyBloc>().add(const MyBodyRefreshRequested());
@@ -95,16 +98,15 @@ class _MyBodyPageState extends State<MyBodyPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Latest Progress Card
-                  if (state.latestProgress != null)
-                    _buildLatestProgressCard(state.latestProgress!),
-                  
+                  if (state.latestProgress != null) _buildLatestProgressCard(state.latestProgress!),
+
                   if (state.latestProgress != null) const SizedBox(height: 24),
-                  
+
                   // Add New Record Button
                   _buildAddButton(context),
-                  
+
                   const SizedBox(height: 24),
-                  
+
                   // History Section
                   const Text(
                     'History',
@@ -115,11 +117,11 @@ class _MyBodyPageState extends State<MyBodyPage> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  
-                  if (state.bodyProgressList.isEmpty)
+
+                  if (visibleProgress.isEmpty)
                     _buildEmptyState()
                   else
-                    ...state.bodyProgressList.map((progress) => Padding(
+                    ...visibleProgress.map((progress) => Padding(
                           padding: const EdgeInsets.only(bottom: 12),
                           child: _buildProgressCard(progress),
                         )),
@@ -197,27 +199,25 @@ class _MyBodyPageState extends State<MyBodyPage> {
             children: [
               _buildStatItem(
                 'Weight',
-                progress.weightKg != null ? '${progress.weightKg!.toStringAsFixed(1)} kg' : 'N/A',
+                '${(progress.weightKg ?? 0.0).toStringAsFixed(1)} kg',
                 Icons.monitor_weight,
               ),
               const SizedBox(width: 16),
               _buildStatItem(
                 'BMI',
-                progress.bmi != null ? progress.bmi!.toStringAsFixed(1) : 'N/A',
+                (progress.bmi ?? 0.0).toStringAsFixed(1),
                 Icons.height,
               ),
             ],
           ),
-          if (progress.heightCm != null) ...[
-            const SizedBox(height: 12),
-            Text(
-              'Height: ${progress.heightCm!.toStringAsFixed(1)} cm',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.white.withOpacity(0.9),
-              ),
+          const SizedBox(height: 12),
+          Text(
+            'Height: ${(progress.heightCm ?? 0.0).toStringAsFixed(1)} cm',
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.white.withOpacity(0.9),
             ),
-          ],
+          ),
         ],
       ),
     );
@@ -371,34 +371,31 @@ class _MyBodyPageState extends State<MyBodyPage> {
             ],
           ),
           const SizedBox(height: 12),
-          if (progress.weightKg != null || progress.heightCm != null || progress.bmi != null)
-            Wrap(
-              spacing: 12,
-              runSpacing: 8,
-              children: [
-                if (progress.weightKg != null)
-                  _buildMeasurementChip('Weight', '${progress.weightKg!.toStringAsFixed(1)} kg', Icons.monitor_weight),
-                if (progress.heightCm != null)
-                  _buildMeasurementChip('Height', '${progress.heightCm!.toStringAsFixed(1)} cm', Icons.height),
-                if (progress.bmi != null)
-                  _buildMeasurementChip('BMI', progress.bmi!.toStringAsFixed(1), Icons.analytics),
-              ],
-            ),
-          if (progress.waistCm != null || progress.chestCm != null || progress.hipCm != null) ...[
-            const SizedBox(height: 12),
-            Wrap(
-              spacing: 12,
-              runSpacing: 8,
-              children: [
-                if (progress.waistCm != null)
-                  _buildMeasurementChip('Waist', '${progress.waistCm!.toStringAsFixed(1)} cm', Icons.straighten),
-                if (progress.chestCm != null)
-                  _buildMeasurementChip('Chest', '${progress.chestCm!.toStringAsFixed(1)} cm', Icons.accessibility_new),
-                if (progress.hipCm != null)
-                  _buildMeasurementChip('Hip', '${progress.hipCm!.toStringAsFixed(1)} cm', Icons.accessibility_new),
-              ],
-            ),
-          ],
+          Wrap(
+            spacing: 12,
+            runSpacing: 8,
+            children: [
+              _buildMeasurementChip('Weight', '${(progress.weightKg ?? 0.0).toStringAsFixed(1)} kg',
+                  Icons.monitor_weight),
+              _buildMeasurementChip(
+                  'Height', '${(progress.heightCm ?? 0.0).toStringAsFixed(1)} cm', Icons.height),
+              _buildMeasurementChip(
+                  'BMI', (progress.bmi ?? 0.0).toStringAsFixed(1), Icons.analytics),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 12,
+            runSpacing: 8,
+            children: [
+              _buildMeasurementChip(
+                  'Waist', '${(progress.waistCm ?? 0.0).toStringAsFixed(1)} cm', Icons.straighten),
+              _buildMeasurementChip('Chest', '${(progress.chestCm ?? 0.0).toStringAsFixed(1)} cm',
+                  Icons.accessibility_new),
+              _buildMeasurementChip('Hip', '${(progress.hipCm ?? 0.0).toStringAsFixed(1)} cm',
+                  Icons.accessibility_new),
+            ],
+          ),
           if (progress.notes != null && progress.notes!.isNotEmpty) ...[
             const SizedBox(height: 12),
             Container(
@@ -658,7 +655,8 @@ class _MyBodyPageState extends State<MyBodyPage> {
                                 hipCm: hipController.text.isNotEmpty
                                     ? double.tryParse(hipController.text)
                                     : null,
-                                notes: notesController.text.isNotEmpty ? notesController.text : null,
+                                notes:
+                                    notesController.text.isNotEmpty ? notesController.text : null,
                                 recordedAt: DateTime.now(),
                               );
                               context.read<MyBodyBloc>().add(MyBodyCreateRequested(request));
@@ -761,4 +759,3 @@ class _MyBodyPageState extends State<MyBodyPage> {
     );
   }
 }
-

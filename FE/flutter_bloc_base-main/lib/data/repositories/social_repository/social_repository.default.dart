@@ -84,10 +84,16 @@ class SocialRepositoryImpl implements SocialRepository {
       if (res.code == 200 && res.data != null) {
         return res.data!;
       } else {
-        throw Exception('Failed to load pending requests');
+        // Log full response for easier debugging when server returns unexpected shape
+        print('getPendingFriendRequests: unexpected response. code=${res.code}, data=${res.data}');
+        throw Exception('Failed to load pending requests: unexpected response');
       }
-    } catch (e) {
-      throw Exception('Failed to load pending requests: $e');
+    } catch (e, st) {
+      // Print full error and stacktrace so you can see which field or parsing step failed
+      print('getPendingFriendRequests failed: $e');
+      print(st);
+      // Re-throw the original error so calling code can inspect the real exception type
+      rethrow;
     }
   }
 
@@ -213,4 +219,3 @@ class SocialRepositoryImpl implements SocialRepository {
     }
   }
 }
-

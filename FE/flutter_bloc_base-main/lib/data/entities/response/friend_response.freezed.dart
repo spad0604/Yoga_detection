@@ -20,16 +20,24 @@ FriendResponse _$FriendResponseFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$FriendResponse {
+  @JsonKey(name: 'friendshipId')
   String get friendshipId => throw _privateConstructorUsedError;
+  @JsonKey(name: 'userId')
   String get userId => throw _privateConstructorUsedError;
   String get username => throw _privateConstructorUsedError;
   String get email => throw _privateConstructorUsedError;
+  @JsonKey(name: 'avatarUrl')
   String? get avatarUrl => throw _privateConstructorUsedError;
-  String get status => throw _privateConstructorUsedError;
+  String? get status => throw _privateConstructorUsedError;
+  @JsonKey(name: 'friendsSince')
   DateTime? get friendsSince => throw _privateConstructorUsedError;
+  @JsonKey(name: 'totalPosesCompleted')
   int? get totalPosesCompleted => throw _privateConstructorUsedError;
+  @JsonKey(name: 'totalRoutinesCompleted')
   int? get totalRoutinesCompleted => throw _privateConstructorUsedError;
+  @JsonKey(name: 'averageScore')
   double? get averageScore => throw _privateConstructorUsedError;
+  @JsonKey(name: 'currentStreak')
   int? get currentStreak => throw _privateConstructorUsedError;
 
   /// Serializes this FriendResponse to a JSON map.
@@ -49,17 +57,17 @@ abstract class $FriendResponseCopyWith<$Res> {
       _$FriendResponseCopyWithImpl<$Res, FriendResponse>;
   @useResult
   $Res call(
-      {String friendshipId,
-      String userId,
+      {@JsonKey(name: 'friendshipId') String friendshipId,
+      @JsonKey(name: 'userId') String userId,
       String username,
       String email,
-      String? avatarUrl,
-      String status,
-      DateTime? friendsSince,
-      int? totalPosesCompleted,
-      int? totalRoutinesCompleted,
-      double? averageScore,
-      int? currentStreak});
+      @JsonKey(name: 'avatarUrl') String? avatarUrl,
+      String? status,
+      @JsonKey(name: 'friendsSince') DateTime? friendsSince,
+      @JsonKey(name: 'totalPosesCompleted') int? totalPosesCompleted,
+      @JsonKey(name: 'totalRoutinesCompleted') int? totalRoutinesCompleted,
+      @JsonKey(name: 'averageScore') double? averageScore,
+      @JsonKey(name: 'currentStreak') int? currentStreak});
 }
 
 /// @nodoc
@@ -82,7 +90,7 @@ class _$FriendResponseCopyWithImpl<$Res, $Val extends FriendResponse>
     Object? username = null,
     Object? email = null,
     Object? avatarUrl = freezed,
-    Object? status = null,
+    Object? status = freezed,
     Object? friendsSince = freezed,
     Object? totalPosesCompleted = freezed,
     Object? totalRoutinesCompleted = freezed,
@@ -110,10 +118,10 @@ class _$FriendResponseCopyWithImpl<$Res, $Val extends FriendResponse>
           ? _value.avatarUrl
           : avatarUrl // ignore: cast_nullable_to_non_nullable
               as String?,
-      status: null == status
+      status: freezed == status
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       friendsSince: freezed == friendsSince
           ? _value.friendsSince
           : friendsSince // ignore: cast_nullable_to_non_nullable
@@ -147,17 +155,17 @@ abstract class _$$FriendResponseImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String friendshipId,
-      String userId,
+      {@JsonKey(name: 'friendshipId') String friendshipId,
+      @JsonKey(name: 'userId') String userId,
       String username,
       String email,
-      String? avatarUrl,
-      String status,
-      DateTime? friendsSince,
-      int? totalPosesCompleted,
-      int? totalRoutinesCompleted,
-      double? averageScore,
-      int? currentStreak});
+      @JsonKey(name: 'avatarUrl') String? avatarUrl,
+      String? status,
+      @JsonKey(name: 'friendsSince') DateTime? friendsSince,
+      @JsonKey(name: 'totalPosesCompleted') int? totalPosesCompleted,
+      @JsonKey(name: 'totalRoutinesCompleted') int? totalRoutinesCompleted,
+      @JsonKey(name: 'averageScore') double? averageScore,
+      @JsonKey(name: 'currentStreak') int? currentStreak});
 }
 
 /// @nodoc
@@ -178,7 +186,7 @@ class __$$FriendResponseImplCopyWithImpl<$Res>
     Object? username = null,
     Object? email = null,
     Object? avatarUrl = freezed,
-    Object? status = null,
+    Object? status = freezed,
     Object? friendsSince = freezed,
     Object? totalPosesCompleted = freezed,
     Object? totalRoutinesCompleted = freezed,
@@ -206,10 +214,10 @@ class __$$FriendResponseImplCopyWithImpl<$Res>
           ? _value.avatarUrl
           : avatarUrl // ignore: cast_nullable_to_non_nullable
               as String?,
-      status: null == status
+      status: freezed == status
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       friendsSince: freezed == friendsSince
           ? _value.friendsSince
           : friendsSince // ignore: cast_nullable_to_non_nullable
@@ -238,42 +246,50 @@ class __$$FriendResponseImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$FriendResponseImpl implements _FriendResponse {
   const _$FriendResponseImpl(
-      {required this.friendshipId,
-      required this.userId,
+      {@JsonKey(name: 'friendshipId') required this.friendshipId,
+      @JsonKey(name: 'userId') required this.userId,
       required this.username,
       required this.email,
-      this.avatarUrl,
-      required this.status,
-      this.friendsSince,
-      this.totalPosesCompleted,
-      this.totalRoutinesCompleted,
-      this.averageScore,
-      this.currentStreak});
+      @JsonKey(name: 'avatarUrl') this.avatarUrl,
+      this.status,
+      @JsonKey(name: 'friendsSince') this.friendsSince,
+      @JsonKey(name: 'totalPosesCompleted') this.totalPosesCompleted,
+      @JsonKey(name: 'totalRoutinesCompleted') this.totalRoutinesCompleted,
+      @JsonKey(name: 'averageScore') this.averageScore,
+      @JsonKey(name: 'currentStreak') this.currentStreak});
 
   factory _$FriendResponseImpl.fromJson(Map<String, dynamic> json) =>
       _$$FriendResponseImplFromJson(json);
 
   @override
+  @JsonKey(name: 'friendshipId')
   final String friendshipId;
   @override
+  @JsonKey(name: 'userId')
   final String userId;
   @override
   final String username;
   @override
   final String email;
   @override
+  @JsonKey(name: 'avatarUrl')
   final String? avatarUrl;
   @override
-  final String status;
+  final String? status;
   @override
+  @JsonKey(name: 'friendsSince')
   final DateTime? friendsSince;
   @override
+  @JsonKey(name: 'totalPosesCompleted')
   final int? totalPosesCompleted;
   @override
+  @JsonKey(name: 'totalRoutinesCompleted')
   final int? totalRoutinesCompleted;
   @override
+  @JsonKey(name: 'averageScore')
   final double? averageScore;
   @override
+  @JsonKey(name: 'currentStreak')
   final int? currentStreak;
 
   @override
@@ -342,42 +358,52 @@ class _$FriendResponseImpl implements _FriendResponse {
 
 abstract class _FriendResponse implements FriendResponse {
   const factory _FriendResponse(
-      {required final String friendshipId,
-      required final String userId,
-      required final String username,
-      required final String email,
-      final String? avatarUrl,
-      required final String status,
-      final DateTime? friendsSince,
-      final int? totalPosesCompleted,
-      final int? totalRoutinesCompleted,
-      final double? averageScore,
-      final int? currentStreak}) = _$FriendResponseImpl;
+          {@JsonKey(name: 'friendshipId') required final String friendshipId,
+          @JsonKey(name: 'userId') required final String userId,
+          required final String username,
+          required final String email,
+          @JsonKey(name: 'avatarUrl') final String? avatarUrl,
+          final String? status,
+          @JsonKey(name: 'friendsSince') final DateTime? friendsSince,
+          @JsonKey(name: 'totalPosesCompleted') final int? totalPosesCompleted,
+          @JsonKey(name: 'totalRoutinesCompleted')
+          final int? totalRoutinesCompleted,
+          @JsonKey(name: 'averageScore') final double? averageScore,
+          @JsonKey(name: 'currentStreak') final int? currentStreak}) =
+      _$FriendResponseImpl;
 
   factory _FriendResponse.fromJson(Map<String, dynamic> json) =
       _$FriendResponseImpl.fromJson;
 
   @override
+  @JsonKey(name: 'friendshipId')
   String get friendshipId;
   @override
+  @JsonKey(name: 'userId')
   String get userId;
   @override
   String get username;
   @override
   String get email;
   @override
+  @JsonKey(name: 'avatarUrl')
   String? get avatarUrl;
   @override
-  String get status;
+  String? get status;
   @override
+  @JsonKey(name: 'friendsSince')
   DateTime? get friendsSince;
   @override
+  @JsonKey(name: 'totalPosesCompleted')
   int? get totalPosesCompleted;
   @override
+  @JsonKey(name: 'totalRoutinesCompleted')
   int? get totalRoutinesCompleted;
   @override
+  @JsonKey(name: 'averageScore')
   double? get averageScore;
   @override
+  @JsonKey(name: 'currentStreak')
   int? get currentStreak;
 
   /// Create a copy of FriendResponse
