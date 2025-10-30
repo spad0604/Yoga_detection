@@ -70,6 +70,7 @@ public class SecurityConfig {
                     .requestMatchers("/api/password/update-password").permitAll()
                     .requestMatchers("/api/password/reset").permitAll()
                     .requestMatchers("/api/yoga-poses/**").permitAll()
+                    .requestMatchers("/api/routines/**").permitAll()
                     .requestMatchers("/api/user/**").permitAll()
                     .requestMatchers("/swagger-ui/**").permitAll()
                     .requestMatchers("/swagger-ui.html").permitAll()

@@ -20,20 +20,34 @@ YogaRoutine _$YogaRoutineFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$YogaRoutine {
+  @JsonKey(name: 'id')
   String get id => throw _privateConstructorUsedError;
+  @JsonKey(name: 'name')
   String get name => throw _privateConstructorUsedError;
+  @JsonKey(name: 'description')
   String? get description => throw _privateConstructorUsedError;
+  @JsonKey(name: 'level')
   String? get level => throw _privateConstructorUsedError;
+  @JsonKey(name: 'durationMinutes')
   int? get durationMinutes => throw _privateConstructorUsedError;
+  @JsonKey(name: 'estimatedCalories')
   int? get estimatedCalories => throw _privateConstructorUsedError;
+  @JsonKey(name: 'imageUrl')
   String? get imageUrl => throw _privateConstructorUsedError;
+  @JsonKey(name: 'tags')
   List<String>? get tags => throw _privateConstructorUsedError;
+  @JsonKey(name: 'isPremium')
   bool get isPremium => throw _privateConstructorUsedError;
+  @JsonKey(name: 'totalPoses')
   int? get totalPoses => throw _privateConstructorUsedError;
+  @JsonKey(name: 'poses')
   List<RoutinePose>? get poses => throw _privateConstructorUsedError;
+  @JsonKey(name: 'userProgress')
   UserRoutineProgressInfo? get userProgress =>
       throw _privateConstructorUsedError;
+  @JsonKey(name: 'createdAt')
   DateTime? get createdAt => throw _privateConstructorUsedError;
+  @JsonKey(name: 'updatedAt')
   DateTime? get updatedAt => throw _privateConstructorUsedError;
 
   /// Serializes this YogaRoutine to a JSON map.
@@ -53,20 +67,20 @@ abstract class $YogaRoutineCopyWith<$Res> {
       _$YogaRoutineCopyWithImpl<$Res, YogaRoutine>;
   @useResult
   $Res call(
-      {String id,
-      String name,
-      String? description,
-      String? level,
-      int? durationMinutes,
-      int? estimatedCalories,
-      String? imageUrl,
-      List<String>? tags,
-      bool isPremium,
-      int? totalPoses,
-      List<RoutinePose>? poses,
-      UserRoutineProgressInfo? userProgress,
-      DateTime? createdAt,
-      DateTime? updatedAt});
+      {@JsonKey(name: 'id') String id,
+      @JsonKey(name: 'name') String name,
+      @JsonKey(name: 'description') String? description,
+      @JsonKey(name: 'level') String? level,
+      @JsonKey(name: 'durationMinutes') int? durationMinutes,
+      @JsonKey(name: 'estimatedCalories') int? estimatedCalories,
+      @JsonKey(name: 'imageUrl') String? imageUrl,
+      @JsonKey(name: 'tags') List<String>? tags,
+      @JsonKey(name: 'isPremium') bool isPremium,
+      @JsonKey(name: 'totalPoses') int? totalPoses,
+      @JsonKey(name: 'poses') List<RoutinePose>? poses,
+      @JsonKey(name: 'userProgress') UserRoutineProgressInfo? userProgress,
+      @JsonKey(name: 'createdAt') DateTime? createdAt,
+      @JsonKey(name: 'updatedAt') DateTime? updatedAt});
 
   $UserRoutineProgressInfoCopyWith<$Res>? get userProgress;
 }
@@ -186,20 +200,20 @@ abstract class _$$YogaRoutineImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String id,
-      String name,
-      String? description,
-      String? level,
-      int? durationMinutes,
-      int? estimatedCalories,
-      String? imageUrl,
-      List<String>? tags,
-      bool isPremium,
-      int? totalPoses,
-      List<RoutinePose>? poses,
-      UserRoutineProgressInfo? userProgress,
-      DateTime? createdAt,
-      DateTime? updatedAt});
+      {@JsonKey(name: 'id') String id,
+      @JsonKey(name: 'name') String name,
+      @JsonKey(name: 'description') String? description,
+      @JsonKey(name: 'level') String? level,
+      @JsonKey(name: 'durationMinutes') int? durationMinutes,
+      @JsonKey(name: 'estimatedCalories') int? estimatedCalories,
+      @JsonKey(name: 'imageUrl') String? imageUrl,
+      @JsonKey(name: 'tags') List<String>? tags,
+      @JsonKey(name: 'isPremium') bool isPremium,
+      @JsonKey(name: 'totalPoses') int? totalPoses,
+      @JsonKey(name: 'poses') List<RoutinePose>? poses,
+      @JsonKey(name: 'userProgress') UserRoutineProgressInfo? userProgress,
+      @JsonKey(name: 'createdAt') DateTime? createdAt,
+      @JsonKey(name: 'updatedAt') DateTime? updatedAt});
 
   @override
   $UserRoutineProgressInfoCopyWith<$Res>? get userProgress;
@@ -298,20 +312,20 @@ class __$$YogaRoutineImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$YogaRoutineImpl implements _YogaRoutine {
   const _$YogaRoutineImpl(
-      {required this.id,
-      required this.name,
-      this.description,
-      this.level,
-      this.durationMinutes,
-      this.estimatedCalories,
-      this.imageUrl,
-      final List<String>? tags,
-      this.isPremium = false,
-      this.totalPoses,
-      final List<RoutinePose>? poses,
-      this.userProgress,
-      this.createdAt,
-      this.updatedAt})
+      {@JsonKey(name: 'id') required this.id,
+      @JsonKey(name: 'name') required this.name,
+      @JsonKey(name: 'description') this.description,
+      @JsonKey(name: 'level') this.level,
+      @JsonKey(name: 'durationMinutes') this.durationMinutes,
+      @JsonKey(name: 'estimatedCalories') this.estimatedCalories,
+      @JsonKey(name: 'imageUrl') this.imageUrl,
+      @JsonKey(name: 'tags') final List<String>? tags,
+      @JsonKey(name: 'isPremium') this.isPremium = false,
+      @JsonKey(name: 'totalPoses') this.totalPoses,
+      @JsonKey(name: 'poses') final List<RoutinePose>? poses,
+      @JsonKey(name: 'userProgress') this.userProgress,
+      @JsonKey(name: 'createdAt') this.createdAt,
+      @JsonKey(name: 'updatedAt') this.updatedAt})
       : _tags = tags,
         _poses = poses;
 
@@ -319,21 +333,29 @@ class _$YogaRoutineImpl implements _YogaRoutine {
       _$$YogaRoutineImplFromJson(json);
 
   @override
+  @JsonKey(name: 'id')
   final String id;
   @override
+  @JsonKey(name: 'name')
   final String name;
   @override
+  @JsonKey(name: 'description')
   final String? description;
   @override
+  @JsonKey(name: 'level')
   final String? level;
   @override
+  @JsonKey(name: 'durationMinutes')
   final int? durationMinutes;
   @override
+  @JsonKey(name: 'estimatedCalories')
   final int? estimatedCalories;
   @override
+  @JsonKey(name: 'imageUrl')
   final String? imageUrl;
   final List<String>? _tags;
   @override
+  @JsonKey(name: 'tags')
   List<String>? get tags {
     final value = _tags;
     if (value == null) return null;
@@ -343,12 +365,14 @@ class _$YogaRoutineImpl implements _YogaRoutine {
   }
 
   @override
-  @JsonKey()
+  @JsonKey(name: 'isPremium')
   final bool isPremium;
   @override
+  @JsonKey(name: 'totalPoses')
   final int? totalPoses;
   final List<RoutinePose>? _poses;
   @override
+  @JsonKey(name: 'poses')
   List<RoutinePose>? get poses {
     final value = _poses;
     if (value == null) return null;
@@ -358,10 +382,13 @@ class _$YogaRoutineImpl implements _YogaRoutine {
   }
 
   @override
+  @JsonKey(name: 'userProgress')
   final UserRoutineProgressInfo? userProgress;
   @override
+  @JsonKey(name: 'createdAt')
   final DateTime? createdAt;
   @override
+  @JsonKey(name: 'updatedAt')
   final DateTime? updatedAt;
 
   @override
@@ -436,51 +463,67 @@ class _$YogaRoutineImpl implements _YogaRoutine {
 
 abstract class _YogaRoutine implements YogaRoutine {
   const factory _YogaRoutine(
-      {required final String id,
-      required final String name,
-      final String? description,
-      final String? level,
-      final int? durationMinutes,
-      final int? estimatedCalories,
-      final String? imageUrl,
-      final List<String>? tags,
-      final bool isPremium,
-      final int? totalPoses,
-      final List<RoutinePose>? poses,
-      final UserRoutineProgressInfo? userProgress,
-      final DateTime? createdAt,
-      final DateTime? updatedAt}) = _$YogaRoutineImpl;
+          {@JsonKey(name: 'id') required final String id,
+          @JsonKey(name: 'name') required final String name,
+          @JsonKey(name: 'description') final String? description,
+          @JsonKey(name: 'level') final String? level,
+          @JsonKey(name: 'durationMinutes') final int? durationMinutes,
+          @JsonKey(name: 'estimatedCalories') final int? estimatedCalories,
+          @JsonKey(name: 'imageUrl') final String? imageUrl,
+          @JsonKey(name: 'tags') final List<String>? tags,
+          @JsonKey(name: 'isPremium') final bool isPremium,
+          @JsonKey(name: 'totalPoses') final int? totalPoses,
+          @JsonKey(name: 'poses') final List<RoutinePose>? poses,
+          @JsonKey(name: 'userProgress')
+          final UserRoutineProgressInfo? userProgress,
+          @JsonKey(name: 'createdAt') final DateTime? createdAt,
+          @JsonKey(name: 'updatedAt') final DateTime? updatedAt}) =
+      _$YogaRoutineImpl;
 
   factory _YogaRoutine.fromJson(Map<String, dynamic> json) =
       _$YogaRoutineImpl.fromJson;
 
   @override
+  @JsonKey(name: 'id')
   String get id;
   @override
+  @JsonKey(name: 'name')
   String get name;
   @override
+  @JsonKey(name: 'description')
   String? get description;
   @override
+  @JsonKey(name: 'level')
   String? get level;
   @override
+  @JsonKey(name: 'durationMinutes')
   int? get durationMinutes;
   @override
+  @JsonKey(name: 'estimatedCalories')
   int? get estimatedCalories;
   @override
+  @JsonKey(name: 'imageUrl')
   String? get imageUrl;
   @override
+  @JsonKey(name: 'tags')
   List<String>? get tags;
   @override
+  @JsonKey(name: 'isPremium')
   bool get isPremium;
   @override
+  @JsonKey(name: 'totalPoses')
   int? get totalPoses;
   @override
+  @JsonKey(name: 'poses')
   List<RoutinePose>? get poses;
   @override
+  @JsonKey(name: 'userProgress')
   UserRoutineProgressInfo? get userProgress;
   @override
+  @JsonKey(name: 'createdAt')
   DateTime? get createdAt;
   @override
+  @JsonKey(name: 'updatedAt')
   DateTime? get updatedAt;
 
   /// Create a copy of YogaRoutine
@@ -497,12 +540,19 @@ RoutinePose _$RoutinePoseFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$RoutinePose {
+  @JsonKey(name: 'id')
   String get id => throw _privateConstructorUsedError;
+  @JsonKey(name: 'poseCode')
   String get poseCode => throw _privateConstructorUsedError;
+  @JsonKey(name: 'poseName')
   String? get poseName => throw _privateConstructorUsedError;
+  @JsonKey(name: 'orderIndex')
   int get orderIndex => throw _privateConstructorUsedError;
+  @JsonKey(name: 'durationSeconds')
   int? get durationSeconds => throw _privateConstructorUsedError;
+  @JsonKey(name: 'repetitions')
   int get repetitions => throw _privateConstructorUsedError;
+  @JsonKey(name: 'restAfterSeconds')
   int get restAfterSeconds => throw _privateConstructorUsedError;
   String? get instructions => throw _privateConstructorUsedError;
   String? get poseImageUrl => throw _privateConstructorUsedError;
@@ -525,13 +575,13 @@ abstract class $RoutinePoseCopyWith<$Res> {
       _$RoutinePoseCopyWithImpl<$Res, RoutinePose>;
   @useResult
   $Res call(
-      {String id,
-      String poseCode,
-      String? poseName,
-      int orderIndex,
-      int? durationSeconds,
-      int repetitions,
-      int restAfterSeconds,
+      {@JsonKey(name: 'id') String id,
+      @JsonKey(name: 'poseCode') String poseCode,
+      @JsonKey(name: 'poseName') String? poseName,
+      @JsonKey(name: 'orderIndex') int orderIndex,
+      @JsonKey(name: 'durationSeconds') int? durationSeconds,
+      @JsonKey(name: 'repetitions') int repetitions,
+      @JsonKey(name: 'restAfterSeconds') int restAfterSeconds,
       String? instructions,
       String? poseImageUrl,
       String? poseDescription});
@@ -617,13 +667,13 @@ abstract class _$$RoutinePoseImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String id,
-      String poseCode,
-      String? poseName,
-      int orderIndex,
-      int? durationSeconds,
-      int repetitions,
-      int restAfterSeconds,
+      {@JsonKey(name: 'id') String id,
+      @JsonKey(name: 'poseCode') String poseCode,
+      @JsonKey(name: 'poseName') String? poseName,
+      @JsonKey(name: 'orderIndex') int orderIndex,
+      @JsonKey(name: 'durationSeconds') int? durationSeconds,
+      @JsonKey(name: 'repetitions') int repetitions,
+      @JsonKey(name: 'restAfterSeconds') int restAfterSeconds,
       String? instructions,
       String? poseImageUrl,
       String? poseDescription});
@@ -702,13 +752,13 @@ class __$$RoutinePoseImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$RoutinePoseImpl implements _RoutinePose {
   const _$RoutinePoseImpl(
-      {required this.id,
-      required this.poseCode,
-      this.poseName,
-      required this.orderIndex,
-      this.durationSeconds,
-      this.repetitions = 1,
-      this.restAfterSeconds = 5,
+      {@JsonKey(name: 'id') required this.id,
+      @JsonKey(name: 'poseCode') required this.poseCode,
+      @JsonKey(name: 'poseName') this.poseName,
+      @JsonKey(name: 'orderIndex') required this.orderIndex,
+      @JsonKey(name: 'durationSeconds') this.durationSeconds,
+      @JsonKey(name: 'repetitions') this.repetitions = 1,
+      @JsonKey(name: 'restAfterSeconds') this.restAfterSeconds = 5,
       this.instructions,
       this.poseImageUrl,
       this.poseDescription});
@@ -717,20 +767,25 @@ class _$RoutinePoseImpl implements _RoutinePose {
       _$$RoutinePoseImplFromJson(json);
 
   @override
+  @JsonKey(name: 'id')
   final String id;
   @override
+  @JsonKey(name: 'poseCode')
   final String poseCode;
   @override
+  @JsonKey(name: 'poseName')
   final String? poseName;
   @override
+  @JsonKey(name: 'orderIndex')
   final int orderIndex;
   @override
+  @JsonKey(name: 'durationSeconds')
   final int? durationSeconds;
   @override
-  @JsonKey()
+  @JsonKey(name: 'repetitions')
   final int repetitions;
   @override
-  @JsonKey()
+  @JsonKey(name: 'restAfterSeconds')
   final int restAfterSeconds;
   @override
   final String? instructions;
@@ -803,13 +858,13 @@ class _$RoutinePoseImpl implements _RoutinePose {
 
 abstract class _RoutinePose implements RoutinePose {
   const factory _RoutinePose(
-      {required final String id,
-      required final String poseCode,
-      final String? poseName,
-      required final int orderIndex,
-      final int? durationSeconds,
-      final int repetitions,
-      final int restAfterSeconds,
+      {@JsonKey(name: 'id') required final String id,
+      @JsonKey(name: 'poseCode') required final String poseCode,
+      @JsonKey(name: 'poseName') final String? poseName,
+      @JsonKey(name: 'orderIndex') required final int orderIndex,
+      @JsonKey(name: 'durationSeconds') final int? durationSeconds,
+      @JsonKey(name: 'repetitions') final int repetitions,
+      @JsonKey(name: 'restAfterSeconds') final int restAfterSeconds,
       final String? instructions,
       final String? poseImageUrl,
       final String? poseDescription}) = _$RoutinePoseImpl;
@@ -818,18 +873,25 @@ abstract class _RoutinePose implements RoutinePose {
       _$RoutinePoseImpl.fromJson;
 
   @override
+  @JsonKey(name: 'id')
   String get id;
   @override
+  @JsonKey(name: 'poseCode')
   String get poseCode;
   @override
+  @JsonKey(name: 'poseName')
   String? get poseName;
   @override
+  @JsonKey(name: 'orderIndex')
   int get orderIndex;
   @override
+  @JsonKey(name: 'durationSeconds')
   int? get durationSeconds;
   @override
+  @JsonKey(name: 'repetitions')
   int get repetitions;
   @override
+  @JsonKey(name: 'restAfterSeconds')
   int get restAfterSeconds;
   @override
   String? get instructions;
@@ -853,10 +915,15 @@ UserRoutineProgressInfo _$UserRoutineProgressInfoFromJson(
 
 /// @nodoc
 mixin _$UserRoutineProgressInfo {
+  @JsonKey(name: 'completionPercentage')
   double get completionPercentage => throw _privateConstructorUsedError;
+  @JsonKey(name: 'isCompleted')
   bool get isCompleted => throw _privateConstructorUsedError;
+  @JsonKey(name: 'currentPoseIndex')
   int get currentPoseIndex => throw _privateConstructorUsedError;
+  @JsonKey(name: 'lastPracticedAt')
   DateTime? get lastPracticedAt => throw _privateConstructorUsedError;
+  @JsonKey(name: 'averageScore')
   double? get averageScore => throw _privateConstructorUsedError;
 
   /// Serializes this UserRoutineProgressInfo to a JSON map.
@@ -876,11 +943,11 @@ abstract class $UserRoutineProgressInfoCopyWith<$Res> {
       _$UserRoutineProgressInfoCopyWithImpl<$Res, UserRoutineProgressInfo>;
   @useResult
   $Res call(
-      {double completionPercentage,
-      bool isCompleted,
-      int currentPoseIndex,
-      DateTime? lastPracticedAt,
-      double? averageScore});
+      {@JsonKey(name: 'completionPercentage') double completionPercentage,
+      @JsonKey(name: 'isCompleted') bool isCompleted,
+      @JsonKey(name: 'currentPoseIndex') int currentPoseIndex,
+      @JsonKey(name: 'lastPracticedAt') DateTime? lastPracticedAt,
+      @JsonKey(name: 'averageScore') double? averageScore});
 }
 
 /// @nodoc
@@ -940,11 +1007,11 @@ abstract class _$$UserRoutineProgressInfoImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {double completionPercentage,
-      bool isCompleted,
-      int currentPoseIndex,
-      DateTime? lastPracticedAt,
-      double? averageScore});
+      {@JsonKey(name: 'completionPercentage') double completionPercentage,
+      @JsonKey(name: 'isCompleted') bool isCompleted,
+      @JsonKey(name: 'currentPoseIndex') int currentPoseIndex,
+      @JsonKey(name: 'lastPracticedAt') DateTime? lastPracticedAt,
+      @JsonKey(name: 'averageScore') double? averageScore});
 }
 
 /// @nodoc
@@ -997,27 +1064,29 @@ class __$$UserRoutineProgressInfoImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$UserRoutineProgressInfoImpl implements _UserRoutineProgressInfo {
   const _$UserRoutineProgressInfoImpl(
-      {this.completionPercentage = 0.0,
-      this.isCompleted = false,
-      this.currentPoseIndex = 0,
-      this.lastPracticedAt,
-      this.averageScore});
+      {@JsonKey(name: 'completionPercentage') this.completionPercentage = 0.0,
+      @JsonKey(name: 'isCompleted') this.isCompleted = false,
+      @JsonKey(name: 'currentPoseIndex') this.currentPoseIndex = 0,
+      @JsonKey(name: 'lastPracticedAt') this.lastPracticedAt,
+      @JsonKey(name: 'averageScore') this.averageScore});
 
   factory _$UserRoutineProgressInfoImpl.fromJson(Map<String, dynamic> json) =>
       _$$UserRoutineProgressInfoImplFromJson(json);
 
   @override
-  @JsonKey()
+  @JsonKey(name: 'completionPercentage')
   final double completionPercentage;
   @override
-  @JsonKey()
+  @JsonKey(name: 'isCompleted')
   final bool isCompleted;
   @override
-  @JsonKey()
+  @JsonKey(name: 'currentPoseIndex')
   final int currentPoseIndex;
   @override
+  @JsonKey(name: 'lastPracticedAt')
   final DateTime? lastPracticedAt;
   @override
+  @JsonKey(name: 'averageScore')
   final double? averageScore;
 
   @override
@@ -1066,24 +1135,30 @@ class _$UserRoutineProgressInfoImpl implements _UserRoutineProgressInfo {
 
 abstract class _UserRoutineProgressInfo implements UserRoutineProgressInfo {
   const factory _UserRoutineProgressInfo(
-      {final double completionPercentage,
-      final bool isCompleted,
-      final int currentPoseIndex,
-      final DateTime? lastPracticedAt,
+      {@JsonKey(name: 'completionPercentage') final double completionPercentage,
+      @JsonKey(name: 'isCompleted') final bool isCompleted,
+      @JsonKey(name: 'currentPoseIndex') final int currentPoseIndex,
+      @JsonKey(name: 'lastPracticedAt') final DateTime? lastPracticedAt,
+      @JsonKey(name: 'averageScore')
       final double? averageScore}) = _$UserRoutineProgressInfoImpl;
 
   factory _UserRoutineProgressInfo.fromJson(Map<String, dynamic> json) =
       _$UserRoutineProgressInfoImpl.fromJson;
 
   @override
+  @JsonKey(name: 'completionPercentage')
   double get completionPercentage;
   @override
+  @JsonKey(name: 'isCompleted')
   bool get isCompleted;
   @override
+  @JsonKey(name: 'currentPoseIndex')
   int get currentPoseIndex;
   @override
+  @JsonKey(name: 'lastPracticedAt')
   DateTime? get lastPracticedAt;
   @override
+  @JsonKey(name: 'averageScore')
   double? get averageScore;
 
   /// Create a copy of UserRoutineProgressInfo

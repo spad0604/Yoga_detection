@@ -10,6 +10,7 @@ class GroupsEvent with _$GroupsEvent {
   const factory GroupsEvent.refreshPublicGroups() = GroupsRefreshPublicGroups;
   const factory GroupsEvent.searchGroups(String keyword) = GroupsSearchGroups;
   const factory GroupsEvent.createGroup({
+    required String createdBy,
     required String name,
     String? description,
     String? imageUrl,

@@ -20,6 +20,10 @@ import 'data/repositories/body_progress_repository/body_progress_repository.dart
     as _i654;
 import 'data/repositories/body_progress_repository/body_progress_repository.default.dart'
     as _i481;
+import 'data/repositories/group_posts_repository/group_posts_repository.dart'
+    as _i636;
+import 'data/repositories/group_posts_repository/group_posts_repository.default.dart'
+    as _i1051;
 import 'data/repositories/notification_repository/notification_repository.dart'
     as _i710;
 import 'data/repositories/notification_repository/notification_repository.default.dart'
@@ -44,6 +48,7 @@ import 'data/states/activities/activities_bloc.dart' as _i844;
 import 'data/states/auth/auth_bloc.dart' as _i963;
 import 'data/states/camera_detection/camera_detection_bloc.dart' as _i161;
 import 'data/states/friends/friends_bloc.dart' as _i881;
+import 'data/states/group_feed/group_feed_bloc.dart' as _i771;
 import 'data/states/groups/groups_bloc.dart' as _i819;
 import 'data/states/my_body/my_body_bloc.dart' as _i950;
 import 'data/states/routine_details/routine_details_bloc.dart' as _i659;
@@ -98,14 +103,11 @@ extension GetItInjectableX on _i174.GetIt {
       environmentFilter,
     );
     final registerModule = _$RegisterModule();
-    gh.singleton<_i963.AuthBloc>(() => _i963.AuthBloc());
     gh.singleton<_i932.SettingsBloc>(() => _i932.SettingsBloc());
     gh.singleton<_i558.FlutterSecureStorage>(
         () => registerModule.flutterSecureStorage);
     gh.singleton<_i132.OauthTokenManager>(() => _i290.DefaultOauthTokenManager(
         flutterSecureStorage: gh<_i558.FlutterSecureStorage>()));
-    gh.singleton<_i551.AppRouter>(
-        () => _i551.AppRouter(authBloc: gh<_i963.AuthBloc>()));
     gh.singleton<_i193.LocalDataSource>(() => _i193.LocalDataSource(
         flutterSecureStorage: gh<_i558.FlutterSecureStorage>()));
     gh.singleton<String>(
@@ -118,6 +120,8 @@ extension GetItInjectableX on _i174.GetIt {
         ));
     gh.singleton<_i536.NetworkDataSource>(
         () => _i536.NetworkDataSource(gh<_i288.NetworkDio>()));
+    gh.singleton<_i963.AuthBloc>(
+        () => _i963.AuthBloc(tokenManager: gh<_i132.OauthTokenManager>()));
     gh.singleton<_i344.AuthRepository>(() => _i522.DefaultAuthRepository(
           networkDataSource: gh<_i536.NetworkDataSource>(),
           tokenManager: gh<_i132.OauthTokenManager>(),
@@ -137,6 +141,8 @@ extension GetItInjectableX on _i174.GetIt {
         networkDataSource: gh<_i536.NetworkDataSource>()));
     gh.singleton<_i951.SocialRepository>(() => _i211.SocialRepositoryImpl(
         networkDataSource: gh<_i536.NetworkDataSource>()));
+    gh.singleton<_i551.AppRouter>(
+        () => _i551.AppRouter(authBloc: gh<_i963.AuthBloc>()));
     gh.singleton<_i470.LoginUseCase>(
         () => _i470.LoginUseCase(authRepository: gh<_i344.AuthRepository>()));
     gh.singleton<_i212.SendOtpUc>(
@@ -161,6 +167,8 @@ extension GetItInjectableX on _i174.GetIt {
           verifyOtpUc: gh<_i855.VerifyOtpUc>(),
           oauthTokenManager: gh<_i132.OauthTokenManager>(),
         ));
+    gh.singleton<_i636.GroupPostsRepository>(() =>
+        _i1051.GroupPostsRepositoryImpl(api: gh<_i536.NetworkDataSource>()));
     gh.singleton<_i398.RoutineRepository>(() => _i447.RoutineRepositoryImpl(
         networkDataSource: gh<_i536.NetworkDataSource>()));
     gh.singleton<_i686.RegisterUseCase>(
@@ -195,6 +203,8 @@ extension GetItInjectableX on _i174.GetIt {
           register: gh<_i686.RegisterUseCase>(),
           oauthTokenManager: gh<_i132.OauthTokenManager>(),
         ));
+    gh.factory<_i771.GroupFeedBloc>(
+        () => _i771.GroupFeedBloc(gh<_i636.GroupPostsRepository>()));
     gh.singleton<_i8.AccountPageBloc>(() =>
         _i8.AccountPageBloc(getInformationUc: gh<_i924.GetInformationUc>()));
     gh.singleton<_i562.CreateBodyProgressUc>(

@@ -9,14 +9,16 @@ import com.yogadetection.repository.YogaPoseDetailsRepository;
 import com.yogadetection.service.AIPoseEvaluationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.messages.UserMessage;
+import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.ai.model.Media;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.util.MimeTypeUtils;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -26,13 +28,10 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
     
     private final YogaPoseDetailsRepository poseDetailsRepository;
     private final ObjectMapper objectMapper;
-    private final RestTemplate restTemplate;
+    private final ChatClient chatClient;
     
-    @Value("${openai.api.key:}")
-    private String openaiApiKey;
-    
-    @Value("${openai.api.url:https://api.openai.com/v1/chat/completions}")
-    private String openaiApiUrl;
+    @Value("${spring.ai.openai.api-key:}")
+    private String apiKey;
 
     @Override
     public EvaluationResult evaluatePose(String imageUrl, PoseLandmarkRequest landmarkData, String poseCode) {
@@ -99,47 +98,27 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
 
     private EvaluationResult callOpenAIVision(String imageUrl, String prompt) {
         try {
-            // Kiểm tra API key
-            if (openaiApiKey == null || openaiApiKey.isEmpty()) {
+            if (apiKey == null || apiKey.isEmpty()) {
                 log.warn("OpenAI API key not configured, using mock evaluation");
                 return createMockEvaluation();
             }
             
-            // Tạo request body cho OpenAI GPT-4 Vision
-            Map<String, Object> requestBody = new HashMap<>();
-            requestBody.put("model", "gpt-4o"); // hoặc "gpt-4-vision-preview"
-            requestBody.put("max_tokens", 500);
+            log.info("Calling OpenAI Vision API with image: {}", imageUrl);
             
-            // Messages array
-            Map<String, Object> message = new HashMap<>();
-            message.put("role", "user");
-            
-            // Content array (text + image)
-            List<Map<String, Object>> content = List.of(
-                Map.of("type", "text", "text", prompt),
-                Map.of("type", "image_url", "image_url", Map.of("url", imageUrl))
-            );
-            message.put("content", content);
-            
-            requestBody.put("messages", List.of(message));
-            
-            // Headers
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.setBearerAuth(openaiApiKey);
-            
-            HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
-            
-            // Gọi API
-            ResponseEntity<String> response = restTemplate.exchange(
-                    openaiApiUrl,
-                    HttpMethod.POST,
-                    entity,
-                    String.class
+            UserMessage userMessage = new UserMessage(
+                    prompt,
+                    List.of(new Media(MimeTypeUtils.IMAGE_JPEG, new UrlResource(imageUrl)))
             );
             
-            // Parse response
-            return parseOpenAIResponse(response.getBody());
+            Prompt chatPrompt = new Prompt(userMessage);
+            String response = chatClient.prompt(chatPrompt)
+                    .call()
+                    .content();
+            
+            log.info("OpenAI response received: {}", response.substring(0, Math.min(100, response.length())));
+            
+            // Parse JSON từ response
+            return parseAIResponse(response);
             
         } catch (Exception e) {
             log.error("Error calling OpenAI API: {}", e.getMessage(), e);
@@ -147,20 +126,21 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
         }
     }
 
-    private EvaluationResult parseOpenAIResponse(String responseBody) {
+    private EvaluationResult parseAIResponse(String response) {
         try {
-            JsonNode root = objectMapper.readTree(responseBody);
-            String content = root.path("choices").get(0).path("message").path("content").asText();
-            
-            // Parse JSON từ content
-            JsonNode result = objectMapper.readTree(content);
+            JsonNode result = objectMapper.readTree(response);
             Double score = result.path("score").asDouble();
             String feedback = result.path("feedback").asText();
+            
+            if (score < 0 || score > 100) {
+                log.warn("Invalid score from AI: {}, using default", score);
+                score = 75.0;
+            }
             
             return new EvaluationResult(score, feedback);
             
         } catch (Exception e) {
-            log.error("Error parsing OpenAI response: {}", e.getMessage());
+            log.error("Error parsing AI response: {}", e.getMessage());
             return createMockEvaluation();
         }
     }

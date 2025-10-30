@@ -27,10 +27,10 @@ mixin _$UserYogaPoseModel {
   @JsonKey(name: "imageUrl")
   String? get imageUrl => throw _privateConstructorUsedError;
   @JsonKey(name: "score")
-  double get score => throw _privateConstructorUsedError;
+  double? get score => throw _privateConstructorUsedError;
   @JsonKey(name: "feedback")
-  String get feedback => throw _privateConstructorUsedError;
-  @JsonKey(name: "createAt")
+  String? get feedback => throw _privateConstructorUsedError;
+  @JsonKey(name: "createdAt")
   DateTime get createAt => throw _privateConstructorUsedError;
 
   /// Serializes this UserYogaPoseModel to a JSON map.
@@ -53,9 +53,9 @@ abstract class $UserYogaPoseModelCopyWith<$Res> {
       {@JsonKey(name: "id") String id,
       @JsonKey(name: "poseCode") String poseCode,
       @JsonKey(name: "imageUrl") String? imageUrl,
-      @JsonKey(name: "score") double score,
-      @JsonKey(name: "feedback") String feedback,
-      @JsonKey(name: "createAt") DateTime createAt});
+      @JsonKey(name: "score") double? score,
+      @JsonKey(name: "feedback") String? feedback,
+      @JsonKey(name: "createdAt") DateTime createAt});
 }
 
 /// @nodoc
@@ -76,8 +76,8 @@ class _$UserYogaPoseModelCopyWithImpl<$Res, $Val extends UserYogaPoseModel>
     Object? id = null,
     Object? poseCode = null,
     Object? imageUrl = freezed,
-    Object? score = null,
-    Object? feedback = null,
+    Object? score = freezed,
+    Object? feedback = freezed,
     Object? createAt = null,
   }) {
     return _then(_value.copyWith(
@@ -93,14 +93,14 @@ class _$UserYogaPoseModelCopyWithImpl<$Res, $Val extends UserYogaPoseModel>
           ? _value.imageUrl
           : imageUrl // ignore: cast_nullable_to_non_nullable
               as String?,
-      score: null == score
+      score: freezed == score
           ? _value.score
           : score // ignore: cast_nullable_to_non_nullable
-              as double,
-      feedback: null == feedback
+              as double?,
+      feedback: freezed == feedback
           ? _value.feedback
           : feedback // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       createAt: null == createAt
           ? _value.createAt
           : createAt // ignore: cast_nullable_to_non_nullable
@@ -121,9 +121,9 @@ abstract class _$$UserYogaPoseModelImplCopyWith<$Res>
       {@JsonKey(name: "id") String id,
       @JsonKey(name: "poseCode") String poseCode,
       @JsonKey(name: "imageUrl") String? imageUrl,
-      @JsonKey(name: "score") double score,
-      @JsonKey(name: "feedback") String feedback,
-      @JsonKey(name: "createAt") DateTime createAt});
+      @JsonKey(name: "score") double? score,
+      @JsonKey(name: "feedback") String? feedback,
+      @JsonKey(name: "createdAt") DateTime createAt});
 }
 
 /// @nodoc
@@ -142,8 +142,8 @@ class __$$UserYogaPoseModelImplCopyWithImpl<$Res>
     Object? id = null,
     Object? poseCode = null,
     Object? imageUrl = freezed,
-    Object? score = null,
-    Object? feedback = null,
+    Object? score = freezed,
+    Object? feedback = freezed,
     Object? createAt = null,
   }) {
     return _then(_$UserYogaPoseModelImpl(
@@ -159,14 +159,14 @@ class __$$UserYogaPoseModelImplCopyWithImpl<$Res>
           ? _value.imageUrl
           : imageUrl // ignore: cast_nullable_to_non_nullable
               as String?,
-      score: null == score
+      score: freezed == score
           ? _value.score
           : score // ignore: cast_nullable_to_non_nullable
-              as double,
-      feedback: null == feedback
+              as double?,
+      feedback: freezed == feedback
           ? _value.feedback
           : feedback // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       createAt: null == createAt
           ? _value.createAt
           : createAt // ignore: cast_nullable_to_non_nullable
@@ -182,9 +182,9 @@ class _$UserYogaPoseModelImpl implements _UserYogaPoseModel {
       {@JsonKey(name: "id") required this.id,
       @JsonKey(name: "poseCode") required this.poseCode,
       @JsonKey(name: "imageUrl") this.imageUrl,
-      @JsonKey(name: "score") required this.score,
-      @JsonKey(name: "feedback") required this.feedback,
-      @JsonKey(name: "createAt") required this.createAt});
+      @JsonKey(name: "score") this.score,
+      @JsonKey(name: "feedback") this.feedback,
+      @JsonKey(name: "createdAt") required this.createAt});
 
   factory _$UserYogaPoseModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$UserYogaPoseModelImplFromJson(json);
@@ -200,12 +200,12 @@ class _$UserYogaPoseModelImpl implements _UserYogaPoseModel {
   final String? imageUrl;
   @override
   @JsonKey(name: "score")
-  final double score;
+  final double? score;
   @override
   @JsonKey(name: "feedback")
-  final String feedback;
+  final String? feedback;
   @override
-  @JsonKey(name: "createAt")
+  @JsonKey(name: "createdAt")
   final DateTime createAt;
 
   @override
@@ -257,9 +257,9 @@ abstract class _UserYogaPoseModel implements UserYogaPoseModel {
           {@JsonKey(name: "id") required final String id,
           @JsonKey(name: "poseCode") required final String poseCode,
           @JsonKey(name: "imageUrl") final String? imageUrl,
-          @JsonKey(name: "score") required final double score,
-          @JsonKey(name: "feedback") required final String feedback,
-          @JsonKey(name: "createAt") required final DateTime createAt}) =
+          @JsonKey(name: "score") final double? score,
+          @JsonKey(name: "feedback") final String? feedback,
+          @JsonKey(name: "createdAt") required final DateTime createAt}) =
       _$UserYogaPoseModelImpl;
 
   factory _UserYogaPoseModel.fromJson(Map<String, dynamic> json) =
@@ -276,12 +276,12 @@ abstract class _UserYogaPoseModel implements UserYogaPoseModel {
   String? get imageUrl;
   @override
   @JsonKey(name: "score")
-  double get score;
+  double? get score;
   @override
   @JsonKey(name: "feedback")
-  String get feedback;
+  String? get feedback;
   @override
-  @JsonKey(name: "createAt")
+  @JsonKey(name: "createdAt")
   DateTime get createAt;
 
   /// Create a copy of UserYogaPoseModel

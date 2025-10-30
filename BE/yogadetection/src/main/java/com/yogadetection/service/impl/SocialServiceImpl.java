@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.yogadetection.dto.request.CreateGroupRequest;
+import com.yogadetection.dto.request.NotificationRequest;
 import com.yogadetection.dto.response.FriendResponse;
 import com.yogadetection.dto.response.PagedResponse;
 import com.yogadetection.dto.response.UserActivityResponse;
@@ -28,6 +29,7 @@ import com.yogadetection.repository.GroupMemberRepository;
 import com.yogadetection.repository.UserActivityRepository;
 import com.yogadetection.repository.UserRepository;
 import com.yogadetection.repository.YogaGroupRepository;
+import com.yogadetection.service.NotificationService;
 import com.yogadetection.service.SocialService;
 
 import lombok.RequiredArgsConstructor;
@@ -41,6 +43,7 @@ public class SocialServiceImpl implements SocialService {
     private final YogaGroupRepository groupRepository;
     private final GroupMemberRepository groupMemberRepository;
     private final UserActivityRepository activityRepository;
+    private final NotificationService notificationService;
 
     @Override
     @Transactional
@@ -64,6 +67,17 @@ public class SocialServiceImpl implements SocialService {
             .build();
         
         friendshipRepository.save(friendship);
+
+        userRepository.findById(userId).ifPresent(requester -> {
+            NotificationRequest notif = new NotificationRequest();
+            notif.setAll(false);
+            notif.setUserId(friend.getId());
+            String title = requester.getUsername() != null ? requester.getUsername() : requester.getEmail();
+            notif.setNormalTitle(title + " đã gửi cho bạn lời mời kết bạn");
+            notif.setHtmlTitle(null);
+            notif.setImageUrl(null);
+            notificationService.pushNotificationToUser(friend.getId(), notif);
+        });
     }
 
     @Override
@@ -78,6 +92,19 @@ public class SocialServiceImpl implements SocialService {
         
         friendship.setStatus(FriendshipStatus.ACCEPTED);
         friendshipRepository.save(friendship);
+
+        userRepository.findById(friendship.getUserId()).ifPresent(requester -> {
+            userRepository.findById(userId).ifPresent(acceptor -> {
+                NotificationRequest notif = new NotificationRequest();
+                notif.setAll(false);
+                notif.setUserId(requester.getId());
+                String name = acceptor.getUsername() != null ? acceptor.getUsername() : acceptor.getEmail();
+                notif.setNormalTitle(name + " đã chấp nhận lời mời kết bạn của bạn");
+                notif.setHtmlTitle(null);
+                notif.setImageUrl(null);
+                notificationService.pushNotificationToUser(requester.getId(), notif);
+            });
+        });
     }
 
     @Override
@@ -154,6 +181,7 @@ public class SocialServiceImpl implements SocialService {
             .description(request.getDescription())
             .imageUrl(request.getImageUrl())
             .ownerId(userId)
+            .createdBy(request.getCreatedBy() != null ? request.getCreatedBy() : userId)
             .isPrivate(request.getIsPrivate() != null ? request.getIsPrivate() : false)
             .build();
         

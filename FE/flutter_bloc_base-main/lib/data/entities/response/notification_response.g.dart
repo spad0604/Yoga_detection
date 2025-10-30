@@ -12,8 +12,8 @@ _$NotificationResponseImpl _$$NotificationResponseImplFromJson(
       id: (json['id'] as num).toInt(),
       userId: json['userId'] as String,
       normalTitle: json['normalTitle'] as String,
-      htmlTitle: json['htmlTitle'] as String,
-      imageUrl: json['imageUrl'] as String,
+      htmlTitle: json['htmlTitle'] as String?,
+      imageUrl: json['imageUrl'] as String?,
       createdAt: DateTime.parse(json['createdAt'] as String),
       all: json['all'] as bool,
     );

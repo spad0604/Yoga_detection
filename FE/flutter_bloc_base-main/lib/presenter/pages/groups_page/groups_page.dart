@@ -6,6 +6,7 @@ import 'package:flutter_starter/data/states/groups/groups_bloc.dart';
 import 'package:flutter_starter/data/states/groups/groups_event.dart';
 import 'package:flutter_starter/data/states/groups/groups_state.dart';
 import 'package:flutter_starter/di.dart';
+import 'package:flutter_starter/data/states/auth/auth_bloc.dart';
 
 @RoutePage()
 class GroupsPage extends StatefulWidget implements AutoRouteWrapper {
@@ -266,6 +267,7 @@ class _GroupsPageState extends State<GroupsPage> with SingleTickerProviderStateM
                   // (which wraps this page) can be found.
                   pageContext.read<GroupsBloc>().add(
                         GroupsCreateGroup(
+                          createdBy: context.read<AuthBloc>().state.account?.userId ?? '',
                           name: nameController.text.trim(),
                           description: descriptionController.text.trim().isEmpty
                               ? null
@@ -306,8 +308,10 @@ class _GroupCard extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: () {
-          // Navigate to group details
-          // TODO: Implement group details page
+          // Navigate to group feed page
+          context.router.pushNamed(
+            '/group-feed/${group.id}?groupName=${Uri.encodeComponent(group.name)}',
+          );
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

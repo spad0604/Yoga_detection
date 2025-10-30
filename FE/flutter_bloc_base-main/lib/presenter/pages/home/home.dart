@@ -2,10 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_starter/di.dart';
-import 'package:flutter_starter/gen/app_images.dart';
 import 'package:flutter_starter/main.dart';
-import 'package:flutter_starter/presenter/navigation/navigation.dart';
-import 'package:flutter_starter/presenter/pages/account_page/account_page.dart';
 import 'package:flutter_starter/presenter/pages/account_page/account_page_bloc.dart';
 import 'package:flutter_starter/presenter/pages/account_page/overall_account_page.dart';
 import 'package:flutter_starter/presenter/pages/activities_page/activities_page.dart';
@@ -46,7 +43,7 @@ class _HomePageState extends State<HomePage> {
     _historyBloc = provider.get<HistoryBloc>();
     _activitiesBloc = provider.get<ActivitiesBloc>();
     _friendsBloc = provider.get<FriendsBloc>();
-    
+
     // Load initial data for Activities and Friends
     _activitiesBloc
       ..add(const ActivitiesLoadFriendActivities())

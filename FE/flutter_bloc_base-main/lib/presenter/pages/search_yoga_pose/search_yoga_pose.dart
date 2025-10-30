@@ -25,8 +25,8 @@ class SearchYogaPosePage extends StatefulWidget implements AutoRouteWrapper {
         BlocProvider<SearchYogaPoseBloc>(
           create: (ctx) => provider.get<SearchYogaPoseBloc>(),
         ),
-        BlocProvider<HomePageBloc>(
-          create: (ctx) => provider.get<HomePageBloc>(),
+        BlocProvider<HomePageBloc>.value(
+          value: provider.get<HomePageBloc>(),
         ),
       ],
       child: this,

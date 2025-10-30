@@ -30,8 +30,8 @@ class PoseDetailsPage extends StatefulWidget implements AutoRouteWrapper {
         BlocProvider<PoseDetailsBloc>(
           create: (ctx) => provider.get<PoseDetailsBloc>(),
         ),
-        BlocProvider(
-          create: (ctx) => provider.get<HomePageBloc>(),
+        BlocProvider.value(
+          value: provider.get<HomePageBloc>(),
         ),
       ],
       child: this,

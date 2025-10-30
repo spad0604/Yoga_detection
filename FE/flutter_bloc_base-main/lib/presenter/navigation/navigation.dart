@@ -24,6 +24,8 @@ import 'package:flutter_starter/presenter/pages/friends_page/friends_page.dart';
 import 'package:flutter_starter/presenter/pages/groups_page/groups_page.dart';
 import 'package:flutter_starter/presenter/pages/activities_page/activities_page.dart';
 import 'package:flutter_starter/presenter/pages/my_body_page/my_body_page.dart';
+import 'package:flutter_starter/presenter/pages/camera_detection/waiting_result_page.dart';
+import 'package:flutter_starter/presenter/pages/group_feed/group_feed_page.dart';
 
 part 'navigation.gr.dart';
 
@@ -56,8 +58,10 @@ class AppRouter extends RootStackRouter {
         AutoRoute(path: '/routine-details/:id', page: RoutineDetailsRoute.page),
         AutoRoute(path: '/friends', page: FriendsRoute.page),
         AutoRoute(path: '/groups', page: GroupsRoute.page),
+        AutoRoute(path: '/group-feed/:groupId', page: GroupFeedRoute.page),
         AutoRoute(path: '/activities', page: ActivitiesRoute.page),
         AutoRoute(path: '/my-body', page: MyBodyRoute.page),
+        AutoRoute(path: '/waiting-result', page: WaitingResultRoute.page),
       ];
 
   bool isUnauthorizedRoute(String routeName) => [
@@ -74,11 +78,15 @@ class AppRouter extends RootStackRouter {
           (resolver, router) {
             final isAuthenticated = _authBloc.state.loggedIn;
 
-            if (isUnauthorizedRoute(resolver.routeName) && !isAuthenticated) {
+            // If the user is trying to access an authorized route (e.g. Home)
+            // but is NOT authenticated, redirect them to Login.
+            if (isAuthorizedRoute(resolver.routeName) && !isAuthenticated) {
               return resolver.redirect(LoginRoute(), replace: true);
             }
 
-            if (isAuthorizedRoute(resolver.routeName) && isAuthenticated) {
+            // If the user is trying to access an unauthorized route (e.g. Login)
+            // but IS already authenticated, redirect them to Home to avoid showing Login.
+            if (isUnauthorizedRoute(resolver.routeName) && isAuthenticated) {
               return resolver.redirect(HomeRoute(), replace: true);
             }
 

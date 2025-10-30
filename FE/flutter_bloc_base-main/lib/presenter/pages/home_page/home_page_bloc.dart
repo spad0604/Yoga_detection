@@ -26,8 +26,6 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
 
   @override
   void onError(Object error, StackTrace stackTrace) {
-    // Avoid re-adding events here which can cause infinite loops and OOMs.
-    // Log (if needed) and let the current handler propagate failure via catchError/try-catch.
     super.onError(error, stackTrace);
   }
 

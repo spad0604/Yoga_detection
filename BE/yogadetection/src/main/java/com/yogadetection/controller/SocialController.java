@@ -3,6 +3,7 @@ package com.yogadetection.controller;
 import com.yogadetection.dto.request.CreateGroupRequest;
 import com.yogadetection.dto.response.*;
 import com.yogadetection.service.JwtService;
+import com.yogadetection.utils.AuthHeaderUtil;
 import com.yogadetection.service.SocialService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ public class SocialController {
 
     private final SocialService socialService;
     private final JwtService jwtService;
+    private final AuthHeaderUtil authHeaderUtil;
 
     // ============ FRIENDS ENDPOINTS ============
 
@@ -22,7 +24,7 @@ public class SocialController {
             @RequestParam String friendEmail,
             @RequestHeader("Authorization") String authHeader
     ) {
-        String userId = extractUserId(authHeader);
+        String userId = authHeaderUtil.extractUserId(authHeader);
         socialService.sendFriendRequest(userId, friendEmail);
         return ApiResponse.defaultResponse();
     }
@@ -32,7 +34,7 @@ public class SocialController {
             @PathVariable String friendshipId,
             @RequestHeader("Authorization") String authHeader
     ) {
-        String userId = extractUserId(authHeader);
+        String userId = authHeaderUtil.extractUserId(authHeader);
         socialService.acceptFriendRequest(userId, friendshipId);
         return ApiResponse.defaultResponse();
     }
@@ -42,7 +44,7 @@ public class SocialController {
             @PathVariable String friendshipId,
             @RequestHeader("Authorization") String authHeader
     ) {
-        String userId = extractUserId(authHeader);
+        String userId = authHeaderUtil.extractUserId(authHeader);
         socialService.rejectFriendRequest(userId, friendshipId);
         return ApiResponse.defaultResponse();
     }
@@ -52,7 +54,7 @@ public class SocialController {
             @PathVariable String friendshipId,
             @RequestHeader("Authorization") String authHeader
     ) {
-        String userId = extractUserId(authHeader);
+        String userId = authHeaderUtil.extractUserId(authHeader);
         socialService.removeFriend(userId, friendshipId);
         return ApiResponse.defaultResponse();
     }
@@ -63,7 +65,7 @@ public class SocialController {
             @RequestParam(defaultValue = "20") int size,
             @RequestHeader("Authorization") String authHeader
     ) {
-        String userId = extractUserId(authHeader);
+        String userId = authHeaderUtil.extractUserId(authHeader);
         PagedResponse<FriendResponse> response = socialService.getFriends(userId, page, size);
         return ApiResponse.success(response);
     }
@@ -74,7 +76,7 @@ public class SocialController {
             @RequestParam(defaultValue = "20") int size,
             @RequestHeader("Authorization") String authHeader
     ) {
-        String userId = extractUserId(authHeader);
+        String userId = authHeaderUtil.extractUserId(authHeader);
         PagedResponse<FriendResponse> response = socialService.getPendingRequests(userId, page, size);
         return ApiResponse.success(response);
     }
@@ -86,7 +88,7 @@ public class SocialController {
             @RequestBody CreateGroupRequest request,
             @RequestHeader("Authorization") String authHeader
     ) {
-        String userId = extractUserId(authHeader);
+        String userId = authHeaderUtil.extractUserId(authHeader);
         YogaGroupResponse response = socialService.createGroup(userId, request);
         return ApiResponse.success(response);
     }
@@ -96,7 +98,7 @@ public class SocialController {
             @PathVariable String id,
             @RequestHeader("Authorization") String authHeader
     ) {
-        String userId = extractUserId(authHeader);
+        String userId = authHeaderUtil.extractUserId(authHeader);
         YogaGroupResponse response = socialService.getGroupById(id, userId);
         return ApiResponse.success(response);
     }
@@ -107,7 +109,7 @@ public class SocialController {
             @RequestParam(defaultValue = "20") int size,
             @RequestHeader("Authorization") String authHeader
     ) {
-        String userId = extractUserId(authHeader);
+        String userId = authHeaderUtil.extractUserId(authHeader);
         PagedResponse<YogaGroupResponse> response = socialService.getPublicGroups(page, size, userId);
         return ApiResponse.success(response);
     }
@@ -118,7 +120,7 @@ public class SocialController {
             @RequestParam(defaultValue = "20") int size,
             @RequestHeader("Authorization") String authHeader
     ) {
-        String userId = extractUserId(authHeader);
+        String userId = authHeaderUtil.extractUserId(authHeader);
         PagedResponse<YogaGroupResponse> response = socialService.getMyGroups(userId, page, size);
         return ApiResponse.success(response);
     }
@@ -130,7 +132,7 @@ public class SocialController {
             @RequestParam(defaultValue = "20") int size,
             @RequestHeader("Authorization") String authHeader
     ) {
-        String userId = extractUserId(authHeader);
+        String userId = authHeaderUtil.extractUserId(authHeader);
         PagedResponse<YogaGroupResponse> response = socialService.searchGroups(keyword, page, size, userId);
         return ApiResponse.success(response);
     }
@@ -140,7 +142,7 @@ public class SocialController {
             @PathVariable String groupId,
             @RequestHeader("Authorization") String authHeader
     ) {
-        String userId = extractUserId(authHeader);
+        String userId = authHeaderUtil.extractUserId(authHeader);
         socialService.joinGroup(userId, groupId);
         return ApiResponse.defaultResponse();
     }
@@ -150,7 +152,7 @@ public class SocialController {
             @PathVariable String groupId,
             @RequestHeader("Authorization") String authHeader
     ) {
-        String userId = extractUserId(authHeader);
+        String userId = authHeaderUtil.extractUserId(authHeader);
         socialService.leaveGroup(userId, groupId);
         return ApiResponse.defaultResponse();
     }
@@ -163,7 +165,7 @@ public class SocialController {
             @RequestParam(defaultValue = "20") int size,
             @RequestHeader("Authorization") String authHeader
     ) {
-        String userId = extractUserId(authHeader);
+        String userId = authHeaderUtil.extractUserId(authHeader);
         PagedResponse<UserActivityResponse> response = socialService.getFriendActivities(userId, page, size);
         return ApiResponse.success(response);
     }
@@ -174,18 +176,11 @@ public class SocialController {
             @RequestParam(defaultValue = "20") int size,
             @RequestHeader("Authorization") String authHeader
     ) {
-        String userId = extractUserId(authHeader);
+        String userId = authHeaderUtil.extractUserId(authHeader);
         PagedResponse<UserActivityResponse> response = socialService.getMyActivities(userId, page, size);
         return ApiResponse.success(response);
     }
 
     // ============ PRIVATE UTILS ============
 
-    private String extractUserId(String authHeader) {
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            String token = authHeader.substring(7);
-            return jwtService.extractUserId(token);
-        }
-        throw new IllegalArgumentException("Invalid authorization header");
-    }
 }

@@ -105,6 +105,7 @@ class GroupsBloc extends Bloc<GroupsEvent, GroupsState> {
   ) async {
     try {
       final request = CreateGroupRequest(
+        createdBy: event.createdBy,
         name: event.name,
         description: event.description,
         imageUrl: event.imageUrl,

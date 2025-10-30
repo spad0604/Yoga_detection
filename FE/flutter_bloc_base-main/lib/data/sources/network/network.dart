@@ -12,6 +12,8 @@ import 'package:flutter_starter/data/entities/response/friend_response.dart';
 import 'package:flutter_starter/data/entities/response/get_information.dart';
 import 'package:flutter_starter/data/entities/response/user_activity_response.dart';
 import 'package:flutter_starter/data/entities/response/yoga_group_response.dart';
+import 'package:flutter_starter/data/entities/response/post_response.dart';
+import 'package:flutter_starter/data/entities/response/comment_response.dart';
 import 'package:flutter_starter/data/entities/response/notification_response.dart';
 import 'package:flutter_starter/data/entities/response/page_response.dart';
 import 'package:flutter_starter/data/entities/response/pose_history_attempts.dart';
@@ -236,6 +238,48 @@ abstract class NetworkDataSource {
 
   @GET('api/social/activities/me')
   Future<BaseApiResponse<PageResponse<UserActivityResponse>>> getMyActivities(
+    @Query('page') int page,
+    @Query('size') int size,
+  );
+
+  // ========== Group Posts (Feed) ==========
+  @MultiPart()
+  @POST('api/social/groups/{groupId}/posts')
+  Future<BaseApiResponse<PostResponse>> createGroupPost(
+    @Path('groupId') String groupId,
+    @Body() FormData formData,
+  );
+
+  @GET('api/social/groups/{groupId}/posts')
+  Future<BaseApiResponse<PageResponse<PostResponse>>> getGroupFeed(
+    @Path('groupId') String groupId,
+    @Query('page') int page,
+    @Query('size') int size,
+  );
+
+  @POST('api/social/groups/{groupId}/posts/{postId}/likes')
+  Future<BaseApiResponse<void>> likeGroupPost(
+    @Path('groupId') String groupId,
+    @Path('postId') String postId,
+  );
+
+  @POST('api/social/groups/{groupId}/posts/{postId}/unlike')
+  Future<BaseApiResponse<void>> unlikeGroupPost(
+    @Path('groupId') String groupId,
+    @Path('postId') String postId,
+  );
+
+  @POST('api/social/groups/{groupId}/posts/{postId}/comments')
+  Future<BaseApiResponse<CommentResponse>> createComment(
+    @Path('groupId') String groupId,
+    @Path('postId') String postId,
+    @Body() Map<String, dynamic> request,
+  );
+
+  @GET('api/social/groups/{groupId}/posts/{postId}/comments')
+  Future<BaseApiResponse<PageResponse<CommentResponse>>> getCommentsOfPost(
+    @Path('groupId') String groupId,
+    @Path('postId') String postId,
     @Query('page') int page,
     @Query('size') int size,
   );

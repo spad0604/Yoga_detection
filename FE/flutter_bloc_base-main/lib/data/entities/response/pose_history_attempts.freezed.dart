@@ -29,7 +29,7 @@ mixin _$PoseHistoryAttempts {
   @JsonKey(name: 'imageUrl')
   String? get imageUrl => throw _privateConstructorUsedError;
   @JsonKey(name: 'score')
-  double get score => throw _privateConstructorUsedError;
+  double? get score => throw _privateConstructorUsedError;
   @JsonKey(name: 'feedback')
   String? get feedback => throw _privateConstructorUsedError;
   @JsonKey(name: 'createdAt')
@@ -56,7 +56,7 @@ abstract class $PoseHistoryAttemptsCopyWith<$Res> {
       @JsonKey(name: 'poseCode') String poseCode,
       @JsonKey(name: 'poseName') String poseName,
       @JsonKey(name: 'imageUrl') String? imageUrl,
-      @JsonKey(name: 'score') double score,
+      @JsonKey(name: 'score') double? score,
       @JsonKey(name: 'feedback') String? feedback,
       @JsonKey(name: 'createdAt') DateTime createdAt});
 }
@@ -80,7 +80,7 @@ class _$PoseHistoryAttemptsCopyWithImpl<$Res, $Val extends PoseHistoryAttempts>
     Object? poseCode = null,
     Object? poseName = null,
     Object? imageUrl = freezed,
-    Object? score = null,
+    Object? score = freezed,
     Object? feedback = freezed,
     Object? createdAt = null,
   }) {
@@ -101,10 +101,10 @@ class _$PoseHistoryAttemptsCopyWithImpl<$Res, $Val extends PoseHistoryAttempts>
           ? _value.imageUrl
           : imageUrl // ignore: cast_nullable_to_non_nullable
               as String?,
-      score: null == score
+      score: freezed == score
           ? _value.score
           : score // ignore: cast_nullable_to_non_nullable
-              as double,
+              as double?,
       feedback: freezed == feedback
           ? _value.feedback
           : feedback // ignore: cast_nullable_to_non_nullable
@@ -130,7 +130,7 @@ abstract class _$$PoseHistoryAttemptsImplCopyWith<$Res>
       @JsonKey(name: 'poseCode') String poseCode,
       @JsonKey(name: 'poseName') String poseName,
       @JsonKey(name: 'imageUrl') String? imageUrl,
-      @JsonKey(name: 'score') double score,
+      @JsonKey(name: 'score') double? score,
       @JsonKey(name: 'feedback') String? feedback,
       @JsonKey(name: 'createdAt') DateTime createdAt});
 }
@@ -152,7 +152,7 @@ class __$$PoseHistoryAttemptsImplCopyWithImpl<$Res>
     Object? poseCode = null,
     Object? poseName = null,
     Object? imageUrl = freezed,
-    Object? score = null,
+    Object? score = freezed,
     Object? feedback = freezed,
     Object? createdAt = null,
   }) {
@@ -173,10 +173,10 @@ class __$$PoseHistoryAttemptsImplCopyWithImpl<$Res>
           ? _value.imageUrl
           : imageUrl // ignore: cast_nullable_to_non_nullable
               as String?,
-      score: null == score
+      score: freezed == score
           ? _value.score
           : score // ignore: cast_nullable_to_non_nullable
-              as double,
+              as double?,
       feedback: freezed == feedback
           ? _value.feedback
           : feedback // ignore: cast_nullable_to_non_nullable
@@ -197,7 +197,7 @@ class _$PoseHistoryAttemptsImpl implements _PoseHistoryAttempts {
       @JsonKey(name: 'poseCode') required this.poseCode,
       @JsonKey(name: 'poseName') required this.poseName,
       @JsonKey(name: 'imageUrl') this.imageUrl,
-      @JsonKey(name: 'score') required this.score,
+      @JsonKey(name: 'score') this.score,
       @JsonKey(name: 'feedback') this.feedback,
       @JsonKey(name: 'createdAt') required this.createdAt});
 
@@ -218,7 +218,7 @@ class _$PoseHistoryAttemptsImpl implements _PoseHistoryAttempts {
   final String? imageUrl;
   @override
   @JsonKey(name: 'score')
-  final double score;
+  final double? score;
   @override
   @JsonKey(name: 'feedback')
   final String? feedback;
@@ -278,7 +278,7 @@ abstract class _PoseHistoryAttempts implements PoseHistoryAttempts {
           @JsonKey(name: 'poseCode') required final String poseCode,
           @JsonKey(name: 'poseName') required final String poseName,
           @JsonKey(name: 'imageUrl') final String? imageUrl,
-          @JsonKey(name: 'score') required final double score,
+          @JsonKey(name: 'score') final double? score,
           @JsonKey(name: 'feedback') final String? feedback,
           @JsonKey(name: 'createdAt') required final DateTime createdAt}) =
       _$PoseHistoryAttemptsImpl;
@@ -300,7 +300,7 @@ abstract class _PoseHistoryAttempts implements PoseHistoryAttempts {
   String? get imageUrl;
   @override
   @JsonKey(name: 'score')
-  double get score;
+  double? get score;
   @override
   @JsonKey(name: 'feedback')
   String? get feedback;

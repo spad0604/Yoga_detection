@@ -1,5 +1,7 @@
 package com.yogadetection.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,5 +16,8 @@ public class CreateGroupRequest {
     private String description;
     private String imageUrl;
     private Boolean isPrivate;
+    @JsonProperty("createBy")
+    @JsonAlias({"createdBy"})
+    private String createdBy;
 }
 

@@ -20,17 +20,29 @@ YogaGroupResponse _$YogaGroupResponseFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$YogaGroupResponse {
+  @JsonKey(name: 'id')
   String get id => throw _privateConstructorUsedError;
+  @JsonKey(name: 'name')
   String get name => throw _privateConstructorUsedError;
+  @JsonKey(name: 'description')
   String? get description => throw _privateConstructorUsedError;
+  @JsonKey(name: 'imageUrl')
   String? get imageUrl => throw _privateConstructorUsedError;
+  @JsonKey(name: 'ownerId')
   String get ownerId => throw _privateConstructorUsedError;
+  @JsonKey(name: 'ownerName')
   String? get ownerName => throw _privateConstructorUsedError;
+  @JsonKey(name: 'memberCount')
   int get memberCount => throw _privateConstructorUsedError;
+  @JsonKey(name: 'isPrivate')
   bool get isPrivate => throw _privateConstructorUsedError;
+  @JsonKey(name: 'isMember')
   bool get isMember => throw _privateConstructorUsedError;
+  @JsonKey(name: 'userRole')
   String? get userRole => throw _privateConstructorUsedError;
+  @JsonKey(name: 'createdAt')
   DateTime? get createdAt => throw _privateConstructorUsedError;
+  @JsonKey(name: 'updatedAt')
   DateTime? get updatedAt => throw _privateConstructorUsedError;
 
   /// Serializes this YogaGroupResponse to a JSON map.
@@ -50,18 +62,18 @@ abstract class $YogaGroupResponseCopyWith<$Res> {
       _$YogaGroupResponseCopyWithImpl<$Res, YogaGroupResponse>;
   @useResult
   $Res call(
-      {String id,
-      String name,
-      String? description,
-      String? imageUrl,
-      String ownerId,
-      String? ownerName,
-      int memberCount,
-      bool isPrivate,
-      bool isMember,
-      String? userRole,
-      DateTime? createdAt,
-      DateTime? updatedAt});
+      {@JsonKey(name: 'id') String id,
+      @JsonKey(name: 'name') String name,
+      @JsonKey(name: 'description') String? description,
+      @JsonKey(name: 'imageUrl') String? imageUrl,
+      @JsonKey(name: 'ownerId') String ownerId,
+      @JsonKey(name: 'ownerName') String? ownerName,
+      @JsonKey(name: 'memberCount') int memberCount,
+      @JsonKey(name: 'isPrivate') bool isPrivate,
+      @JsonKey(name: 'isMember') bool isMember,
+      @JsonKey(name: 'userRole') String? userRole,
+      @JsonKey(name: 'createdAt') DateTime? createdAt,
+      @JsonKey(name: 'updatedAt') DateTime? updatedAt});
 }
 
 /// @nodoc
@@ -154,18 +166,18 @@ abstract class _$$YogaGroupResponseImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String id,
-      String name,
-      String? description,
-      String? imageUrl,
-      String ownerId,
-      String? ownerName,
-      int memberCount,
-      bool isPrivate,
-      bool isMember,
-      String? userRole,
-      DateTime? createdAt,
-      DateTime? updatedAt});
+      {@JsonKey(name: 'id') String id,
+      @JsonKey(name: 'name') String name,
+      @JsonKey(name: 'description') String? description,
+      @JsonKey(name: 'imageUrl') String? imageUrl,
+      @JsonKey(name: 'ownerId') String ownerId,
+      @JsonKey(name: 'ownerName') String? ownerName,
+      @JsonKey(name: 'memberCount') int memberCount,
+      @JsonKey(name: 'isPrivate') bool isPrivate,
+      @JsonKey(name: 'isMember') bool isMember,
+      @JsonKey(name: 'userRole') String? userRole,
+      @JsonKey(name: 'createdAt') DateTime? createdAt,
+      @JsonKey(name: 'updatedAt') DateTime? updatedAt});
 }
 
 /// @nodoc
@@ -251,48 +263,57 @@ class __$$YogaGroupResponseImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$YogaGroupResponseImpl implements _YogaGroupResponse {
   const _$YogaGroupResponseImpl(
-      {required this.id,
-      required this.name,
-      this.description,
-      this.imageUrl,
-      required this.ownerId,
-      this.ownerName,
-      this.memberCount = 0,
-      this.isPrivate = false,
-      this.isMember = false,
-      this.userRole,
-      this.createdAt,
-      this.updatedAt});
+      {@JsonKey(name: 'id') required this.id,
+      @JsonKey(name: 'name') required this.name,
+      @JsonKey(name: 'description') this.description,
+      @JsonKey(name: 'imageUrl') this.imageUrl,
+      @JsonKey(name: 'ownerId') required this.ownerId,
+      @JsonKey(name: 'ownerName') this.ownerName,
+      @JsonKey(name: 'memberCount') this.memberCount = 0,
+      @JsonKey(name: 'isPrivate') this.isPrivate = false,
+      @JsonKey(name: 'isMember') this.isMember = false,
+      @JsonKey(name: 'userRole') this.userRole,
+      @JsonKey(name: 'createdAt') this.createdAt,
+      @JsonKey(name: 'updatedAt') this.updatedAt});
 
   factory _$YogaGroupResponseImpl.fromJson(Map<String, dynamic> json) =>
       _$$YogaGroupResponseImplFromJson(json);
 
   @override
+  @JsonKey(name: 'id')
   final String id;
   @override
+  @JsonKey(name: 'name')
   final String name;
   @override
+  @JsonKey(name: 'description')
   final String? description;
   @override
+  @JsonKey(name: 'imageUrl')
   final String? imageUrl;
   @override
+  @JsonKey(name: 'ownerId')
   final String ownerId;
   @override
+  @JsonKey(name: 'ownerName')
   final String? ownerName;
   @override
-  @JsonKey()
+  @JsonKey(name: 'memberCount')
   final int memberCount;
   @override
-  @JsonKey()
+  @JsonKey(name: 'isPrivate')
   final bool isPrivate;
   @override
-  @JsonKey()
+  @JsonKey(name: 'isMember')
   final bool isMember;
   @override
+  @JsonKey(name: 'userRole')
   final String? userRole;
   @override
+  @JsonKey(name: 'createdAt')
   final DateTime? createdAt;
   @override
+  @JsonKey(name: 'updatedAt')
   final DateTime? updatedAt;
 
   @override
@@ -364,45 +385,58 @@ class _$YogaGroupResponseImpl implements _YogaGroupResponse {
 
 abstract class _YogaGroupResponse implements YogaGroupResponse {
   const factory _YogaGroupResponse(
-      {required final String id,
-      required final String name,
-      final String? description,
-      final String? imageUrl,
-      required final String ownerId,
-      final String? ownerName,
-      final int memberCount,
-      final bool isPrivate,
-      final bool isMember,
-      final String? userRole,
-      final DateTime? createdAt,
-      final DateTime? updatedAt}) = _$YogaGroupResponseImpl;
+          {@JsonKey(name: 'id') required final String id,
+          @JsonKey(name: 'name') required final String name,
+          @JsonKey(name: 'description') final String? description,
+          @JsonKey(name: 'imageUrl') final String? imageUrl,
+          @JsonKey(name: 'ownerId') required final String ownerId,
+          @JsonKey(name: 'ownerName') final String? ownerName,
+          @JsonKey(name: 'memberCount') final int memberCount,
+          @JsonKey(name: 'isPrivate') final bool isPrivate,
+          @JsonKey(name: 'isMember') final bool isMember,
+          @JsonKey(name: 'userRole') final String? userRole,
+          @JsonKey(name: 'createdAt') final DateTime? createdAt,
+          @JsonKey(name: 'updatedAt') final DateTime? updatedAt}) =
+      _$YogaGroupResponseImpl;
 
   factory _YogaGroupResponse.fromJson(Map<String, dynamic> json) =
       _$YogaGroupResponseImpl.fromJson;
 
   @override
+  @JsonKey(name: 'id')
   String get id;
   @override
+  @JsonKey(name: 'name')
   String get name;
   @override
+  @JsonKey(name: 'description')
   String? get description;
   @override
+  @JsonKey(name: 'imageUrl')
   String? get imageUrl;
   @override
+  @JsonKey(name: 'ownerId')
   String get ownerId;
   @override
+  @JsonKey(name: 'ownerName')
   String? get ownerName;
   @override
+  @JsonKey(name: 'memberCount')
   int get memberCount;
   @override
+  @JsonKey(name: 'isPrivate')
   bool get isPrivate;
   @override
+  @JsonKey(name: 'isMember')
   bool get isMember;
   @override
+  @JsonKey(name: 'userRole')
   String? get userRole;
   @override
+  @JsonKey(name: 'createdAt')
   DateTime? get createdAt;
   @override
+  @JsonKey(name: 'updatedAt')
   DateTime? get updatedAt;
 
   /// Create a copy of YogaGroupResponse

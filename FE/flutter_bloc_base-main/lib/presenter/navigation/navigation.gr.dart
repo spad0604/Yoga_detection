@@ -107,6 +107,69 @@ class FriendsRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [GroupFeedPage]
+class GroupFeedRoute extends PageRouteInfo<GroupFeedRouteArgs> {
+  GroupFeedRoute({
+    Key? key,
+    required String groupId,
+    String groupName = 'Group',
+    List<PageRouteInfo>? children,
+  }) : super(
+         GroupFeedRoute.name,
+         args: GroupFeedRouteArgs(
+           key: key,
+           groupId: groupId,
+           groupName: groupName,
+         ),
+         rawPathParams: {'groupId': groupId},
+         rawQueryParams: {'groupName': groupName},
+         initialChildren: children,
+       );
+
+  static const String name = 'GroupFeedRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final pathParams = data.inheritedPathParams;
+      final queryParams = data.queryParams;
+      final args = data.argsAs<GroupFeedRouteArgs>(
+        orElse: () => GroupFeedRouteArgs(
+          groupId: pathParams.getString('groupId'),
+          groupName: queryParams.getString('groupName', 'Group'),
+        ),
+      );
+      return WrappedRoute(
+        child: GroupFeedPage(
+          key: args.key,
+          groupId: args.groupId,
+          groupName: args.groupName,
+        ),
+      );
+    },
+  );
+}
+
+class GroupFeedRouteArgs {
+  const GroupFeedRouteArgs({
+    this.key,
+    required this.groupId,
+    this.groupName = 'Group',
+  });
+
+  final Key? key;
+
+  final String groupId;
+
+  final String groupName;
+
+  @override
+  String toString() {
+    return 'GroupFeedRouteArgs{key: $key, groupId: $groupId, groupName: $groupName}';
+  }
+}
+
+/// generated route for
 /// [GroupsPage]
 class GroupsRoute extends PageRouteInfo<void> {
   const GroupsRoute({List<PageRouteInfo>? children})
@@ -231,7 +294,7 @@ class NotificationRouteRoute extends PageRouteInfo<void> {
   static PageInfo page = PageInfo(
     name,
     builder: (data) {
-      return const NotificationPagePage();
+      return WrappedRoute(child: const NotificationPagePage());
     },
   );
 }
@@ -401,6 +464,22 @@ class SplashRoute extends PageRouteInfo<void> {
     name,
     builder: (data) {
       return WrappedRoute(child: SplashPage());
+    },
+  );
+}
+
+/// generated route for
+/// [WaitingResultPage]
+class WaitingResultRoute extends PageRouteInfo<void> {
+  const WaitingResultRoute({List<PageRouteInfo>? children})
+    : super(WaitingResultRoute.name, initialChildren: children);
+
+  static const String name = 'WaitingResultRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const WaitingResultPage();
     },
   );
 }

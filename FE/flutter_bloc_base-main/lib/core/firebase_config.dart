@@ -1,4 +1,10 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_starter/data/states/auth/auth_bloc.dart';
+import 'package:flutter_starter/presenter/app.dart';
+import 'package:flutter_starter/presenter/navigation/navigation.dart';
+import 'package:flutter_starter/di.dart';
 
 class FirebaseConfig {
   Future<void> initFCM() async {
@@ -15,11 +21,50 @@ class FirebaseConfig {
     } catch (_) {}
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      // Handle foreground messages
+      // Hiển thị notification hệ thống khi app đang foreground
+      try {
+        final notification = message.notification;
+        final data = message.data;
+        final title = notification?.title ?? data['title'] ?? 'Thông báo';
+        final body = notification?.body ?? data['body'] ?? '';
+
+        // Hiển thị notification với flutter_local_notifications
+        final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+            FlutterLocalNotificationsPlugin();
+
+        const AndroidNotificationChannel channel = AndroidNotificationChannel(
+          'high_importance_channel',
+          'Thông báo quan trọng',
+          description: 'Kênh này được sử dụng cho các thông báo quan trọng.',
+          importance: Importance.high,
+        );
+
+        flutterLocalNotificationsPlugin.show(
+          message.hashCode,
+          title,
+          body,
+          NotificationDetails(
+            android: AndroidNotificationDetails(
+              channel.id,
+              channel.name,
+              channelDescription: channel.description,
+              importance: Importance.high,
+              priority: Priority.high,
+              icon: '@mipmap/ic_launcher',
+            ),
+          ),
+        );
+      } catch (e) {
+        // ignore: avoid_print
+        print('[FirebaseConfig] Error showing notification: $e');
+      }
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      // Handle messages that opened the app from a terminated state
+      // Navigate to Friends page when user taps notification
+      try {
+        AppRouter(authBloc: provider.get<AuthBloc>()).push(const FriendsRoute());
+      } catch (_) {}
     });
   }
 

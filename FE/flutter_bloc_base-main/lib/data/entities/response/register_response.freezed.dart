@@ -20,6 +20,8 @@ RegisterResponse _$RegisterResponseFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$RegisterResponse {
+  @JsonKey(name: 'userId')
+  String? get userId => throw _privateConstructorUsedError;
   @JsonKey(name: 'accessToken')
   String? get accessToken => throw _privateConstructorUsedError;
   @JsonKey(name: 'refreshToken')
@@ -42,7 +44,8 @@ abstract class $RegisterResponseCopyWith<$Res> {
       _$RegisterResponseCopyWithImpl<$Res, RegisterResponse>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'accessToken') String? accessToken,
+      {@JsonKey(name: 'userId') String? userId,
+      @JsonKey(name: 'accessToken') String? accessToken,
       @JsonKey(name: 'refreshToken') String? refreshToken});
 }
 
@@ -61,10 +64,15 @@ class _$RegisterResponseCopyWithImpl<$Res, $Val extends RegisterResponse>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? userId = freezed,
     Object? accessToken = freezed,
     Object? refreshToken = freezed,
   }) {
     return _then(_value.copyWith(
+      userId: freezed == userId
+          ? _value.userId
+          : userId // ignore: cast_nullable_to_non_nullable
+              as String?,
       accessToken: freezed == accessToken
           ? _value.accessToken
           : accessToken // ignore: cast_nullable_to_non_nullable
@@ -86,7 +94,8 @@ abstract class _$$RegisterResponseImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'accessToken') String? accessToken,
+      {@JsonKey(name: 'userId') String? userId,
+      @JsonKey(name: 'accessToken') String? accessToken,
       @JsonKey(name: 'refreshToken') String? refreshToken});
 }
 
@@ -103,10 +112,15 @@ class __$$RegisterResponseImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? userId = freezed,
     Object? accessToken = freezed,
     Object? refreshToken = freezed,
   }) {
     return _then(_$RegisterResponseImpl(
+      userId: freezed == userId
+          ? _value.userId
+          : userId // ignore: cast_nullable_to_non_nullable
+              as String?,
       accessToken: freezed == accessToken
           ? _value.accessToken
           : accessToken // ignore: cast_nullable_to_non_nullable
@@ -123,12 +137,16 @@ class __$$RegisterResponseImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$RegisterResponseImpl implements _RegisterResponse {
   const _$RegisterResponseImpl(
-      {@JsonKey(name: 'accessToken') required this.accessToken,
+      {@JsonKey(name: 'userId') required this.userId,
+      @JsonKey(name: 'accessToken') required this.accessToken,
       @JsonKey(name: 'refreshToken') required this.refreshToken});
 
   factory _$RegisterResponseImpl.fromJson(Map<String, dynamic> json) =>
       _$$RegisterResponseImplFromJson(json);
 
+  @override
+  @JsonKey(name: 'userId')
+  final String? userId;
   @override
   @JsonKey(name: 'accessToken')
   final String? accessToken;
@@ -138,7 +156,7 @@ class _$RegisterResponseImpl implements _RegisterResponse {
 
   @override
   String toString() {
-    return 'RegisterResponse(accessToken: $accessToken, refreshToken: $refreshToken)';
+    return 'RegisterResponse(userId: $userId, accessToken: $accessToken, refreshToken: $refreshToken)';
   }
 
   @override
@@ -146,6 +164,7 @@ class _$RegisterResponseImpl implements _RegisterResponse {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$RegisterResponseImpl &&
+            (identical(other.userId, userId) || other.userId == userId) &&
             (identical(other.accessToken, accessToken) ||
                 other.accessToken == accessToken) &&
             (identical(other.refreshToken, refreshToken) ||
@@ -154,7 +173,8 @@ class _$RegisterResponseImpl implements _RegisterResponse {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, accessToken, refreshToken);
+  int get hashCode =>
+      Object.hash(runtimeType, userId, accessToken, refreshToken);
 
   /// Create a copy of RegisterResponse
   /// with the given fields replaced by the non-null parameter values.
@@ -175,13 +195,17 @@ class _$RegisterResponseImpl implements _RegisterResponse {
 
 abstract class _RegisterResponse implements RegisterResponse {
   const factory _RegisterResponse(
-          {@JsonKey(name: 'accessToken') required final String? accessToken,
+          {@JsonKey(name: 'userId') required final String? userId,
+          @JsonKey(name: 'accessToken') required final String? accessToken,
           @JsonKey(name: 'refreshToken') required final String? refreshToken}) =
       _$RegisterResponseImpl;
 
   factory _RegisterResponse.fromJson(Map<String, dynamic> json) =
       _$RegisterResponseImpl.fromJson;
 
+  @override
+  @JsonKey(name: 'userId')
+  String? get userId;
   @override
   @JsonKey(name: 'accessToken')
   String? get accessToken;

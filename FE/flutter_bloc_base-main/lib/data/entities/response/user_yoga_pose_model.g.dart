@@ -12,9 +12,9 @@ _$UserYogaPoseModelImpl _$$UserYogaPoseModelImplFromJson(
       id: json['id'] as String,
       poseCode: json['poseCode'] as String,
       imageUrl: json['imageUrl'] as String?,
-      score: (json['score'] as num).toDouble(),
-      feedback: json['feedback'] as String,
-      createAt: DateTime.parse(json['createAt'] as String),
+      score: (json['score'] as num?)?.toDouble(),
+      feedback: json['feedback'] as String?,
+      createAt: DateTime.parse(json['createdAt'] as String),
     );
 
 Map<String, dynamic> _$$UserYogaPoseModelImplToJson(
@@ -25,5 +25,5 @@ Map<String, dynamic> _$$UserYogaPoseModelImplToJson(
       'imageUrl': instance.imageUrl,
       'score': instance.score,
       'feedback': instance.feedback,
-      'createAt': instance.createAt.toIso8601String(),
+      'createdAt': instance.createAt.toIso8601String(),
     };

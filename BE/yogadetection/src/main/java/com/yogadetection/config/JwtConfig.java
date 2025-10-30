@@ -61,7 +61,10 @@ public class JwtConfig {
     public TokenResponse generateTokenWithUserDetails(UserDetails userDetails) {
         String accessToken = generateAccessToken(userDetails);
         String refreshToken = generateRefreshToken(userDetails);
-        return new TokenResponse(accessToken, refreshToken);
+        if (userDetails instanceof User user) {
+            return new TokenResponse(user.getId(), accessToken, refreshToken);
+        }
+        return new TokenResponse("", accessToken, refreshToken);
     }
 
     // ========================== PARSE & VALIDATE ===========================

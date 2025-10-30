@@ -6,6 +6,7 @@ part 'register_response.freezed.dart';
 @freezed
 class RegisterResponse with _$RegisterResponse {
   const factory RegisterResponse({
+    @JsonKey(name: 'userId') required String? userId,
     @JsonKey(name: 'accessToken') required String? accessToken,
     @JsonKey(name: 'refreshToken') required String? refreshToken,
   }) = _RegisterResponse;

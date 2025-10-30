@@ -40,6 +40,9 @@ public class YogaGroup {
     @Column(name = "owner_id", nullable = false)
     private String ownerId;
 
+    @Column(name = "created_by", nullable = false)
+    private String createdBy;
+
     @Column(name = "member_count")
     private Integer memberCount;
 

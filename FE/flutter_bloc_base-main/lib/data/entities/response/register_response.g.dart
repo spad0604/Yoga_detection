@@ -9,6 +9,7 @@ part of 'register_response.dart';
 _$RegisterResponseImpl _$$RegisterResponseImplFromJson(
         Map<String, dynamic> json) =>
     _$RegisterResponseImpl(
+      userId: json['userId'] as String?,
       accessToken: json['accessToken'] as String?,
       refreshToken: json['refreshToken'] as String?,
     );
@@ -16,6 +17,7 @@ _$RegisterResponseImpl _$$RegisterResponseImplFromJson(
 Map<String, dynamic> _$$RegisterResponseImplToJson(
         _$RegisterResponseImpl instance) =>
     <String, dynamic>{
+      'userId': instance.userId,
       'accessToken': instance.accessToken,
       'refreshToken': instance.refreshToken,
     };

@@ -8,6 +8,8 @@ import 'package:flutter_starter/presenter/pages/account_page/account_page_event.
 import 'package:flutter_starter/presenter/pages/account_page/account_page_state.dart';
 import 'package:flutter_starter/presenter/pages/account_page/logout_dialog.dart';
 import 'package:flutter_starter/presenter/themes/colors.dart';
+import 'package:flutter_starter/data/states/auth/auth_event.dart';
+import 'package:flutter_starter/data/states/auth/auth_bloc.dart';
 
 part 'overall_item.dart';
 
@@ -17,8 +19,8 @@ class OverallAccountPage extends StatefulWidget implements AutoRouteWrapper {
 
   @override
   Widget wrappedRoute(BuildContext context) {
-    return BlocProvider<AccountPageBloc>(
-      create: (ctx) => provider.get<AccountPageBloc>(),
+    return BlocProvider<AccountPageBloc>.value(
+      value: provider.get<AccountPageBloc>(),
       child: this,
     );
   }
@@ -269,7 +271,9 @@ class _OverallAccountPageState extends State<OverallAccountPage> {
                           ),
                         );
                         if (shouldLogout == true) {
-                          // TODO: implement real logout flow (clear tokens, navigate to login, etc.)
+                          // Notify AuthBloc to log out (AuthBloc will clear tokens).
+                          context.read<AuthBloc>().add(const AuthLoggedOut());
+                          // App-level listener in `App` will navigate to LoginRoute when logged out.
                         }
                       },
                     ),

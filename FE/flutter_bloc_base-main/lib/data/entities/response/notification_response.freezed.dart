@@ -27,9 +27,9 @@ mixin _$NotificationResponse {
   @JsonKey(name: 'normalTitle')
   String get normalTitle => throw _privateConstructorUsedError;
   @JsonKey(name: 'htmlTitle')
-  String get htmlTitle => throw _privateConstructorUsedError;
+  String? get htmlTitle => throw _privateConstructorUsedError;
   @JsonKey(name: 'imageUrl')
-  String get imageUrl => throw _privateConstructorUsedError;
+  String? get imageUrl => throw _privateConstructorUsedError;
   @JsonKey(name: 'createdAt')
   DateTime get createdAt => throw _privateConstructorUsedError;
   @JsonKey(name: 'all')
@@ -55,8 +55,8 @@ abstract class $NotificationResponseCopyWith<$Res> {
       {@JsonKey(name: 'id') int id,
       @JsonKey(name: 'userId') String userId,
       @JsonKey(name: 'normalTitle') String normalTitle,
-      @JsonKey(name: 'htmlTitle') String htmlTitle,
-      @JsonKey(name: 'imageUrl') String imageUrl,
+      @JsonKey(name: 'htmlTitle') String? htmlTitle,
+      @JsonKey(name: 'imageUrl') String? imageUrl,
       @JsonKey(name: 'createdAt') DateTime createdAt,
       @JsonKey(name: 'all') bool all});
 }
@@ -80,8 +80,8 @@ class _$NotificationResponseCopyWithImpl<$Res,
     Object? id = null,
     Object? userId = null,
     Object? normalTitle = null,
-    Object? htmlTitle = null,
-    Object? imageUrl = null,
+    Object? htmlTitle = freezed,
+    Object? imageUrl = freezed,
     Object? createdAt = null,
     Object? all = null,
   }) {
@@ -98,14 +98,14 @@ class _$NotificationResponseCopyWithImpl<$Res,
           ? _value.normalTitle
           : normalTitle // ignore: cast_nullable_to_non_nullable
               as String,
-      htmlTitle: null == htmlTitle
+      htmlTitle: freezed == htmlTitle
           ? _value.htmlTitle
           : htmlTitle // ignore: cast_nullable_to_non_nullable
-              as String,
-      imageUrl: null == imageUrl
+              as String?,
+      imageUrl: freezed == imageUrl
           ? _value.imageUrl
           : imageUrl // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -130,8 +130,8 @@ abstract class _$$NotificationResponseImplCopyWith<$Res>
       {@JsonKey(name: 'id') int id,
       @JsonKey(name: 'userId') String userId,
       @JsonKey(name: 'normalTitle') String normalTitle,
-      @JsonKey(name: 'htmlTitle') String htmlTitle,
-      @JsonKey(name: 'imageUrl') String imageUrl,
+      @JsonKey(name: 'htmlTitle') String? htmlTitle,
+      @JsonKey(name: 'imageUrl') String? imageUrl,
       @JsonKey(name: 'createdAt') DateTime createdAt,
       @JsonKey(name: 'all') bool all});
 }
@@ -152,8 +152,8 @@ class __$$NotificationResponseImplCopyWithImpl<$Res>
     Object? id = null,
     Object? userId = null,
     Object? normalTitle = null,
-    Object? htmlTitle = null,
-    Object? imageUrl = null,
+    Object? htmlTitle = freezed,
+    Object? imageUrl = freezed,
     Object? createdAt = null,
     Object? all = null,
   }) {
@@ -170,14 +170,14 @@ class __$$NotificationResponseImplCopyWithImpl<$Res>
           ? _value.normalTitle
           : normalTitle // ignore: cast_nullable_to_non_nullable
               as String,
-      htmlTitle: null == htmlTitle
+      htmlTitle: freezed == htmlTitle
           ? _value.htmlTitle
           : htmlTitle // ignore: cast_nullable_to_non_nullable
-              as String,
-      imageUrl: null == imageUrl
+              as String?,
+      imageUrl: freezed == imageUrl
           ? _value.imageUrl
           : imageUrl // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -197,8 +197,8 @@ class _$NotificationResponseImpl implements _NotificationResponse {
       {@JsonKey(name: 'id') required this.id,
       @JsonKey(name: 'userId') required this.userId,
       @JsonKey(name: 'normalTitle') required this.normalTitle,
-      @JsonKey(name: 'htmlTitle') required this.htmlTitle,
-      @JsonKey(name: 'imageUrl') required this.imageUrl,
+      @JsonKey(name: 'htmlTitle') this.htmlTitle,
+      @JsonKey(name: 'imageUrl') this.imageUrl,
       @JsonKey(name: 'createdAt') required this.createdAt,
       @JsonKey(name: 'all') required this.all});
 
@@ -216,10 +216,10 @@ class _$NotificationResponseImpl implements _NotificationResponse {
   final String normalTitle;
   @override
   @JsonKey(name: 'htmlTitle')
-  final String htmlTitle;
+  final String? htmlTitle;
   @override
   @JsonKey(name: 'imageUrl')
-  final String imageUrl;
+  final String? imageUrl;
   @override
   @JsonKey(name: 'createdAt')
   final DateTime createdAt;
@@ -278,8 +278,8 @@ abstract class _NotificationResponse implements NotificationResponse {
           {@JsonKey(name: 'id') required final int id,
           @JsonKey(name: 'userId') required final String userId,
           @JsonKey(name: 'normalTitle') required final String normalTitle,
-          @JsonKey(name: 'htmlTitle') required final String htmlTitle,
-          @JsonKey(name: 'imageUrl') required final String imageUrl,
+          @JsonKey(name: 'htmlTitle') final String? htmlTitle,
+          @JsonKey(name: 'imageUrl') final String? imageUrl,
           @JsonKey(name: 'createdAt') required final DateTime createdAt,
           @JsonKey(name: 'all') required final bool all}) =
       _$NotificationResponseImpl;
@@ -298,10 +298,10 @@ abstract class _NotificationResponse implements NotificationResponse {
   String get normalTitle;
   @override
   @JsonKey(name: 'htmlTitle')
-  String get htmlTitle;
+  String? get htmlTitle;
   @override
   @JsonKey(name: 'imageUrl')
-  String get imageUrl;
+  String? get imageUrl;
   @override
   @JsonKey(name: 'createdAt')
   DateTime get createdAt;

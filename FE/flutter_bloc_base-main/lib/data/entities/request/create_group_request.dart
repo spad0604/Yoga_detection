@@ -10,6 +10,7 @@ class CreateGroupRequest with _$CreateGroupRequest {
     String? description,
     String? imageUrl,
     @Default(false) bool isPrivate,
+    @Default("") String createdBy,
   }) = _CreateGroupRequest;
 
   factory CreateGroupRequest.fromJson(Map<String, dynamic> json) =>

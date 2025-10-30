@@ -11,6 +11,7 @@ public class SocketConfig {
         Configuration config = new Configuration();
         config.setHostname("0.0.0.0");
         config.setPort(9080);
+        config.setOrigin("*");
         return new SocketIOServer(config);
     }
 }

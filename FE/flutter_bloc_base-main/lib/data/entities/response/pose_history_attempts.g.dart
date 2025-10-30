@@ -13,7 +13,7 @@ _$PoseHistoryAttemptsImpl _$$PoseHistoryAttemptsImplFromJson(
       poseCode: json['poseCode'] as String,
       poseName: json['poseName'] as String,
       imageUrl: json['imageUrl'] as String?,
-      score: (json['score'] as num).toDouble(),
+      score: (json['score'] as num?)?.toDouble(),
       feedback: json['feedback'] as String?,
       createdAt: DateTime.parse(json['createdAt'] as String),
     );

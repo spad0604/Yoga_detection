@@ -15,8 +15,8 @@ class AccountPagePage extends StatefulWidget implements AutoRouteWrapper {
 
   @override
   Widget wrappedRoute(BuildContext context) {
-    return BlocProvider<AccountPageBloc>(
-      create: (ctx) => provider.get<AccountPageBloc>(),
+    return BlocProvider<AccountPageBloc>.value(
+      value: provider.get<AccountPageBloc>(),
       child: this,
     );
   }

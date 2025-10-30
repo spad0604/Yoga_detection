@@ -138,39 +138,43 @@ public class YogaRoutineServiceImpl implements YogaRoutineService {
     }
 
     private YogaRoutineResponse mapToResponse(YogaRoutine routine, String userId) {
-        List<String> tags = parseTags(routine.getTags());
-        Integer totalPoses = routinePoseRepository.countByRoutineId(routine.getId());
-        
+        List<String> tags = parseTags(routine != null ? routine.getTags() : null);
+        Integer totalPoses;
+        try {
+            totalPoses = (routine != null && routine.getId() != null)
+                ? routinePoseRepository.countByRoutineId(routine.getId()) : 0;
+        } catch (Exception ignored) { totalPoses = 0; }
+
         YogaRoutineResponse.UserRoutineProgressInfo progressInfo = null;
-        if (userId != null) {
-            Optional<UserRoutineProgress> progress = userRoutineProgressRepository
-                .findByUserIdAndRoutineId(userId, routine.getId());
-            
-            if (progress.isPresent()) {
-                UserRoutineProgress p = progress.get();
-                progressInfo = YogaRoutineResponse.UserRoutineProgressInfo.builder()
-                    .completionPercentage(p.getCompletionPercentage())
-                    .isCompleted(p.getIsCompleted())
-                    .currentPoseIndex(p.getCurrentPoseIndex())
-                    .lastPracticedAt(p.getLastPracticedAt())
-                    .averageScore(p.getAverageScore())
-                    .build();
-            }
+        if (userId != null && routine != null && routine.getId() != null) {
+            try {
+                Optional<UserRoutineProgress> progress = userRoutineProgressRepository.findByUserIdAndRoutineId(userId, routine.getId());
+                if (progress.isPresent()) {
+                    UserRoutineProgress p = progress.get();
+                    progressInfo = YogaRoutineResponse.UserRoutineProgressInfo.builder()
+                        .completionPercentage(Optional.ofNullable(p.getCompletionPercentage()).orElse(0.0))
+                        .isCompleted(Optional.ofNullable(p.getIsCompleted()).orElse(false))
+                        .currentPoseIndex(Optional.ofNullable(p.getCurrentPoseIndex()).orElse(0))
+                        .lastPracticedAt(p.getLastPracticedAt())
+                        .averageScore(Optional.ofNullable(p.getAverageScore()).orElse(0.0))
+                        .build();
+                }
+            } catch (Exception ignored) { }
         }
-        
+
         return YogaRoutineResponse.builder()
-            .id(routine.getId())
-            .name(routine.getName())
-            .description(routine.getDescription())
-            .level(routine.getLevel())
-            .durationMinutes(routine.getDurationMinutes())
-            .estimatedCalories(routine.getEstimatedCalories())
-            .imageUrl(routine.getImageUrl())
+            .id(routine != null ? routine.getId() : "")
+            .name(Optional.ofNullable(routine != null ? routine.getName() : null).orElse(""))
+            .description(Optional.ofNullable(routine != null ? routine.getDescription() : null).orElse(""))
+            .level(routine != null ? routine.getLevel() : null)
+            .durationMinutes(Optional.ofNullable(routine != null ? routine.getDurationMinutes() : null).orElse(0))
+            .estimatedCalories(Optional.ofNullable(routine != null ? routine.getEstimatedCalories() : null).orElse(0))
+            .imageUrl(routine != null ? routine.getImageUrl() : null)
             .tags(tags)
-            .isPremium(routine.getIsPremium())
+            .isPremium(Optional.ofNullable(routine != null ? routine.getIsPremium() : null).orElse(false))
             .totalPoses(totalPoses)
-            .createdAt(routine.getCreatedAt())
-            .updatedAt(routine.getUpdatedAt())
+            .createdAt(routine != null ? routine.getCreatedAt() : null)
+            .updatedAt(routine != null ? routine.getUpdatedAt() : null)
             .userProgress(progressInfo)
             .build();
     }
@@ -178,7 +182,6 @@ public class YogaRoutineServiceImpl implements YogaRoutineService {
     private YogaRoutineResponse mapToDetailedResponse(YogaRoutine routine, String userId) {
         YogaRoutineResponse response = mapToResponse(routine, userId);
         
-        // Lấy danh sách poses trong routine
         List<RoutinePose> routinePoses = routinePoseRepository.findByRoutineIdOrderByOrderIndexAsc(routine.getId());
         
         List<RoutinePoseResponse> poseResponses = routinePoses.stream()
@@ -202,7 +205,6 @@ public class YogaRoutineServiceImpl implements YogaRoutineService {
             .instructions(routinePose.getInstructions())
             .build();
         
-        // Lấy thêm thông tin pose details
         try {
             YogaPoseDetails poseDetails = yogaPoseDetailsRepository.getYogaPoseDetails(routinePose.getPoseCode());
             if (poseDetails != null) {
@@ -210,7 +212,6 @@ public class YogaRoutineServiceImpl implements YogaRoutineService {
                 response.setPoseDescription(poseDetails.getDescription());
             }
         } catch (Exception e) {
-            // Ignore if pose details not found
         }
         
         return response;

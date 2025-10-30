@@ -23,8 +23,8 @@ mixin _$GroupsEvent {
     required TResult Function() refreshMyGroups,
     required TResult Function() refreshPublicGroups,
     required TResult Function(String keyword) searchGroups,
-    required TResult Function(
-            String name, String? description, String? imageUrl, bool isPrivate)
+    required TResult Function(String createdBy, String name,
+            String? description, String? imageUrl, bool isPrivate)
         createGroup,
     required TResult Function(String groupId) joinGroup,
     required TResult Function(String groupId) leaveGroup,
@@ -37,8 +37,8 @@ mixin _$GroupsEvent {
     TResult? Function()? refreshMyGroups,
     TResult? Function()? refreshPublicGroups,
     TResult? Function(String keyword)? searchGroups,
-    TResult? Function(
-            String name, String? description, String? imageUrl, bool isPrivate)?
+    TResult? Function(String createdBy, String name, String? description,
+            String? imageUrl, bool isPrivate)?
         createGroup,
     TResult? Function(String groupId)? joinGroup,
     TResult? Function(String groupId)? leaveGroup,
@@ -51,8 +51,8 @@ mixin _$GroupsEvent {
     TResult Function()? refreshMyGroups,
     TResult Function()? refreshPublicGroups,
     TResult Function(String keyword)? searchGroups,
-    TResult Function(
-            String name, String? description, String? imageUrl, bool isPrivate)?
+    TResult Function(String createdBy, String name, String? description,
+            String? imageUrl, bool isPrivate)?
         createGroup,
     TResult Function(String groupId)? joinGroup,
     TResult Function(String groupId)? leaveGroup,
@@ -166,8 +166,8 @@ class _$GroupsLoadMyGroupsImpl implements GroupsLoadMyGroups {
     required TResult Function() refreshMyGroups,
     required TResult Function() refreshPublicGroups,
     required TResult Function(String keyword) searchGroups,
-    required TResult Function(
-            String name, String? description, String? imageUrl, bool isPrivate)
+    required TResult Function(String createdBy, String name,
+            String? description, String? imageUrl, bool isPrivate)
         createGroup,
     required TResult Function(String groupId) joinGroup,
     required TResult Function(String groupId) leaveGroup,
@@ -183,8 +183,8 @@ class _$GroupsLoadMyGroupsImpl implements GroupsLoadMyGroups {
     TResult? Function()? refreshMyGroups,
     TResult? Function()? refreshPublicGroups,
     TResult? Function(String keyword)? searchGroups,
-    TResult? Function(
-            String name, String? description, String? imageUrl, bool isPrivate)?
+    TResult? Function(String createdBy, String name, String? description,
+            String? imageUrl, bool isPrivate)?
         createGroup,
     TResult? Function(String groupId)? joinGroup,
     TResult? Function(String groupId)? leaveGroup,
@@ -200,8 +200,8 @@ class _$GroupsLoadMyGroupsImpl implements GroupsLoadMyGroups {
     TResult Function()? refreshMyGroups,
     TResult Function()? refreshPublicGroups,
     TResult Function(String keyword)? searchGroups,
-    TResult Function(
-            String name, String? description, String? imageUrl, bool isPrivate)?
+    TResult Function(String createdBy, String name, String? description,
+            String? imageUrl, bool isPrivate)?
         createGroup,
     TResult Function(String groupId)? joinGroup,
     TResult Function(String groupId)? leaveGroup,
@@ -317,8 +317,8 @@ class _$GroupsLoadPublicGroupsImpl implements GroupsLoadPublicGroups {
     required TResult Function() refreshMyGroups,
     required TResult Function() refreshPublicGroups,
     required TResult Function(String keyword) searchGroups,
-    required TResult Function(
-            String name, String? description, String? imageUrl, bool isPrivate)
+    required TResult Function(String createdBy, String name,
+            String? description, String? imageUrl, bool isPrivate)
         createGroup,
     required TResult Function(String groupId) joinGroup,
     required TResult Function(String groupId) leaveGroup,
@@ -334,8 +334,8 @@ class _$GroupsLoadPublicGroupsImpl implements GroupsLoadPublicGroups {
     TResult? Function()? refreshMyGroups,
     TResult? Function()? refreshPublicGroups,
     TResult? Function(String keyword)? searchGroups,
-    TResult? Function(
-            String name, String? description, String? imageUrl, bool isPrivate)?
+    TResult? Function(String createdBy, String name, String? description,
+            String? imageUrl, bool isPrivate)?
         createGroup,
     TResult? Function(String groupId)? joinGroup,
     TResult? Function(String groupId)? leaveGroup,
@@ -351,8 +351,8 @@ class _$GroupsLoadPublicGroupsImpl implements GroupsLoadPublicGroups {
     TResult Function()? refreshMyGroups,
     TResult Function()? refreshPublicGroups,
     TResult Function(String keyword)? searchGroups,
-    TResult Function(
-            String name, String? description, String? imageUrl, bool isPrivate)?
+    TResult Function(String createdBy, String name, String? description,
+            String? imageUrl, bool isPrivate)?
         createGroup,
     TResult Function(String groupId)? joinGroup,
     TResult Function(String groupId)? leaveGroup,
@@ -467,8 +467,8 @@ class _$GroupsRefreshMyGroupsImpl implements GroupsRefreshMyGroups {
     required TResult Function() refreshMyGroups,
     required TResult Function() refreshPublicGroups,
     required TResult Function(String keyword) searchGroups,
-    required TResult Function(
-            String name, String? description, String? imageUrl, bool isPrivate)
+    required TResult Function(String createdBy, String name,
+            String? description, String? imageUrl, bool isPrivate)
         createGroup,
     required TResult Function(String groupId) joinGroup,
     required TResult Function(String groupId) leaveGroup,
@@ -484,8 +484,8 @@ class _$GroupsRefreshMyGroupsImpl implements GroupsRefreshMyGroups {
     TResult? Function()? refreshMyGroups,
     TResult? Function()? refreshPublicGroups,
     TResult? Function(String keyword)? searchGroups,
-    TResult? Function(
-            String name, String? description, String? imageUrl, bool isPrivate)?
+    TResult? Function(String createdBy, String name, String? description,
+            String? imageUrl, bool isPrivate)?
         createGroup,
     TResult? Function(String groupId)? joinGroup,
     TResult? Function(String groupId)? leaveGroup,
@@ -501,8 +501,8 @@ class _$GroupsRefreshMyGroupsImpl implements GroupsRefreshMyGroups {
     TResult Function()? refreshMyGroups,
     TResult Function()? refreshPublicGroups,
     TResult Function(String keyword)? searchGroups,
-    TResult Function(
-            String name, String? description, String? imageUrl, bool isPrivate)?
+    TResult Function(String createdBy, String name, String? description,
+            String? imageUrl, bool isPrivate)?
         createGroup,
     TResult Function(String groupId)? joinGroup,
     TResult Function(String groupId)? leaveGroup,
@@ -618,8 +618,8 @@ class _$GroupsRefreshPublicGroupsImpl implements GroupsRefreshPublicGroups {
     required TResult Function() refreshMyGroups,
     required TResult Function() refreshPublicGroups,
     required TResult Function(String keyword) searchGroups,
-    required TResult Function(
-            String name, String? description, String? imageUrl, bool isPrivate)
+    required TResult Function(String createdBy, String name,
+            String? description, String? imageUrl, bool isPrivate)
         createGroup,
     required TResult Function(String groupId) joinGroup,
     required TResult Function(String groupId) leaveGroup,
@@ -635,8 +635,8 @@ class _$GroupsRefreshPublicGroupsImpl implements GroupsRefreshPublicGroups {
     TResult? Function()? refreshMyGroups,
     TResult? Function()? refreshPublicGroups,
     TResult? Function(String keyword)? searchGroups,
-    TResult? Function(
-            String name, String? description, String? imageUrl, bool isPrivate)?
+    TResult? Function(String createdBy, String name, String? description,
+            String? imageUrl, bool isPrivate)?
         createGroup,
     TResult? Function(String groupId)? joinGroup,
     TResult? Function(String groupId)? leaveGroup,
@@ -652,8 +652,8 @@ class _$GroupsRefreshPublicGroupsImpl implements GroupsRefreshPublicGroups {
     TResult Function()? refreshMyGroups,
     TResult Function()? refreshPublicGroups,
     TResult Function(String keyword)? searchGroups,
-    TResult Function(
-            String name, String? description, String? imageUrl, bool isPrivate)?
+    TResult Function(String createdBy, String name, String? description,
+            String? imageUrl, bool isPrivate)?
         createGroup,
     TResult Function(String groupId)? joinGroup,
     TResult Function(String groupId)? leaveGroup,
@@ -794,8 +794,8 @@ class _$GroupsSearchGroupsImpl implements GroupsSearchGroups {
     required TResult Function() refreshMyGroups,
     required TResult Function() refreshPublicGroups,
     required TResult Function(String keyword) searchGroups,
-    required TResult Function(
-            String name, String? description, String? imageUrl, bool isPrivate)
+    required TResult Function(String createdBy, String name,
+            String? description, String? imageUrl, bool isPrivate)
         createGroup,
     required TResult Function(String groupId) joinGroup,
     required TResult Function(String groupId) leaveGroup,
@@ -811,8 +811,8 @@ class _$GroupsSearchGroupsImpl implements GroupsSearchGroups {
     TResult? Function()? refreshMyGroups,
     TResult? Function()? refreshPublicGroups,
     TResult? Function(String keyword)? searchGroups,
-    TResult? Function(
-            String name, String? description, String? imageUrl, bool isPrivate)?
+    TResult? Function(String createdBy, String name, String? description,
+            String? imageUrl, bool isPrivate)?
         createGroup,
     TResult? Function(String groupId)? joinGroup,
     TResult? Function(String groupId)? leaveGroup,
@@ -828,8 +828,8 @@ class _$GroupsSearchGroupsImpl implements GroupsSearchGroups {
     TResult Function()? refreshMyGroups,
     TResult Function()? refreshPublicGroups,
     TResult Function(String keyword)? searchGroups,
-    TResult Function(
-            String name, String? description, String? imageUrl, bool isPrivate)?
+    TResult Function(String createdBy, String name, String? description,
+            String? imageUrl, bool isPrivate)?
         createGroup,
     TResult Function(String groupId)? joinGroup,
     TResult Function(String groupId)? leaveGroup,
@@ -912,7 +912,11 @@ abstract class _$$GroupsCreateGroupImplCopyWith<$Res> {
       __$$GroupsCreateGroupImplCopyWithImpl<$Res>;
   @useResult
   $Res call(
-      {String name, String? description, String? imageUrl, bool isPrivate});
+      {String createdBy,
+      String name,
+      String? description,
+      String? imageUrl,
+      bool isPrivate});
 }
 
 /// @nodoc
@@ -928,12 +932,17 @@ class __$$GroupsCreateGroupImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? createdBy = null,
     Object? name = null,
     Object? description = freezed,
     Object? imageUrl = freezed,
     Object? isPrivate = null,
   }) {
     return _then(_$GroupsCreateGroupImpl(
+      createdBy: null == createdBy
+          ? _value.createdBy
+          : createdBy // ignore: cast_nullable_to_non_nullable
+              as String,
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -958,11 +967,14 @@ class __$$GroupsCreateGroupImplCopyWithImpl<$Res>
 
 class _$GroupsCreateGroupImpl implements GroupsCreateGroup {
   const _$GroupsCreateGroupImpl(
-      {required this.name,
+      {required this.createdBy,
+      required this.name,
       this.description,
       this.imageUrl,
       this.isPrivate = false});
 
+  @override
+  final String createdBy;
   @override
   final String name;
   @override
@@ -975,7 +987,7 @@ class _$GroupsCreateGroupImpl implements GroupsCreateGroup {
 
   @override
   String toString() {
-    return 'GroupsEvent.createGroup(name: $name, description: $description, imageUrl: $imageUrl, isPrivate: $isPrivate)';
+    return 'GroupsEvent.createGroup(createdBy: $createdBy, name: $name, description: $description, imageUrl: $imageUrl, isPrivate: $isPrivate)';
   }
 
   @override
@@ -983,6 +995,8 @@ class _$GroupsCreateGroupImpl implements GroupsCreateGroup {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$GroupsCreateGroupImpl &&
+            (identical(other.createdBy, createdBy) ||
+                other.createdBy == createdBy) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.description, description) ||
                 other.description == description) &&
@@ -993,8 +1007,8 @@ class _$GroupsCreateGroupImpl implements GroupsCreateGroup {
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, name, description, imageUrl, isPrivate);
+  int get hashCode => Object.hash(
+      runtimeType, createdBy, name, description, imageUrl, isPrivate);
 
   /// Create a copy of GroupsEvent
   /// with the given fields replaced by the non-null parameter values.
@@ -1013,13 +1027,13 @@ class _$GroupsCreateGroupImpl implements GroupsCreateGroup {
     required TResult Function() refreshMyGroups,
     required TResult Function() refreshPublicGroups,
     required TResult Function(String keyword) searchGroups,
-    required TResult Function(
-            String name, String? description, String? imageUrl, bool isPrivate)
+    required TResult Function(String createdBy, String name,
+            String? description, String? imageUrl, bool isPrivate)
         createGroup,
     required TResult Function(String groupId) joinGroup,
     required TResult Function(String groupId) leaveGroup,
   }) {
-    return createGroup(name, description, imageUrl, isPrivate);
+    return createGroup(createdBy, name, description, imageUrl, isPrivate);
   }
 
   @override
@@ -1030,13 +1044,13 @@ class _$GroupsCreateGroupImpl implements GroupsCreateGroup {
     TResult? Function()? refreshMyGroups,
     TResult? Function()? refreshPublicGroups,
     TResult? Function(String keyword)? searchGroups,
-    TResult? Function(
-            String name, String? description, String? imageUrl, bool isPrivate)?
+    TResult? Function(String createdBy, String name, String? description,
+            String? imageUrl, bool isPrivate)?
         createGroup,
     TResult? Function(String groupId)? joinGroup,
     TResult? Function(String groupId)? leaveGroup,
   }) {
-    return createGroup?.call(name, description, imageUrl, isPrivate);
+    return createGroup?.call(createdBy, name, description, imageUrl, isPrivate);
   }
 
   @override
@@ -1047,15 +1061,15 @@ class _$GroupsCreateGroupImpl implements GroupsCreateGroup {
     TResult Function()? refreshMyGroups,
     TResult Function()? refreshPublicGroups,
     TResult Function(String keyword)? searchGroups,
-    TResult Function(
-            String name, String? description, String? imageUrl, bool isPrivate)?
+    TResult Function(String createdBy, String name, String? description,
+            String? imageUrl, bool isPrivate)?
         createGroup,
     TResult Function(String groupId)? joinGroup,
     TResult Function(String groupId)? leaveGroup,
     required TResult orElse(),
   }) {
     if (createGroup != null) {
-      return createGroup(name, description, imageUrl, isPrivate);
+      return createGroup(createdBy, name, description, imageUrl, isPrivate);
     }
     return orElse();
   }
@@ -1113,11 +1127,13 @@ class _$GroupsCreateGroupImpl implements GroupsCreateGroup {
 
 abstract class GroupsCreateGroup implements GroupsEvent {
   const factory GroupsCreateGroup(
-      {required final String name,
+      {required final String createdBy,
+      required final String name,
       final String? description,
       final String? imageUrl,
       final bool isPrivate}) = _$GroupsCreateGroupImpl;
 
+  String get createdBy;
   String get name;
   String? get description;
   String? get imageUrl;
@@ -1204,8 +1220,8 @@ class _$GroupsJoinGroupImpl implements GroupsJoinGroup {
     required TResult Function() refreshMyGroups,
     required TResult Function() refreshPublicGroups,
     required TResult Function(String keyword) searchGroups,
-    required TResult Function(
-            String name, String? description, String? imageUrl, bool isPrivate)
+    required TResult Function(String createdBy, String name,
+            String? description, String? imageUrl, bool isPrivate)
         createGroup,
     required TResult Function(String groupId) joinGroup,
     required TResult Function(String groupId) leaveGroup,
@@ -1221,8 +1237,8 @@ class _$GroupsJoinGroupImpl implements GroupsJoinGroup {
     TResult? Function()? refreshMyGroups,
     TResult? Function()? refreshPublicGroups,
     TResult? Function(String keyword)? searchGroups,
-    TResult? Function(
-            String name, String? description, String? imageUrl, bool isPrivate)?
+    TResult? Function(String createdBy, String name, String? description,
+            String? imageUrl, bool isPrivate)?
         createGroup,
     TResult? Function(String groupId)? joinGroup,
     TResult? Function(String groupId)? leaveGroup,
@@ -1238,8 +1254,8 @@ class _$GroupsJoinGroupImpl implements GroupsJoinGroup {
     TResult Function()? refreshMyGroups,
     TResult Function()? refreshPublicGroups,
     TResult Function(String keyword)? searchGroups,
-    TResult Function(
-            String name, String? description, String? imageUrl, bool isPrivate)?
+    TResult Function(String createdBy, String name, String? description,
+            String? imageUrl, bool isPrivate)?
         createGroup,
     TResult Function(String groupId)? joinGroup,
     TResult Function(String groupId)? leaveGroup,
@@ -1388,8 +1404,8 @@ class _$GroupsLeaveGroupImpl implements GroupsLeaveGroup {
     required TResult Function() refreshMyGroups,
     required TResult Function() refreshPublicGroups,
     required TResult Function(String keyword) searchGroups,
-    required TResult Function(
-            String name, String? description, String? imageUrl, bool isPrivate)
+    required TResult Function(String createdBy, String name,
+            String? description, String? imageUrl, bool isPrivate)
         createGroup,
     required TResult Function(String groupId) joinGroup,
     required TResult Function(String groupId) leaveGroup,
@@ -1405,8 +1421,8 @@ class _$GroupsLeaveGroupImpl implements GroupsLeaveGroup {
     TResult? Function()? refreshMyGroups,
     TResult? Function()? refreshPublicGroups,
     TResult? Function(String keyword)? searchGroups,
-    TResult? Function(
-            String name, String? description, String? imageUrl, bool isPrivate)?
+    TResult? Function(String createdBy, String name, String? description,
+            String? imageUrl, bool isPrivate)?
         createGroup,
     TResult? Function(String groupId)? joinGroup,
     TResult? Function(String groupId)? leaveGroup,
@@ -1422,8 +1438,8 @@ class _$GroupsLeaveGroupImpl implements GroupsLeaveGroup {
     TResult Function()? refreshMyGroups,
     TResult Function()? refreshPublicGroups,
     TResult Function(String keyword)? searchGroups,
-    TResult Function(
-            String name, String? description, String? imageUrl, bool isPrivate)?
+    TResult Function(String createdBy, String name, String? description,
+            String? imageUrl, bool isPrivate)?
         createGroup,
     TResult Function(String groupId)? joinGroup,
     TResult Function(String groupId)? leaveGroup,

@@ -17,7 +17,7 @@ class PoseHistoryAttempts with _$PoseHistoryAttempts {
     @JsonKey(name: 'poseCode') required String poseCode,
     @JsonKey(name: 'poseName') required String poseName,
     @JsonKey(name: 'imageUrl') String? imageUrl,
-    @JsonKey(name: 'score') required double score,
+    @JsonKey(name: 'score') double? score,
     @JsonKey(name: 'feedback') String? feedback,
     @JsonKey(name: 'createdAt') required DateTime createdAt,
   }) = _PoseHistoryAttempts;

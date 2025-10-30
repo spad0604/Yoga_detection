@@ -8,10 +8,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class TokenResponse {
+    private String userId;
     private String accessToken;
     private String refreshToken;
 
     public TokenResponse(String accessToken) {
+        this.userId = "";
         this.accessToken = accessToken;
         this.refreshToken = null;
     }

@@ -29,6 +29,7 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final TokenBlackListService tokenBlackListService;
 
+    @Override
     public TokenResponse login(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail().toLowerCase()).orElseThrow(() -> new UserNotFoundException());
 
@@ -36,10 +37,11 @@ public class AuthServiceImpl implements AuthService {
             userRepository.saveFcmToken(request.getFcmToken(), request.getEmail().toLowerCase());
             String accessToken = jwtService.generateToken(user);
             String refreshToken = jwtService.generateRefreshToken(user);
-            return new TokenResponse(accessToken, refreshToken);
+            return new TokenResponse(user.getId(), accessToken, refreshToken);
         } else throw new InvalidPasswordException();
     }
 
+    @Override
     public TokenResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail().toLowerCase())) {
             throw new EmailExistsException();
@@ -55,9 +57,11 @@ public class AuthServiceImpl implements AuthService {
         userRepository.save(user);
         String accessToken = jwtService.generateToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
-        return new TokenResponse(accessToken, refreshToken);
+        User savedUser = userRepository.save(user);
+        return new TokenResponse(savedUser.getId(), accessToken, refreshToken);
     }
 
+    @Override
     public TokenResponse refreshToken(RefreshTokenRequest request) {
         String refreshToken = request.getRefreshToken();
 
@@ -75,7 +79,7 @@ public class AuthServiceImpl implements AuthService {
                 if (jwtService.isTokenValid(refreshToken, user)) {
                     String newAccessToken = jwtService.generateToken(user);
                     String newRefreshToken = jwtService.generateRefreshToken(user);
-                    return new TokenResponse(newAccessToken, newRefreshToken);
+                    return new TokenResponse(user.getId(), newAccessToken, newRefreshToken);
                 } else {
                     throw new InvalidTokenException();
                 }
@@ -87,6 +91,7 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
+    @Override
     public void logout(String token) {
         if (token == null) {
             throw new InvalidPasswordException();

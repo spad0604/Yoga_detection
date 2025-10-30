@@ -18,6 +18,15 @@ public class ConnectSocketEvent implements ConnectListener {
     @Override
     public void onConnect(SocketIOClient socketIOClient) {
         String token = socketIOClient.getHandshakeData().getHttpHeaders().get(ParamKey.AUTHORIZATION);
+        if (token == null || token.isEmpty()) {
+            token = socketIOClient.getHandshakeData().getHttpHeaders().get("authorization");
+        }
+        if (token == null || token.isEmpty()) {
+            String qp = socketIOClient.getHandshakeData().getSingleUrlParam(ParamKey.TOKEN);
+            if (qp != null && !qp.isEmpty()) {
+                token = qp;
+            }
+        }
         String userId = null;
         if(token != null) {
             userId = jwtService.extractUserId(token);

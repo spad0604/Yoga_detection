@@ -1,6 +1,5 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_starter/presenter/navigation/navigation.dart';
+// navigation import removed; dialog now returns a boolean and the caller handles navigation
 import 'package:flutter_starter/presenter/themes/colors.dart';
 import 'package:flutter_starter/presenter/widget/custom_button.dart';
 
@@ -42,7 +41,8 @@ class LogoutDialog extends StatelessWidget {
                   text: 'Logout',
                   backgroundColor: Colors.red,
                   onPressed: () {
-                    context.router.replaceAll([LoginRoute()]);
+                    // Return true to indicate the user confirmed logout.
+                    Navigator.of(context).pop(true);
                   },
                   textColor: Colors.white,
                   fullWidth: false,

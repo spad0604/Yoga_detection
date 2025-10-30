@@ -13,6 +13,7 @@ _$CreateGroupRequestImpl _$$CreateGroupRequestImplFromJson(
       description: json['description'] as String?,
       imageUrl: json['image_url'] as String?,
       isPrivate: json['is_private'] as bool? ?? false,
+      createdBy: json['created_by'] as String? ?? "",
     );
 
 Map<String, dynamic> _$$CreateGroupRequestImplToJson(
@@ -22,4 +23,5 @@ Map<String, dynamic> _$$CreateGroupRequestImplToJson(
       'description': instance.description,
       'image_url': instance.imageUrl,
       'is_private': instance.isPrivate,
+      'created_by': instance.createdBy,
     };

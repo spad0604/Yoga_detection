@@ -12,19 +12,19 @@ _$YogaGroupResponseImpl _$$YogaGroupResponseImplFromJson(
       id: json['id'] as String,
       name: json['name'] as String,
       description: json['description'] as String?,
-      imageUrl: json['image_url'] as String?,
-      ownerId: json['owner_id'] as String,
-      ownerName: json['owner_name'] as String?,
-      memberCount: (json['member_count'] as num?)?.toInt() ?? 0,
-      isPrivate: json['is_private'] as bool? ?? false,
-      isMember: json['is_member'] as bool? ?? false,
-      userRole: json['user_role'] as String?,
-      createdAt: json['created_at'] == null
+      imageUrl: json['imageUrl'] as String?,
+      ownerId: json['ownerId'] as String,
+      ownerName: json['ownerName'] as String?,
+      memberCount: (json['memberCount'] as num?)?.toInt() ?? 0,
+      isPrivate: json['isPrivate'] as bool? ?? false,
+      isMember: json['isMember'] as bool? ?? false,
+      userRole: json['userRole'] as String?,
+      createdAt: json['createdAt'] == null
           ? null
-          : DateTime.parse(json['created_at'] as String),
-      updatedAt: json['updated_at'] == null
+          : DateTime.parse(json['createdAt'] as String),
+      updatedAt: json['updatedAt'] == null
           ? null
-          : DateTime.parse(json['updated_at'] as String),
+          : DateTime.parse(json['updatedAt'] as String),
     );
 
 Map<String, dynamic> _$$YogaGroupResponseImplToJson(
@@ -33,13 +33,13 @@ Map<String, dynamic> _$$YogaGroupResponseImplToJson(
       'id': instance.id,
       'name': instance.name,
       'description': instance.description,
-      'image_url': instance.imageUrl,
-      'owner_id': instance.ownerId,
-      'owner_name': instance.ownerName,
-      'member_count': instance.memberCount,
-      'is_private': instance.isPrivate,
-      'is_member': instance.isMember,
-      'user_role': instance.userRole,
-      'created_at': instance.createdAt?.toIso8601String(),
-      'updated_at': instance.updatedAt?.toIso8601String(),
+      'imageUrl': instance.imageUrl,
+      'ownerId': instance.ownerId,
+      'ownerName': instance.ownerName,
+      'memberCount': instance.memberCount,
+      'isPrivate': instance.isPrivate,
+      'isMember': instance.isMember,
+      'userRole': instance.userRole,
+      'createdAt': instance.createdAt?.toIso8601String(),
+      'updatedAt': instance.updatedAt?.toIso8601String(),
     };

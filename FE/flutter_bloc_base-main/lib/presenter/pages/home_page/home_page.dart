@@ -31,11 +31,11 @@ class HomePagePage extends StatefulWidget implements AutoRouteWrapper {
   Widget wrappedRoute(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<HomePageBloc>(
-          create: (ctx) => provider.get<HomePageBloc>(),
+        BlocProvider<HomePageBloc>.value(
+          value: provider.get<HomePageBloc>(),
         ),
-        BlocProvider<AccountPageBloc>(
-          create: (ctx) => provider.get<AccountPageBloc>(),
+        BlocProvider<AccountPageBloc>.value(
+          value: provider.get<AccountPageBloc>(),
         ),
       ],
       child: this,

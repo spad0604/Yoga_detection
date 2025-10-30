@@ -176,7 +176,9 @@ class _HistoryPageState extends State<HistoryPage> {
                               label: 'Avg Score',
                               value: state.poses.isEmpty
                                   ? '0'
-                                  : (state.poses.map((p) => p.score).reduce((a, b) => a + b) /
+                                  : (state.poses
+                                              .map((p) => p.score ?? 0.0)
+                                              .reduce((a, b) => a + b) /
                                           state.poses.length)
                                       .toStringAsFixed(1),
                               color: Colors.amber,
@@ -291,6 +293,7 @@ class _HistoryPageState extends State<HistoryPage> {
                               padding: const EdgeInsets.only(bottom: 16),
                               child: YogaPosesItem(
                                 item: YogaPoseDetails(
+                                  imageUrl: pose.imageUrl,
                                   id: pose.id,
                                   name: pose.poseCode,
                                   totalMinutes: 0,

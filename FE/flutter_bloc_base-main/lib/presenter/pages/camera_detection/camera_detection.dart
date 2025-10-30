@@ -20,6 +20,7 @@ import 'package:flutter_starter/core/socket_isolate.dart';
 import 'package:flutter_starter/data/entities/request/post_yoga_pose_model.dart';
 import 'package:flutter_starter/data/usecases/post_yoga_pose_uc.dart';
 import 'package:flutter_starter/data/entities/response/yoga_pose_details.dart';
+import 'package:flutter_starter/presenter/pages/camera_detection/waiting_result_page.dart';
 
 // ignore: depend_on_referenced_packages
 import 'package:google_mlkit_commons/google_mlkit_commons.dart'

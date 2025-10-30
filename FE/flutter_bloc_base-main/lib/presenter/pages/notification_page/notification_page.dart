@@ -9,8 +9,17 @@ import 'package:flutter_starter/data/entities/response/notification_response.dar
 import 'package:flutter_starter/di.dart' as di;
 
 @RoutePage()
-class NotificationPagePage extends StatefulWidget {
+class NotificationPagePage extends StatefulWidget implements AutoRouteWrapper {
   const NotificationPagePage({super.key});
+
+  @override
+  Widget wrappedRoute(BuildContext context) {
+    return BlocProvider<NotificationPageBloc>(
+      create: (ctx) => di.provider.get<NotificationPageBloc>()
+        ..add(const NotificationPageEvent.loadNotifications()),
+      child: this,
+    );
+  }
 
   @override
   State<NotificationPagePage> createState() => _NotificationPagePageState();
@@ -60,178 +69,174 @@ class _NotificationPagePageState extends State<NotificationPagePage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => di.provider.get<NotificationPageBloc>()
-        ..add(const NotificationPageEvent.loadNotifications()),
-      child: Scaffold(
-        backgroundColor: AppColors.backgroundLight,
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: AppColors.primaryPurple),
-            onPressed: () => context.maybePop(),
-          ),
-          title: ShaderMask(
-            shaderCallback: (bounds) => LinearGradient(
-              colors: AppColors.gradientPurple,
-            ).createShader(bounds),
-            child: const Text(
-              'Notifications',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-                letterSpacing: 0.5,
-              ),
-            ),
-          ),
-          centerTitle: true,
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(1),
-            child: Container(
-              height: 1,
-              color: AppColors.textSecondary.withOpacity(0.2),
+    return Scaffold(
+      backgroundColor: AppColors.backgroundLight,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: AppColors.primaryPurple),
+          onPressed: () => context.maybePop(),
+        ),
+        title: ShaderMask(
+          shaderCallback: (bounds) => LinearGradient(
+            colors: AppColors.gradientPurple,
+          ).createShader(bounds),
+          child: const Text(
+            'Notifications',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              letterSpacing: 0.5,
             ),
           ),
         ),
-        body: BlocBuilder<NotificationPageBloc, NotificationPageState>(
-          builder: (context, state) {
-            if (state.isLoading && state.notifications.isEmpty) {
-              return Center(
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryPurple),
-                ),
-              );
-            }
-
-            if (state.hasError && state.notifications.isEmpty) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.error_outline,
-                      size: 64,
-                      color: Colors.red.withOpacity(0.5),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Failed to load notifications',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      state.errorMessage,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: AppColors.textSecondary.withOpacity(0.7),
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 24),
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        context.read<NotificationPageBloc>().add(
-                              const NotificationPageEvent.refreshNotifications(),
-                            );
-                      },
-                      icon: const Icon(Icons.refresh),
-                      label: const Text('Retry'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primaryPurple,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }
-
-            if (state.notifications.isEmpty) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(24),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: AppColors.gradientPurple.map((c) => c.withOpacity(0.1)).toList(),
-                        ),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        Icons.notifications_none,
-                        size: 64,
-                        color: AppColors.primaryPurple.withOpacity(0.5),
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    Text(
-                      'No notifications yet',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'You\'ll see notifications here when you get them',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: AppColors.textSecondary,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              );
-            }
-
-            return RefreshIndicator(
-              onRefresh: () async {
-                context.read<NotificationPageBloc>().add(
-                      const NotificationPageEvent.refreshNotifications(),
-                    );
-              },
-              color: AppColors.primaryPurple,
-              child: ListView.builder(
-                controller: _scrollController,
-                padding: const EdgeInsets.all(16),
-                itemCount: state.notifications.length + (state.isLoadingMore ? 1 : 0),
-                itemBuilder: (context, index) {
-                  if (index == state.notifications.length) {
-                    return Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Center(
-                        child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryPurple),
-                        ),
-                      ),
-                    );
-                  }
-
-                  final notification = state.notifications[index];
-                  return _NotificationCard(
-                    notification: notification,
-                    formatTimeAgo: _formatTimeAgo,
-                    onTap: () {
-                      context.read<NotificationPageBloc>().add(
-                            NotificationPageEvent.markAsRead(notification.id.toString()),
-                          );
-                    },
-                  );
-                },
+        centerTitle: true,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Container(
+            height: 1,
+            color: AppColors.textSecondary.withOpacity(0.2),
+          ),
+        ),
+      ),
+      body: BlocBuilder<NotificationPageBloc, NotificationPageState>(
+        builder: (context, state) {
+          if (state.isLoading && state.notifications.isEmpty) {
+            return Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryPurple),
               ),
             );
-          },
-        ),
+          }
+
+          if (state.hasError && state.notifications.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.error_outline,
+                    size: 64,
+                    color: Colors.red.withOpacity(0.5),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Failed to load notifications',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    state.errorMessage,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: AppColors.textSecondary.withOpacity(0.7),
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 24),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      context.read<NotificationPageBloc>().add(
+                            const NotificationPageEvent.refreshNotifications(),
+                          );
+                    },
+                    icon: const Icon(Icons.refresh),
+                    label: const Text('Retry'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primaryPurple,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          if (state.notifications.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: AppColors.gradientPurple.map((c) => c.withOpacity(0.1)).toList(),
+                      ),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.notifications_none,
+                      size: 64,
+                      color: AppColors.primaryPurple.withOpacity(0.5),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Text(
+                    'No notifications yet',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'You\'ll see notifications here when you get them',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: AppColors.textSecondary,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            );
+          }
+
+          return RefreshIndicator(
+            onRefresh: () async {
+              context.read<NotificationPageBloc>().add(
+                    const NotificationPageEvent.refreshNotifications(),
+                  );
+            },
+            color: AppColors.primaryPurple,
+            child: ListView.builder(
+              controller: _scrollController,
+              padding: const EdgeInsets.all(16),
+              itemCount: state.notifications.length + (state.isLoadingMore ? 1 : 0),
+              itemBuilder: (context, index) {
+                if (index == state.notifications.length) {
+                  return Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryPurple),
+                      ),
+                    ),
+                  );
+                }
+
+                final notification = state.notifications[index];
+                return _NotificationCard(
+                  notification: notification,
+                  formatTimeAgo: _formatTimeAgo,
+                  onTap: () {
+                    context.read<NotificationPageBloc>().add(
+                          NotificationPageEvent.markAsRead(notification.id.toString()),
+                        );
+                  },
+                );
+              },
+            ),
+          );
+        },
       ),
     );
   }
@@ -292,11 +297,11 @@ class _NotificationCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  child: notification.imageUrl.isNotEmpty
+                  child: notification.imageUrl?.isNotEmpty == true
                       ? ClipRRect(
                           borderRadius: BorderRadius.circular(12),
                           child: Image.network(
-                            notification.imageUrl,
+                            notification.imageUrl ?? '',
                             fit: BoxFit.cover,
                             errorBuilder: (context, error, stackTrace) {
                               return Icon(

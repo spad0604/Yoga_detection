@@ -24,6 +24,7 @@ mixin _$CreateGroupRequest {
   String? get description => throw _privateConstructorUsedError;
   String? get imageUrl => throw _privateConstructorUsedError;
   bool get isPrivate => throw _privateConstructorUsedError;
+  String get createdBy => throw _privateConstructorUsedError;
 
   /// Serializes this CreateGroupRequest to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -42,7 +43,11 @@ abstract class $CreateGroupRequestCopyWith<$Res> {
       _$CreateGroupRequestCopyWithImpl<$Res, CreateGroupRequest>;
   @useResult
   $Res call(
-      {String name, String? description, String? imageUrl, bool isPrivate});
+      {String name,
+      String? description,
+      String? imageUrl,
+      bool isPrivate,
+      String createdBy});
 }
 
 /// @nodoc
@@ -64,6 +69,7 @@ class _$CreateGroupRequestCopyWithImpl<$Res, $Val extends CreateGroupRequest>
     Object? description = freezed,
     Object? imageUrl = freezed,
     Object? isPrivate = null,
+    Object? createdBy = null,
   }) {
     return _then(_value.copyWith(
       name: null == name
@@ -82,6 +88,10 @@ class _$CreateGroupRequestCopyWithImpl<$Res, $Val extends CreateGroupRequest>
           ? _value.isPrivate
           : isPrivate // ignore: cast_nullable_to_non_nullable
               as bool,
+      createdBy: null == createdBy
+          ? _value.createdBy
+          : createdBy // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 }
@@ -95,7 +105,11 @@ abstract class _$$CreateGroupRequestImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String name, String? description, String? imageUrl, bool isPrivate});
+      {String name,
+      String? description,
+      String? imageUrl,
+      bool isPrivate,
+      String createdBy});
 }
 
 /// @nodoc
@@ -115,6 +129,7 @@ class __$$CreateGroupRequestImplCopyWithImpl<$Res>
     Object? description = freezed,
     Object? imageUrl = freezed,
     Object? isPrivate = null,
+    Object? createdBy = null,
   }) {
     return _then(_$CreateGroupRequestImpl(
       name: null == name
@@ -133,6 +148,10 @@ class __$$CreateGroupRequestImplCopyWithImpl<$Res>
           ? _value.isPrivate
           : isPrivate // ignore: cast_nullable_to_non_nullable
               as bool,
+      createdBy: null == createdBy
+          ? _value.createdBy
+          : createdBy // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -144,7 +163,8 @@ class _$CreateGroupRequestImpl implements _CreateGroupRequest {
       {required this.name,
       this.description,
       this.imageUrl,
-      this.isPrivate = false});
+      this.isPrivate = false,
+      this.createdBy = ""});
 
   factory _$CreateGroupRequestImpl.fromJson(Map<String, dynamic> json) =>
       _$$CreateGroupRequestImplFromJson(json);
@@ -158,10 +178,13 @@ class _$CreateGroupRequestImpl implements _CreateGroupRequest {
   @override
   @JsonKey()
   final bool isPrivate;
+  @override
+  @JsonKey()
+  final String createdBy;
 
   @override
   String toString() {
-    return 'CreateGroupRequest(name: $name, description: $description, imageUrl: $imageUrl, isPrivate: $isPrivate)';
+    return 'CreateGroupRequest(name: $name, description: $description, imageUrl: $imageUrl, isPrivate: $isPrivate, createdBy: $createdBy)';
   }
 
   @override
@@ -175,13 +198,15 @@ class _$CreateGroupRequestImpl implements _CreateGroupRequest {
             (identical(other.imageUrl, imageUrl) ||
                 other.imageUrl == imageUrl) &&
             (identical(other.isPrivate, isPrivate) ||
-                other.isPrivate == isPrivate));
+                other.isPrivate == isPrivate) &&
+            (identical(other.createdBy, createdBy) ||
+                other.createdBy == createdBy));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, name, description, imageUrl, isPrivate);
+  int get hashCode => Object.hash(
+      runtimeType, name, description, imageUrl, isPrivate, createdBy);
 
   /// Create a copy of CreateGroupRequest
   /// with the given fields replaced by the non-null parameter values.
@@ -205,7 +230,8 @@ abstract class _CreateGroupRequest implements CreateGroupRequest {
       {required final String name,
       final String? description,
       final String? imageUrl,
-      final bool isPrivate}) = _$CreateGroupRequestImpl;
+      final bool isPrivate,
+      final String createdBy}) = _$CreateGroupRequestImpl;
 
   factory _CreateGroupRequest.fromJson(Map<String, dynamic> json) =
       _$CreateGroupRequestImpl.fromJson;
@@ -218,6 +244,8 @@ abstract class _CreateGroupRequest implements CreateGroupRequest {
   String? get imageUrl;
   @override
   bool get isPrivate;
+  @override
+  String get createdBy;
 
   /// Create a copy of CreateGroupRequest
   /// with the given fields replaced by the non-null parameter values.

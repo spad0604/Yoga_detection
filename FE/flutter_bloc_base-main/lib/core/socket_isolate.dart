@@ -129,10 +129,16 @@ class WebSocketIsolate {
 
           try {
             final opts = <String, dynamic>{
-              'transports': ['websocket'],
+              'transports': ['polling', 'websocket'],
               'path': '/socket.io',
+              'forceNew': true,
+              'reconnection': true,
+              'reconnectionDelay': 1000,
+              'timeout': 5000,
             };
-            if (headersMap != null && headersMap.isNotEmpty) opts['extraHeaders'] = headersMap;
+            if (headersMap != null && headersMap.isNotEmpty) {
+              opts['extraHeaders'] = headersMap;
+            }
 
             socket = IO.io(url, opts);
 
