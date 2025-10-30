@@ -48,7 +48,7 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
 
     emit(state.copyWith(
       status: SplashStatus.success,
-      account: account,
+      account: account.data,
     ));
   }
 }

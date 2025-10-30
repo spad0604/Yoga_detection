@@ -9,6 +9,8 @@ import 'package:flutter_starter/presenter/pages/splash/splash_bloc.dart';
 import 'package:flutter_starter/presenter/pages/splash/splash_event.dart';
 import 'package:flutter_starter/presenter/pages/splash/splash_selector.dart';
 import 'package:flutter_starter/presenter/pages/splash/splash_state.dart';
+import 'package:flutter_starter/data/states/auth/auth_bloc.dart';
+import 'package:flutter_starter/data/states/auth/auth_event.dart';
 
 @RoutePage()
 class SplashPage extends StatefulWidget implements AutoRouteWrapper {
@@ -39,7 +41,14 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   void _onSuccess(BuildContext context, SplashState state) {
-    context.router.replaceAll([HomeRoute()]);
+    // Notify AuthBloc that user is logged in so the route guard allows navigation
+    if (state.account != null) {
+      try {
+        context.read<AuthBloc>().add(AuthLoggedIn(state.account!));
+      } catch (_) {}
+    }
+
+    context.router.pushAll([HomeRoute()]);
   }
 
   void _onError(BuildContext context, SplashState state) {

@@ -17,7 +17,7 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$SplashState {
   SplashStatus get status => throw _privateConstructorUsedError;
-  Account? get account => throw _privateConstructorUsedError;
+  RegisterResponse? get account => throw _privateConstructorUsedError;
   BaseException<dynamic>? get error => throw _privateConstructorUsedError;
 
   /// Create a copy of SplashState
@@ -34,9 +34,11 @@ abstract class $SplashStateCopyWith<$Res> {
       _$SplashStateCopyWithImpl<$Res, SplashState>;
   @useResult
   $Res call(
-      {SplashStatus status, Account? account, BaseException<dynamic>? error});
+      {SplashStatus status,
+      RegisterResponse? account,
+      BaseException<dynamic>? error});
 
-  $AccountCopyWith<$Res>? get account;
+  $RegisterResponseCopyWith<$Res>? get account;
 }
 
 /// @nodoc
@@ -66,7 +68,7 @@ class _$SplashStateCopyWithImpl<$Res, $Val extends SplashState>
       account: freezed == account
           ? _value.account
           : account // ignore: cast_nullable_to_non_nullable
-              as Account?,
+              as RegisterResponse?,
       error: freezed == error
           ? _value.error
           : error // ignore: cast_nullable_to_non_nullable
@@ -78,12 +80,12 @@ class _$SplashStateCopyWithImpl<$Res, $Val extends SplashState>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $AccountCopyWith<$Res>? get account {
+  $RegisterResponseCopyWith<$Res>? get account {
     if (_value.account == null) {
       return null;
     }
 
-    return $AccountCopyWith<$Res>(_value.account!, (value) {
+    return $RegisterResponseCopyWith<$Res>(_value.account!, (value) {
       return _then(_value.copyWith(account: value) as $Val);
     });
   }
@@ -98,10 +100,12 @@ abstract class _$$SplashStateImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {SplashStatus status, Account? account, BaseException<dynamic>? error});
+      {SplashStatus status,
+      RegisterResponse? account,
+      BaseException<dynamic>? error});
 
   @override
-  $AccountCopyWith<$Res>? get account;
+  $RegisterResponseCopyWith<$Res>? get account;
 }
 
 /// @nodoc
@@ -129,7 +133,7 @@ class __$$SplashStateImplCopyWithImpl<$Res>
       account: freezed == account
           ? _value.account
           : account // ignore: cast_nullable_to_non_nullable
-              as Account?,
+              as RegisterResponse?,
       error: freezed == error
           ? _value.error
           : error // ignore: cast_nullable_to_non_nullable
@@ -148,7 +152,7 @@ class _$SplashStateImpl implements _SplashState {
   @JsonKey()
   final SplashStatus status;
   @override
-  final Account? account;
+  final RegisterResponse? account;
   @override
   final BaseException<dynamic>? error;
 
@@ -182,13 +186,13 @@ class _$SplashStateImpl implements _SplashState {
 abstract class _SplashState implements SplashState {
   const factory _SplashState(
       {final SplashStatus status,
-      final Account? account,
+      final RegisterResponse? account,
       final BaseException<dynamic>? error}) = _$SplashStateImpl;
 
   @override
   SplashStatus get status;
   @override
-  Account? get account;
+  RegisterResponse? get account;
   @override
   BaseException<dynamic>? get error;
 

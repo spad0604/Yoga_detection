@@ -4,7 +4,7 @@ import 'package:flutter_starter/data/entities/response/verify_otp.dart';
 import 'package:flutter_starter/data/sources/network/base_api_response.dart';
 
 abstract class AuthRepository {
-  Future<Account> verifyLoginStatus();
+  Future<BaseApiResponse<RegisterResponse>> verifyLoginStatus();
 
   Future<BaseApiResponse<RegisterResponse>> login({
     required String email,

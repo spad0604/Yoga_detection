@@ -74,11 +74,11 @@ class AppRouter extends RootStackRouter {
           (resolver, router) {
             final isAuthenticated = _authBloc.state.loggedIn;
 
-            if (isAuthorizedRoute(resolver.routeName) && !isAuthenticated) {
+            if (isUnauthorizedRoute(resolver.routeName) && !isAuthenticated) {
               return resolver.redirect(LoginRoute(), replace: true);
             }
 
-            if (isUnauthorizedRoute(resolver.routeName) && isAuthenticated) {
+            if (isAuthorizedRoute(resolver.routeName) && isAuthenticated) {
               return resolver.redirect(HomeRoute(), replace: true);
             }
 

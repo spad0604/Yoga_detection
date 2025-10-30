@@ -58,7 +58,7 @@ class DefaultAuthRepository extends AuthRepository {
   }
 
   @override
-  Future<Account> verifyLoginStatus() async {
+  Future<BaseApiResponse<RegisterResponse>> verifyLoginStatus() async {
     // Instead of calling the unused verify endpoint directly on app start,
     // attempt to refresh tokens using stored refresh token, then verify.
     final refreshToken = await _tokenManager.getRefreshToken();
@@ -87,7 +87,11 @@ class DefaultAuthRepository extends AuthRepository {
       if (newRefresh != null) await _tokenManager.saveRefreshToken(newRefresh);
 
       // Now call verify endpoint to get account info (requires Authorization)
-      return await _networkDataSource.verifyLoginStatus();
+      final response = await _networkDataSource.refreshToken(
+        RefreshTokenRequest(refreshToken: newRefresh!),
+      );
+
+      return response;
     } on DioException {
       await _tokenManager.removeAllTokens();
       rethrow;
