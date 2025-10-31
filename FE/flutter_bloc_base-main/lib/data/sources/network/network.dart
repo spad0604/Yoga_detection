@@ -77,7 +77,7 @@ abstract class NetworkDataSource {
 
   @MultiPart()
   @POST('api/pose-attempts')
-  Future<BaseApiResponse<void>> postYogaPose(@Body() FormData formData);
+  Future<BaseApiResponse<UserYogaPoseModel>> postYogaPose(@Body() FormData formData);
 
   @GET("api/pose-attempts/by-date")
   Future<BaseApiResponse<PageResponse<UserYogaPoseModel>>> getUserYogaPosesByDate(

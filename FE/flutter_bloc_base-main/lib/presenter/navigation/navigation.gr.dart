@@ -350,6 +350,54 @@ class PoseDetailsRouteArgs {
 }
 
 /// generated route for
+/// [PoseResultPage]
+class PoseResultRoute extends PageRouteInfo<PoseResultRouteArgs> {
+  PoseResultRoute({
+    Key? key,
+    required UserYogaPoseModel result,
+    String? poseName,
+    List<PageRouteInfo>? children,
+  }) : super(
+         PoseResultRoute.name,
+         args: PoseResultRouteArgs(
+           key: key,
+           result: result,
+           poseName: poseName,
+         ),
+         initialChildren: children,
+       );
+
+  static const String name = 'PoseResultRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<PoseResultRouteArgs>();
+      return PoseResultPage(
+        key: args.key,
+        result: args.result,
+        poseName: args.poseName,
+      );
+    },
+  );
+}
+
+class PoseResultRouteArgs {
+  const PoseResultRouteArgs({this.key, required this.result, this.poseName});
+
+  final Key? key;
+
+  final UserYogaPoseModel result;
+
+  final String? poseName;
+
+  @override
+  String toString() {
+    return 'PoseResultRouteArgs{key: $key, result: $result, poseName: $poseName}';
+  }
+}
+
+/// generated route for
 /// [RegisterPage]
 class RegisterRoute extends PageRouteInfo<void> {
   const RegisterRoute({List<PageRouteInfo>? children})

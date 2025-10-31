@@ -8,6 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_starter/presenter/navigation/navigation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_starter/data/states/camera_detection/camera_detection_event.dart';
 import 'package:flutter_starter/data/states/camera_detection/camera_detection_state.dart';
@@ -112,7 +113,7 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
         final args = route.settings.arguments as Map;
         // Common keys: token, poseId or item.id, optional wsBase
         _jwtToken = args['token'] as String? ?? _jwtToken;
-        _wsBase = args['wsBase'] as String? ?? _wsBase; // e.g. ws://13.211.229.143:9080
+        _wsBase = args['wsBase'] as String? ?? _wsBase; // e.g. ws://13.211.219.53:9080
         if (args['poseId'] is String) _poseIdFromArgs = args['poseId'] as String;
         if (args['item'] != null && args['item'].id != null) {
           _poseIdFromArgs = args['item'].id as String;
@@ -121,7 +122,7 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
     } catch (_) {}
 
     // Default base if not provided
-    _wsBase ??= 'http://13.211.229.143:9080';
+    _wsBase ??= 'http://13.211.219.53:9080';
 
     // Subscribe to events once
     _wsSub ??= _ws.events.listen((event) {
@@ -190,7 +191,7 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
   }
 
   String _buildPoseWsUrl() {
-    final base = _prepareWsUrlFromBase(_wsBase ?? 'http://13.211.229.143:9080');
+    final base = _prepareWsUrlFromBase(_wsBase ?? 'http://13.211.219.53:9080');
     final tokenPart = (!_usingAuthHeader && _jwtToken != null && _jwtToken!.isNotEmpty)
         ? '?token=${Uri.encodeQueryComponent(_jwtToken!)}'
         : '';
@@ -417,24 +418,47 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
         timestamp: DateTime.now().toIso8601String(),
       );
 
-      // Upload via HTTP
+      // Upload via HTTP (wait for API response and then show result)
       debugPrint('\n${'=' * 60}');
       debugPrint('📤 UPLOADING POSE VIA HTTP');
       debugPrint('${'=' * 60}');
       debugPrint('Pose ID: $poseId');
       debugPrint('Image path: $imagePath');
       debugPrint('Landmarks count: ${landmarks.length}');
-      debugPrint('Waiting for result via Socket.IO...');
+      debugPrint('Waiting for API response...');
       debugPrint('${'=' * 60}\n');
 
       final useCase = provider<PostYogaPoseUC>();
-      await useCase(PostYogaPoseParams(
+      // Show waiting page while calling API
+      if (mounted) {
+        context.router.push(const WaitingResultRoute());
+      }
+
+      final result = await useCase(PostYogaPoseParams(
         imagePath: imagePath,
         model: model,
       ));
 
-      debugPrint(
-          '✅ Pose uploaded successfully. Result will arrive via Socket.IO event "pose_result"');
+      debugPrint('✅ Pose uploaded successfully. Got immediate result from API');
+
+      // Navigate to pretty result screen
+      if (mounted) {
+        // Try to pass poseName from args if available
+        String? poseName;
+        try {
+          final route = ModalRoute.of(context);
+          if (route != null && route.settings.arguments is Map) {
+            final args = route.settings.arguments as Map;
+            if (args['item'] != null && args['item'].name != null) {
+              poseName = args['item'].name as String?;
+            } else if (args['poseName'] is String) {
+              poseName = args['poseName'] as String;
+            }
+          }
+        } catch (_) {}
+
+        context.router.replace(PoseResultRoute(result: result, poseName: poseName));
+      }
 
       // Clean up temp file
       try {

@@ -93,7 +93,7 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
       }
     } catch (_) {}
 
-    _wsBase ??= 'http://13.211.229.143:9080';
+    _wsBase ??= 'http://13.211.219.53:9080';
 
     // Connect socket via BLoC
     if (_jwtToken != null && _jwtToken!.isNotEmpty) {

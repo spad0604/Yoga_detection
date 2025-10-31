@@ -81,7 +81,7 @@ class YogaPosesRepositoryImpl implements YogaPosesRepository {
   }
 
   @override
-  Future<void> postYogaPose(PostYogaPoseModel model, String imagePath) {
+  Future<UserYogaPoseModel> postYogaPose(PostYogaPoseModel model, String imagePath) {
     try {
       final String poseCode = model.poseId; // map poseId -> poseCode expected by backend
 
@@ -148,8 +148,8 @@ class YogaPosesRepositoryImpl implements YogaPosesRepository {
 
       final res = _networkDataSource.postYogaPose(formData);
       return res.then((value) {
-        if (value.code == 200) {
-          return;
+        if (value.code == 200 && value.data != null) {
+          return value.data!;
         } else {
           throw Exception('Failed to post yoga pose');
         }

@@ -375,12 +375,14 @@ class _NetworkDataSource implements NetworkDataSource {
   }
 
   @override
-  Future<BaseApiResponse<void>> postYogaPose(FormData formData) async {
+  Future<BaseApiResponse<UserYogaPoseModel>> postYogaPose(
+    FormData formData,
+  ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = formData;
-    final _options = _setStreamType<BaseApiResponse<void>>(
+    final _options = _setStreamType<BaseApiResponse<UserYogaPoseModel>>(
       Options(
         method: 'POST',
         headers: _headers,
@@ -396,9 +398,12 @@ class _NetworkDataSource implements NetworkDataSource {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late BaseApiResponse<void> _value;
+    late BaseApiResponse<UserYogaPoseModel> _value;
     try {
-      _value = BaseApiResponse<void>.fromJson(_result.data!, (json) => () {}());
+      _value = BaseApiResponse<UserYogaPoseModel>.fromJson(
+        _result.data!,
+        (json) => UserYogaPoseModel.fromJson(json as Map<String, dynamic>),
+      );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;
