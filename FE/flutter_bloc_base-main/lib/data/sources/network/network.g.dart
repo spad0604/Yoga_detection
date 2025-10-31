@@ -2278,6 +2278,264 @@ class _NetworkDataSource implements NetworkDataSource {
     return _value;
   }
 
+  @override
+  Future<BaseApiResponse<PracticeSession>> startPracticeSession(
+    String routineId,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'routineId': routineId};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<BaseApiResponse<PracticeSession>>(
+      Options(method: 'POST', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            'api/practice-sessions/start',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseApiResponse<PracticeSession> _value;
+    try {
+      _value = BaseApiResponse<PracticeSession>.fromJson(
+        _result.data!,
+        (json) => PracticeSession.fromJson(json as Map<String, dynamic>),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<BaseApiResponse<PracticeSession>> getPracticeSession(
+    String sessionId,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<BaseApiResponse<PracticeSession>>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            'api/practice-sessions/${sessionId}',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseApiResponse<PracticeSession> _value;
+    try {
+      _value = BaseApiResponse<PracticeSession>.fromJson(
+        _result.data!,
+        (json) => PracticeSession.fromJson(json as Map<String, dynamic>),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<BaseApiResponse<PracticeSession>> submitPoseInSession({
+    required String sessionId,
+    required String poseCode,
+    required File imageFile,
+    int? timeSpentSeconds,
+    String? landmarkData,
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
+    final _data = FormData();
+    _data.fields.add(MapEntry('poseCode', poseCode));
+    _data.files.add(
+      MapEntry(
+        'image',
+        MultipartFile.fromFileSync(
+          imageFile.path,
+          filename: imageFile.path.split(Platform.pathSeparator).last,
+        ),
+      ),
+    );
+    if (timeSpentSeconds != null) {
+      _data.fields.add(
+        MapEntry('timeSpentSeconds', timeSpentSeconds.toString()),
+      );
+    }
+    if (landmarkData != null) {
+      _data.fields.add(MapEntry('landmarkData', landmarkData));
+    }
+    final _options = _setStreamType<BaseApiResponse<PracticeSession>>(
+      Options(
+        method: 'POST',
+        headers: _headers,
+        extra: _extra,
+        contentType: 'multipart/form-data',
+      )
+          .compose(
+            _dio.options,
+            'api/practice-sessions/${sessionId}/submit-pose',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseApiResponse<PracticeSession> _value;
+    try {
+      _value = BaseApiResponse<PracticeSession>.fromJson(
+        _result.data!,
+        (json) => PracticeSession.fromJson(json as Map<String, dynamic>),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<BaseApiResponse<PracticeSession>> skipPoseInSession(
+    String sessionId,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<BaseApiResponse<PracticeSession>>(
+      Options(method: 'POST', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            'api/practice-sessions/${sessionId}/skip',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseApiResponse<PracticeSession> _value;
+    try {
+      _value = BaseApiResponse<PracticeSession>.fromJson(
+        _result.data!,
+        (json) => PracticeSession.fromJson(json as Map<String, dynamic>),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<BaseApiResponse<PracticeSession>> completePracticeSession(
+    String sessionId,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<BaseApiResponse<PracticeSession>>(
+      Options(method: 'POST', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            'api/practice-sessions/${sessionId}/complete',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseApiResponse<PracticeSession> _value;
+    try {
+      _value = BaseApiResponse<PracticeSession>.fromJson(
+        _result.data!,
+        (json) => PracticeSession.fromJson(json as Map<String, dynamic>),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<BaseApiResponse<void>> abandonPracticeSession(String sessionId) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<BaseApiResponse<void>>(
+      Options(method: 'DELETE', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            'api/practice-sessions/${sessionId}',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseApiResponse<void> _value;
+    try {
+      _value = BaseApiResponse<void>.fromJson(_result.data!, (json) => () {}());
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<BaseApiResponse<List<PracticeSession>>> getPracticeSessionHistory({
+    String? startDate,
+    String? endDate,
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'startDate': startDate,
+      r'endDate': endDate,
+    };
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<BaseApiResponse<List<PracticeSession>>>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            'api/practice-sessions/history',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseApiResponse<List<PracticeSession>> _value;
+    try {
+      _value = BaseApiResponse<List<PracticeSession>>.fromJson(
+        _result.data!,
+        (json) => json is List<dynamic>
+            ? json
+                .map<PracticeSession>(
+                  (i) => PracticeSession.fromJson(i as Map<String, dynamic>),
+                )
+                .toList()
+            : List.empty(),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {
     if (T != dynamic &&
         !(requestOptions.responseType == ResponseType.bytes ||

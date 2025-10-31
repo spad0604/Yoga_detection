@@ -72,7 +72,7 @@ public class SocialServiceImpl implements SocialService {
             NotificationRequest notif = new NotificationRequest();
             notif.setAll(false);
             notif.setUserId(friend.getId());
-            String title = requester.getUsername() != null ? requester.getUsername() : requester.getEmail();
+            String title = requester.getLastName() != null ? requester.getLastName() : requester.getEmail();
             notif.setNormalTitle(title + " đã gửi cho bạn lời mời kết bạn");
             notif.setHtmlTitle(null);
             notif.setImageUrl(null);

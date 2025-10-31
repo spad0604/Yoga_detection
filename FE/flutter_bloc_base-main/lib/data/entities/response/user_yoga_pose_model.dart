@@ -7,6 +7,7 @@ part 'user_yoga_pose_model.g.dart';
 class UserYogaPoseModel with _$UserYogaPoseModel {
   const factory UserYogaPoseModel({
     @JsonKey(name: "id") required String id,
+    @JsonKey(name: "poseName") String? name,
     @JsonKey(name: "poseCode") required String poseCode,
     @JsonKey(name: "imageUrl") String? imageUrl,
     @JsonKey(name: "score") double? score,

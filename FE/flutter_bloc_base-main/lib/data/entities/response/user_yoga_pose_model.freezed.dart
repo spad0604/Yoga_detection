@@ -22,6 +22,8 @@ UserYogaPoseModel _$UserYogaPoseModelFromJson(Map<String, dynamic> json) {
 mixin _$UserYogaPoseModel {
   @JsonKey(name: "id")
   String get id => throw _privateConstructorUsedError;
+  @JsonKey(name: "poseName")
+  String? get name => throw _privateConstructorUsedError;
   @JsonKey(name: "poseCode")
   String get poseCode => throw _privateConstructorUsedError;
   @JsonKey(name: "imageUrl")
@@ -51,6 +53,7 @@ abstract class $UserYogaPoseModelCopyWith<$Res> {
   @useResult
   $Res call(
       {@JsonKey(name: "id") String id,
+      @JsonKey(name: "poseName") String? name,
       @JsonKey(name: "poseCode") String poseCode,
       @JsonKey(name: "imageUrl") String? imageUrl,
       @JsonKey(name: "score") double? score,
@@ -74,6 +77,7 @@ class _$UserYogaPoseModelCopyWithImpl<$Res, $Val extends UserYogaPoseModel>
   @override
   $Res call({
     Object? id = null,
+    Object? name = freezed,
     Object? poseCode = null,
     Object? imageUrl = freezed,
     Object? score = freezed,
@@ -85,6 +89,10 @@ class _$UserYogaPoseModelCopyWithImpl<$Res, $Val extends UserYogaPoseModel>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
+      name: freezed == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String?,
       poseCode: null == poseCode
           ? _value.poseCode
           : poseCode // ignore: cast_nullable_to_non_nullable
@@ -119,6 +127,7 @@ abstract class _$$UserYogaPoseModelImplCopyWith<$Res>
   @useResult
   $Res call(
       {@JsonKey(name: "id") String id,
+      @JsonKey(name: "poseName") String? name,
       @JsonKey(name: "poseCode") String poseCode,
       @JsonKey(name: "imageUrl") String? imageUrl,
       @JsonKey(name: "score") double? score,
@@ -140,6 +149,7 @@ class __$$UserYogaPoseModelImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
+    Object? name = freezed,
     Object? poseCode = null,
     Object? imageUrl = freezed,
     Object? score = freezed,
@@ -151,6 +161,10 @@ class __$$UserYogaPoseModelImplCopyWithImpl<$Res>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
+      name: freezed == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String?,
       poseCode: null == poseCode
           ? _value.poseCode
           : poseCode // ignore: cast_nullable_to_non_nullable
@@ -180,6 +194,7 @@ class __$$UserYogaPoseModelImplCopyWithImpl<$Res>
 class _$UserYogaPoseModelImpl implements _UserYogaPoseModel {
   const _$UserYogaPoseModelImpl(
       {@JsonKey(name: "id") required this.id,
+      @JsonKey(name: "poseName") this.name,
       @JsonKey(name: "poseCode") required this.poseCode,
       @JsonKey(name: "imageUrl") this.imageUrl,
       @JsonKey(name: "score") this.score,
@@ -192,6 +207,9 @@ class _$UserYogaPoseModelImpl implements _UserYogaPoseModel {
   @override
   @JsonKey(name: "id")
   final String id;
+  @override
+  @JsonKey(name: "poseName")
+  final String? name;
   @override
   @JsonKey(name: "poseCode")
   final String poseCode;
@@ -210,7 +228,7 @@ class _$UserYogaPoseModelImpl implements _UserYogaPoseModel {
 
   @override
   String toString() {
-    return 'UserYogaPoseModel(id: $id, poseCode: $poseCode, imageUrl: $imageUrl, score: $score, feedback: $feedback, createAt: $createAt)';
+    return 'UserYogaPoseModel(id: $id, name: $name, poseCode: $poseCode, imageUrl: $imageUrl, score: $score, feedback: $feedback, createAt: $createAt)';
   }
 
   @override
@@ -219,6 +237,7 @@ class _$UserYogaPoseModelImpl implements _UserYogaPoseModel {
         (other.runtimeType == runtimeType &&
             other is _$UserYogaPoseModelImpl &&
             (identical(other.id, id) || other.id == id) &&
+            (identical(other.name, name) || other.name == name) &&
             (identical(other.poseCode, poseCode) ||
                 other.poseCode == poseCode) &&
             (identical(other.imageUrl, imageUrl) ||
@@ -233,7 +252,7 @@ class _$UserYogaPoseModelImpl implements _UserYogaPoseModel {
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
-      runtimeType, id, poseCode, imageUrl, score, feedback, createAt);
+      runtimeType, id, name, poseCode, imageUrl, score, feedback, createAt);
 
   /// Create a copy of UserYogaPoseModel
   /// with the given fields replaced by the non-null parameter values.
@@ -255,6 +274,7 @@ class _$UserYogaPoseModelImpl implements _UserYogaPoseModel {
 abstract class _UserYogaPoseModel implements UserYogaPoseModel {
   const factory _UserYogaPoseModel(
           {@JsonKey(name: "id") required final String id,
+          @JsonKey(name: "poseName") final String? name,
           @JsonKey(name: "poseCode") required final String poseCode,
           @JsonKey(name: "imageUrl") final String? imageUrl,
           @JsonKey(name: "score") final double? score,
@@ -268,6 +288,9 @@ abstract class _UserYogaPoseModel implements UserYogaPoseModel {
   @override
   @JsonKey(name: "id")
   String get id;
+  @override
+  @JsonKey(name: "poseName")
+  String? get name;
   @override
   @JsonKey(name: "poseCode")
   String get poseCode;

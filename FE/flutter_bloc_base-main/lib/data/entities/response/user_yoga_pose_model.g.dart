@@ -10,6 +10,7 @@ _$UserYogaPoseModelImpl _$$UserYogaPoseModelImplFromJson(
         Map<String, dynamic> json) =>
     _$UserYogaPoseModelImpl(
       id: json['id'] as String,
+      name: json['poseName'] as String?,
       poseCode: json['poseCode'] as String,
       imageUrl: json['imageUrl'] as String?,
       score: (json['score'] as num?)?.toDouble(),
@@ -21,6 +22,7 @@ Map<String, dynamic> _$$UserYogaPoseModelImplToJson(
         _$UserYogaPoseModelImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
+      'poseName': instance.name,
       'poseCode': instance.poseCode,
       'imageUrl': instance.imageUrl,
       'score': instance.score,

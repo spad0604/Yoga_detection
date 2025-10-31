@@ -3,15 +3,17 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:flutter_starter/core/exception.dart';
+import 'package:flutter_starter/data/repositories/practice_session_repository/practice_session_repository.dart';
 import 'package:flutter_starter/data/repositories/yoga_poses_repository/yoga_poses_repository.dart';
 import 'package:flutter_starter/presenter/pages/history/history_event.dart';
 import 'package:flutter_starter/presenter/pages/history/history_state.dart';
 
 @injectable
 class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
-  final YogaPosesRepository _repository;
+  final PracticeSessionRepository _sessionRepository;
+  final YogaPosesRepository _posesRepository;
 
-  HistoryBloc(this._repository) : super(const HistoryState()) {
+  HistoryBloc(this._sessionRepository, this._posesRepository) : super(const HistoryState()) {
     on<HistoryErrorOccurred>(_onErrorOccurred);
     on<HistoryLoadPosesByDate>(_onLoadPosesByDate);
     on<HistoryLoadPoseDetail>(_onLoadPoseDetail);
@@ -25,20 +27,27 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
       emit(state.copyWith(status: HistoryStatus.loading));
 
       // Format dates to ISO 8601 strings
-      final startDateStr = event.startDate;
-      final endDateStr = event.endDate;
+      final startDateStr = event.startDate.toIso8601String();
+      final endDateStr = event.endDate.toIso8601String();
 
-      final response = await _repository.getUserYogaPosesByDate(
+      // Load both sessions and individual poses in parallel
+      final sessionsResult = await _sessionRepository.getPracticeSessionHistory(
+        startDate: startDateStr,
+        endDate: endDateStr,
+      );
+      
+      final posesResponse = await _posesRepository.getUserYogaPosesByDate(
         event.page,
-        startDateStr,
-        endDateStr,
+        event.startDate,
+        event.endDate,
       );
 
       emit(state.copyWith(
         status: HistoryStatus.success,
-        poses: response.items,
+        sessions: sessionsResult,
+        poses: posesResponse.items,
         currentPage: event.page,
-        hasMore: response.hasNext,
+        hasMore: posesResponse.hasNext,
       ));
     } catch (e) {
       add(HistoryErrorOccurred(BaseException.from(e)));
@@ -52,7 +61,7 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
     try {
       emit(state.copyWith(status: HistoryStatus.loading));
 
-      final pose = await _repository.getUserYogaPoseById(event.poseId);
+      final pose = await _posesRepository.getUserYogaPoseById(event.poseId);
 
       emit(state.copyWith(
         status: HistoryStatus.success,

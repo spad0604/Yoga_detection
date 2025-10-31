@@ -6,6 +6,7 @@ import 'package:flutter_starter/data/states/routine_details/routine_details_bloc
 import 'package:flutter_starter/data/states/routine_details/routine_details_event.dart';
 import 'package:flutter_starter/data/states/routine_details/routine_details_state.dart';
 import 'package:flutter_starter/di.dart';
+import 'package:flutter_starter/presenter/pages/routine_practice_session/routine_practice_session_page.dart';
 
 @RoutePage()
 class RoutineDetailsPage extends StatefulWidget implements AutoRouteWrapper {
@@ -70,10 +71,12 @@ class _RoutineDetailsPageState extends State<RoutineDetailsPage> {
   }
 
   Widget _buildContent(BuildContext context, YogaRoutine routine) {
-    return CustomScrollView(
-      slivers: [
-        // App Bar with Image
-        SliverAppBar(
+    return Stack(
+      children: [
+        CustomScrollView(
+          slivers: [
+            // App Bar with Image
+            SliverAppBar(
           expandedHeight: 250,
           pinned: true,
           flexibleSpace: FlexibleSpaceBar(
@@ -117,11 +120,11 @@ class _RoutineDetailsPageState extends State<RoutineDetailsPage> {
                     ],
                   )
                 : Container(color: Colors.grey[300]),
+            ),
           ),
-        ),
 
-        // Content
-        SliverToBoxAdapter(
+          // Content
+          SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
@@ -212,11 +215,11 @@ class _RoutineDetailsPageState extends State<RoutineDetailsPage> {
               ],
             ),
           ),
-        ),
+          ),
 
-        // Poses List
-        if (routine.poses != null)
-          SliverList(
+          // Poses List
+          if (routine.poses != null)
+            SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) {
                 final pose = routine.poses![index];
@@ -226,8 +229,55 @@ class _RoutineDetailsPageState extends State<RoutineDetailsPage> {
             ),
           ),
 
-        // Bottom spacing for button
-        const SliverToBoxAdapter(child: SizedBox(height: 80)),
+            // Bottom spacing for button
+            const SliverToBoxAdapter(child: SizedBox(height: 80)),
+          ],
+        ),
+        
+        // Floating action button
+        Positioned(
+          bottom: 16,
+          left: 16,
+          right: 16,
+          child: SafeArea(
+            child: ElevatedButton(
+              onPressed: () {
+                // Navigate to practice session page
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => RoutinePracticeSessionPage(
+                      routineId: routine.id,
+                    ),
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.all(16),
+                backgroundColor: Theme.of(context).primaryColor,
+                foregroundColor: Colors.white,
+                elevation: 8,
+                shadowColor: Theme.of(context).primaryColor.withOpacity(0.5),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.play_arrow, size: 28),
+                  SizedBox(width: 8),
+                  Text(
+                    'Bắt đầu tập',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }

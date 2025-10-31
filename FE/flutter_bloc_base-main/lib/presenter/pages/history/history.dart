@@ -2,16 +2,19 @@ import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_starter/data/entities/response/yoga_pose_details.dart';
+import 'package:flutter_starter/data/entities/response/practice_session.dart';
+import 'package:flutter_starter/data/entities/response/user_yoga_pose_model.dart';
 import 'package:flutter_starter/di.dart';
 import 'package:flutter_starter/presenter/pages/history/history_bloc.dart';
 import 'package:flutter_starter/presenter/pages/history/history_event.dart';
 import 'package:flutter_starter/presenter/pages/history/history_state.dart';
-import 'package:flutter_starter/presenter/pages/home_page/home_page.dart';
+import 'package:flutter_starter/presenter/pages/practice_session_summary/practice_session_summary_page.dart';
 import 'package:flutter_starter/presenter/themes/colors.dart';
 import 'package:flutter_starter/presenter/themes/extensions.dart';
 
 part 'custom_calendar.dart';
+part 'session_history_card.dart';
+part 'pose_attempt_history_card.dart';
 
 // TODO: Add the page to the router
 @RoutePage()
@@ -30,16 +33,19 @@ class HistoryPage extends StatefulWidget implements AutoRouteWrapper {
   State<HistoryPage> createState() => _HistoryPageState();
 }
 
-class _HistoryPageState extends State<HistoryPage> {
+class _HistoryPageState extends State<HistoryPage> with SingleTickerProviderStateMixin {
   HistoryBloc get _bloc => context.read<HistoryBloc>();
 
   DateTime? _selectedDate;
-
   List<DateTime?> _selectedDates = [];
+  
+  late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+    
     // Load current month data by default
     final now = DateTime.now();
     final startOfMonth = DateTime(now.year, now.month, 1);
@@ -48,6 +54,12 @@ class _HistoryPageState extends State<HistoryPage> {
       startDate: startOfMonth,
       endDate: endOfMonth,
     ));
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   void _onDateSelected(List<DateTime?> selectedDates) {
@@ -92,26 +104,65 @@ class _HistoryPageState extends State<HistoryPage> {
             ),
           ),
           bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(1),
-            child: Container(
-              height: 1,
-              color: AppColors.textSecondary.withOpacity(0.1),
+            preferredSize: const Size.fromHeight(49),
+            child: Column(
+              children: [
+                TabBar(
+                  controller: _tabController,
+                  labelColor: AppColors.primaryPurple,
+                  unselectedLabelColor: AppColors.textSecondary,
+                  indicatorColor: AppColors.primaryPurple,
+                  indicatorWeight: 3,
+                  labelStyle: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  tabs: const [
+                    Tab(text: 'Practice Sessions'),
+                    Tab(text: 'Individual Poses'),
+                  ],
+                ),
+                Container(
+                  height: 1,
+                  color: AppColors.textSecondary.withOpacity(0.1),
+                ),
+              ],
             ),
           ),
         ),
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          physics: const AlwaysScrollableScrollPhysics(),
-          child: Column(children: [
-            CustomCalendar(
-              value: _selectedDates,
-              onChanged: _onDateSelected,
+        body: Column(
+          children: [
+            // Calendar
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: CustomCalendar(
+                value: _selectedDates,
+                onChanged: _onDateSelected,
+              ),
             ),
-            const SizedBox(height: 16), // Add spacing
+            
+            // TabBarView
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  // Practice Sessions Tab
+                  _buildSessionsTab(),
+                  
+                  // Individual Poses Tab
+                  _buildPosesTab(),
+                ],
+              ),
+            ),
+          ],
+        ));
+  }
 
-            // Main content container (now sized by its content so the outer
-            // scroll view can handle vertical gestures from anywhere on the page)
-            Container(
+  Widget _buildSessionsTab() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      physics: const AlwaysScrollableScrollPhysics(),
+      child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
                 color: Colors.white,
@@ -159,6 +210,199 @@ class _HistoryPageState extends State<HistoryPage> {
                       const SizedBox(height: 16),
 
                       // Stats cards
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _statsCard(
+                              icon: Icons.fitness_center,
+                              label: 'Total',
+                              value: state.sessions.length.toString(),
+                              color: AppColors.primaryPurple,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: _statsCard(
+                              icon: Icons.star,
+                              label: 'Avg Score',
+                              value: state.sessions.isEmpty
+                                  ? '0'
+                                  : (state.sessions
+                                              .map((s) => s.averageScore)
+                                              .reduce((a, b) => a + b) /
+                                          state.sessions.length)
+                                      .toStringAsFixed(1),
+                              color: Colors.amber,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+
+                      Divider(color: AppColors.textSecondary.withOpacity(0.2), height: 1),
+                      const SizedBox(height: 16),
+
+                      // Sessions list header
+                      if (state.sessions.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: Text(
+                            'Practice Sessions',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.textPrimary,
+                            ),
+                          ),
+                        ),
+
+                      // Content sections (loading / failure / empty / list)
+                      if (state.status == HistoryStatus.loading)
+                        const Center(
+                            child: Padding(
+                          padding: EdgeInsets.symmetric(vertical: 24),
+                          child: CircularProgressIndicator(),
+                        ))
+                      else if (state.status == HistoryStatus.failure)
+                        Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(24),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(Icons.error_outline, size: 48, color: Colors.red),
+                                const SizedBox(height: 16),
+                                Text(
+                                  state.error?.message ?? 'Failed to load history',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: AppColors.textSecondary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      else if (state.sessions.isEmpty)
+                        Center(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 24),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(20),
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: AppColors.gradientPurple
+                                          .map((c) => c.withOpacity(0.1))
+                                          .toList(),
+                                    ),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.calendar_today,
+                                    size: 40,
+                                    color: AppColors.primaryPurple.withOpacity(0.5),
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
+                                Text(
+                                  'No practice sessions yet',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.textPrimary,
+                                  ),
+                                ),
+                                const SizedBox(height: 6),
+                                Text(
+                                  'Start practicing with routines',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    color: AppColors.textSecondary,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      else
+                        // Use a shrink-wrapped ListView so the outer scroll handles vertical gestures
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          padding: EdgeInsets.zero,
+                          itemCount: state.sessions.length,
+                          itemBuilder: (context, index) {
+                            final session = state.sessions[index];
+                            return _SessionHistoryCard(session: session);
+                          },
+                        ),
+                    ],
+                  );
+                },
+              ),
+            ),
+    );
+  }
+
+  Widget _buildPosesTab() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      physics: const AlwaysScrollableScrollPhysics(),
+      child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primaryPurple.withOpacity(0.08),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              padding: const EdgeInsets.all(20),
+              child: BlocBuilder<HistoryBloc, HistoryState>(
+                builder: (context, state) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Date header with gradient
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors:
+                                AppColors.gradientPurple.map((c) => c.withOpacity(0.1)).toList(),
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.calendar_today, color: AppColors.primaryPurple, size: 20),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                _selectedDate?.dateTimeToDayMonDay() ?? 'Select a date',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.textPrimary,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Stats cards for poses
                       Row(
                         children: [
                           Expanded(
@@ -291,16 +535,7 @@ class _HistoryPageState extends State<HistoryPage> {
                             final pose = state.poses[index];
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 16),
-                              child: YogaPosesItem(
-                                item: YogaPoseDetails(
-                                  imageUrl: pose.imageUrl,
-                                  id: pose.id,
-                                  name: pose.poseCode,
-                                  totalMinutes: 0,
-                                  totalCalories: 0,
-                                  level: '',
-                                ),
-                              ),
+                              child: _PoseAttemptHistoryCard(pose: pose),
                             );
                           },
                         ),
@@ -309,8 +544,7 @@ class _HistoryPageState extends State<HistoryPage> {
                 },
               ),
             ),
-          ]),
-        ));
+    );
   }
 
   Widget _statsCard({

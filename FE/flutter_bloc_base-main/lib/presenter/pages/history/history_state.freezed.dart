@@ -17,9 +17,11 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$HistoryState {
   HistoryStatus get status => throw _privateConstructorUsedError;
+  List<PracticeSession> get sessions => throw _privateConstructorUsedError;
   List<UserYogaPoseModel> get poses => throw _privateConstructorUsedError;
   int get currentPage => throw _privateConstructorUsedError;
   bool get hasMore => throw _privateConstructorUsedError;
+  PracticeSession? get selectedSession => throw _privateConstructorUsedError;
   UserYogaPoseModel? get selectedPose => throw _privateConstructorUsedError;
   BaseException<dynamic>? get error => throw _privateConstructorUsedError;
 
@@ -38,12 +40,15 @@ abstract class $HistoryStateCopyWith<$Res> {
   @useResult
   $Res call(
       {HistoryStatus status,
+      List<PracticeSession> sessions,
       List<UserYogaPoseModel> poses,
       int currentPage,
       bool hasMore,
+      PracticeSession? selectedSession,
       UserYogaPoseModel? selectedPose,
       BaseException<dynamic>? error});
 
+  $PracticeSessionCopyWith<$Res>? get selectedSession;
   $UserYogaPoseModelCopyWith<$Res>? get selectedPose;
 }
 
@@ -63,9 +68,11 @@ class _$HistoryStateCopyWithImpl<$Res, $Val extends HistoryState>
   @override
   $Res call({
     Object? status = null,
+    Object? sessions = null,
     Object? poses = null,
     Object? currentPage = null,
     Object? hasMore = null,
+    Object? selectedSession = freezed,
     Object? selectedPose = freezed,
     Object? error = freezed,
   }) {
@@ -74,6 +81,10 @@ class _$HistoryStateCopyWithImpl<$Res, $Val extends HistoryState>
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as HistoryStatus,
+      sessions: null == sessions
+          ? _value.sessions
+          : sessions // ignore: cast_nullable_to_non_nullable
+              as List<PracticeSession>,
       poses: null == poses
           ? _value.poses
           : poses // ignore: cast_nullable_to_non_nullable
@@ -86,6 +97,10 @@ class _$HistoryStateCopyWithImpl<$Res, $Val extends HistoryState>
           ? _value.hasMore
           : hasMore // ignore: cast_nullable_to_non_nullable
               as bool,
+      selectedSession: freezed == selectedSession
+          ? _value.selectedSession
+          : selectedSession // ignore: cast_nullable_to_non_nullable
+              as PracticeSession?,
       selectedPose: freezed == selectedPose
           ? _value.selectedPose
           : selectedPose // ignore: cast_nullable_to_non_nullable
@@ -95,6 +110,20 @@ class _$HistoryStateCopyWithImpl<$Res, $Val extends HistoryState>
           : error // ignore: cast_nullable_to_non_nullable
               as BaseException<dynamic>?,
     ) as $Val);
+  }
+
+  /// Create a copy of HistoryState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $PracticeSessionCopyWith<$Res>? get selectedSession {
+    if (_value.selectedSession == null) {
+      return null;
+    }
+
+    return $PracticeSessionCopyWith<$Res>(_value.selectedSession!, (value) {
+      return _then(_value.copyWith(selectedSession: value) as $Val);
+    });
   }
 
   /// Create a copy of HistoryState
@@ -122,12 +151,16 @@ abstract class _$$HistoryStateImplCopyWith<$Res>
   @useResult
   $Res call(
       {HistoryStatus status,
+      List<PracticeSession> sessions,
       List<UserYogaPoseModel> poses,
       int currentPage,
       bool hasMore,
+      PracticeSession? selectedSession,
       UserYogaPoseModel? selectedPose,
       BaseException<dynamic>? error});
 
+  @override
+  $PracticeSessionCopyWith<$Res>? get selectedSession;
   @override
   $UserYogaPoseModelCopyWith<$Res>? get selectedPose;
 }
@@ -146,9 +179,11 @@ class __$$HistoryStateImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? status = null,
+    Object? sessions = null,
     Object? poses = null,
     Object? currentPage = null,
     Object? hasMore = null,
+    Object? selectedSession = freezed,
     Object? selectedPose = freezed,
     Object? error = freezed,
   }) {
@@ -157,6 +192,10 @@ class __$$HistoryStateImplCopyWithImpl<$Res>
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as HistoryStatus,
+      sessions: null == sessions
+          ? _value._sessions
+          : sessions // ignore: cast_nullable_to_non_nullable
+              as List<PracticeSession>,
       poses: null == poses
           ? _value._poses
           : poses // ignore: cast_nullable_to_non_nullable
@@ -169,6 +208,10 @@ class __$$HistoryStateImplCopyWithImpl<$Res>
           ? _value.hasMore
           : hasMore // ignore: cast_nullable_to_non_nullable
               as bool,
+      selectedSession: freezed == selectedSession
+          ? _value.selectedSession
+          : selectedSession // ignore: cast_nullable_to_non_nullable
+              as PracticeSession?,
       selectedPose: freezed == selectedPose
           ? _value.selectedPose
           : selectedPose // ignore: cast_nullable_to_non_nullable
@@ -186,16 +229,28 @@ class __$$HistoryStateImplCopyWithImpl<$Res>
 class _$HistoryStateImpl implements _HistoryState {
   const _$HistoryStateImpl(
       {this.status = HistoryStatus.initial,
+      final List<PracticeSession> sessions = const [],
       final List<UserYogaPoseModel> poses = const [],
       this.currentPage = 0,
       this.hasMore = false,
+      this.selectedSession,
       this.selectedPose,
       this.error})
-      : _poses = poses;
+      : _sessions = sessions,
+        _poses = poses;
 
   @override
   @JsonKey()
   final HistoryStatus status;
+  final List<PracticeSession> _sessions;
+  @override
+  @JsonKey()
+  List<PracticeSession> get sessions {
+    if (_sessions is EqualUnmodifiableListView) return _sessions;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_sessions);
+  }
+
   final List<UserYogaPoseModel> _poses;
   @override
   @JsonKey()
@@ -212,13 +267,15 @@ class _$HistoryStateImpl implements _HistoryState {
   @JsonKey()
   final bool hasMore;
   @override
+  final PracticeSession? selectedSession;
+  @override
   final UserYogaPoseModel? selectedPose;
   @override
   final BaseException<dynamic>? error;
 
   @override
   String toString() {
-    return 'HistoryState(status: $status, poses: $poses, currentPage: $currentPage, hasMore: $hasMore, selectedPose: $selectedPose, error: $error)';
+    return 'HistoryState(status: $status, sessions: $sessions, poses: $poses, currentPage: $currentPage, hasMore: $hasMore, selectedSession: $selectedSession, selectedPose: $selectedPose, error: $error)';
   }
 
   @override
@@ -227,10 +284,13 @@ class _$HistoryStateImpl implements _HistoryState {
         (other.runtimeType == runtimeType &&
             other is _$HistoryStateImpl &&
             (identical(other.status, status) || other.status == status) &&
+            const DeepCollectionEquality().equals(other._sessions, _sessions) &&
             const DeepCollectionEquality().equals(other._poses, _poses) &&
             (identical(other.currentPage, currentPage) ||
                 other.currentPage == currentPage) &&
             (identical(other.hasMore, hasMore) || other.hasMore == hasMore) &&
+            (identical(other.selectedSession, selectedSession) ||
+                other.selectedSession == selectedSession) &&
             (identical(other.selectedPose, selectedPose) ||
                 other.selectedPose == selectedPose) &&
             (identical(other.error, error) || other.error == error));
@@ -240,9 +300,11 @@ class _$HistoryStateImpl implements _HistoryState {
   int get hashCode => Object.hash(
       runtimeType,
       status,
+      const DeepCollectionEquality().hash(_sessions),
       const DeepCollectionEquality().hash(_poses),
       currentPage,
       hasMore,
+      selectedSession,
       selectedPose,
       error);
 
@@ -258,20 +320,26 @@ class _$HistoryStateImpl implements _HistoryState {
 abstract class _HistoryState implements HistoryState {
   const factory _HistoryState(
       {final HistoryStatus status,
+      final List<PracticeSession> sessions,
       final List<UserYogaPoseModel> poses,
       final int currentPage,
       final bool hasMore,
+      final PracticeSession? selectedSession,
       final UserYogaPoseModel? selectedPose,
       final BaseException<dynamic>? error}) = _$HistoryStateImpl;
 
   @override
   HistoryStatus get status;
   @override
+  List<PracticeSession> get sessions;
+  @override
   List<UserYogaPoseModel> get poses;
   @override
   int get currentPage;
   @override
   bool get hasMore;
+  @override
+  PracticeSession? get selectedSession;
   @override
   UserYogaPoseModel? get selectedPose;
   @override

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.yogadetection.dto.request.NotificationRequest;
+import com.yogadetection.service.NotificationService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -45,6 +47,7 @@ public class SocialPostServiceImpl implements SocialPostService {
     private final UserRepository userRepository;
     private final ImageService imageService;
     private final ObjectMapper objectMapper;
+    private final NotificationService notificationService;
 
     @Override
     @Transactional
@@ -120,6 +123,18 @@ public class SocialPostServiceImpl implements SocialPostService {
                 .postId(postId)
                 .userId(userId)
                 .build();
+
+        userRepository.findById(userId).ifPresent(requester -> {
+            NotificationRequest notificationRequest = new NotificationRequest();
+            notificationRequest.setAll(false);
+            notificationRequest.setUserId(post.getAuthorId());
+            String title = requester.getLastName() != null ? requester.getLastName() : requester.getEmail();
+            notificationRequest.setNormalTitle(title + " đã thích bài viết của bạn");
+            notificationRequest.setHtmlTitle(null);
+            notificationRequest.setHtmlTitle(null);
+
+            notificationService.pushNotificationToUser(post.getAuthorId(), notificationRequest);
+        });
         likeRepository.save(like);
         post.setLikeCount((post.getLikeCount() == null ? 0 : post.getLikeCount()) + 1);
         postRepository.save(post);
@@ -150,6 +165,18 @@ public class SocialPostServiceImpl implements SocialPostService {
                 .build();
         SocialPostComment saved = commentRepository.save(c);
         post.setCommentCount((post.getCommentCount() == null ? 0 : post.getCommentCount()) + 1);
+
+        userRepository.findById(userId).ifPresent(requester -> {
+            NotificationRequest notificationRequest = new NotificationRequest();
+            notificationRequest.setAll(false);
+            notificationRequest.setUserId(post.getAuthorId());
+            String title = requester.getLastName() != null ? requester.getLastName() : requester.getEmail();
+            notificationRequest.setNormalTitle(title + " đã bình luận về bài viết của bạn");
+            notificationRequest.setHtmlTitle(null);
+            notificationRequest.setImageUrl(null);
+            notificationService.pushNotificationToUser(post.getAuthorId(), notificationRequest);
+        });
+
         postRepository.save(post);
         return mapToCommentResponse(saved);
     }
@@ -161,6 +188,7 @@ public class SocialPostServiceImpl implements SocialPostService {
         List<CommentResponse> items = comments.getContent().stream()
                 .map(this::mapToCommentResponse)
                 .collect(Collectors.toList());
+
         return PagedResponse.<CommentResponse>builder()
                 .items(items)
                 .page(comments.getNumber())

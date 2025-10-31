@@ -398,6 +398,44 @@ class PoseResultRouteArgs {
 }
 
 /// generated route for
+/// [PracticeSessionSummaryPage]
+class PracticeSessionSummaryRoute
+    extends PageRouteInfo<PracticeSessionSummaryRouteArgs> {
+  PracticeSessionSummaryRoute({
+    Key? key,
+    required PracticeSession session,
+    List<PageRouteInfo>? children,
+  }) : super(
+         PracticeSessionSummaryRoute.name,
+         args: PracticeSessionSummaryRouteArgs(key: key, session: session),
+         initialChildren: children,
+       );
+
+  static const String name = 'PracticeSessionSummaryRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<PracticeSessionSummaryRouteArgs>();
+      return PracticeSessionSummaryPage(key: args.key, session: args.session);
+    },
+  );
+}
+
+class PracticeSessionSummaryRouteArgs {
+  const PracticeSessionSummaryRouteArgs({this.key, required this.session});
+
+  final Key? key;
+
+  final PracticeSession session;
+
+  @override
+  String toString() {
+    return 'PracticeSessionSummaryRouteArgs{key: $key, session: $session}';
+  }
+}
+
+/// generated route for
 /// [RegisterPage]
 class RegisterRoute extends PageRouteInfo<void> {
   const RegisterRoute({List<PageRouteInfo>? children})
@@ -465,6 +503,49 @@ class RoutineDetailsRouteArgs {
   @override
   String toString() {
     return 'RoutineDetailsRouteArgs{key: $key, routineId: $routineId}';
+  }
+}
+
+/// generated route for
+/// [RoutinePracticeSessionPage]
+class RoutinePracticeSessionRoute
+    extends PageRouteInfo<RoutinePracticeSessionRouteArgs> {
+  RoutinePracticeSessionRoute({
+    Key? key,
+    required String routineId,
+    List<PageRouteInfo>? children,
+  }) : super(
+         RoutinePracticeSessionRoute.name,
+         args: RoutinePracticeSessionRouteArgs(key: key, routineId: routineId),
+         initialChildren: children,
+       );
+
+  static const String name = 'RoutinePracticeSessionRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<RoutinePracticeSessionRouteArgs>();
+      return WrappedRoute(
+        child: RoutinePracticeSessionPage(
+          key: args.key,
+          routineId: args.routineId,
+        ),
+      );
+    },
+  );
+}
+
+class RoutinePracticeSessionRouteArgs {
+  const RoutinePracticeSessionRouteArgs({this.key, required this.routineId});
+
+  final Key? key;
+
+  final String routineId;
+
+  @override
+  String toString() {
+    return 'RoutinePracticeSessionRouteArgs{key: $key, routineId: $routineId}';
   }
 }
 

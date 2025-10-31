@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter_starter/data/entities/request/change_password.dart';
 import 'package:flutter_starter/data/entities/request/register_params.dart';
 import 'package:flutter_starter/data/entities/request/request_change_password.dart';
@@ -25,6 +26,7 @@ import 'package:flutter_starter/data/entities/response/body_progress_response.da
 import 'package:flutter_starter/data/entities/response/verify_otp.dart';
 import 'package:flutter_starter/data/entities/response/yoga_pose_details.dart';
 import 'package:flutter_starter/data/entities/response/yoga_routine.dart';
+import 'package:flutter_starter/data/entities/response/practice_session.dart';
 import 'package:flutter_starter/data/sources/network/base_api_response.dart';
 import 'package:injectable/injectable.dart';
 import 'package:dio/dio.dart';
@@ -346,4 +348,41 @@ abstract class NetworkDataSource {
   @GET('api/body-progress/range')
   Future<BaseApiResponse<List<BodyProgressResponse>>> getBodyProgressByDateRange(
       @Query('startDate') String startDate, @Query('endDate') String endDate);
+
+  // Practice Session APIs
+  @POST('api/practice-sessions/start')
+  Future<BaseApiResponse<PracticeSession>> startPracticeSession(
+      @Query('routineId') String routineId);
+
+  @GET('api/practice-sessions/{sessionId}')
+  Future<BaseApiResponse<PracticeSession>> getPracticeSession(
+      @Path('sessionId') String sessionId);
+
+  @MultiPart()
+  @POST('api/practice-sessions/{sessionId}/submit-pose')
+  Future<BaseApiResponse<PracticeSession>> submitPoseInSession({
+    @Path('sessionId') required String sessionId,
+    @Part(name: 'poseCode') required String poseCode,
+    @Part(name: 'image') required File imageFile,
+    @Part(name: 'timeSpentSeconds') int? timeSpentSeconds,
+    @Part(name: 'landmarkData') String? landmarkData,
+  });
+
+  @POST('api/practice-sessions/{sessionId}/skip')
+  Future<BaseApiResponse<PracticeSession>> skipPoseInSession(
+      @Path('sessionId') String sessionId);
+
+  @POST('api/practice-sessions/{sessionId}/complete')
+  Future<BaseApiResponse<PracticeSession>> completePracticeSession(
+      @Path('sessionId') String sessionId);
+
+  @DELETE('api/practice-sessions/{sessionId}')
+  Future<BaseApiResponse<void>> abandonPracticeSession(
+      @Path('sessionId') String sessionId);
+
+  @GET('api/practice-sessions/history')
+  Future<BaseApiResponse<List<PracticeSession>>> getPracticeSessionHistory({
+    @Query('startDate') String? startDate,
+    @Query('endDate') String? endDate,
+  });
 }

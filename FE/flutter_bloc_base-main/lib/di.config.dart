@@ -28,6 +28,10 @@ import 'data/repositories/notification_repository/notification_repository.dart'
     as _i710;
 import 'data/repositories/notification_repository/notification_repository.default.dart'
     as _i307;
+import 'data/repositories/practice_session_repository/practice_session_repository.dart'
+    as _i930;
+import 'data/repositories/practice_session_repository/practice_session_repository.default.dart'
+    as _i990;
 import 'data/repositories/routine_repository/routine_repository.dart' as _i398;
 import 'data/repositories/routine_repository/routine_repository.default.dart'
     as _i447;
@@ -55,6 +59,7 @@ import 'data/states/friends/friends_bloc.dart' as _i881;
 import 'data/states/group_feed/group_feed_bloc.dart' as _i771;
 import 'data/states/groups/groups_bloc.dart' as _i819;
 import 'data/states/my_body/my_body_bloc.dart' as _i950;
+import 'data/states/practice_session/practice_session_bloc.dart' as _i878;
 import 'data/states/routine_details/routine_details_bloc.dart' as _i659;
 import 'data/states/routines/routines_bloc.dart' as _i682;
 import 'data/states/settings/settings_bloc.dart' as _i932;
@@ -179,6 +184,9 @@ extension GetItInjectableX on _i174.GetIt {
           verifyOtpUc: gh<_i855.VerifyOtpUc>(),
           oauthTokenManager: gh<_i132.OauthTokenManager>(),
         ));
+    gh.singleton<_i930.PracticeSessionRepository>(() =>
+        _i990.PracticeSessionRepositoryImpl(
+            networkDataSource: gh<_i536.NetworkDataSource>()));
     gh.singleton<_i636.GroupPostsRepository>(() =>
         _i1051.GroupPostsRepositoryImpl(api: gh<_i536.NetworkDataSource>()));
     gh.singleton<_i398.RoutineRepository>(() => _i447.RoutineRepositoryImpl(
@@ -209,17 +217,21 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i856.GetListYogaPosesUc(gh<_i153.YogaPosesRepository>()));
     gh.singleton<_i404.GetYogaPoseDetailsUc>(
         () => _i404.GetYogaPoseDetailsUc(gh<_i153.YogaPosesRepository>()));
-    gh.factory<_i313.HistoryBloc>(
-        () => _i313.HistoryBloc(gh<_i153.YogaPosesRepository>()));
     gh.factory<_i338.RegisterBloc>(() => _i338.RegisterBloc(
           register: gh<_i686.RegisterUseCase>(),
           oauthTokenManager: gh<_i132.OauthTokenManager>(),
         ));
+    gh.factory<_i878.PracticeSessionBloc>(() => _i878.PracticeSessionBloc(
+        repository: gh<_i930.PracticeSessionRepository>()));
     gh.factory<_i771.GroupFeedBloc>(
         () => _i771.GroupFeedBloc(gh<_i636.GroupPostsRepository>()));
     gh.singleton<_i8.AccountPageBloc>(() => _i8.AccountPageBloc(
           getInformationUc: gh<_i924.GetInformationUc>(),
           updateProfileUc: gh<_i489.UpdateProfileUc>(),
+        ));
+    gh.factory<_i313.HistoryBloc>(() => _i313.HistoryBloc(
+          gh<_i930.PracticeSessionRepository>(),
+          gh<_i153.YogaPosesRepository>(),
         ));
     gh.singleton<_i562.CreateBodyProgressUc>(
         () => _i562.CreateBodyProgressUc(gh<_i654.BodyProgressRepository>()));

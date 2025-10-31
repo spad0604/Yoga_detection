@@ -1,10 +1,12 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter_starter/data/entities/response/practice_session.dart';
 import 'package:flutter_starter/data/states/auth/auth_bloc.dart';
 import 'package:flutter_starter/presenter/pages/account_page/overall_account_page.dart';
 import 'package:flutter_starter/presenter/pages/home/home.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_starter/presenter/pages/home_page/home_page.dart';
 import 'package:flutter_starter/presenter/pages/login/login.dart';
+import 'package:flutter_starter/presenter/pages/routine_practice_session/routine_practice_session_page.dart';
 import 'package:flutter_starter/presenter/pages/splash/splash.dart';
 import 'package:injectable/injectable.dart';
 import 'package:flutter_starter/presenter/pages/camera_detection/camera_detection.dart';
@@ -29,6 +31,7 @@ import 'package:flutter_starter/presenter/pages/camera_detection/pose_result_pag
 import 'package:flutter_starter/presenter/pages/group_feed/group_feed_page.dart';
 import 'package:flutter_starter/presenter/pages/social_feed/social_feed_page.dart';
 import 'package:flutter_starter/data/entities/response/user_yoga_pose_model.dart';
+import 'package:flutter_starter/presenter/pages/practice_session_summary/practice_session_summary_page.dart';
 
 part 'navigation.gr.dart';
 
@@ -67,6 +70,9 @@ class AppRouter extends RootStackRouter {
         AutoRoute(path: '/my-body', page: MyBodyRoute.page),
         AutoRoute(path: '/waiting-result', page: WaitingResultRoute.page),
         AutoRoute(path: '/pose-result', page: PoseResultRoute.page),
+        AutoRoute(path: '/practice-session-summary', page: PracticeSessionSummaryRoute.page),
+        AutoRoute(
+            path: '/routine-practice-session/:routineId', page: RoutinePracticeSessionRoute.page),
       ];
 
   bool isUnauthorizedRoute(String routeName) => [
