@@ -9,11 +9,11 @@ class _PoseAttemptHistoryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final score = pose.score ?? 0.0;
     final scoreColor = _getScoreColor(score);
-    
+
     return InkWell(
       onTap: () {
-        // Navigate to pose attempt details page
-        context.router.push(PoseAttemptDetailsRoute(poseAttemptId: pose.id));
+        // Navigate to pose details page with the pose code
+        context.router.push(PoseDetailsRoute(item: YogaPoseDetails(id: pose.poseCode, name: '')));
       },
       borderRadius: BorderRadius.circular(16),
       child: Container(
@@ -74,9 +74,9 @@ class _PoseAttemptHistoryCard extends StatelessWidget {
                     : _buildPlaceholderImage(),
               ),
             ),
-            
+
             const SizedBox(width: 16),
-            
+
             // Content
             Expanded(
               child: Column(
@@ -84,7 +84,7 @@ class _PoseAttemptHistoryCard extends StatelessWidget {
                 children: [
                   // Pose name
                   Text(
-                    pose.poseCode,
+                    pose.name ?? 'Unknown Pose',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -93,9 +93,9 @@ class _PoseAttemptHistoryCard extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  
+
                   const SizedBox(height: 8),
-                  
+
                   // Score badge
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -127,9 +127,9 @@ class _PoseAttemptHistoryCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                  
+
                   const SizedBox(height: 8),
-                  
+
                   // Date
                   Row(
                     children: [
@@ -140,7 +140,7 @@ class _PoseAttemptHistoryCard extends StatelessWidget {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        pose.completedAt?.dateTimeToDayMonDay() ?? 'Unknown',
+                        pose.createAt.dateTimeToDayMonDay(),
                         style: TextStyle(
                           fontSize: 12,
                           color: AppColors.textSecondary,
@@ -151,7 +151,7 @@ class _PoseAttemptHistoryCard extends StatelessWidget {
                 ],
               ),
             ),
-            
+
             // Arrow icon
             Icon(
               Icons.chevron_right,

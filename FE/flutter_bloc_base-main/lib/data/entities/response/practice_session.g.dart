@@ -34,7 +34,9 @@ _$PracticeSessionImpl _$$PracticeSessionImplFromJson(
       averageScore: (json['averageScore'] as num?)?.toDouble() ?? 0.0,
       totalTimeSpentSeconds:
           (json['totalTimeSpentSeconds'] as num?)?.toInt() ?? 0,
-      startedAt: DateTime.parse(json['startedAt'] as String),
+      startedAt: json['startedAt'] == null
+          ? null
+          : DateTime.parse(json['startedAt'] as String),
       completedAt: json['completedAt'] == null
           ? null
           : DateTime.parse(json['completedAt'] as String),
@@ -59,7 +61,7 @@ Map<String, dynamic> _$$PracticeSessionImplToJson(
       'completedPoses': instance.completedPoses,
       'averageScore': instance.averageScore,
       'totalTimeSpentSeconds': instance.totalTimeSpentSeconds,
-      'startedAt': instance.startedAt.toIso8601String(),
+      'startedAt': instance.startedAt?.toIso8601String(),
       'completedAt': instance.completedAt?.toIso8601String(),
     };
 
@@ -100,7 +102,9 @@ _$PoseSubmissionResultImpl _$$PoseSubmissionResultImplFromJson(
       score: (json['score'] as num?)?.toDouble() ?? 0.0,
       feedback: json['feedback'] as String?,
       timeSpentSeconds: (json['timeSpentSeconds'] as num?)?.toInt() ?? 0,
-      submittedAt: DateTime.parse(json['submittedAt'] as String),
+      submittedAt: json['submittedAt'] == null
+          ? null
+          : DateTime.parse(json['submittedAt'] as String),
     );
 
 Map<String, dynamic> _$$PoseSubmissionResultImplToJson(
@@ -112,5 +116,5 @@ Map<String, dynamic> _$$PoseSubmissionResultImplToJson(
       'score': instance.score,
       'feedback': instance.feedback,
       'timeSpentSeconds': instance.timeSpentSeconds,
-      'submittedAt': instance.submittedAt.toIso8601String(),
+      'submittedAt': instance.submittedAt?.toIso8601String(),
     };

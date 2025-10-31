@@ -23,7 +23,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   Future<void> _onLoggedOut(AuthLoggedOut event, Emitter<AuthState> emit) async {
-    await _tokenManager.removeAllTokens();
     emit(state.copyWith(
       account: null,
       error: event.error,

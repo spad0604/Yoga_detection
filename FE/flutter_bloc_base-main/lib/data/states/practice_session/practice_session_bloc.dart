@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_starter/data/entities/response/practice_session.dart';
 import 'package:flutter_starter/data/repositories/practice_session_repository/practice_session_repository.dart';
@@ -51,13 +52,40 @@ class PracticeSessionBloc extends Bloc<PracticeSessionEvent, PracticeSessionStat
     emit(state.copyWith(isSubmitting: true, error: null, lastSubmission: null));
 
     try {
+      final imageFile = File(event.imagePath);
+      
+      // Debug log request
+      debugPrint('📤 Submitting Pose:');
+      debugPrint('  - poseCode: ${event.poseCode}');
+      debugPrint('  - imagePath: ${event.imagePath}');
+      debugPrint('  - imageExists: ${await imageFile.exists()}');
+      if (event.landmarkData != null) {
+        final preview = event.landmarkData!.length > 200 ? '${event.landmarkData!.substring(0, 200)}...' : event.landmarkData!;
+        debugPrint('  - landmarkData: $preview');
+      } else {
+        debugPrint('  - landmarkData: null');
+      }
+      
       final session = await _repository.submitPose(
         sessionId: state.session!.sessionId,
         poseCode: event.poseCode,
-        imageFile: File(event.imagePath),
+        imageFile: imageFile,
         timeSpentSeconds: event.timeSpentSeconds,
         landmarkData: event.landmarkData,
       );
+      
+      // Debug log response
+      debugPrint('📊 Submit Pose Response:');
+      debugPrint('  - completedPoses count: ${session.completedPoses.length}');
+      if (session.completedPoses.isNotEmpty) {
+        final last = session.completedPoses.last;
+        debugPrint('  - Last submission:');
+        debugPrint('    * poseCode: ${last.poseCode}');
+        debugPrint('    * poseName: ${last.poseName}');
+        debugPrint('    * score: ${last.score}');
+        debugPrint('    * feedback: ${last.feedback}');
+        debugPrint('    * imageUrl: ${last.imageUrl}');
+      }
       
       // Get the last submission (the one just submitted)
       PoseSubmissionResult? lastSubmission;

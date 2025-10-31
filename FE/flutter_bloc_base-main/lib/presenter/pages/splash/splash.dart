@@ -41,7 +41,6 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   void _onSuccess(BuildContext context, SplashState state) {
-    // Notify AuthBloc that user is logged in so the route guard allows navigation
     if (state.account != null) {
       try {
         context.read<AuthBloc>().add(AuthLoggedIn(state.account!));

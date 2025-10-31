@@ -54,7 +54,7 @@ mixin _$PracticeSession {
   @JsonKey(name: 'totalTimeSpentSeconds')
   int get totalTimeSpentSeconds => throw _privateConstructorUsedError;
   @JsonKey(name: 'startedAt')
-  DateTime get startedAt => throw _privateConstructorUsedError;
+  DateTime? get startedAt => throw _privateConstructorUsedError;
   @JsonKey(name: 'completedAt')
   DateTime? get completedAt => throw _privateConstructorUsedError;
 
@@ -93,7 +93,7 @@ abstract class $PracticeSessionCopyWith<$Res> {
       List<PoseSubmissionResult> completedPoses,
       @JsonKey(name: 'averageScore') double averageScore,
       @JsonKey(name: 'totalTimeSpentSeconds') int totalTimeSpentSeconds,
-      @JsonKey(name: 'startedAt') DateTime startedAt,
+      @JsonKey(name: 'startedAt') DateTime? startedAt,
       @JsonKey(name: 'completedAt') DateTime? completedAt});
 }
 
@@ -128,7 +128,7 @@ class _$PracticeSessionCopyWithImpl<$Res, $Val extends PracticeSession>
     Object? completedPoses = null,
     Object? averageScore = null,
     Object? totalTimeSpentSeconds = null,
-    Object? startedAt = null,
+    Object? startedAt = freezed,
     Object? completedAt = freezed,
   }) {
     return _then(_value.copyWith(
@@ -196,10 +196,10 @@ class _$PracticeSessionCopyWithImpl<$Res, $Val extends PracticeSession>
           ? _value.totalTimeSpentSeconds
           : totalTimeSpentSeconds // ignore: cast_nullable_to_non_nullable
               as int,
-      startedAt: null == startedAt
+      startedAt: freezed == startedAt
           ? _value.startedAt
           : startedAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
+              as DateTime?,
       completedAt: freezed == completedAt
           ? _value.completedAt
           : completedAt // ignore: cast_nullable_to_non_nullable
@@ -235,7 +235,7 @@ abstract class _$$PracticeSessionImplCopyWith<$Res>
       List<PoseSubmissionResult> completedPoses,
       @JsonKey(name: 'averageScore') double averageScore,
       @JsonKey(name: 'totalTimeSpentSeconds') int totalTimeSpentSeconds,
-      @JsonKey(name: 'startedAt') DateTime startedAt,
+      @JsonKey(name: 'startedAt') DateTime? startedAt,
       @JsonKey(name: 'completedAt') DateTime? completedAt});
 }
 
@@ -268,7 +268,7 @@ class __$$PracticeSessionImplCopyWithImpl<$Res>
     Object? completedPoses = null,
     Object? averageScore = null,
     Object? totalTimeSpentSeconds = null,
-    Object? startedAt = null,
+    Object? startedAt = freezed,
     Object? completedAt = freezed,
   }) {
     return _then(_$PracticeSessionImpl(
@@ -336,10 +336,10 @@ class __$$PracticeSessionImplCopyWithImpl<$Res>
           ? _value.totalTimeSpentSeconds
           : totalTimeSpentSeconds // ignore: cast_nullable_to_non_nullable
               as int,
-      startedAt: null == startedAt
+      startedAt: freezed == startedAt
           ? _value.startedAt
           : startedAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
+              as DateTime?,
       completedAt: freezed == completedAt
           ? _value.completedAt
           : completedAt // ignore: cast_nullable_to_non_nullable
@@ -371,7 +371,7 @@ class _$PracticeSessionImpl implements _PracticeSession {
       final List<PoseSubmissionResult> completedPoses = const [],
       @JsonKey(name: 'averageScore') this.averageScore = 0.0,
       @JsonKey(name: 'totalTimeSpentSeconds') this.totalTimeSpentSeconds = 0,
-      @JsonKey(name: 'startedAt') required this.startedAt,
+      @JsonKey(name: 'startedAt') this.startedAt,
       @JsonKey(name: 'completedAt') this.completedAt})
       : _allPoses = allPoses,
         _completedPoses = completedPoses;
@@ -441,7 +441,7 @@ class _$PracticeSessionImpl implements _PracticeSession {
   final int totalTimeSpentSeconds;
   @override
   @JsonKey(name: 'startedAt')
-  final DateTime startedAt;
+  final DateTime? startedAt;
   @override
   @JsonKey(name: 'completedAt')
   final DateTime? completedAt;
@@ -554,7 +554,7 @@ abstract class _PracticeSession implements PracticeSession {
       final List<PoseSubmissionResult> completedPoses,
       @JsonKey(name: 'averageScore') final double averageScore,
       @JsonKey(name: 'totalTimeSpentSeconds') final int totalTimeSpentSeconds,
-      @JsonKey(name: 'startedAt') required final DateTime startedAt,
+      @JsonKey(name: 'startedAt') final DateTime? startedAt,
       @JsonKey(name: 'completedAt')
       final DateTime? completedAt}) = _$PracticeSessionImpl;
 
@@ -611,7 +611,7 @@ abstract class _PracticeSession implements PracticeSession {
   int get totalTimeSpentSeconds;
   @override
   @JsonKey(name: 'startedAt')
-  DateTime get startedAt;
+  DateTime? get startedAt;
   @override
   @JsonKey(name: 'completedAt')
   DateTime? get completedAt;
@@ -923,7 +923,7 @@ mixin _$PoseSubmissionResult {
   @JsonKey(name: 'timeSpentSeconds')
   int get timeSpentSeconds => throw _privateConstructorUsedError;
   @JsonKey(name: 'submittedAt')
-  DateTime get submittedAt => throw _privateConstructorUsedError;
+  DateTime? get submittedAt => throw _privateConstructorUsedError;
 
   /// Serializes this PoseSubmissionResult to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -948,7 +948,7 @@ abstract class $PoseSubmissionResultCopyWith<$Res> {
       @JsonKey(name: 'score') double score,
       @JsonKey(name: 'feedback') String? feedback,
       @JsonKey(name: 'timeSpentSeconds') int timeSpentSeconds,
-      @JsonKey(name: 'submittedAt') DateTime submittedAt});
+      @JsonKey(name: 'submittedAt') DateTime? submittedAt});
 }
 
 /// @nodoc
@@ -973,7 +973,7 @@ class _$PoseSubmissionResultCopyWithImpl<$Res,
     Object? score = null,
     Object? feedback = freezed,
     Object? timeSpentSeconds = null,
-    Object? submittedAt = null,
+    Object? submittedAt = freezed,
   }) {
     return _then(_value.copyWith(
       poseCode: null == poseCode
@@ -1000,10 +1000,10 @@ class _$PoseSubmissionResultCopyWithImpl<$Res,
           ? _value.timeSpentSeconds
           : timeSpentSeconds // ignore: cast_nullable_to_non_nullable
               as int,
-      submittedAt: null == submittedAt
+      submittedAt: freezed == submittedAt
           ? _value.submittedAt
           : submittedAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
+              as DateTime?,
     ) as $Val);
   }
 }
@@ -1023,7 +1023,7 @@ abstract class _$$PoseSubmissionResultImplCopyWith<$Res>
       @JsonKey(name: 'score') double score,
       @JsonKey(name: 'feedback') String? feedback,
       @JsonKey(name: 'timeSpentSeconds') int timeSpentSeconds,
-      @JsonKey(name: 'submittedAt') DateTime submittedAt});
+      @JsonKey(name: 'submittedAt') DateTime? submittedAt});
 }
 
 /// @nodoc
@@ -1045,7 +1045,7 @@ class __$$PoseSubmissionResultImplCopyWithImpl<$Res>
     Object? score = null,
     Object? feedback = freezed,
     Object? timeSpentSeconds = null,
-    Object? submittedAt = null,
+    Object? submittedAt = freezed,
   }) {
     return _then(_$PoseSubmissionResultImpl(
       poseCode: null == poseCode
@@ -1072,10 +1072,10 @@ class __$$PoseSubmissionResultImplCopyWithImpl<$Res>
           ? _value.timeSpentSeconds
           : timeSpentSeconds // ignore: cast_nullable_to_non_nullable
               as int,
-      submittedAt: null == submittedAt
+      submittedAt: freezed == submittedAt
           ? _value.submittedAt
           : submittedAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
+              as DateTime?,
     ));
   }
 }
@@ -1090,7 +1090,7 @@ class _$PoseSubmissionResultImpl implements _PoseSubmissionResult {
       @JsonKey(name: 'score') this.score = 0.0,
       @JsonKey(name: 'feedback') this.feedback,
       @JsonKey(name: 'timeSpentSeconds') this.timeSpentSeconds = 0,
-      @JsonKey(name: 'submittedAt') required this.submittedAt});
+      @JsonKey(name: 'submittedAt') this.submittedAt});
 
   factory _$PoseSubmissionResultImpl.fromJson(Map<String, dynamic> json) =>
       _$$PoseSubmissionResultImplFromJson(json);
@@ -1115,7 +1115,7 @@ class _$PoseSubmissionResultImpl implements _PoseSubmissionResult {
   final int timeSpentSeconds;
   @override
   @JsonKey(name: 'submittedAt')
-  final DateTime submittedAt;
+  final DateTime? submittedAt;
 
   @override
   String toString() {
@@ -1173,7 +1173,7 @@ abstract class _PoseSubmissionResult implements PoseSubmissionResult {
           @JsonKey(name: 'score') final double score,
           @JsonKey(name: 'feedback') final String? feedback,
           @JsonKey(name: 'timeSpentSeconds') final int timeSpentSeconds,
-          @JsonKey(name: 'submittedAt') required final DateTime submittedAt}) =
+          @JsonKey(name: 'submittedAt') final DateTime? submittedAt}) =
       _$PoseSubmissionResultImpl;
 
   factory _PoseSubmissionResult.fromJson(Map<String, dynamic> json) =
@@ -1199,7 +1199,7 @@ abstract class _PoseSubmissionResult implements PoseSubmissionResult {
   int get timeSpentSeconds;
   @override
   @JsonKey(name: 'submittedAt')
-  DateTime get submittedAt;
+  DateTime? get submittedAt;
 
   /// Create a copy of PoseSubmissionResult
   /// with the given fields replaced by the non-null parameter values.

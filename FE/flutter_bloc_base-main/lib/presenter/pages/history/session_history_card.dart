@@ -10,7 +10,7 @@ class _SessionHistoryCard extends StatelessWidget {
     final completedCount = session.allPoses.where((p) => p.isCompleted).length;
     final totalCount = session.allPoses.length;
     final completionRate = totalCount > 0 ? (completedCount / totalCount * 100).toInt() : 0;
-    
+
     return InkWell(
       onTap: () {
         // Navigate to session summary page
@@ -58,9 +58,9 @@ class _SessionHistoryCard extends StatelessWidget {
                 _StatusBadge(status: session.status),
               ],
             ),
-            
+
             const SizedBox(height: 12),
-            
+
             // Stats row
             Row(
               children: [
@@ -86,9 +86,9 @@ class _SessionHistoryCard extends StatelessWidget {
                 ),
               ],
             ),
-            
+
             const SizedBox(height: 12),
-            
+
             // Progress bar
             ClipRRect(
               borderRadius: BorderRadius.circular(4),
@@ -101,9 +101,9 @@ class _SessionHistoryCard extends StatelessWidget {
                 ),
               ),
             ),
-            
+
             const SizedBox(height: 8),
-            
+
             // Date time
             Row(
               children: [
@@ -114,8 +114,8 @@ class _SessionHistoryCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 4),
                 Text(
-                  session.completedAt?.dateTimeToDayMonDay() ?? 
-                  session.startedAt.dateTimeToDayMonDay(),
+                  session.completedAt?.dateTimeToDayMonDay() ??
+                      DateTime.now().dateTimeToDayMonDay(),
                   style: TextStyle(
                     fontSize: 12,
                     color: AppColors.textSecondary,
@@ -160,7 +160,7 @@ class _StatusBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     Color color;
     String text;
-    
+
     switch (status) {
       case SessionStatus.completed:
         color = Colors.green;
@@ -175,7 +175,7 @@ class _StatusBadge extends StatelessWidget {
         text = 'Abandoned';
         break;
     }
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(

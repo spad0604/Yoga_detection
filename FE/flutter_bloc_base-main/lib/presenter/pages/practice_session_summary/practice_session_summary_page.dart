@@ -26,19 +26,19 @@ class PracticeSessionSummaryPage extends StatelessWidget {
           children: [
             // Congratulations card
             _buildCongratulationsCard(),
-            
+
             const SizedBox(height: 24),
-            
+
             // Statistics cards
             _buildStatisticsGrid(),
-            
+
             const SizedBox(height: 24),
-            
+
             // Poses list with scores
             _buildPosesListCard(),
-            
+
             const SizedBox(height: 24),
-            
+
             // Action buttons
             _buildActionButtons(context),
           ],
@@ -238,9 +238,9 @@ class PracticeSessionSummaryPage extends StatelessWidget {
               ),
               child: const Icon(Icons.image),
             ),
-          
+
           const SizedBox(width: 12),
-          
+
           // Pose info
           Expanded(
             child: Column(
@@ -255,7 +255,7 @@ class PracticeSessionSummaryPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  '${_formatDuration(pose.timeSpentSeconds)} • ${DateFormat('HH:mm').format(pose.submittedAt)}',
+                  '${_formatDuration(pose.timeSpentSeconds)} • ${DateFormat('HH:mm').format(pose.submittedAt ?? DateTime.now())}',
                   style: TextStyle(
                     fontSize: 12,
                     color: Colors.grey.shade600,
@@ -276,7 +276,7 @@ class PracticeSessionSummaryPage extends StatelessWidget {
               ],
             ),
           ),
-          
+
           // Score
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),

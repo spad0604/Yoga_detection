@@ -285,9 +285,8 @@ class _OverallAccountPageState extends State<OverallAccountPage> {
                           ),
                         );
                         if (shouldLogout == true) {
-                          // Notify AuthBloc to log out (AuthBloc will clear tokens).
                           context.read<AuthBloc>().add(const AuthLoggedOut());
-                          // App-level listener in `App` will navigate to LoginRoute when logged out.
+                          context.router.replace(LoginRoute());
                         }
                       },
                     ),
