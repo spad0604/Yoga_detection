@@ -501,6 +501,22 @@ class SearchYogaPoseRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [SocialFeedPage]
+class SocialFeedRoute extends PageRouteInfo<void> {
+  const SocialFeedRoute({List<PageRouteInfo>? children})
+    : super(SocialFeedRoute.name, initialChildren: children);
+
+  static const String name = 'SocialFeedRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return WrappedRoute(child: const SocialFeedPage());
+    },
+  );
+}
+
+/// generated route for
 /// [SplashPage]
 class SplashRoute extends PageRouteInfo<void> {
   const SplashRoute({List<PageRouteInfo>? children})

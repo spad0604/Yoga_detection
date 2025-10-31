@@ -1,7 +1,19 @@
 package com.yogadetection.service.impl;
 
+import java.time.OffsetDateTime;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yogadetection.dto.request.PoseLandmarkRequest;
+import com.yogadetection.entity.Notification;
 import com.yogadetection.entity.User;
 import com.yogadetection.entity.YogaPoseAttempt;
 import com.yogadetection.entity.YogaPoseDetails;
@@ -13,20 +25,12 @@ import com.yogadetection.repository.YogaPoseDetailsRepository;
 import com.yogadetection.service.AIPoseEvaluationService;
 import com.yogadetection.service.FcmService;
 import com.yogadetection.service.ImageService;
+import com.yogadetection.service.NotificationService;
 import com.yogadetection.service.SocketIOService;
 import com.yogadetection.service.YogaPoseAttemptService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.time.OffsetDateTime;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 @Service
@@ -41,6 +45,7 @@ public class YogaPoseAttemptServiceImpl implements YogaPoseAttemptService {
     private final AIPoseEvaluationService aiEvaluationService;
     private final FcmService fcmService;
     private final SocketIOService socketIOService;
+    private final NotificationService notificationService;
 
     @Override
     @Transactional
@@ -135,6 +140,19 @@ public class YogaPoseAttemptServiceImpl implements YogaPoseAttemptService {
                     
                     boolean fcmSent = fcmService.sendNotification(user.getFcmToken(), title, body);
                     log.info("FCM notification sent: {} for attempt {}", fcmSent, attempt.getId());
+
+                    try {
+                        Notification n = Notification.builder()
+                                .isAll(false)
+                                .userId(user.getId())
+                                .normalTitle(title)
+                                .htmlTitle(title)
+                                .imageUrl(attempt.getImageUrl())
+                                .build();
+                        notificationService.saveNotification(n);
+                    } catch (Exception ex) {
+                        log.error("Failed to save notification for attempt {}: {}", attempt.getId(), ex.getMessage());
+                    }
                 }
             }
         } catch (Exception e) {

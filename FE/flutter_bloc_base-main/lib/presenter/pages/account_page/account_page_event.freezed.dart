@@ -20,18 +20,27 @@ mixin _$AccountPageEvent {
   TResult when<TResult extends Object?>({
     required TResult Function(BaseException<dynamic>? error) errorOccurred,
     required TResult Function() getInformation,
+    required TResult Function(String? firstName, String? lastName,
+            DateTime? dob, String? avatarFilePath)
+        updateProfile,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(BaseException<dynamic>? error)? errorOccurred,
     TResult? Function()? getInformation,
+    TResult? Function(String? firstName, String? lastName, DateTime? dob,
+            String? avatarFilePath)?
+        updateProfile,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(BaseException<dynamic>? error)? errorOccurred,
     TResult Function()? getInformation,
+    TResult Function(String? firstName, String? lastName, DateTime? dob,
+            String? avatarFilePath)?
+        updateProfile,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -39,18 +48,21 @@ mixin _$AccountPageEvent {
   TResult map<TResult extends Object?>({
     required TResult Function(AccountPageErrorOccurred value) errorOccurred,
     required TResult Function(AccountPageGetInformation value) getInformation,
+    required TResult Function(AccountPageUpdateProfile value) updateProfile,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(AccountPageErrorOccurred value)? errorOccurred,
     TResult? Function(AccountPageGetInformation value)? getInformation,
+    TResult? Function(AccountPageUpdateProfile value)? updateProfile,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(AccountPageErrorOccurred value)? errorOccurred,
     TResult Function(AccountPageGetInformation value)? getInformation,
+    TResult Function(AccountPageUpdateProfile value)? updateProfile,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -150,6 +162,9 @@ class _$AccountPageErrorOccurredImpl implements AccountPageErrorOccurred {
   TResult when<TResult extends Object?>({
     required TResult Function(BaseException<dynamic>? error) errorOccurred,
     required TResult Function() getInformation,
+    required TResult Function(String? firstName, String? lastName,
+            DateTime? dob, String? avatarFilePath)
+        updateProfile,
   }) {
     return errorOccurred(error);
   }
@@ -159,6 +174,9 @@ class _$AccountPageErrorOccurredImpl implements AccountPageErrorOccurred {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(BaseException<dynamic>? error)? errorOccurred,
     TResult? Function()? getInformation,
+    TResult? Function(String? firstName, String? lastName, DateTime? dob,
+            String? avatarFilePath)?
+        updateProfile,
   }) {
     return errorOccurred?.call(error);
   }
@@ -168,6 +186,9 @@ class _$AccountPageErrorOccurredImpl implements AccountPageErrorOccurred {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(BaseException<dynamic>? error)? errorOccurred,
     TResult Function()? getInformation,
+    TResult Function(String? firstName, String? lastName, DateTime? dob,
+            String? avatarFilePath)?
+        updateProfile,
     required TResult orElse(),
   }) {
     if (errorOccurred != null) {
@@ -181,6 +202,7 @@ class _$AccountPageErrorOccurredImpl implements AccountPageErrorOccurred {
   TResult map<TResult extends Object?>({
     required TResult Function(AccountPageErrorOccurred value) errorOccurred,
     required TResult Function(AccountPageGetInformation value) getInformation,
+    required TResult Function(AccountPageUpdateProfile value) updateProfile,
   }) {
     return errorOccurred(this);
   }
@@ -190,6 +212,7 @@ class _$AccountPageErrorOccurredImpl implements AccountPageErrorOccurred {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(AccountPageErrorOccurred value)? errorOccurred,
     TResult? Function(AccountPageGetInformation value)? getInformation,
+    TResult? Function(AccountPageUpdateProfile value)? updateProfile,
   }) {
     return errorOccurred?.call(this);
   }
@@ -199,6 +222,7 @@ class _$AccountPageErrorOccurredImpl implements AccountPageErrorOccurred {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(AccountPageErrorOccurred value)? errorOccurred,
     TResult Function(AccountPageGetInformation value)? getInformation,
+    TResult Function(AccountPageUpdateProfile value)? updateProfile,
     required TResult orElse(),
   }) {
     if (errorOccurred != null) {
@@ -268,6 +292,9 @@ class _$AccountPageGetInformationImpl implements AccountPageGetInformation {
   TResult when<TResult extends Object?>({
     required TResult Function(BaseException<dynamic>? error) errorOccurred,
     required TResult Function() getInformation,
+    required TResult Function(String? firstName, String? lastName,
+            DateTime? dob, String? avatarFilePath)
+        updateProfile,
   }) {
     return getInformation();
   }
@@ -277,6 +304,9 @@ class _$AccountPageGetInformationImpl implements AccountPageGetInformation {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(BaseException<dynamic>? error)? errorOccurred,
     TResult? Function()? getInformation,
+    TResult? Function(String? firstName, String? lastName, DateTime? dob,
+            String? avatarFilePath)?
+        updateProfile,
   }) {
     return getInformation?.call();
   }
@@ -286,6 +316,9 @@ class _$AccountPageGetInformationImpl implements AccountPageGetInformation {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(BaseException<dynamic>? error)? errorOccurred,
     TResult Function()? getInformation,
+    TResult Function(String? firstName, String? lastName, DateTime? dob,
+            String? avatarFilePath)?
+        updateProfile,
     required TResult orElse(),
   }) {
     if (getInformation != null) {
@@ -299,6 +332,7 @@ class _$AccountPageGetInformationImpl implements AccountPageGetInformation {
   TResult map<TResult extends Object?>({
     required TResult Function(AccountPageErrorOccurred value) errorOccurred,
     required TResult Function(AccountPageGetInformation value) getInformation,
+    required TResult Function(AccountPageUpdateProfile value) updateProfile,
   }) {
     return getInformation(this);
   }
@@ -308,6 +342,7 @@ class _$AccountPageGetInformationImpl implements AccountPageGetInformation {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(AccountPageErrorOccurred value)? errorOccurred,
     TResult? Function(AccountPageGetInformation value)? getInformation,
+    TResult? Function(AccountPageUpdateProfile value)? updateProfile,
   }) {
     return getInformation?.call(this);
   }
@@ -317,6 +352,7 @@ class _$AccountPageGetInformationImpl implements AccountPageGetInformation {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(AccountPageErrorOccurred value)? errorOccurred,
     TResult Function(AccountPageGetInformation value)? getInformation,
+    TResult Function(AccountPageUpdateProfile value)? updateProfile,
     required TResult orElse(),
   }) {
     if (getInformation != null) {
@@ -328,4 +364,199 @@ class _$AccountPageGetInformationImpl implements AccountPageGetInformation {
 
 abstract class AccountPageGetInformation implements AccountPageEvent {
   const factory AccountPageGetInformation() = _$AccountPageGetInformationImpl;
+}
+
+/// @nodoc
+abstract class _$$AccountPageUpdateProfileImplCopyWith<$Res> {
+  factory _$$AccountPageUpdateProfileImplCopyWith(
+          _$AccountPageUpdateProfileImpl value,
+          $Res Function(_$AccountPageUpdateProfileImpl) then) =
+      __$$AccountPageUpdateProfileImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call(
+      {String? firstName,
+      String? lastName,
+      DateTime? dob,
+      String? avatarFilePath});
+}
+
+/// @nodoc
+class __$$AccountPageUpdateProfileImplCopyWithImpl<$Res>
+    extends _$AccountPageEventCopyWithImpl<$Res, _$AccountPageUpdateProfileImpl>
+    implements _$$AccountPageUpdateProfileImplCopyWith<$Res> {
+  __$$AccountPageUpdateProfileImplCopyWithImpl(
+      _$AccountPageUpdateProfileImpl _value,
+      $Res Function(_$AccountPageUpdateProfileImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of AccountPageEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? firstName = freezed,
+    Object? lastName = freezed,
+    Object? dob = freezed,
+    Object? avatarFilePath = freezed,
+  }) {
+    return _then(_$AccountPageUpdateProfileImpl(
+      firstName: freezed == firstName
+          ? _value.firstName
+          : firstName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      lastName: freezed == lastName
+          ? _value.lastName
+          : lastName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      dob: freezed == dob
+          ? _value.dob
+          : dob // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      avatarFilePath: freezed == avatarFilePath
+          ? _value.avatarFilePath
+          : avatarFilePath // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$AccountPageUpdateProfileImpl implements AccountPageUpdateProfile {
+  const _$AccountPageUpdateProfileImpl(
+      {this.firstName, this.lastName, this.dob, this.avatarFilePath});
+
+  @override
+  final String? firstName;
+  @override
+  final String? lastName;
+  @override
+  final DateTime? dob;
+  @override
+  final String? avatarFilePath;
+
+  @override
+  String toString() {
+    return 'AccountPageEvent.updateProfile(firstName: $firstName, lastName: $lastName, dob: $dob, avatarFilePath: $avatarFilePath)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$AccountPageUpdateProfileImpl &&
+            (identical(other.firstName, firstName) ||
+                other.firstName == firstName) &&
+            (identical(other.lastName, lastName) ||
+                other.lastName == lastName) &&
+            (identical(other.dob, dob) || other.dob == dob) &&
+            (identical(other.avatarFilePath, avatarFilePath) ||
+                other.avatarFilePath == avatarFilePath));
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, firstName, lastName, dob, avatarFilePath);
+
+  /// Create a copy of AccountPageEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$AccountPageUpdateProfileImplCopyWith<_$AccountPageUpdateProfileImpl>
+      get copyWith => __$$AccountPageUpdateProfileImplCopyWithImpl<
+          _$AccountPageUpdateProfileImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(BaseException<dynamic>? error) errorOccurred,
+    required TResult Function() getInformation,
+    required TResult Function(String? firstName, String? lastName,
+            DateTime? dob, String? avatarFilePath)
+        updateProfile,
+  }) {
+    return updateProfile(firstName, lastName, dob, avatarFilePath);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(BaseException<dynamic>? error)? errorOccurred,
+    TResult? Function()? getInformation,
+    TResult? Function(String? firstName, String? lastName, DateTime? dob,
+            String? avatarFilePath)?
+        updateProfile,
+  }) {
+    return updateProfile?.call(firstName, lastName, dob, avatarFilePath);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(BaseException<dynamic>? error)? errorOccurred,
+    TResult Function()? getInformation,
+    TResult Function(String? firstName, String? lastName, DateTime? dob,
+            String? avatarFilePath)?
+        updateProfile,
+    required TResult orElse(),
+  }) {
+    if (updateProfile != null) {
+      return updateProfile(firstName, lastName, dob, avatarFilePath);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(AccountPageErrorOccurred value) errorOccurred,
+    required TResult Function(AccountPageGetInformation value) getInformation,
+    required TResult Function(AccountPageUpdateProfile value) updateProfile,
+  }) {
+    return updateProfile(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(AccountPageErrorOccurred value)? errorOccurred,
+    TResult? Function(AccountPageGetInformation value)? getInformation,
+    TResult? Function(AccountPageUpdateProfile value)? updateProfile,
+  }) {
+    return updateProfile?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(AccountPageErrorOccurred value)? errorOccurred,
+    TResult Function(AccountPageGetInformation value)? getInformation,
+    TResult Function(AccountPageUpdateProfile value)? updateProfile,
+    required TResult orElse(),
+  }) {
+    if (updateProfile != null) {
+      return updateProfile(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class AccountPageUpdateProfile implements AccountPageEvent {
+  const factory AccountPageUpdateProfile(
+      {final String? firstName,
+      final String? lastName,
+      final DateTime? dob,
+      final String? avatarFilePath}) = _$AccountPageUpdateProfileImpl;
+
+  String? get firstName;
+  String? get lastName;
+  DateTime? get dob;
+  String? get avatarFilePath;
+
+  /// Create a copy of AccountPageEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$AccountPageUpdateProfileImplCopyWith<_$AccountPageUpdateProfileImpl>
+      get copyWith => throw _privateConstructorUsedError;
 }

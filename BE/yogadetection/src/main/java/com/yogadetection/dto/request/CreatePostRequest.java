@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CreatePostRequest {
     private String content;
+    private String visibility; // PUBLIC or FRIENDS (optional for group, required for social)
 }
 
 

@@ -5,6 +5,7 @@ import com.yogadetection.dto.request.ChangePasswordRequest;
 import com.yogadetection.dto.response.ApiResponse;
 import com.yogadetection.dto.response.UserInfoResponse;
 import com.yogadetection.entity.User;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
 
@@ -13,4 +14,5 @@ public interface UserService {
     ApiResponse <String> changeInformation(ChangeInformationRequest request);
     ApiResponse <String> deleteUser(String token);
     String getUserId(String token);
+    UserInfoResponse updateProfile(String token, String firstName, String lastName, String dob, MultipartFile avatar);
 }

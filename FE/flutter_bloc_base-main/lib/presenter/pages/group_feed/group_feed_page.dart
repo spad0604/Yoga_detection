@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_starter/data/states/group_feed/group_feed_bloc.dart';
 import 'package:flutter_starter/data/entities/response/post_response.dart';
+import 'package:flutter_starter/data/entities/response/comment_response.dart';
 import 'package:flutter_starter/data/states/group_feed/group_feed_event.dart';
 import 'package:flutter_starter/data/states/group_feed/group_feed_state.dart';
 import 'package:flutter_starter/presenter/themes/colors.dart';
@@ -686,170 +687,451 @@ class _GroupFeedPageState extends State<GroupFeedPage> {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (BuildContext bottomSheetContext) {
-        final TextEditingController commentController = TextEditingController();
-        return DraggableScrollableSheet(
-          initialChildSize: 0.85,
-          minChildSize: 0.5,
-          maxChildSize: 0.95,
-          builder: (_, scrollController) {
-            return Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-              ),
-              child: Column(
-                children: [
-                  // Header
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(
-                          color: AppColors.textSecondary.withOpacity(0.1),
-                        ),
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            'Post & Comments',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.textPrimary,
-                            ),
-                          ),
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.close, color: AppColors.textSecondary),
-                          onPressed: () => Navigator.of(bottomSheetContext).pop(),
-                        ),
-                      ],
-                    ),
-                  ),
-                  // Post content
-                  Expanded(
-                    child: ListView(
-                      controller: scrollController,
-                      padding: const EdgeInsets.all(20),
-                      children: [
-                        // Original post
-                        _buildPostCard(context, post),
-                        const SizedBox(height: 16),
-                        // Comments section placeholder
-                        Text(
-                          'Comments',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.textPrimary,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          'No comments yet. Be the first!',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: AppColors.textSecondary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  // Comment input
-                  Container(
-                    padding: EdgeInsets.only(
-                      left: 16,
-                      right: 16,
-                      top: 12,
-                      // Use bottomSheetContext so padding updates when keyboard appears
-                      bottom: 12 + MediaQuery.of(bottomSheetContext).viewInsets.bottom,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border(
-                        top: BorderSide(
-                          color: AppColors.textSecondary.withOpacity(0.1),
-                        ),
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            controller: commentController,
-                            textInputAction: TextInputAction.send,
-                            decoration: InputDecoration(
-                              hintText: 'Write a comment...',
-                              hintStyle: TextStyle(
-                                color: AppColors.textSecondary.withOpacity(0.5),
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(24),
-                                borderSide: BorderSide(
-                                  color: AppColors.textSecondary.withOpacity(0.2),
-                                ),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(24),
-                                borderSide: BorderSide(
-                                  color: AppColors.primaryPurple,
-                                  width: 2,
-                                ),
-                              ),
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 12,
-                              ),
-                            ),
-                            onSubmitted: (value) {
-                              final text = value.trim();
-                              if (text.isNotEmpty) {
-                                context.read<GroupFeedBloc>().add(
-                                      GroupFeedEvent.addComment(
-                                        groupId: widget.groupId,
-                                        postId: post.id,
-                                        content: text,
-                                      ),
-                                    );
-                                commentController.clear();
-                              }
-                            },
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        IconButton(
-                          onPressed: () {
-                            final text = commentController.text.trim();
-                            if (text.isNotEmpty) {
-                              context.read<GroupFeedBloc>().add(
-                                    GroupFeedEvent.addComment(
-                                      groupId: widget.groupId,
-                                      postId: post.id,
-                                      content: text,
-                                    ),
-                                  );
-                              commentController.clear();
-                            }
-                          },
-                          icon: Icon(
-                            Icons.send,
-                            color: AppColors.primaryPurple,
-                          ),
-                          style: IconButton.styleFrom(
-                            backgroundColor: AppColors.primaryPurple.withOpacity(0.1),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            );
+        return _GroupPostDetailSheet(
+          groupId: widget.groupId,
+          post: post,
+          onRefresh: () {
+            context.read<GroupFeedBloc>().add(
+                  GroupFeedEvent.fetchFeed(groupId: widget.groupId),
+                );
           },
         );
       },
+    );
+  }
+}
+
+// Stateful widget to fetch and display comments
+class _GroupPostDetailSheet extends StatefulWidget {
+  final String groupId;
+  final PostResponse post;
+  final VoidCallback? onRefresh;
+
+  const _GroupPostDetailSheet({
+    required this.groupId,
+    required this.post,
+    this.onRefresh,
+  });
+
+  @override
+  State<_GroupPostDetailSheet> createState() => _GroupPostDetailSheetState();
+}
+
+class _GroupPostDetailSheetState extends State<_GroupPostDetailSheet> {
+  final TextEditingController _commentController = TextEditingController();
+  List<CommentResponse> _comments = [];
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadComments();
+  }
+
+  @override
+  void dispose() {
+    _commentController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadComments() async {
+    setState(() => _isLoading = true);
+    try {
+      final repo = provider.get<GroupPostsRepository>();
+      final page = await repo.getComments(
+        groupId: widget.groupId,
+        postId: widget.post.id,
+        page: 0,
+        size: 50,
+      );
+      setState(() => _comments = page.items);
+    } catch (e) {
+      debugPrint('Failed to load comments: $e');
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> _postComment() async {
+    final text = _commentController.text.trim();
+    if (text.isEmpty) return;
+
+    try {
+      final repo = provider.get<GroupPostsRepository>();
+      await repo.comment(
+        groupId: widget.groupId,
+        postId: widget.post.id,
+        content: text,
+      );
+      _commentController.clear();
+      await _loadComments();
+      widget.onRefresh?.call();
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to post comment: $e')),
+        );
+      }
+    }
+  }
+
+  String _formatTimeAgo(String? createdAt) {
+    if (createdAt == null) return 'Just now';
+    try {
+      final DateTime dateTime = DateTime.parse(createdAt);
+      return timeago.format(dateTime, locale: 'en_short');
+    } catch (e) {
+      return 'Just now';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return DraggableScrollableSheet(
+      initialChildSize: 0.85,
+      minChildSize: 0.5,
+      maxChildSize: 0.95,
+      builder: (_, scrollController) {
+        return Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          child: Column(
+            children: [
+              // Header
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      color: AppColors.textSecondary.withOpacity(0.1),
+                    ),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        'Post & Comments',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.close, color: AppColors.textSecondary),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                  ],
+                ),
+              ),
+              // Post content & comments
+              Expanded(
+                child: ListView(
+                  controller: scrollController,
+                  padding: const EdgeInsets.all(20),
+                  children: [
+                    // Original post (simplified version without tap)
+                    _buildSimplePostCard(),
+                    const SizedBox(height: 16),
+                    // Comments section
+                    Text(
+                      'Comments',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    if (_isLoading)
+                      const Center(child: CircularProgressIndicator())
+                    else if (_comments.isEmpty)
+                      Text(
+                        'No comments yet. Be the first!',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: AppColors.textSecondary,
+                        ),
+                      )
+                    else
+                      ..._comments.map((comment) => _buildCommentTile(comment)).toList(),
+                  ],
+                ),
+              ),
+              // Comment input
+              Container(
+                padding: EdgeInsets.only(
+                  left: 16,
+                  right: 16,
+                  top: 12,
+                  bottom: 12 + MediaQuery.of(context).viewInsets.bottom,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border(
+                    top: BorderSide(
+                      color: AppColors.textSecondary.withOpacity(0.1),
+                    ),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _commentController,
+                        textInputAction: TextInputAction.send,
+                        decoration: InputDecoration(
+                          hintText: 'Write a comment...',
+                          hintStyle: TextStyle(
+                            color: AppColors.textSecondary.withOpacity(0.5),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(24),
+                            borderSide: BorderSide(
+                              color: AppColors.textSecondary.withOpacity(0.2),
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(24),
+                            borderSide: BorderSide(
+                              color: AppColors.primaryPurple,
+                              width: 2,
+                            ),
+                          ),
+                          filled: true,
+                          fillColor: AppColors.backgroundLight,
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 12,
+                          ),
+                        ),
+                        onSubmitted: (value) => _postComment(),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    IconButton(
+                      onPressed: _postComment,
+                      icon: Icon(
+                        Icons.send,
+                        color: AppColors.primaryPurple,
+                      ),
+                      style: IconButton.styleFrom(
+                        backgroundColor: AppColors.primaryPurple.withOpacity(0.1),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildSimplePostCard() {
+    final post = widget.post;
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.backgroundLight,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Author header
+          Row(
+            children: [
+              CircleAvatar(
+                radius: 18,
+                backgroundColor: AppColors.primaryPurple.withOpacity(0.2),
+                child: Text(
+                  (post.authorName ?? 'A').substring(0, 1).toUpperCase(),
+                  style: TextStyle(
+                    color: AppColors.primaryPurple,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      post.authorName ?? 'Anonymous',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    Text(
+                      _formatTimeAgo(post.createdAt),
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          if (post.content != null && post.content!.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            Text(
+              post.content!,
+              style: TextStyle(
+                fontSize: 14,
+                color: AppColors.textPrimary,
+                height: 1.4,
+              ),
+            ),
+          ],
+          // Images if any
+          ..._buildPostImagesForDetail(post),
+        ],
+      ),
+    );
+  }
+
+  List<Widget> _buildPostImagesForDetail(PostResponse post) {
+    final List<String> urls = [];
+    if (post.imageUrls != null && post.imageUrls!.trim().isNotEmpty) {
+      try {
+        final decoded = json.decode(post.imageUrls!);
+        if (decoded is List) {
+          for (final item in decoded) {
+            if (item is String && item.trim().isNotEmpty) urls.add(item);
+          }
+        } else if (decoded is String) {
+          urls.add(decoded);
+        }
+      } catch (e) {
+        final raw = post.imageUrls!.trim();
+        if (raw.isNotEmpty) urls.add(raw);
+      }
+    }
+
+    if (urls.isEmpty) return [];
+
+    if (urls.length == 1) {
+      return [
+        const SizedBox(height: 12),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: Image.network(
+            urls[0],
+            width: double.infinity,
+            height: 180,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stack) => Container(
+              height: 180,
+              color: AppColors.backgroundLight,
+              child: const Center(child: Icon(Icons.broken_image)),
+            ),
+          ),
+        ),
+      ];
+    }
+
+    return [
+      const SizedBox(height: 12),
+      SizedBox(
+        height: 100,
+        child: ListView.separated(
+          scrollDirection: Axis.horizontal,
+          itemCount: urls.length,
+          separatorBuilder: (_, __) => const SizedBox(width: 8),
+          itemBuilder: (context, i) => ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Image.network(
+              urls[i],
+              width: 140,
+              height: 100,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stack) => Container(
+                width: 140,
+                height: 100,
+                color: AppColors.backgroundLight,
+                child: const Center(child: Icon(Icons.broken_image)),
+              ),
+            ),
+          ),
+        ),
+      ),
+    ];
+  }
+
+  Widget _buildCommentTile(CommentResponse comment) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppColors.backgroundLight,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CircleAvatar(
+            radius: 16,
+            backgroundColor: AppColors.primaryPurple.withOpacity(0.2),
+            child: Text(
+              (comment.username ?? 'A').substring(0, 1).toUpperCase(),
+              style: TextStyle(
+                color: AppColors.primaryPurple,
+                fontWeight: FontWeight.bold,
+                fontSize: 12,
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        comment.username ?? 'Anonymous',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      _formatTimeAgo(comment.createdAt),
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  comment.content ?? '',
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

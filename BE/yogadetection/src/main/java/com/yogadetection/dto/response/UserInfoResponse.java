@@ -12,5 +12,6 @@ public class UserInfoResponse {
     private String lastName;
     private String dob;
     private String registerDate;
+    private String avatarUrl;
 
 }

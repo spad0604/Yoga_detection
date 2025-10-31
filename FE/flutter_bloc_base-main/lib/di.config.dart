@@ -31,6 +31,10 @@ import 'data/repositories/notification_repository/notification_repository.defaul
 import 'data/repositories/routine_repository/routine_repository.dart' as _i398;
 import 'data/repositories/routine_repository/routine_repository.default.dart'
     as _i447;
+import 'data/repositories/social_posts_repository/social_posts_repository.dart'
+    as _i160;
+import 'data/repositories/social_posts_repository/social_posts_repository.default.dart'
+    as _i789;
 import 'data/repositories/social_repository/social_repository.dart' as _i951;
 import 'data/repositories/social_repository/social_repository.default.dart'
     as _i211;
@@ -54,6 +58,7 @@ import 'data/states/my_body/my_body_bloc.dart' as _i950;
 import 'data/states/routine_details/routine_details_bloc.dart' as _i659;
 import 'data/states/routines/routines_bloc.dart' as _i682;
 import 'data/states/settings/settings_bloc.dart' as _i932;
+import 'data/states/social_feed/social_feed_bloc.dart' as _i581;
 import 'data/usecases/change_password_uc.dart' as _i1035;
 import 'data/usecases/create_body_progress_uc.dart' as _i562;
 import 'data/usecases/get_all_body_progress_uc.dart' as _i652;
@@ -73,6 +78,7 @@ import 'data/usecases/post_yoga_pose_uc.dart' as _i389;
 import 'data/usecases/register.dart' as _i686;
 import 'data/usecases/send_otp_uc.dart' as _i212;
 import 'data/usecases/start_routine_uc.dart' as _i576;
+import 'data/usecases/update_profile_uc.dart' as _i489;
 import 'data/usecases/update_routine_progress_uc.dart' as _i843;
 import 'data/usecases/verify_login_status.dart' as _i412;
 import 'data/usecases/verify_otp_uc.dart' as _i855;
@@ -126,6 +132,8 @@ extension GetItInjectableX on _i174.GetIt {
           networkDataSource: gh<_i536.NetworkDataSource>(),
           tokenManager: gh<_i132.OauthTokenManager>(),
         ));
+    gh.singleton<_i160.SocialPostsRepository>(() =>
+        _i789.SocialPostsRepositoryImpl(api: gh<_i536.NetworkDataSource>()));
     gh.singleton<_i153.YogaPosesRepository>(() => _i818.YogaPosesRepositoryImpl(
         networkDataSource: gh<_i536.NetworkDataSource>()));
     gh.singleton<_i937.GetHistoryByDateUC>(() => _i937.GetHistoryByDateUC(
@@ -160,6 +168,10 @@ extension GetItInjectableX on _i174.GetIt {
             userRepository: gh<_i971.UserRepository>()));
     gh.singleton<_i924.GetInformationUc>(() =>
         _i924.GetInformationUc(userRepository: gh<_i971.UserRepository>()));
+    gh.singleton<_i489.UpdateProfileUc>(() =>
+        _i489.UpdateProfileUc(userRepository: gh<_i971.UserRepository>()));
+    gh.factory<_i581.SocialFeedBloc>(
+        () => _i581.SocialFeedBloc(gh<_i160.SocialPostsRepository>()));
     gh.factory<_i132.ForgotPasswordBloc>(() => _i132.ForgotPasswordBloc(
           changePassword: gh<_i1035.ChangePasswordUseCase>(),
           authRepository: gh<_i344.AuthRepository>(),
@@ -205,8 +217,10 @@ extension GetItInjectableX on _i174.GetIt {
         ));
     gh.factory<_i771.GroupFeedBloc>(
         () => _i771.GroupFeedBloc(gh<_i636.GroupPostsRepository>()));
-    gh.singleton<_i8.AccountPageBloc>(() =>
-        _i8.AccountPageBloc(getInformationUc: gh<_i924.GetInformationUc>()));
+    gh.singleton<_i8.AccountPageBloc>(() => _i8.AccountPageBloc(
+          getInformationUc: gh<_i924.GetInformationUc>(),
+          updateProfileUc: gh<_i489.UpdateProfileUc>(),
+        ));
     gh.singleton<_i562.CreateBodyProgressUc>(
         () => _i562.CreateBodyProgressUc(gh<_i654.BodyProgressRepository>()));
     gh.singleton<_i652.GetAllBodyProgressUc>(

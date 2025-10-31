@@ -27,6 +27,7 @@ import 'package:flutter_starter/presenter/pages/my_body_page/my_body_page.dart';
 import 'package:flutter_starter/presenter/pages/camera_detection/waiting_result_page.dart';
 import 'package:flutter_starter/presenter/pages/camera_detection/pose_result_page.dart';
 import 'package:flutter_starter/presenter/pages/group_feed/group_feed_page.dart';
+import 'package:flutter_starter/presenter/pages/social_feed/social_feed_page.dart';
 import 'package:flutter_starter/data/entities/response/user_yoga_pose_model.dart';
 
 part 'navigation.gr.dart';
@@ -61,6 +62,7 @@ class AppRouter extends RootStackRouter {
         AutoRoute(path: '/friends', page: FriendsRoute.page),
         AutoRoute(path: '/groups', page: GroupsRoute.page),
         AutoRoute(path: '/group-feed/:groupId', page: GroupFeedRoute.page),
+        AutoRoute(path: '/social-feed', page: SocialFeedRoute.page),
         AutoRoute(path: '/activities', page: ActivitiesRoute.page),
         AutoRoute(path: '/my-body', page: MyBodyRoute.page),
         AutoRoute(path: '/waiting-result', page: WaitingResultRoute.page),

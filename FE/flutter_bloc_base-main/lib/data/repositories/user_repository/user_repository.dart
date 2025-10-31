@@ -8,4 +8,11 @@ abstract class UserRepository {
   });
 
   Future<GetInformation> getInformation();
+
+  Future<GetInformation> updateProfile({
+    String? firstName,
+    String? lastName,
+    DateTime? dob,
+    String? avatarFilePath,
+  });
 }

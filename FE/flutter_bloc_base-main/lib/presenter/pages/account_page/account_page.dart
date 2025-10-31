@@ -6,6 +6,7 @@ import 'package:flutter_starter/presenter/pages/account_page/account_page_bloc.d
 import 'package:flutter_starter/presenter/pages/account_page/account_page_event.dart';
 import 'package:flutter_starter/presenter/pages/account_page/account_page_state.dart';
 import 'package:flutter_starter/presenter/themes/colors.dart';
+import 'package:image_picker/image_picker.dart';
 part 'menu_item.dart';
 
 // TODO: Add the page to the router
@@ -98,14 +99,19 @@ class _AccountPagePageState extends State<AccountPagePage> {
                       ],
                     ),
                     padding: const EdgeInsets.all(4),
-                    child: const CircleAvatar(
+                    child: CircleAvatar(
                       radius: 50,
                       backgroundColor: Colors.white,
-                      child: Icon(
-                        Icons.person,
-                        size: 50,
-                        color: AppColors.primaryPurple,
-                      ),
+                      backgroundImage: (state.information?.avatarUrl != null && (state.information!.avatarUrl!.isNotEmpty))
+                          ? NetworkImage(state.information!.avatarUrl!)
+                          : null,
+                      child: (state.information?.avatarUrl == null || (state.information!.avatarUrl!.isEmpty))
+                          ? const Icon(
+                              Icons.person,
+                              size: 50,
+                              color: AppColors.primaryPurple,
+                            )
+                          : null,
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -130,7 +136,13 @@ class _AccountPagePageState extends State<AccountPagePage> {
                       color: Colors.grey.shade600,
                     ),
                   ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 16),
+                  FilledButton.icon(
+                    onPressed: _openEditProfile,
+                    icon: const Icon(Icons.edit),
+                    label: const Text('Chỉnh sửa hồ sơ'),
+                  ),
+                  const SizedBox(height: 24),
                   // Info Cards
                   _buildInfoCard(
                     context,
@@ -173,6 +185,121 @@ class _AccountPagePageState extends State<AccountPagePage> {
           );
         },
       ),
+    );
+  }
+
+  Future<void> _openEditProfile() async {
+    final bloc = _bloc;
+    final current = context.read<AccountPageBloc>().state.information;
+    String firstName = current?.firstName ?? '';
+    String lastName = current?.lastName ?? '';
+    DateTime? dob = current?.dob;
+    String? avatarPath;
+
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
+      builder: (ctx) {
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(ctx).viewInsets.bottom,
+            left: 16,
+            right: 16,
+            top: 16,
+          ),
+          child: StatefulBuilder(builder: (ctx, setModal) {
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  children: [
+                    const Text('Chỉnh sửa', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
+                    const Spacer(),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(ctx),
+                    )
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        decoration: const InputDecoration(labelText: 'Họ'),
+                        controller: TextEditingController(text: lastName),
+                        onChanged: (v) => lastName = v,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: TextField(
+                        decoration: const InputDecoration(labelText: 'Tên'),
+                        controller: TextEditingController(text: firstName),
+                        onChanged: (v) => firstName = v,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: InkWell(
+                        onTap: () async {
+                          final picked = await showDatePicker(
+                            context: ctx,
+                            initialDate: dob ?? DateTime.now(),
+                            firstDate: DateTime(1900),
+                            lastDate: DateTime.now(),
+                          );
+                          if (picked != null) {
+                            setModal(() => dob = picked);
+                          }
+                        },
+                        child: InputDecorator(
+                          decoration: const InputDecoration(labelText: 'Ngày sinh'),
+                          child: Text(dob != null ? '${dob!.year}-${dob!.month.toString().padLeft(2, '0')}-${dob!.day.toString().padLeft(2, '0')}' : 'Chọn ngày'),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    OutlinedButton.icon(
+                      onPressed: () async {
+                        final picker = ImagePicker();
+                        final picked = await picker.pickImage(source: ImageSource.gallery, imageQuality: 85);
+                        if (picked != null) {
+                          setModal(() => avatarPath = picked.path);
+                        }
+                      },
+                      icon: const Icon(Icons.image),
+                      label: Text(avatarPath == null ? 'Chọn ảnh' : 'Ảnh đã chọn'),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton(
+                    onPressed: () {
+                      Navigator.pop(ctx);
+                      bloc.add(AccountPageEvent.updateProfile(
+                        firstName: firstName.isEmpty ? null : firstName,
+                        lastName: lastName.isEmpty ? null : lastName,
+                        dob: dob,
+                        avatarFilePath: avatarPath,
+                      ));
+                    },
+                    child: const Text('Lưu'),
+                  ),
+                ),
+                const SizedBox(height: 12),
+              ],
+            );
+          }),
+        );
+      },
     );
   }
 

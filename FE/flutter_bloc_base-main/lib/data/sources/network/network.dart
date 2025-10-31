@@ -76,6 +76,10 @@ abstract class NetworkDataSource {
   Future<BaseApiResponse<GetInformation>> getInformation();
 
   @MultiPart()
+  @PUT('api/user/profile')
+  Future<BaseApiResponse<GetInformation>> updateProfile(@Body() FormData formData);
+
+  @MultiPart()
   @POST('api/pose-attempts')
   Future<BaseApiResponse<UserYogaPoseModel>> postYogaPose(@Body() FormData formData);
 
@@ -279,6 +283,36 @@ abstract class NetworkDataSource {
   @GET('api/social/groups/{groupId}/posts/{postId}/comments')
   Future<BaseApiResponse<PageResponse<CommentResponse>>> getCommentsOfPost(
     @Path('groupId') String groupId,
+    @Path('postId') String postId,
+    @Query('page') int page,
+    @Query('size') int size,
+  );
+
+  // ========== Social Posts (Public/Friends) ==========
+  @MultiPart()
+  @POST('api/social/posts')
+  Future<BaseApiResponse<PostResponse>> createSocialPost(@Body() FormData formData);
+
+  @GET('api/social/posts')
+  Future<BaseApiResponse<PageResponse<PostResponse>>> getSocialFeed(
+    @Query('page') int page,
+    @Query('size') int size,
+  );
+
+  @POST('api/social/posts/{postId}/likes')
+  Future<BaseApiResponse<void>> likeSocialPost(@Path('postId') String postId);
+
+  @POST('api/social/posts/{postId}/unlike')
+  Future<BaseApiResponse<void>> unlikeSocialPost(@Path('postId') String postId);
+
+  @POST('api/social/posts/{postId}/comments')
+  Future<BaseApiResponse<CommentResponse>> createSocialComment(
+    @Path('postId') String postId,
+    @Body() Map<String, dynamic> request,
+  );
+
+  @GET('api/social/posts/{postId}/comments')
+  Future<BaseApiResponse<PageResponse<CommentResponse>>> getSocialComments(
     @Path('postId') String postId,
     @Query('page') int page,
     @Query('size') int size,

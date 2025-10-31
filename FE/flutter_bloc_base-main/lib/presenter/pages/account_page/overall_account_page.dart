@@ -103,11 +103,25 @@ class _OverallAccountPageState extends State<OverallAccountPage> {
                           shape: BoxShape.circle,
                           color: Colors.white.withOpacity(0.3),
                         ),
-                        child: const Icon(
-                          Icons.person,
-                          color: Colors.white,
-                          size: 30,
-                        ),
+                        child: _bloc.state.information?.avatarUrl != null
+                            ? Container(
+                                width: 30,
+                                height: 30,
+                                decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                ),
+                                child: ClipOval(
+                                  child: Image.network(
+                                    _bloc.state.information!.avatarUrl!,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              )
+                            : const Icon(
+                                Icons.person,
+                                color: Colors.white,
+                                size: 30,
+                              ),
                       ),
                       const SizedBox(width: 16),
                       Expanded(

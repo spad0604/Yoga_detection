@@ -32,6 +32,8 @@ mixin _$GetInformation {
   String get email => throw _privateConstructorUsedError;
   @JsonKey(name: "registerDate")
   DateTime get registerDate => throw _privateConstructorUsedError;
+  @JsonKey(name: "avatarUrl")
+  String? get avatarUrl => throw _privateConstructorUsedError;
 
   /// Serializes this GetInformation to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -55,7 +57,8 @@ abstract class $GetInformationCopyWith<$Res> {
       @JsonKey(name: "dob") DateTime dob,
       @JsonKey(name: "id") String id,
       @JsonKey(name: "email") String email,
-      @JsonKey(name: "registerDate") DateTime registerDate});
+      @JsonKey(name: "registerDate") DateTime registerDate,
+      @JsonKey(name: "avatarUrl") String? avatarUrl});
 }
 
 /// @nodoc
@@ -79,6 +82,7 @@ class _$GetInformationCopyWithImpl<$Res, $Val extends GetInformation>
     Object? id = null,
     Object? email = null,
     Object? registerDate = null,
+    Object? avatarUrl = freezed,
   }) {
     return _then(_value.copyWith(
       firstName: null == firstName
@@ -105,6 +109,10 @@ class _$GetInformationCopyWithImpl<$Res, $Val extends GetInformation>
           ? _value.registerDate
           : registerDate // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      avatarUrl: freezed == avatarUrl
+          ? _value.avatarUrl
+          : avatarUrl // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -123,7 +131,8 @@ abstract class _$$GetInformationImplCopyWith<$Res>
       @JsonKey(name: "dob") DateTime dob,
       @JsonKey(name: "id") String id,
       @JsonKey(name: "email") String email,
-      @JsonKey(name: "registerDate") DateTime registerDate});
+      @JsonKey(name: "registerDate") DateTime registerDate,
+      @JsonKey(name: "avatarUrl") String? avatarUrl});
 }
 
 /// @nodoc
@@ -145,6 +154,7 @@ class __$$GetInformationImplCopyWithImpl<$Res>
     Object? id = null,
     Object? email = null,
     Object? registerDate = null,
+    Object? avatarUrl = freezed,
   }) {
     return _then(_$GetInformationImpl(
       firstName: null == firstName
@@ -171,6 +181,10 @@ class __$$GetInformationImplCopyWithImpl<$Res>
           ? _value.registerDate
           : registerDate // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      avatarUrl: freezed == avatarUrl
+          ? _value.avatarUrl
+          : avatarUrl // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -184,7 +198,8 @@ class _$GetInformationImpl implements _GetInformation {
       @JsonKey(name: "dob") required this.dob,
       @JsonKey(name: "id") required this.id,
       @JsonKey(name: "email") required this.email,
-      @JsonKey(name: "registerDate") required this.registerDate});
+      @JsonKey(name: "registerDate") required this.registerDate,
+      @JsonKey(name: "avatarUrl") this.avatarUrl});
 
   factory _$GetInformationImpl.fromJson(Map<String, dynamic> json) =>
       _$$GetInformationImplFromJson(json);
@@ -207,10 +222,13 @@ class _$GetInformationImpl implements _GetInformation {
   @override
   @JsonKey(name: "registerDate")
   final DateTime registerDate;
+  @override
+  @JsonKey(name: "avatarUrl")
+  final String? avatarUrl;
 
   @override
   String toString() {
-    return 'GetInformation(firstName: $firstName, lastName: $lastName, dob: $dob, id: $id, email: $email, registerDate: $registerDate)';
+    return 'GetInformation(firstName: $firstName, lastName: $lastName, dob: $dob, id: $id, email: $email, registerDate: $registerDate, avatarUrl: $avatarUrl)';
   }
 
   @override
@@ -226,13 +244,15 @@ class _$GetInformationImpl implements _GetInformation {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.email, email) || other.email == email) &&
             (identical(other.registerDate, registerDate) ||
-                other.registerDate == registerDate));
+                other.registerDate == registerDate) &&
+            (identical(other.avatarUrl, avatarUrl) ||
+                other.avatarUrl == avatarUrl));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, firstName, lastName, dob, id, email, registerDate);
+  int get hashCode => Object.hash(runtimeType, firstName, lastName, dob, id,
+      email, registerDate, avatarUrl);
 
   /// Create a copy of GetInformation
   /// with the given fields replaced by the non-null parameter values.
@@ -253,13 +273,14 @@ class _$GetInformationImpl implements _GetInformation {
 
 abstract class _GetInformation implements GetInformation {
   const factory _GetInformation(
-      {@JsonKey(name: "firstName") required final String firstName,
-      @JsonKey(name: "lastName") required final String lastName,
-      @JsonKey(name: "dob") required final DateTime dob,
-      @JsonKey(name: "id") required final String id,
-      @JsonKey(name: "email") required final String email,
-      @JsonKey(name: "registerDate")
-      required final DateTime registerDate}) = _$GetInformationImpl;
+          {@JsonKey(name: "firstName") required final String firstName,
+          @JsonKey(name: "lastName") required final String lastName,
+          @JsonKey(name: "dob") required final DateTime dob,
+          @JsonKey(name: "id") required final String id,
+          @JsonKey(name: "email") required final String email,
+          @JsonKey(name: "registerDate") required final DateTime registerDate,
+          @JsonKey(name: "avatarUrl") final String? avatarUrl}) =
+      _$GetInformationImpl;
 
   factory _GetInformation.fromJson(Map<String, dynamic> json) =
       _$GetInformationImpl.fromJson;
@@ -282,6 +303,9 @@ abstract class _GetInformation implements GetInformation {
   @override
   @JsonKey(name: "registerDate")
   DateTime get registerDate;
+  @override
+  @JsonKey(name: "avatarUrl")
+  String? get avatarUrl;
 
   /// Create a copy of GetInformation
   /// with the given fields replaced by the non-null parameter values.

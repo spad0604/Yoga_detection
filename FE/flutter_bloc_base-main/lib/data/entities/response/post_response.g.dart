@@ -9,7 +9,7 @@ part of 'post_response.dart';
 _$PostResponseImpl _$$PostResponseImplFromJson(Map<String, dynamic> json) =>
     _$PostResponseImpl(
       id: json['id'] as String,
-      groupId: json['groupId'] as String,
+      groupId: json['groupId'] as String?,
       authorId: json['authorId'] as String,
       authorName: json['authorName'] as String?,
       content: json['content'] as String?,

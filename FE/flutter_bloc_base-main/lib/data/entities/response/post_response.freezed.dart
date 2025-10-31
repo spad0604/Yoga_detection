@@ -23,7 +23,7 @@ mixin _$PostResponse {
   @JsonKey(name: 'id')
   String get id => throw _privateConstructorUsedError;
   @JsonKey(name: 'groupId')
-  String get groupId => throw _privateConstructorUsedError;
+  String? get groupId => throw _privateConstructorUsedError;
   @JsonKey(name: 'authorId')
   String get authorId => throw _privateConstructorUsedError;
   @JsonKey(name: 'authorName')
@@ -59,7 +59,7 @@ abstract class $PostResponseCopyWith<$Res> {
   @useResult
   $Res call(
       {@JsonKey(name: 'id') String id,
-      @JsonKey(name: 'groupId') String groupId,
+      @JsonKey(name: 'groupId') String? groupId,
       @JsonKey(name: 'authorId') String authorId,
       @JsonKey(name: 'authorName') String? authorName,
       @JsonKey(name: 'content') String? content,
@@ -86,7 +86,7 @@ class _$PostResponseCopyWithImpl<$Res, $Val extends PostResponse>
   @override
   $Res call({
     Object? id = null,
-    Object? groupId = null,
+    Object? groupId = freezed,
     Object? authorId = null,
     Object? authorName = freezed,
     Object? content = freezed,
@@ -101,10 +101,10 @@ class _$PostResponseCopyWithImpl<$Res, $Val extends PostResponse>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      groupId: null == groupId
+      groupId: freezed == groupId
           ? _value.groupId
           : groupId // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       authorId: null == authorId
           ? _value.authorId
           : authorId // ignore: cast_nullable_to_non_nullable
@@ -151,7 +151,7 @@ abstract class _$$PostResponseImplCopyWith<$Res>
   @useResult
   $Res call(
       {@JsonKey(name: 'id') String id,
-      @JsonKey(name: 'groupId') String groupId,
+      @JsonKey(name: 'groupId') String? groupId,
       @JsonKey(name: 'authorId') String authorId,
       @JsonKey(name: 'authorName') String? authorName,
       @JsonKey(name: 'content') String? content,
@@ -176,7 +176,7 @@ class __$$PostResponseImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
-    Object? groupId = null,
+    Object? groupId = freezed,
     Object? authorId = null,
     Object? authorName = freezed,
     Object? content = freezed,
@@ -191,10 +191,10 @@ class __$$PostResponseImplCopyWithImpl<$Res>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      groupId: null == groupId
+      groupId: freezed == groupId
           ? _value.groupId
           : groupId // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       authorId: null == authorId
           ? _value.authorId
           : authorId // ignore: cast_nullable_to_non_nullable
@@ -236,7 +236,7 @@ class __$$PostResponseImplCopyWithImpl<$Res>
 class _$PostResponseImpl implements _PostResponse {
   const _$PostResponseImpl(
       {@JsonKey(name: 'id') required this.id,
-      @JsonKey(name: 'groupId') required this.groupId,
+      @JsonKey(name: 'groupId') this.groupId,
       @JsonKey(name: 'authorId') required this.authorId,
       @JsonKey(name: 'authorName') this.authorName,
       @JsonKey(name: 'content') this.content,
@@ -254,7 +254,7 @@ class _$PostResponseImpl implements _PostResponse {
   final String id;
   @override
   @JsonKey(name: 'groupId')
-  final String groupId;
+  final String? groupId;
   @override
   @JsonKey(name: 'authorId')
   final String authorId;
@@ -343,7 +343,7 @@ class _$PostResponseImpl implements _PostResponse {
 abstract class _PostResponse implements PostResponse {
   const factory _PostResponse(
           {@JsonKey(name: 'id') required final String id,
-          @JsonKey(name: 'groupId') required final String groupId,
+          @JsonKey(name: 'groupId') final String? groupId,
           @JsonKey(name: 'authorId') required final String authorId,
           @JsonKey(name: 'authorName') final String? authorName,
           @JsonKey(name: 'content') final String? content,
@@ -362,7 +362,7 @@ abstract class _PostResponse implements PostResponse {
   String get id;
   @override
   @JsonKey(name: 'groupId')
-  String get groupId;
+  String? get groupId;
   @override
   @JsonKey(name: 'authorId')
   String get authorId;

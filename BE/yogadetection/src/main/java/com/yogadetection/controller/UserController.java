@@ -6,6 +6,7 @@ import com.yogadetection.dto.response.UserInfoResponse;
 import com.yogadetection.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
 
@@ -29,5 +30,16 @@ public class UserController {
     @DeleteMapping
     public ApiResponse<String> deleteUser(@RequestHeader("Authorization") String token) {
         return userService.deleteUser(token);
+    }
+
+    @PutMapping(value = "/profile", consumes = {"multipart/form-data"})
+    public UserInfoResponse updateProfile(
+            @RequestHeader("Authorization") String token,
+            @RequestPart(value = "firstName", required = false) String firstName,
+            @RequestPart(value = "lastName", required = false) String lastName,
+            @RequestPart(value = "dob", required = false) String dob,
+            @RequestPart(value = "avatar", required = false) MultipartFile avatar
+    ) {
+        return userService.updateProfile(token, firstName, lastName, dob, avatar);
     }
 }

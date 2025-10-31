@@ -8,4 +8,11 @@ class AccountPageEvent with _$AccountPageEvent {
   const factory AccountPageEvent.errorOccurred([BaseException? error]) = AccountPageErrorOccurred;
 
   const factory AccountPageEvent.getInformation() = AccountPageGetInformation;
+
+  const factory AccountPageEvent.updateProfile({
+    String? firstName,
+    String? lastName,
+    DateTime? dob,
+    String? avatarFilePath,
+  }) = AccountPageUpdateProfile;
 }

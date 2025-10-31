@@ -47,6 +47,9 @@ public class User implements UserDetails {
     @Column(name = "fcmToken", nullable = true, updatable = true)
     private String fcmToken;
 
+    @Column(name = "avatar_url")
+    private String avatarUrl;
+
     @PrePersist
     protected void onCreate() {
         this.registerDate = LocalDateTime.now();

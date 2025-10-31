@@ -20,6 +20,7 @@ class GetInformation with _$GetInformation {
     @JsonKey(name: "id") required String id,
     @JsonKey(name: "email") required String email,
     @JsonKey(name: "registerDate") required DateTime registerDate,
+    @JsonKey(name: "avatarUrl") String? avatarUrl,
   }) = _GetInformation;
 
   factory GetInformation.fromJson(Map<String, Object?> json) => _$GetInformationFromJson(json);

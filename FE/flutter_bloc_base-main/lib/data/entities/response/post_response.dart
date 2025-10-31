@@ -7,7 +7,7 @@ part 'post_response.g.dart';
 class PostResponse with _$PostResponse {
   const factory PostResponse({
     @JsonKey(name: 'id') required String id,
-    @JsonKey(name: 'groupId') required String groupId,
+    @JsonKey(name: 'groupId') String? groupId,
     @JsonKey(name: 'authorId') required String authorId,
     @JsonKey(name: 'authorName') String? authorName,
     @JsonKey(name: 'content') String? content,

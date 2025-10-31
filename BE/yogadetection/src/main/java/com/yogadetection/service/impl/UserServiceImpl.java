@@ -1,21 +1,20 @@
 package com.yogadetection.service.impl;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.yogadetection.dto.request.ChangeInformationRequest;
-import com.yogadetection.dto.request.ChangePasswordRequest;
 import com.yogadetection.dto.response.ApiResponse;
 import com.yogadetection.dto.response.UserInfoResponse;
 import com.yogadetection.entity.User;
-import com.yogadetection.exception.InvalidPasswordException;
 import com.yogadetection.exception.UserNotFoundException;
 import com.yogadetection.repository.UserRepository;
+import com.yogadetection.service.ImageService;
 import com.yogadetection.service.JwtService;
 import com.yogadetection.service.UserService;
-import lombok.AllArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
+import lombok.AllArgsConstructor;
 
 
 @Service
@@ -25,6 +24,7 @@ public class UserServiceImpl implements UserService {
     private final JwtService jwtService;
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
+    private final ImageService imageService;
 
     @Override
     public UserInfoResponse getInformation(String token) {
@@ -37,6 +37,7 @@ public class UserServiceImpl implements UserService {
                 .lastName(user.getLastName())
                 .dob(user.getBirthDate().toString())
                 .registerDate(user.getRegisterDate().toString())
+                .avatarUrl(user.getAvatarUrl())
                 .build();
     }
 
@@ -68,5 +69,38 @@ public class UserServiceImpl implements UserService {
         String email = jwtService.extractUsername(token);
         User user = userRepository.findByEmail(email.toLowerCase()).orElseThrow(() -> new UserNotFoundException());
         return user.getId();
+    }
+
+    @Override
+    public UserInfoResponse updateProfile(String token, String firstName, String lastName, String dob, MultipartFile avatar) {
+        String email = jwtService.extractUsername(token);
+        User user = userRepository.findByEmail(email.toLowerCase()).orElseThrow(UserNotFoundException::new);
+
+        if (firstName != null && !firstName.isBlank()) {
+            user.setFirstName(firstName);
+        }
+        if (lastName != null && !lastName.isBlank()) {
+            user.setLastName(lastName);
+        }
+        if (dob != null && !dob.isBlank()) {
+            try {
+                user.setBirthDate(java.time.LocalDate.parse(dob));
+            } catch (Exception ignored) { }
+        }
+        if (avatar != null && !avatar.isEmpty()) {
+            String imageUrl = imageService.uploadImage(avatar, user.getId());
+            user.setAvatarUrl(imageUrl);
+        }
+        userRepository.save(user);
+
+        return UserInfoResponse.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .dob(user.getBirthDate() != null ? user.getBirthDate().toString() : null)
+                .registerDate(user.getRegisterDate() != null ? user.getRegisterDate().toString() : null)
+                .avatarUrl(user.getAvatarUrl())
+                .build();
     }
 }
