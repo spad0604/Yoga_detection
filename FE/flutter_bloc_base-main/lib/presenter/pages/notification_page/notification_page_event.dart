@@ -13,5 +13,5 @@ class NotificationPageEvent with _$NotificationPageEvent {
 
   const factory NotificationPageEvent.loadMoreNotifications() = LoadMoreNotifications;
 
-  const factory NotificationPageEvent.markAsRead(String id) = MarkAsRead;
+  const factory NotificationPageEvent.markAsRead(int id) = MarkAsRead;
 }

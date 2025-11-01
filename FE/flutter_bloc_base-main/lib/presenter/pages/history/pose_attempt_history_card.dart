@@ -12,8 +12,8 @@ class _PoseAttemptHistoryCard extends StatelessWidget {
 
     return InkWell(
       onTap: () {
-        // Navigate to pose details page with the pose code
-        context.router.push(PoseDetailsRoute(item: YogaPoseDetails(id: pose.poseCode, name: '')));
+        // Navigate to pose attempt details page
+        context.router.push(PoseAttemptDetailsRoute(poseAttempt: pose));
       },
       borderRadius: BorderRadius.circular(16),
       child: Container(

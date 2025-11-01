@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_starter/data/entities/request/change_password.dart';
+import 'package:flutter_starter/data/entities/request/google_login_params.dart';
 import 'package:flutter_starter/data/entities/request/register_params.dart';
 import 'package:flutter_starter/data/entities/request/request_change_password.dart';
 import 'package:flutter_starter/data/entities/request/verify_otp_request.dart';
@@ -8,7 +8,6 @@ import 'package:flutter_starter/data/entities/response/register_response.dart';
 import 'package:flutter_starter/data/entities/response/verify_otp.dart';
 import 'package:flutter_starter/data/sources/network/base_api_response.dart';
 import 'package:injectable/injectable.dart';
-import 'package:flutter_starter/data/entities/account.dart';
 import 'package:flutter_starter/data/entities/request/login_params.dart';
 import 'package:flutter_starter/data/entities/request/refresh_token_request.dart';
 import 'package:flutter_starter/data/repositories/auth_repository/auth_repository.dart';
@@ -41,6 +40,31 @@ class DefaultAuthRepository extends AuthRepository {
     try {
       final res = await _networkDataSource
           .login(LoginParams(email: email, password: password, fcmToken: fcmToken));
+
+      final code = res.code;
+      if (code != null && code != ErrorCode.SUCCESS.code) {
+        final match = ErrorCode.values.firstWhere(
+          (e) => e.code == code,
+          orElse: () => ErrorCode.INTERNAL_SERVER_ERROR,
+        );
+        throw ServerException(match, data: res);
+      }
+
+      return res;
+    } on DioException {
+      throw LoginInvalidEmailPasswordException();
+    }
+  }
+
+  @override
+  Future<BaseApiResponse<RegisterResponse>> loginWithGoogle({
+    required String idToken,
+    String? fcmToken,
+  }) async {
+    try {
+      final res = await _networkDataSource.loginWithGoogle(
+        GoogleLoginParams(idToken: idToken, fcmToken: fcmToken),
+      );
 
       final code = res.code;
       if (code != null && code != ErrorCode.SUCCESS.code) {

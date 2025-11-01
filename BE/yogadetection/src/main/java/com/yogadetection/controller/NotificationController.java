@@ -133,4 +133,38 @@ public class NotificationController {
         }
         return ApiResponse.success(n);
     }
+    
+    /**
+     * Đánh dấu notification đã đọc
+     * PUT /api/notifications/{id}/read
+     */
+    @PutMapping("/{id}/read")
+    public ApiResponse<String> markAsRead(
+            @PathVariable Long id,
+            @AuthenticationPrincipal User user) {
+        notificationService.markAsRead(id, user.getId());
+        return ApiResponse.success("Notification marked as read");
+    }
+    
+    /**
+     * Đánh dấu tất cả notifications đã đọc
+     * PUT /api/notifications/read-all
+     */
+    @PutMapping("/read-all")
+    public ApiResponse<String> markAllAsRead(@AuthenticationPrincipal User user) {
+        notificationService.markAllAsRead(user.getId());
+        return ApiResponse.success("All notifications marked as read");
+    }
+    
+    /**
+     * Lấy số lượng notifications chưa đọc
+     * GET /api/notifications/unread-count
+     */
+    @GetMapping("/unread-count")
+    public ApiResponse<Map<String, Long>> getUnreadCount(@AuthenticationPrincipal User user) {
+        long count = notificationService.countUnreadNotifications(user.getId());
+        Map<String, Long> response = new HashMap<>();
+        response.put("unreadCount", count);
+        return ApiResponse.success(response);
+    }
 }

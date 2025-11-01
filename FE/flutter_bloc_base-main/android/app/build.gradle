@@ -22,7 +22,7 @@ android {
     productFlavors {
         dev {
             dimension "flavor-type"
-            applicationId "com.flutter.nextai.dev"
+            applicationId "com.flutter.nextai"
             resValue "string", "app_name", "Yoga Detection"
         }
         staging {
@@ -32,7 +32,7 @@ android {
         }
         production {
             dimension "flavor-type"
-            applicationId "com.flutter.nextai"
+            applicationId "com.flutter.nextai.dev"
             resValue "string", "app_name", "Yoga Detection"
         }
     }

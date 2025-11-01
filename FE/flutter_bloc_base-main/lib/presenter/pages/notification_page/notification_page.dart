@@ -6,6 +6,7 @@ import 'package:flutter_starter/presenter/pages/notification_page/notification_p
 import 'package:flutter_starter/presenter/pages/notification_page/notification_page_state.dart';
 import 'package:flutter_starter/presenter/themes/colors.dart';
 import 'package:flutter_starter/data/entities/response/notification_response.dart';
+import 'package:flutter_starter/presenter/navigation/navigation.dart';
 import 'package:flutter_starter/di.dart' as di;
 
 @RoutePage()
@@ -228,8 +229,12 @@ class _NotificationPagePageState extends State<NotificationPagePage> {
                   notification: notification,
                   formatTimeAgo: _formatTimeAgo,
                   onTap: () {
+                    // Navigate to notification details
+                    context.router.push(NotificationDetailsRoute(notification: notification));
+
+                    // Mark as read
                     context.read<NotificationPageBloc>().add(
-                          NotificationPageEvent.markAsRead(notification.id.toString()),
+                          NotificationPageEvent.markAsRead(notification.id),
                         );
                   },
                 );

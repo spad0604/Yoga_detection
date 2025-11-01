@@ -51,7 +51,6 @@ class NetworkDio extends DioForNative implements Interceptor {
         'api/auth/refresh',
         'api/password/send-otp',
         'api/password/verify-otp',
-        'api/password/reset',
       ];
 
       final isPublic = publicPaths.any((p) => path.contains(p));

@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter_starter/data/entities/response/notification_response.dart';
 import 'package:flutter_starter/data/entities/response/practice_session.dart';
 import 'package:flutter_starter/data/states/auth/auth_bloc.dart';
 import 'package:flutter_starter/presenter/pages/account_page/overall_account_page.dart';
@@ -32,7 +33,8 @@ import 'package:flutter_starter/presenter/pages/group_feed/group_feed_page.dart'
 import 'package:flutter_starter/presenter/pages/social_feed/social_feed_page.dart';
 import 'package:flutter_starter/data/entities/response/user_yoga_pose_model.dart';
 import 'package:flutter_starter/presenter/pages/practice_session_summary/practice_session_summary_page.dart';
-
+import 'package:flutter_starter/presenter/pages/pose_attempt_details/pose_attempt_details_page.dart';
+import 'package:flutter_starter/presenter/pages/notification_details/notification_details_page.dart';
 part 'navigation.gr.dart';
 
 @singleton
@@ -71,6 +73,8 @@ class AppRouter extends RootStackRouter {
         AutoRoute(path: '/waiting-result', page: WaitingResultRoute.page),
         AutoRoute(path: '/pose-result', page: PoseResultRoute.page),
         AutoRoute(path: '/practice-session-summary', page: PracticeSessionSummaryRoute.page),
+        AutoRoute(path: '/pose-attempt-details', page: PoseAttemptDetailsRoute.page),
+        AutoRoute(path: '/notification-details', page: NotificationDetailsRoute.page),
         AutoRoute(
             path: '/routine-practice-session/:routineId', page: RoutinePracticeSessionRoute.page),
       ];

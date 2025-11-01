@@ -5,6 +5,7 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_starter/core/exception.dart';
 import 'package:flutter_starter/core/firebase_config.dart';
 import 'package:flutter_starter/data/usecases/login.dart';
+import 'package:flutter_starter/data/usecases/login_with_google.dart';
 import 'package:flutter_starter/presenter/pages/login/login_event.dart';
 import 'package:flutter_starter/presenter/pages/login/login_state.dart';
 import 'package:flutter_starter/services/oauth_token_manager/oauth_token_manager.dart';
@@ -15,17 +16,23 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final firebaseConfig = FirebaseConfig();
 
   final LoginUseCase _login;
+  final LoginWithGoogleUseCase _loginWithGoogle;
 
   final OauthTokenManager _oauthTokenManager;
 
-  LoginBloc({required LoginUseCase login, required OauthTokenManager oauthTokenManager})
-      : _login = login,
+  LoginBloc({
+    required LoginUseCase login,
+    required LoginWithGoogleUseCase loginWithGoogle,
+    required OauthTokenManager oauthTokenManager,
+  })  : _login = login,
+        _loginWithGoogle = loginWithGoogle,
         _oauthTokenManager = oauthTokenManager,
         super(const LoginState()) {
     on<LoginErrorOccurred>(_onErrorOccurred);
     on<LoginEmailChanged>(_onEmailChanged, transformer: droppable());
     on<LoginPasswordChanged>(_onPasswordChanged, transformer: droppable());
     on<LoginStarted>(_onLoginStarted, transformer: droppable());
+    on<LoginWithGoogleStarted>(_onLoginWithGoogle, transformer: droppable());
   }
 
   @override
@@ -110,6 +117,42 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       final fcmToken = await firebaseConfig.getFcmToken();
 
       final account = await _login((email: email, password: password, fcmToken: fcmToken));
+
+      _oauthTokenManager.saveAccessToken(account?.accessToken ?? '');
+      _oauthTokenManager.saveRefreshToken(account?.refreshToken ?? '');
+      emit(state.copyWith(
+        status: LoginStatus.success,
+        account: account,
+      ));
+    } catch (e) {
+      emit(state.copyWith(
+        status: LoginStatus.failure,
+        error: BaseException.from(e),
+      ));
+    }
+  }
+
+  FutureOr _onLoginWithGoogle(
+    LoginWithGoogleStarted event,
+    Emitter<LoginState> emit,
+  ) async {
+    final idToken = event.idToken.trim();
+    if (idToken.isEmpty) {
+      emit(state.copyWith(
+        status: LoginStatus.failure,
+        error: ValidationException('Invalid id token'),
+      ));
+      return;
+    }
+
+    emit(state.copyWith(
+      status: LoginStatus.submitting,
+    ));
+
+    try {
+      final fcmToken = await firebaseConfig.getFcmToken();
+
+      final account = await _loginWithGoogle((idToken: idToken, fcmToken: fcmToken));
 
       _oauthTokenManager.saveAccessToken(account?.accessToken ?? '');
       _oauthTokenManager.saveRefreshToken(account?.refreshToken ?? '');

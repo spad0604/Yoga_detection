@@ -78,4 +78,33 @@ public class NotificationServiceImpl implements NotificationService {
     public Notification getNotificationById(Long id) {
         return notificationRepository.findById(id).orElse(null);
     }
+    
+    @Override
+    @Transactional
+    public void markAsRead(Long notificationId, String userId) {
+        notificationRepository.findById(notificationId).ifPresent(notification -> {
+            // Verify notification belongs to user
+            if (notification.getUserId().equals(userId)) {
+                notification.setRead(true);
+                notificationRepository.save(notification);
+                log.info("Marked notification {} as read for user {}", notificationId, userId);
+            } else {
+                log.warn("User {} attempted to mark notification {} that doesn't belong to them", userId, notificationId);
+            }
+        });
+    }
+    
+    @Override
+    @Transactional
+    public void markAllAsRead(String userId) {
+        List<Notification> unreadNotifications = notificationRepository.findByUserIdAndIsReadFalse(userId);
+        unreadNotifications.forEach(notification -> notification.setRead(true));
+        notificationRepository.saveAll(unreadNotifications);
+        log.info("Marked {} notifications as read for user {}", unreadNotifications.size(), userId);
+    }
+    
+    @Override
+    public long countUnreadNotifications(String userId) {
+        return notificationRepository.countByUserIdAndIsReadFalse(userId);
+    }
 }

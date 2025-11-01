@@ -17,11 +17,9 @@ import 'package:flutter_starter/data/states/camera_detection/camera_detection_bl
 import 'package:flutter_starter/gen/app_images.dart';
 import 'package:google_mlkit_pose_detection/google_mlkit_pose_detection.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:flutter_starter/core/socket_isolate.dart';
 import 'package:flutter_starter/data/entities/request/post_yoga_pose_model.dart';
 import 'package:flutter_starter/data/usecases/post_yoga_pose_uc.dart';
 import 'package:flutter_starter/data/entities/response/yoga_pose_details.dart';
-import 'package:flutter_starter/presenter/pages/camera_detection/waiting_result_page.dart';
 
 // ignore: depend_on_referenced_packages
 import 'package:google_mlkit_commons/google_mlkit_commons.dart'
@@ -73,25 +71,11 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
   bool _showResult = false;
   Size? _capturedImageSize; // Store actual captured image size
 
-  // Socket isolate fields
-  final WebSocketIsolate _ws = WebSocketIsolate();
-  StreamSubscription<Map<String, dynamic>>? _wsSub;
-  bool _wsConnected = false;
-  String? _jwtToken;
-  String? _wsBase; // e.g., ws://host:9080
-  bool _usingAuthHeader = false;
-  String? _poseIdFromArgs;
-
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _initializeCameraAndDetector();
-
-    // Extract route args (token, poseId, optional base) and connect socket once ready
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _extractRouteArgsAndConnect();
-    });
   }
 
   @override
@@ -106,177 +90,11 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
     }
   }
 
-  Future<void> _extractRouteArgsAndConnect() async {
-    try {
-      final route = ModalRoute.of(context);
-      if (route != null && route.settings.arguments is Map) {
-        final args = route.settings.arguments as Map;
-        // Common keys: token, poseId or item.id, optional wsBase
-        _jwtToken = args['token'] as String? ?? _jwtToken;
-        _wsBase = args['wsBase'] as String? ?? _wsBase; // e.g. ws://13.211.219.53:9080
-        if (args['poseId'] is String) _poseIdFromArgs = args['poseId'] as String;
-        if (args['item'] != null && args['item'].id != null) {
-          _poseIdFromArgs = args['item'].id as String;
-        }
-      }
-    } catch (_) {}
-
-    // Default base if not provided
-    _wsBase ??= 'http://13.211.219.53:9080';
-
-    // Subscribe to events once
-    _wsSub ??= _ws.events.listen((event) {
-      final type = event['type'];
-      if (type == 'connected') {
-        _wsConnected = true;
-        debugPrint('WS connected: ${event['url']}');
-        // Configure heartbeat and send a quick ping
-        try {
-          _ws.setPingInterval(const Duration(seconds: 15));
-          _ws.sendPing('ping');
-        } catch (_) {}
-      } else if (type == 'closed' || type == 'disconnected') {
-        _wsConnected = false;
-        debugPrint('WS ${event['type']}');
-      } else if (type == 'error') {
-        _wsConnected = false;
-        debugPrint('WS error: ${event['message']}');
-      } else if (type == 'message') {
-        debugPrint('  WS message: ${event['data']}');
-      } else if (type == 'sent') {
-        debugPrint('WS sent ${event['what']} ${event['bytes']} bytes');
-      } else if (type == 'pose_result') {
-        _handlePoseResult(event['data']);
-      }
-    });
-
-    // Start isolate and connect (only once) — prefer Authorization header
-    if (_jwtToken != null && _jwtToken!.isNotEmpty) {
-      final headers = {'Authorization': 'Bearer ${_jwtToken!}'};
-      try {
-        // Use full ws url including /ws/pose when using headers
-        final wsUrl = '${_prepareWsUrlFromBase(_wsBase!)}/ws/pose';
-        await _ws.start(wsUrl, headers: headers);
-        _usingAuthHeader = true;
-      } catch (e) {
-        debugPrint('Failed to start WS with /ws/pose using headers: $e');
-        // Try fallbacks: base, /ws, /socket
-        _usingAuthHeader = false;
-        final base = _prepareWsUrlFromBase(_wsBase!);
-        final fallbacks = [
-          base, // root e.g. ws://host:port
-          '$base/ws',
-          '$base/socket',
-        ];
-        var connected = false;
-        for (final candidate in fallbacks) {
-          try {
-            debugPrint('Trying fallback WS url: $candidate');
-            await _ws.start(candidate, headers: headers);
-            connected = true;
-            _usingAuthHeader = true;
-            break;
-          } catch (e2) {
-            debugPrint('Fallback $candidate failed: $e2');
-          }
-        }
-        if (!connected) {
-          debugPrint('All header-based WS attempts failed, falling back to token-in-url');
-          _connectSocketIfNeeded(_buildPoseWsUrl());
-        }
-      }
-    } else {
-      _connectSocketIfNeeded(_buildPoseWsUrl());
-    }
-  }
-
-  String _buildPoseWsUrl() {
-    final base = _prepareWsUrlFromBase(_wsBase ?? 'http://13.211.219.53:9080');
-    final tokenPart = (!_usingAuthHeader && _jwtToken != null && _jwtToken!.isNotEmpty)
-        ? '?token=${Uri.encodeQueryComponent(_jwtToken!)}'
-        : '';
-    return '$base/ws/pose$tokenPart';
-  }
-
-  String _prepareWsUrlFromBase(String base) {
-    // Convert http(s) to ws(s) and strip trailing slashes
-    final trimmed = base.trim();
-    if (trimmed.startsWith('http://')) {
-      return trimmed.replaceFirst('http://', 'ws://').replaceAll(RegExp(r'/*$'), '');
-    }
-    if (trimmed.startsWith('https://')) {
-      return trimmed.replaceFirst('https://', 'wss://').replaceAll(RegExp(r'/*$'), '');
-    }
-    // assume already ws:// or wss://
-    return trimmed.replaceAll(RegExp(r'/*$'), '');
-  }
-
-  Future<void> _connectSocketIfNeeded(String url) async {
-    if (_wsConnected) return;
-    try {
-      await _ws.start(url);
-    } catch (e) {
-      debugPrint('Failed to start/connect WS: $e');
-    }
-  }
-
-  Future<void> _disconnectSocket() async {
-    try {
-      await _ws.stop();
-    } catch (_) {}
-    _wsConnected = false;
-  }
-
   void _showError(String message) {
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(message)),
       );
-    }
-  }
-
-  void _handlePoseResult(dynamic data) {
-    debugPrint('\n${'=' * 60}');
-    debugPrint('✅ POSE RESULT RECEIVED VIA SOCKET.IO');
-    debugPrint('${'=' * 60}');
-    debugPrint('Result data: $data');
-
-    if (data is Map) {
-      final attemptId = data['attemptId'];
-      final poseName = data['poseName'];
-      final score = data['score'];
-      final feedback = data['feedback'];
-      final timestamp = data['timestamp'];
-
-      debugPrint('Attempt ID: $attemptId');
-      debugPrint('Pose Name: $poseName');
-      debugPrint('Score: $score');
-      debugPrint('Feedback: $feedback');
-      debugPrint('Timestamp: $timestamp');
-      debugPrint('${'=' * 60}\n');
-
-      // Show result to user
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Pose Result: $poseName - Score: $score'),
-            duration: const Duration(seconds: 5),
-            backgroundColor: Colors.green,
-          ),
-        );
-      }
-
-      // TODO: Navigate to result screen or show result dialog
-      // Navigator.push(context, MaterialPageRoute(
-      //   builder: (_) => PoseResultScreen(
-      //     attemptId: attemptId,
-      //     poseName: poseName,
-      //     score: score,
-      //     feedback: feedback,
-      //   ),
-      // ));
-    } else {
-      debugPrint('Unexpected pose_result format: $data');
     }
   }
 
@@ -370,8 +188,8 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
       // Print pose data
       await _printPoseData(poses);
 
-      // Send pose over WebSocket isolate (after countdown capture)
-      await _sendPoseOverSocket(poses, imageBytes);
+      // Upload pose via HTTP (direct upload after countdown capture)
+      await _uploadPoseViaHTTP(poses, imageBytes);
     } catch (e) {
       debugPrint('❌ Error capturing/detecting: $e');
       _showError('Failed to capture or detect pose: $e');
@@ -386,11 +204,11 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
     }
   }
 
-  Future<void> _sendPoseOverSocket(List<Pose> poses, Uint8List imageBytes) async {
+  Future<void> _uploadPoseViaHTTP(List<Pose> poses, Uint8List imageBytes) async {
     if (poses.isEmpty) return;
 
     // Build landmark data
-    final poseId = _poseIdFromArgs ?? _readPoseIdFromRoute();
+    final poseId = widget.poseId ?? _readPoseIdFromRoute();
     final landmarksJson = _posesToJson(poses, poseId: poseId);
 
     // Save image to temp file
@@ -413,7 +231,7 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
           : <PoseLandmarkData>[];
 
       final model = PostYogaPoseModel(
-        poseId: poseId ?? '',
+        poseId: poseId,
         landmarks: landmarks,
         timestamp: DateTime.now().toIso8601String(),
       );
@@ -763,13 +581,12 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
   }
 
   @override
+  @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _stopStream(); // Stop stream first
     _cameraController?.dispose();
     _poseDetector?.close();
-    _wsSub?.cancel();
-    _disconnectSocket();
     super.dispose();
   }
 

@@ -22,18 +22,28 @@ NotificationResponse _$NotificationResponseFromJson(Map<String, dynamic> json) {
 mixin _$NotificationResponse {
   @JsonKey(name: 'id')
   int get id => throw _privateConstructorUsedError;
+  @JsonKey(name: 'all')
+  bool get isAll => throw _privateConstructorUsedError;
   @JsonKey(name: 'userId')
   String get userId => throw _privateConstructorUsedError;
   @JsonKey(name: 'normalTitle')
   String get normalTitle => throw _privateConstructorUsedError;
   @JsonKey(name: 'htmlTitle')
   String? get htmlTitle => throw _privateConstructorUsedError;
+  @JsonKey(name: 'normalBody')
+  String? get normalBody => throw _privateConstructorUsedError;
+  @JsonKey(name: 'htmlBody')
+  String? get htmlBody => throw _privateConstructorUsedError;
   @JsonKey(name: 'imageUrl')
   String? get imageUrl => throw _privateConstructorUsedError;
+  @JsonKey(name: 'type')
+  String? get type => throw _privateConstructorUsedError;
+  @JsonKey(name: 'referenceId')
+  String? get referenceId => throw _privateConstructorUsedError;
+  @JsonKey(name: 'isRead')
+  bool get isRead => throw _privateConstructorUsedError;
   @JsonKey(name: 'createdAt')
   DateTime get createdAt => throw _privateConstructorUsedError;
-  @JsonKey(name: 'all')
-  bool get all => throw _privateConstructorUsedError;
 
   /// Serializes this NotificationResponse to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -53,12 +63,17 @@ abstract class $NotificationResponseCopyWith<$Res> {
   @useResult
   $Res call(
       {@JsonKey(name: 'id') int id,
+      @JsonKey(name: 'all') bool isAll,
       @JsonKey(name: 'userId') String userId,
       @JsonKey(name: 'normalTitle') String normalTitle,
       @JsonKey(name: 'htmlTitle') String? htmlTitle,
+      @JsonKey(name: 'normalBody') String? normalBody,
+      @JsonKey(name: 'htmlBody') String? htmlBody,
       @JsonKey(name: 'imageUrl') String? imageUrl,
-      @JsonKey(name: 'createdAt') DateTime createdAt,
-      @JsonKey(name: 'all') bool all});
+      @JsonKey(name: 'type') String? type,
+      @JsonKey(name: 'referenceId') String? referenceId,
+      @JsonKey(name: 'isRead') bool isRead,
+      @JsonKey(name: 'createdAt') DateTime createdAt});
 }
 
 /// @nodoc
@@ -78,18 +93,27 @@ class _$NotificationResponseCopyWithImpl<$Res,
   @override
   $Res call({
     Object? id = null,
+    Object? isAll = null,
     Object? userId = null,
     Object? normalTitle = null,
     Object? htmlTitle = freezed,
+    Object? normalBody = freezed,
+    Object? htmlBody = freezed,
     Object? imageUrl = freezed,
+    Object? type = freezed,
+    Object? referenceId = freezed,
+    Object? isRead = null,
     Object? createdAt = null,
-    Object? all = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
+      isAll: null == isAll
+          ? _value.isAll
+          : isAll // ignore: cast_nullable_to_non_nullable
+              as bool,
       userId: null == userId
           ? _value.userId
           : userId // ignore: cast_nullable_to_non_nullable
@@ -102,18 +126,34 @@ class _$NotificationResponseCopyWithImpl<$Res,
           ? _value.htmlTitle
           : htmlTitle // ignore: cast_nullable_to_non_nullable
               as String?,
+      normalBody: freezed == normalBody
+          ? _value.normalBody
+          : normalBody // ignore: cast_nullable_to_non_nullable
+              as String?,
+      htmlBody: freezed == htmlBody
+          ? _value.htmlBody
+          : htmlBody // ignore: cast_nullable_to_non_nullable
+              as String?,
       imageUrl: freezed == imageUrl
           ? _value.imageUrl
           : imageUrl // ignore: cast_nullable_to_non_nullable
               as String?,
+      type: freezed == type
+          ? _value.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as String?,
+      referenceId: freezed == referenceId
+          ? _value.referenceId
+          : referenceId // ignore: cast_nullable_to_non_nullable
+              as String?,
+      isRead: null == isRead
+          ? _value.isRead
+          : isRead // ignore: cast_nullable_to_non_nullable
+              as bool,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
-      all: null == all
-          ? _value.all
-          : all // ignore: cast_nullable_to_non_nullable
-              as bool,
     ) as $Val);
   }
 }
@@ -128,12 +168,17 @@ abstract class _$$NotificationResponseImplCopyWith<$Res>
   @useResult
   $Res call(
       {@JsonKey(name: 'id') int id,
+      @JsonKey(name: 'all') bool isAll,
       @JsonKey(name: 'userId') String userId,
       @JsonKey(name: 'normalTitle') String normalTitle,
       @JsonKey(name: 'htmlTitle') String? htmlTitle,
+      @JsonKey(name: 'normalBody') String? normalBody,
+      @JsonKey(name: 'htmlBody') String? htmlBody,
       @JsonKey(name: 'imageUrl') String? imageUrl,
-      @JsonKey(name: 'createdAt') DateTime createdAt,
-      @JsonKey(name: 'all') bool all});
+      @JsonKey(name: 'type') String? type,
+      @JsonKey(name: 'referenceId') String? referenceId,
+      @JsonKey(name: 'isRead') bool isRead,
+      @JsonKey(name: 'createdAt') DateTime createdAt});
 }
 
 /// @nodoc
@@ -150,18 +195,27 @@ class __$$NotificationResponseImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
+    Object? isAll = null,
     Object? userId = null,
     Object? normalTitle = null,
     Object? htmlTitle = freezed,
+    Object? normalBody = freezed,
+    Object? htmlBody = freezed,
     Object? imageUrl = freezed,
+    Object? type = freezed,
+    Object? referenceId = freezed,
+    Object? isRead = null,
     Object? createdAt = null,
-    Object? all = null,
   }) {
     return _then(_$NotificationResponseImpl(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
+      isAll: null == isAll
+          ? _value.isAll
+          : isAll // ignore: cast_nullable_to_non_nullable
+              as bool,
       userId: null == userId
           ? _value.userId
           : userId // ignore: cast_nullable_to_non_nullable
@@ -174,18 +228,34 @@ class __$$NotificationResponseImplCopyWithImpl<$Res>
           ? _value.htmlTitle
           : htmlTitle // ignore: cast_nullable_to_non_nullable
               as String?,
+      normalBody: freezed == normalBody
+          ? _value.normalBody
+          : normalBody // ignore: cast_nullable_to_non_nullable
+              as String?,
+      htmlBody: freezed == htmlBody
+          ? _value.htmlBody
+          : htmlBody // ignore: cast_nullable_to_non_nullable
+              as String?,
       imageUrl: freezed == imageUrl
           ? _value.imageUrl
           : imageUrl // ignore: cast_nullable_to_non_nullable
               as String?,
+      type: freezed == type
+          ? _value.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as String?,
+      referenceId: freezed == referenceId
+          ? _value.referenceId
+          : referenceId // ignore: cast_nullable_to_non_nullable
+              as String?,
+      isRead: null == isRead
+          ? _value.isRead
+          : isRead // ignore: cast_nullable_to_non_nullable
+              as bool,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
-      all: null == all
-          ? _value.all
-          : all // ignore: cast_nullable_to_non_nullable
-              as bool,
     ));
   }
 }
@@ -195,12 +265,17 @@ class __$$NotificationResponseImplCopyWithImpl<$Res>
 class _$NotificationResponseImpl implements _NotificationResponse {
   const _$NotificationResponseImpl(
       {@JsonKey(name: 'id') required this.id,
+      @JsonKey(name: 'all') required this.isAll,
       @JsonKey(name: 'userId') required this.userId,
       @JsonKey(name: 'normalTitle') required this.normalTitle,
       @JsonKey(name: 'htmlTitle') this.htmlTitle,
+      @JsonKey(name: 'normalBody') this.normalBody,
+      @JsonKey(name: 'htmlBody') this.htmlBody,
       @JsonKey(name: 'imageUrl') this.imageUrl,
-      @JsonKey(name: 'createdAt') required this.createdAt,
-      @JsonKey(name: 'all') required this.all});
+      @JsonKey(name: 'type') this.type,
+      @JsonKey(name: 'referenceId') this.referenceId,
+      @JsonKey(name: 'isRead') this.isRead = false,
+      @JsonKey(name: 'createdAt') required this.createdAt});
 
   factory _$NotificationResponseImpl.fromJson(Map<String, dynamic> json) =>
       _$$NotificationResponseImplFromJson(json);
@@ -208,6 +283,9 @@ class _$NotificationResponseImpl implements _NotificationResponse {
   @override
   @JsonKey(name: 'id')
   final int id;
+  @override
+  @JsonKey(name: 'all')
+  final bool isAll;
   @override
   @JsonKey(name: 'userId')
   final String userId;
@@ -218,18 +296,30 @@ class _$NotificationResponseImpl implements _NotificationResponse {
   @JsonKey(name: 'htmlTitle')
   final String? htmlTitle;
   @override
+  @JsonKey(name: 'normalBody')
+  final String? normalBody;
+  @override
+  @JsonKey(name: 'htmlBody')
+  final String? htmlBody;
+  @override
   @JsonKey(name: 'imageUrl')
   final String? imageUrl;
   @override
+  @JsonKey(name: 'type')
+  final String? type;
+  @override
+  @JsonKey(name: 'referenceId')
+  final String? referenceId;
+  @override
+  @JsonKey(name: 'isRead')
+  final bool isRead;
+  @override
   @JsonKey(name: 'createdAt')
   final DateTime createdAt;
-  @override
-  @JsonKey(name: 'all')
-  final bool all;
 
   @override
   String toString() {
-    return 'NotificationResponse(id: $id, userId: $userId, normalTitle: $normalTitle, htmlTitle: $htmlTitle, imageUrl: $imageUrl, createdAt: $createdAt, all: $all)';
+    return 'NotificationResponse(id: $id, isAll: $isAll, userId: $userId, normalTitle: $normalTitle, htmlTitle: $htmlTitle, normalBody: $normalBody, htmlBody: $htmlBody, imageUrl: $imageUrl, type: $type, referenceId: $referenceId, isRead: $isRead, createdAt: $createdAt)';
   }
 
   @override
@@ -238,22 +328,42 @@ class _$NotificationResponseImpl implements _NotificationResponse {
         (other.runtimeType == runtimeType &&
             other is _$NotificationResponseImpl &&
             (identical(other.id, id) || other.id == id) &&
+            (identical(other.isAll, isAll) || other.isAll == isAll) &&
             (identical(other.userId, userId) || other.userId == userId) &&
             (identical(other.normalTitle, normalTitle) ||
                 other.normalTitle == normalTitle) &&
             (identical(other.htmlTitle, htmlTitle) ||
                 other.htmlTitle == htmlTitle) &&
+            (identical(other.normalBody, normalBody) ||
+                other.normalBody == normalBody) &&
+            (identical(other.htmlBody, htmlBody) ||
+                other.htmlBody == htmlBody) &&
             (identical(other.imageUrl, imageUrl) ||
                 other.imageUrl == imageUrl) &&
+            (identical(other.type, type) || other.type == type) &&
+            (identical(other.referenceId, referenceId) ||
+                other.referenceId == referenceId) &&
+            (identical(other.isRead, isRead) || other.isRead == isRead) &&
             (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt) &&
-            (identical(other.all, all) || other.all == all));
+                other.createdAt == createdAt));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, userId, normalTitle,
-      htmlTitle, imageUrl, createdAt, all);
+  int get hashCode => Object.hash(
+      runtimeType,
+      id,
+      isAll,
+      userId,
+      normalTitle,
+      htmlTitle,
+      normalBody,
+      htmlBody,
+      imageUrl,
+      type,
+      referenceId,
+      isRead,
+      createdAt);
 
   /// Create a copy of NotificationResponse
   /// with the given fields replaced by the non-null parameter values.
@@ -276,12 +386,17 @@ class _$NotificationResponseImpl implements _NotificationResponse {
 abstract class _NotificationResponse implements NotificationResponse {
   const factory _NotificationResponse(
           {@JsonKey(name: 'id') required final int id,
+          @JsonKey(name: 'all') required final bool isAll,
           @JsonKey(name: 'userId') required final String userId,
           @JsonKey(name: 'normalTitle') required final String normalTitle,
           @JsonKey(name: 'htmlTitle') final String? htmlTitle,
+          @JsonKey(name: 'normalBody') final String? normalBody,
+          @JsonKey(name: 'htmlBody') final String? htmlBody,
           @JsonKey(name: 'imageUrl') final String? imageUrl,
-          @JsonKey(name: 'createdAt') required final DateTime createdAt,
-          @JsonKey(name: 'all') required final bool all}) =
+          @JsonKey(name: 'type') final String? type,
+          @JsonKey(name: 'referenceId') final String? referenceId,
+          @JsonKey(name: 'isRead') final bool isRead,
+          @JsonKey(name: 'createdAt') required final DateTime createdAt}) =
       _$NotificationResponseImpl;
 
   factory _NotificationResponse.fromJson(Map<String, dynamic> json) =
@@ -290,6 +405,9 @@ abstract class _NotificationResponse implements NotificationResponse {
   @override
   @JsonKey(name: 'id')
   int get id;
+  @override
+  @JsonKey(name: 'all')
+  bool get isAll;
   @override
   @JsonKey(name: 'userId')
   String get userId;
@@ -300,14 +418,26 @@ abstract class _NotificationResponse implements NotificationResponse {
   @JsonKey(name: 'htmlTitle')
   String? get htmlTitle;
   @override
+  @JsonKey(name: 'normalBody')
+  String? get normalBody;
+  @override
+  @JsonKey(name: 'htmlBody')
+  String? get htmlBody;
+  @override
   @JsonKey(name: 'imageUrl')
   String? get imageUrl;
   @override
+  @JsonKey(name: 'type')
+  String? get type;
+  @override
+  @JsonKey(name: 'referenceId')
+  String? get referenceId;
+  @override
+  @JsonKey(name: 'isRead')
+  bool get isRead;
+  @override
   @JsonKey(name: 'createdAt')
   DateTime get createdAt;
-  @override
-  @JsonKey(name: 'all')
-  bool get all;
 
   /// Create a copy of NotificationResponse
   /// with the given fields replaced by the non-null parameter values.

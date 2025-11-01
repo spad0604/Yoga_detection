@@ -141,17 +141,32 @@ public class YogaPoseAttemptServiceImpl implements YogaPoseAttemptService {
                     boolean fcmSent = fcmService.sendNotification(user.getFcmToken(), title, body);
                     log.info("FCM notification sent: {} for attempt {}", fcmSent, attempt.getId());
 
+                    // 3. Lưu notification vào database để user có thể xem lại
                     try {
-                        Notification n = Notification.builder()
+                        Notification notification = Notification.builder()
                                 .isAll(false)
                                 .userId(user.getId())
+                                .type("POSE_RESULT")
+                                .referenceId(attempt.getId())
                                 .normalTitle(title)
-                                .htmlTitle(title)
+                                .htmlTitle(String.format("<strong>🎯 Kết quả: %s</strong>", attempt.getPoseName()))
+                                .normalBody(String.format("Điểm: %.1f/100\n\nNhận xét từ AI:\n%s", 
+                                        attempt.getScore() != null ? attempt.getScore() : 0.0,
+                                        attempt.getFeedback() != null ? attempt.getFeedback() : "Không có nhận xét"))
+                                .htmlBody(String.format(
+                                        "<p><strong>Điểm số:</strong> %.1f/100</p>" +
+                                        "<p><strong>Nhận xét từ AI:</strong></p>" +
+                                        "<p>%s</p>",
+                                        attempt.getScore() != null ? attempt.getScore() : 0.0,
+                                        attempt.getFeedback() != null ? attempt.getFeedback().replace("\n", "<br>") : "Không có nhận xét"))
                                 .imageUrl(attempt.getImageUrl())
+                                .isRead(false)
                                 .build();
-                        notificationService.saveNotification(n);
+                        
+                        notificationService.saveNotification(notification);
+                        log.info("Notification saved to database for attempt {}", attempt.getId());
                     } catch (Exception ex) {
-                        log.error("Failed to save notification for attempt {}: {}", attempt.getId(), ex.getMessage());
+                        log.error("Failed to save notification for attempt {}: {}", attempt.getId(), ex.getMessage(), ex);
                     }
                 }
             }

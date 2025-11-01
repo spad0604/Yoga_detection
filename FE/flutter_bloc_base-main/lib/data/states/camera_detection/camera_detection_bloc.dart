@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:flutter_starter/core/exception.dart';
-import 'package:flutter_starter/core/socket_isolate.dart';
 import 'package:flutter_starter/data/entities/request/post_yoga_pose_model.dart';
 import 'package:flutter_starter/data/states/camera_detection/camera_detection_event.dart';
 import 'package:flutter_starter/data/states/camera_detection/camera_detection_state.dart';
@@ -15,8 +14,6 @@ import 'package:path_provider/path_provider.dart';
 @injectable
 class CameraDetectionBloc extends Bloc<CameraDetectionEvent, CameraDetectionState> {
   final PostYogaPoseUC _postYogaPoseUC;
-  final WebSocketIsolate _ws = WebSocketIsolate();
-  StreamSubscription<Map<String, dynamic>>? _wsSub;
   Timer? _countdownTimer;
 
   CameraDetectionBloc(this._postYogaPoseUC) : super(const CameraDetectionState()) {
@@ -25,12 +22,6 @@ class CameraDetectionBloc extends Bloc<CameraDetectionEvent, CameraDetectionStat
     on<CameraDetectionStop>(_onStop);
     on<CameraDetectionPosesUpdated>(_onPosesUpdated);
     on<CameraDetectionInitialize>(_onInitialize);
-
-    // Socket events
-    on<CameraDetectionConnectSocket>(_onConnectSocket);
-    on<CameraDetectionSocketConnected>(_onSocketConnected);
-    on<CameraDetectionSocketDisconnected>(_onSocketDisconnected);
-    on<CameraDetectionPoseResultReceived>(_onPoseResultReceived);
 
     // Capture events
     on<CameraDetectionStartCountdown>(_onStartCountdown);
@@ -85,55 +76,6 @@ class CameraDetectionBloc extends Bloc<CameraDetectionEvent, CameraDetectionStat
       error: null,
       poseList: event.poses,
     ));
-  }
-
-  Future<void> _onConnectSocket(
-    CameraDetectionConnectSocket event,
-    Emitter<CameraDetectionState> emit,
-  ) async {
-    try {
-      // Subscribe to socket events
-      _wsSub ??= _ws.events.listen((socketEvent) {
-        final type = socketEvent['type'];
-        if (type == 'connected') {
-          add(const CameraDetectionEvent.socketConnected());
-        } else if (type == 'closed' || type == 'disconnected') {
-          add(const CameraDetectionEvent.socketDisconnected());
-        } else if (type == 'pose_result') {
-          add(CameraDetectionEvent.poseResultReceived(socketEvent['data']));
-        } else if (type == 'error') {
-          add(CameraDetectionEvent.errorOccurred(
-            UnknownException(socketEvent['message']),
-          ));
-        }
-      });
-
-      // Connect
-      await _ws.start(event.wsUrl, headers: event.headers);
-    } catch (e) {
-      add(CameraDetectionEvent.errorOccurred(BaseException.from(e)));
-    }
-  }
-
-  FutureOr<void> _onSocketConnected(
-    CameraDetectionSocketConnected event,
-    Emitter<CameraDetectionState> emit,
-  ) {
-    emit(state.copyWith(socketConnected: true));
-  }
-
-  FutureOr<void> _onSocketDisconnected(
-    CameraDetectionSocketDisconnected event,
-    Emitter<CameraDetectionState> emit,
-  ) {
-    emit(state.copyWith(socketConnected: false));
-  }
-
-  FutureOr<void> _onPoseResultReceived(
-    CameraDetectionPoseResultReceived event,
-    Emitter<CameraDetectionState> emit,
-  ) {
-    emit(state.copyWith(poseResult: event.data));
   }
 
   Future<void> _onStartCountdown(
@@ -242,7 +184,6 @@ class CameraDetectionBloc extends Bloc<CameraDetectionEvent, CameraDetectionStat
       showResult: false,
       capturedImagePath: null,
       capturedPoses: [],
-      poseResult: null,
     ));
   }
 
@@ -266,8 +207,6 @@ class CameraDetectionBloc extends Bloc<CameraDetectionEvent, CameraDetectionStat
   @override
   Future<void> close() {
     _countdownTimer?.cancel();
-    _wsSub?.cancel();
-    _ws.stop();
     return super.close();
   }
 }

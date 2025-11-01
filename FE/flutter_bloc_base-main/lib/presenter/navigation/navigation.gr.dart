@@ -284,6 +284,50 @@ class MyBodyRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [NotificationDetailsPage]
+class NotificationDetailsRoute
+    extends PageRouteInfo<NotificationDetailsRouteArgs> {
+  NotificationDetailsRoute({
+    Key? key,
+    required NotificationResponse notification,
+    List<PageRouteInfo>? children,
+  }) : super(
+         NotificationDetailsRoute.name,
+         args: NotificationDetailsRouteArgs(
+           key: key,
+           notification: notification,
+         ),
+         initialChildren: children,
+       );
+
+  static const String name = 'NotificationDetailsRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<NotificationDetailsRouteArgs>();
+      return NotificationDetailsPage(
+        key: args.key,
+        notification: args.notification,
+      );
+    },
+  );
+}
+
+class NotificationDetailsRouteArgs {
+  const NotificationDetailsRouteArgs({this.key, required this.notification});
+
+  final Key? key;
+
+  final NotificationResponse notification;
+
+  @override
+  String toString() {
+    return 'NotificationDetailsRouteArgs{key: $key, notification: $notification}';
+  }
+}
+
+/// generated route for
 /// [NotificationPagePage]
 class NotificationRouteRoute extends PageRouteInfo<void> {
   const NotificationRouteRoute({List<PageRouteInfo>? children})
@@ -313,6 +357,47 @@ class OverallAccountRoute extends PageRouteInfo<void> {
       return WrappedRoute(child: OverallAccountPage());
     },
   );
+}
+
+/// generated route for
+/// [PoseAttemptDetailsPage]
+class PoseAttemptDetailsRoute
+    extends PageRouteInfo<PoseAttemptDetailsRouteArgs> {
+  PoseAttemptDetailsRoute({
+    Key? key,
+    required UserYogaPoseModel poseAttempt,
+    List<PageRouteInfo>? children,
+  }) : super(
+         PoseAttemptDetailsRoute.name,
+         args: PoseAttemptDetailsRouteArgs(key: key, poseAttempt: poseAttempt),
+         initialChildren: children,
+       );
+
+  static const String name = 'PoseAttemptDetailsRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<PoseAttemptDetailsRouteArgs>();
+      return PoseAttemptDetailsPage(
+        key: args.key,
+        poseAttempt: args.poseAttempt,
+      );
+    },
+  );
+}
+
+class PoseAttemptDetailsRouteArgs {
+  const PoseAttemptDetailsRouteArgs({this.key, required this.poseAttempt});
+
+  final Key? key;
+
+  final UserYogaPoseModel poseAttempt;
+
+  @override
+  String toString() {
+    return 'PoseAttemptDetailsRouteArgs{key: $key, poseAttempt: $poseAttempt}';
+  }
 }
 
 /// generated route for

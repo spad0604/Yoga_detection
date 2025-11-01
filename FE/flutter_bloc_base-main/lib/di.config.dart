@@ -79,6 +79,7 @@ import 'data/usecases/get_routine_details_uc.dart' as _i443;
 import 'data/usecases/get_user_routines_progress_uc.dart' as _i405;
 import 'data/usecases/get_yoga_poses_details.dart' as _i404;
 import 'data/usecases/login.dart' as _i470;
+import 'data/usecases/login_with_google.dart' as _i372;
 import 'data/usecases/post_yoga_pose_uc.dart' as _i389;
 import 'data/usecases/register.dart' as _i686;
 import 'data/usecases/send_otp_uc.dart' as _i212;
@@ -158,6 +159,9 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i551.AppRouter(authBloc: gh<_i963.AuthBloc>()));
     gh.singleton<_i470.LoginUseCase>(
         () => _i470.LoginUseCase(authRepository: gh<_i344.AuthRepository>()));
+    gh.singleton<_i372.LoginWithGoogleUseCase>(() =>
+        _i372.LoginWithGoogleUseCase(
+            authRepository: gh<_i344.AuthRepository>()));
     gh.singleton<_i212.SendOtpUc>(
         () => _i212.SendOtpUc(authRepository: gh<_i344.AuthRepository>()));
     gh.singleton<_i412.VerifyLoginStatusUseCase>(() =>
@@ -209,10 +213,6 @@ extension GetItInjectableX on _i174.GetIt {
             notificationRepository: gh<_i710.NotificationRepository>()));
     gh.factory<_i161.CameraDetectionBloc>(
         () => _i161.CameraDetectionBloc(gh<_i389.PostYogaPoseUC>()));
-    gh.factory<_i902.LoginBloc>(() => _i902.LoginBloc(
-          login: gh<_i470.LoginUseCase>(),
-          oauthTokenManager: gh<_i132.OauthTokenManager>(),
-        ));
     gh.singleton<_i856.GetListYogaPosesUc>(
         () => _i856.GetListYogaPosesUc(gh<_i153.YogaPosesRepository>()));
     gh.singleton<_i404.GetYogaPoseDetailsUc>(
@@ -223,6 +223,11 @@ extension GetItInjectableX on _i174.GetIt {
         ));
     gh.factory<_i878.PracticeSessionBloc>(() => _i878.PracticeSessionBloc(
         repository: gh<_i930.PracticeSessionRepository>()));
+    gh.factory<_i902.LoginBloc>(() => _i902.LoginBloc(
+          login: gh<_i470.LoginUseCase>(),
+          loginWithGoogle: gh<_i372.LoginWithGoogleUseCase>(),
+          oauthTokenManager: gh<_i132.OauthTokenManager>(),
+        ));
     gh.factory<_i771.GroupFeedBloc>(
         () => _i771.GroupFeedBloc(gh<_i636.GroupPostsRepository>()));
     gh.singleton<_i8.AccountPageBloc>(() => _i8.AccountPageBloc(

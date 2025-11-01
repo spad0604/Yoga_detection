@@ -11,6 +11,8 @@ class LoginEvent with _$LoginEvent {
 
   const factory LoginEvent.loginStarted() = LoginStarted;
 
+  const factory LoginEvent.googleStarted(String idToken) = LoginWithGoogleStarted;
+
   const factory LoginEvent.errorOccurred([BaseException? error]) = LoginErrorOccurred;
 
   const factory LoginEvent.loading() = LoginLoading;

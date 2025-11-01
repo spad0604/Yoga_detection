@@ -21,6 +21,7 @@ mixin _$LoginEvent {
     required TResult Function(String email) emailChanged,
     required TResult Function(String password) passwordChanged,
     required TResult Function() loginStarted,
+    required TResult Function(String idToken) googleStarted,
     required TResult Function(BaseException<dynamic>? error) errorOccurred,
     required TResult Function() loading,
   }) =>
@@ -30,6 +31,7 @@ mixin _$LoginEvent {
     TResult? Function(String email)? emailChanged,
     TResult? Function(String password)? passwordChanged,
     TResult? Function()? loginStarted,
+    TResult? Function(String idToken)? googleStarted,
     TResult? Function(BaseException<dynamic>? error)? errorOccurred,
     TResult? Function()? loading,
   }) =>
@@ -39,6 +41,7 @@ mixin _$LoginEvent {
     TResult Function(String email)? emailChanged,
     TResult Function(String password)? passwordChanged,
     TResult Function()? loginStarted,
+    TResult Function(String idToken)? googleStarted,
     TResult Function(BaseException<dynamic>? error)? errorOccurred,
     TResult Function()? loading,
     required TResult orElse(),
@@ -49,6 +52,7 @@ mixin _$LoginEvent {
     required TResult Function(LoginEmailChanged value) emailChanged,
     required TResult Function(LoginPasswordChanged value) passwordChanged,
     required TResult Function(LoginStarted value) loginStarted,
+    required TResult Function(LoginWithGoogleStarted value) googleStarted,
     required TResult Function(LoginErrorOccurred value) errorOccurred,
     required TResult Function(LoginLoading value) loading,
   }) =>
@@ -58,6 +62,7 @@ mixin _$LoginEvent {
     TResult? Function(LoginEmailChanged value)? emailChanged,
     TResult? Function(LoginPasswordChanged value)? passwordChanged,
     TResult? Function(LoginStarted value)? loginStarted,
+    TResult? Function(LoginWithGoogleStarted value)? googleStarted,
     TResult? Function(LoginErrorOccurred value)? errorOccurred,
     TResult? Function(LoginLoading value)? loading,
   }) =>
@@ -67,6 +72,7 @@ mixin _$LoginEvent {
     TResult Function(LoginEmailChanged value)? emailChanged,
     TResult Function(LoginPasswordChanged value)? passwordChanged,
     TResult Function(LoginStarted value)? loginStarted,
+    TResult Function(LoginWithGoogleStarted value)? googleStarted,
     TResult Function(LoginErrorOccurred value)? errorOccurred,
     TResult Function(LoginLoading value)? loading,
     required TResult orElse(),
@@ -167,6 +173,7 @@ class _$LoginEmailChangedImpl implements LoginEmailChanged {
     required TResult Function(String email) emailChanged,
     required TResult Function(String password) passwordChanged,
     required TResult Function() loginStarted,
+    required TResult Function(String idToken) googleStarted,
     required TResult Function(BaseException<dynamic>? error) errorOccurred,
     required TResult Function() loading,
   }) {
@@ -179,6 +186,7 @@ class _$LoginEmailChangedImpl implements LoginEmailChanged {
     TResult? Function(String email)? emailChanged,
     TResult? Function(String password)? passwordChanged,
     TResult? Function()? loginStarted,
+    TResult? Function(String idToken)? googleStarted,
     TResult? Function(BaseException<dynamic>? error)? errorOccurred,
     TResult? Function()? loading,
   }) {
@@ -191,6 +199,7 @@ class _$LoginEmailChangedImpl implements LoginEmailChanged {
     TResult Function(String email)? emailChanged,
     TResult Function(String password)? passwordChanged,
     TResult Function()? loginStarted,
+    TResult Function(String idToken)? googleStarted,
     TResult Function(BaseException<dynamic>? error)? errorOccurred,
     TResult Function()? loading,
     required TResult orElse(),
@@ -207,6 +216,7 @@ class _$LoginEmailChangedImpl implements LoginEmailChanged {
     required TResult Function(LoginEmailChanged value) emailChanged,
     required TResult Function(LoginPasswordChanged value) passwordChanged,
     required TResult Function(LoginStarted value) loginStarted,
+    required TResult Function(LoginWithGoogleStarted value) googleStarted,
     required TResult Function(LoginErrorOccurred value) errorOccurred,
     required TResult Function(LoginLoading value) loading,
   }) {
@@ -219,6 +229,7 @@ class _$LoginEmailChangedImpl implements LoginEmailChanged {
     TResult? Function(LoginEmailChanged value)? emailChanged,
     TResult? Function(LoginPasswordChanged value)? passwordChanged,
     TResult? Function(LoginStarted value)? loginStarted,
+    TResult? Function(LoginWithGoogleStarted value)? googleStarted,
     TResult? Function(LoginErrorOccurred value)? errorOccurred,
     TResult? Function(LoginLoading value)? loading,
   }) {
@@ -231,6 +242,7 @@ class _$LoginEmailChangedImpl implements LoginEmailChanged {
     TResult Function(LoginEmailChanged value)? emailChanged,
     TResult Function(LoginPasswordChanged value)? passwordChanged,
     TResult Function(LoginStarted value)? loginStarted,
+    TResult Function(LoginWithGoogleStarted value)? googleStarted,
     TResult Function(LoginErrorOccurred value)? errorOccurred,
     TResult Function(LoginLoading value)? loading,
     required TResult orElse(),
@@ -328,6 +340,7 @@ class _$LoginPasswordChangedImpl implements LoginPasswordChanged {
     required TResult Function(String email) emailChanged,
     required TResult Function(String password) passwordChanged,
     required TResult Function() loginStarted,
+    required TResult Function(String idToken) googleStarted,
     required TResult Function(BaseException<dynamic>? error) errorOccurred,
     required TResult Function() loading,
   }) {
@@ -340,6 +353,7 @@ class _$LoginPasswordChangedImpl implements LoginPasswordChanged {
     TResult? Function(String email)? emailChanged,
     TResult? Function(String password)? passwordChanged,
     TResult? Function()? loginStarted,
+    TResult? Function(String idToken)? googleStarted,
     TResult? Function(BaseException<dynamic>? error)? errorOccurred,
     TResult? Function()? loading,
   }) {
@@ -352,6 +366,7 @@ class _$LoginPasswordChangedImpl implements LoginPasswordChanged {
     TResult Function(String email)? emailChanged,
     TResult Function(String password)? passwordChanged,
     TResult Function()? loginStarted,
+    TResult Function(String idToken)? googleStarted,
     TResult Function(BaseException<dynamic>? error)? errorOccurred,
     TResult Function()? loading,
     required TResult orElse(),
@@ -368,6 +383,7 @@ class _$LoginPasswordChangedImpl implements LoginPasswordChanged {
     required TResult Function(LoginEmailChanged value) emailChanged,
     required TResult Function(LoginPasswordChanged value) passwordChanged,
     required TResult Function(LoginStarted value) loginStarted,
+    required TResult Function(LoginWithGoogleStarted value) googleStarted,
     required TResult Function(LoginErrorOccurred value) errorOccurred,
     required TResult Function(LoginLoading value) loading,
   }) {
@@ -380,6 +396,7 @@ class _$LoginPasswordChangedImpl implements LoginPasswordChanged {
     TResult? Function(LoginEmailChanged value)? emailChanged,
     TResult? Function(LoginPasswordChanged value)? passwordChanged,
     TResult? Function(LoginStarted value)? loginStarted,
+    TResult? Function(LoginWithGoogleStarted value)? googleStarted,
     TResult? Function(LoginErrorOccurred value)? errorOccurred,
     TResult? Function(LoginLoading value)? loading,
   }) {
@@ -392,6 +409,7 @@ class _$LoginPasswordChangedImpl implements LoginPasswordChanged {
     TResult Function(LoginEmailChanged value)? emailChanged,
     TResult Function(LoginPasswordChanged value)? passwordChanged,
     TResult Function(LoginStarted value)? loginStarted,
+    TResult Function(LoginWithGoogleStarted value)? googleStarted,
     TResult Function(LoginErrorOccurred value)? errorOccurred,
     TResult Function(LoginLoading value)? loading,
     required TResult orElse(),
@@ -460,6 +478,7 @@ class _$LoginStartedImpl implements LoginStarted {
     required TResult Function(String email) emailChanged,
     required TResult Function(String password) passwordChanged,
     required TResult Function() loginStarted,
+    required TResult Function(String idToken) googleStarted,
     required TResult Function(BaseException<dynamic>? error) errorOccurred,
     required TResult Function() loading,
   }) {
@@ -472,6 +491,7 @@ class _$LoginStartedImpl implements LoginStarted {
     TResult? Function(String email)? emailChanged,
     TResult? Function(String password)? passwordChanged,
     TResult? Function()? loginStarted,
+    TResult? Function(String idToken)? googleStarted,
     TResult? Function(BaseException<dynamic>? error)? errorOccurred,
     TResult? Function()? loading,
   }) {
@@ -484,6 +504,7 @@ class _$LoginStartedImpl implements LoginStarted {
     TResult Function(String email)? emailChanged,
     TResult Function(String password)? passwordChanged,
     TResult Function()? loginStarted,
+    TResult Function(String idToken)? googleStarted,
     TResult Function(BaseException<dynamic>? error)? errorOccurred,
     TResult Function()? loading,
     required TResult orElse(),
@@ -500,6 +521,7 @@ class _$LoginStartedImpl implements LoginStarted {
     required TResult Function(LoginEmailChanged value) emailChanged,
     required TResult Function(LoginPasswordChanged value) passwordChanged,
     required TResult Function(LoginStarted value) loginStarted,
+    required TResult Function(LoginWithGoogleStarted value) googleStarted,
     required TResult Function(LoginErrorOccurred value) errorOccurred,
     required TResult Function(LoginLoading value) loading,
   }) {
@@ -512,6 +534,7 @@ class _$LoginStartedImpl implements LoginStarted {
     TResult? Function(LoginEmailChanged value)? emailChanged,
     TResult? Function(LoginPasswordChanged value)? passwordChanged,
     TResult? Function(LoginStarted value)? loginStarted,
+    TResult? Function(LoginWithGoogleStarted value)? googleStarted,
     TResult? Function(LoginErrorOccurred value)? errorOccurred,
     TResult? Function(LoginLoading value)? loading,
   }) {
@@ -524,6 +547,7 @@ class _$LoginStartedImpl implements LoginStarted {
     TResult Function(LoginEmailChanged value)? emailChanged,
     TResult Function(LoginPasswordChanged value)? passwordChanged,
     TResult Function(LoginStarted value)? loginStarted,
+    TResult Function(LoginWithGoogleStarted value)? googleStarted,
     TResult Function(LoginErrorOccurred value)? errorOccurred,
     TResult Function(LoginLoading value)? loading,
     required TResult orElse(),
@@ -537,6 +561,174 @@ class _$LoginStartedImpl implements LoginStarted {
 
 abstract class LoginStarted implements LoginEvent {
   const factory LoginStarted() = _$LoginStartedImpl;
+}
+
+/// @nodoc
+abstract class _$$LoginWithGoogleStartedImplCopyWith<$Res> {
+  factory _$$LoginWithGoogleStartedImplCopyWith(
+          _$LoginWithGoogleStartedImpl value,
+          $Res Function(_$LoginWithGoogleStartedImpl) then) =
+      __$$LoginWithGoogleStartedImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({String idToken});
+}
+
+/// @nodoc
+class __$$LoginWithGoogleStartedImplCopyWithImpl<$Res>
+    extends _$LoginEventCopyWithImpl<$Res, _$LoginWithGoogleStartedImpl>
+    implements _$$LoginWithGoogleStartedImplCopyWith<$Res> {
+  __$$LoginWithGoogleStartedImplCopyWithImpl(
+      _$LoginWithGoogleStartedImpl _value,
+      $Res Function(_$LoginWithGoogleStartedImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of LoginEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? idToken = null,
+  }) {
+    return _then(_$LoginWithGoogleStartedImpl(
+      null == idToken
+          ? _value.idToken
+          : idToken // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$LoginWithGoogleStartedImpl implements LoginWithGoogleStarted {
+  const _$LoginWithGoogleStartedImpl(this.idToken);
+
+  @override
+  final String idToken;
+
+  @override
+  String toString() {
+    return 'LoginEvent.googleStarted(idToken: $idToken)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$LoginWithGoogleStartedImpl &&
+            (identical(other.idToken, idToken) || other.idToken == idToken));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, idToken);
+
+  /// Create a copy of LoginEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$LoginWithGoogleStartedImplCopyWith<_$LoginWithGoogleStartedImpl>
+      get copyWith => __$$LoginWithGoogleStartedImplCopyWithImpl<
+          _$LoginWithGoogleStartedImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(String email) emailChanged,
+    required TResult Function(String password) passwordChanged,
+    required TResult Function() loginStarted,
+    required TResult Function(String idToken) googleStarted,
+    required TResult Function(BaseException<dynamic>? error) errorOccurred,
+    required TResult Function() loading,
+  }) {
+    return googleStarted(idToken);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(String email)? emailChanged,
+    TResult? Function(String password)? passwordChanged,
+    TResult? Function()? loginStarted,
+    TResult? Function(String idToken)? googleStarted,
+    TResult? Function(BaseException<dynamic>? error)? errorOccurred,
+    TResult? Function()? loading,
+  }) {
+    return googleStarted?.call(idToken);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(String email)? emailChanged,
+    TResult Function(String password)? passwordChanged,
+    TResult Function()? loginStarted,
+    TResult Function(String idToken)? googleStarted,
+    TResult Function(BaseException<dynamic>? error)? errorOccurred,
+    TResult Function()? loading,
+    required TResult orElse(),
+  }) {
+    if (googleStarted != null) {
+      return googleStarted(idToken);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(LoginEmailChanged value) emailChanged,
+    required TResult Function(LoginPasswordChanged value) passwordChanged,
+    required TResult Function(LoginStarted value) loginStarted,
+    required TResult Function(LoginWithGoogleStarted value) googleStarted,
+    required TResult Function(LoginErrorOccurred value) errorOccurred,
+    required TResult Function(LoginLoading value) loading,
+  }) {
+    return googleStarted(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(LoginEmailChanged value)? emailChanged,
+    TResult? Function(LoginPasswordChanged value)? passwordChanged,
+    TResult? Function(LoginStarted value)? loginStarted,
+    TResult? Function(LoginWithGoogleStarted value)? googleStarted,
+    TResult? Function(LoginErrorOccurred value)? errorOccurred,
+    TResult? Function(LoginLoading value)? loading,
+  }) {
+    return googleStarted?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(LoginEmailChanged value)? emailChanged,
+    TResult Function(LoginPasswordChanged value)? passwordChanged,
+    TResult Function(LoginStarted value)? loginStarted,
+    TResult Function(LoginWithGoogleStarted value)? googleStarted,
+    TResult Function(LoginErrorOccurred value)? errorOccurred,
+    TResult Function(LoginLoading value)? loading,
+    required TResult orElse(),
+  }) {
+    if (googleStarted != null) {
+      return googleStarted(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class LoginWithGoogleStarted implements LoginEvent {
+  const factory LoginWithGoogleStarted(final String idToken) =
+      _$LoginWithGoogleStartedImpl;
+
+  String get idToken;
+
+  /// Create a copy of LoginEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$LoginWithGoogleStartedImplCopyWith<_$LoginWithGoogleStartedImpl>
+      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -611,6 +803,7 @@ class _$LoginErrorOccurredImpl implements LoginErrorOccurred {
     required TResult Function(String email) emailChanged,
     required TResult Function(String password) passwordChanged,
     required TResult Function() loginStarted,
+    required TResult Function(String idToken) googleStarted,
     required TResult Function(BaseException<dynamic>? error) errorOccurred,
     required TResult Function() loading,
   }) {
@@ -623,6 +816,7 @@ class _$LoginErrorOccurredImpl implements LoginErrorOccurred {
     TResult? Function(String email)? emailChanged,
     TResult? Function(String password)? passwordChanged,
     TResult? Function()? loginStarted,
+    TResult? Function(String idToken)? googleStarted,
     TResult? Function(BaseException<dynamic>? error)? errorOccurred,
     TResult? Function()? loading,
   }) {
@@ -635,6 +829,7 @@ class _$LoginErrorOccurredImpl implements LoginErrorOccurred {
     TResult Function(String email)? emailChanged,
     TResult Function(String password)? passwordChanged,
     TResult Function()? loginStarted,
+    TResult Function(String idToken)? googleStarted,
     TResult Function(BaseException<dynamic>? error)? errorOccurred,
     TResult Function()? loading,
     required TResult orElse(),
@@ -651,6 +846,7 @@ class _$LoginErrorOccurredImpl implements LoginErrorOccurred {
     required TResult Function(LoginEmailChanged value) emailChanged,
     required TResult Function(LoginPasswordChanged value) passwordChanged,
     required TResult Function(LoginStarted value) loginStarted,
+    required TResult Function(LoginWithGoogleStarted value) googleStarted,
     required TResult Function(LoginErrorOccurred value) errorOccurred,
     required TResult Function(LoginLoading value) loading,
   }) {
@@ -663,6 +859,7 @@ class _$LoginErrorOccurredImpl implements LoginErrorOccurred {
     TResult? Function(LoginEmailChanged value)? emailChanged,
     TResult? Function(LoginPasswordChanged value)? passwordChanged,
     TResult? Function(LoginStarted value)? loginStarted,
+    TResult? Function(LoginWithGoogleStarted value)? googleStarted,
     TResult? Function(LoginErrorOccurred value)? errorOccurred,
     TResult? Function(LoginLoading value)? loading,
   }) {
@@ -675,6 +872,7 @@ class _$LoginErrorOccurredImpl implements LoginErrorOccurred {
     TResult Function(LoginEmailChanged value)? emailChanged,
     TResult Function(LoginPasswordChanged value)? passwordChanged,
     TResult Function(LoginStarted value)? loginStarted,
+    TResult Function(LoginWithGoogleStarted value)? googleStarted,
     TResult Function(LoginErrorOccurred value)? errorOccurred,
     TResult Function(LoginLoading value)? loading,
     required TResult orElse(),
@@ -743,6 +941,7 @@ class _$LoginLoadingImpl implements LoginLoading {
     required TResult Function(String email) emailChanged,
     required TResult Function(String password) passwordChanged,
     required TResult Function() loginStarted,
+    required TResult Function(String idToken) googleStarted,
     required TResult Function(BaseException<dynamic>? error) errorOccurred,
     required TResult Function() loading,
   }) {
@@ -755,6 +954,7 @@ class _$LoginLoadingImpl implements LoginLoading {
     TResult? Function(String email)? emailChanged,
     TResult? Function(String password)? passwordChanged,
     TResult? Function()? loginStarted,
+    TResult? Function(String idToken)? googleStarted,
     TResult? Function(BaseException<dynamic>? error)? errorOccurred,
     TResult? Function()? loading,
   }) {
@@ -767,6 +967,7 @@ class _$LoginLoadingImpl implements LoginLoading {
     TResult Function(String email)? emailChanged,
     TResult Function(String password)? passwordChanged,
     TResult Function()? loginStarted,
+    TResult Function(String idToken)? googleStarted,
     TResult Function(BaseException<dynamic>? error)? errorOccurred,
     TResult Function()? loading,
     required TResult orElse(),
@@ -783,6 +984,7 @@ class _$LoginLoadingImpl implements LoginLoading {
     required TResult Function(LoginEmailChanged value) emailChanged,
     required TResult Function(LoginPasswordChanged value) passwordChanged,
     required TResult Function(LoginStarted value) loginStarted,
+    required TResult Function(LoginWithGoogleStarted value) googleStarted,
     required TResult Function(LoginErrorOccurred value) errorOccurred,
     required TResult Function(LoginLoading value) loading,
   }) {
@@ -795,6 +997,7 @@ class _$LoginLoadingImpl implements LoginLoading {
     TResult? Function(LoginEmailChanged value)? emailChanged,
     TResult? Function(LoginPasswordChanged value)? passwordChanged,
     TResult? Function(LoginStarted value)? loginStarted,
+    TResult? Function(LoginWithGoogleStarted value)? googleStarted,
     TResult? Function(LoginErrorOccurred value)? errorOccurred,
     TResult? Function(LoginLoading value)? loading,
   }) {
@@ -807,6 +1010,7 @@ class _$LoginLoadingImpl implements LoginLoading {
     TResult Function(LoginEmailChanged value)? emailChanged,
     TResult Function(LoginPasswordChanged value)? passwordChanged,
     TResult Function(LoginStarted value)? loginStarted,
+    TResult Function(LoginWithGoogleStarted value)? googleStarted,
     TResult Function(LoginErrorOccurred value)? errorOccurred,
     TResult Function(LoginLoading value)? loading,
     required TResult orElse(),

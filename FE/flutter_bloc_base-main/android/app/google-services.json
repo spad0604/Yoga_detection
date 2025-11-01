@@ -9,10 +9,23 @@
       "client_info": {
         "mobilesdk_app_id": "1:908506209823:android:b99e6d7fc876a0a10e3f2a",
         "android_client_info": {
-          "package_name": "com.flutter.nextai.dev"
+          "package_name": "com.flutter.nextai"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "908506209823-iqvdlu3hp3mppkq10thd2b7mdsegunng.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.flutter.nextai",
+            "certificate_hash": "4acfbdf2b96ff104b869c4a64eb9d9938f1fcfa2"
+          }
+        },
+        {
+          "client_id": "908506209823-4re3i2k1r444lk3i28pmtmf4tqeaju5m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBY2AylGQ5UFiGiZWjiDpxXCc-ggefIGOU"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "908506209823-4re3i2k1r444lk3i28pmtmf4tqeaju5m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

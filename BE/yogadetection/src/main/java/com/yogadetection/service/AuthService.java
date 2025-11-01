@@ -1,5 +1,6 @@
 package com.yogadetection.service;
 
+import com.yogadetection.dto.request.GoogleLoginRequest;
 import com.yogadetection.dto.request.LoginRequest;
 import com.yogadetection.dto.request.RefreshTokenRequest;
 import com.yogadetection.dto.request.RegisterRequest;
@@ -13,4 +14,6 @@ public interface AuthService {
     TokenResponse refreshToken(RefreshTokenRequest request);
 
     void logout(String token);
+    
+    TokenResponse loginWithGoogle(GoogleLoginRequest request);
 }

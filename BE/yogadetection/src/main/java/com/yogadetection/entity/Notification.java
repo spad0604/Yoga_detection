@@ -1,11 +1,6 @@
 package com.yogadetection.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -28,8 +23,23 @@ public class Notification {
     private String normalTitle;
 
     private String htmlTitle;
+    
+    @Column(columnDefinition = "TEXT")
+    private String normalBody;
+    
+    @Column(columnDefinition = "TEXT")
+    private String htmlBody;
 
     private String imageUrl;
+    
+    // Type: POSE_RESULT, SOCIAL, SYSTEM, ROUTINE_REMINDER, etc.
+    private String type;
+    
+    // Reference ID (attemptId, postId, routineId, etc.)
+    private String referenceId;
+    
+    @Builder.Default
+    private boolean isRead = false;
 
     private LocalDateTime createdAt;
 
@@ -38,3 +48,4 @@ public class Notification {
         this.createdAt = LocalDateTime.now();
     }
 }
+

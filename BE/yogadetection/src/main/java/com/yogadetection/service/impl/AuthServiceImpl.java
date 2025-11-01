@@ -1,10 +1,17 @@
 package com.yogadetection.service.impl;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.gson.GsonFactory;
+import com.yogadetection.dto.request.GoogleLoginRequest;
 import com.yogadetection.dto.request.LoginRequest;
 import com.yogadetection.dto.request.RefreshTokenRequest;
 import com.yogadetection.dto.request.RegisterRequest;
 import com.yogadetection.dto.response.TokenResponse;
 import com.yogadetection.entity.User;
+import com.yogadetection.entity.enums.UserProviderEnum;
+import com.yogadetection.entity.enums.UserRoleEnum;
 import com.yogadetection.exception.EmailExistsException;
 import com.yogadetection.exception.InvalidPasswordException;
 import com.yogadetection.exception.InvalidTokenException;
@@ -14,12 +21,17 @@ import com.yogadetection.service.AuthService;
 import com.yogadetection.service.JwtService;
 import com.yogadetection.service.TokenBlackListService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.Optional;
 
+@Slf4j
 @Service
 @Component("authService")
 @RequiredArgsConstructor
@@ -28,6 +40,9 @@ public class AuthServiceImpl implements AuthService {
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
     private final TokenBlackListService tokenBlackListService;
+    
+    @Value("${google.client.id:}")
+    private String googleClientId;
 
     @Override
     public TokenResponse login(LoginRequest request) {
@@ -37,7 +52,7 @@ public class AuthServiceImpl implements AuthService {
             userRepository.saveFcmToken(request.getFcmToken(), request.getEmail().toLowerCase());
             String accessToken = jwtService.generateToken(user);
             String refreshToken = jwtService.generateRefreshToken(user);
-            return new TokenResponse(user.getId(), accessToken, refreshToken);
+            return new TokenResponse(user.getId(), user.getUserProvider(), accessToken, refreshToken);
         } else throw new InvalidPasswordException();
     }
 
@@ -53,12 +68,13 @@ public class AuthServiceImpl implements AuthService {
                 .registerDate(LocalDateTime.now())
                 .email(request.getEmail().toLowerCase())
                 .password(passwordEncoder.encode(request.getPassword()))
+                .userProvider(UserProviderEnum.ACCOUNT_CREATION)
+                .userRole(UserRoleEnum.USER)
                 .build();
-        userRepository.save(user);
-        String accessToken = jwtService.generateToken(user);
-        String refreshToken = jwtService.generateRefreshToken(user);
         User savedUser = userRepository.save(user);
-        return new TokenResponse(savedUser.getId(), accessToken, refreshToken);
+        String accessToken = jwtService.generateToken(savedUser);
+        String refreshToken = jwtService.generateRefreshToken(savedUser);
+        return new TokenResponse(savedUser.getId(), UserProviderEnum.ACCOUNT_CREATION, accessToken, refreshToken);
     }
 
     @Override
@@ -79,7 +95,7 @@ public class AuthServiceImpl implements AuthService {
                 if (jwtService.isTokenValid(refreshToken, user)) {
                     String newAccessToken = jwtService.generateToken(user);
                     String newRefreshToken = jwtService.generateRefreshToken(user);
-                    return new TokenResponse(user.getId(), newAccessToken, newRefreshToken);
+                    return new TokenResponse(user.getId(), user.getUserProvider(), newAccessToken, newRefreshToken);
                 } else {
                     throw new InvalidTokenException();
                 }
@@ -97,6 +113,105 @@ public class AuthServiceImpl implements AuthService {
             throw new InvalidPasswordException();
         }
         tokenBlackListService.blacklistToken(token);
+    }
+
+    @Override
+    public TokenResponse loginWithGoogle(GoogleLoginRequest request) {
+        try {
+            String idTokenString = request.getIdToken();
+            
+            if (idTokenString == null || idTokenString.isEmpty()) {
+                throw new InvalidTokenException();
+            }
+            
+            // Verify Google ID token
+            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
+                    new NetHttpTransport(), new GsonFactory())
+                    .setAudience(Collections.singletonList(googleClientId))
+                    .build();
+            
+            GoogleIdToken idToken = verifier.verify(idTokenString);
+            
+            if (idToken == null) {
+                log.error("Invalid Google ID token");
+                throw new InvalidTokenException();
+            }
+            
+            // Extract user info from Google token
+            GoogleIdToken.Payload payload = idToken.getPayload();
+            String email = payload.getEmail();
+            String googleId = payload.getSubject();
+            String name = (String) payload.get("name");
+            String picture = (String) payload.get("picture");
+            
+            log.info("Google login attempt for email: {}", email);
+            
+            // Find or create user
+            Optional<User> existingUser = userRepository.findByEmail(email.toLowerCase());
+            User user;
+            
+            if (existingUser.isPresent()) {
+                // User exists - update info if needed
+                user = existingUser.get();
+                boolean updated = false;
+                
+                // Update avatar if changed
+                if (picture != null && !picture.equals(user.getAvatarUrl())) {
+                    user.setAvatarUrl(picture);
+                    updated = true;
+                }
+                
+                // Update FCM token if provided
+                if (request.getFcmToken() != null && !request.getFcmToken().isEmpty()) {
+                    user.setFcmToken(request.getFcmToken());
+                    updated = true;
+                }
+                
+                // Update provider if user was created with email/password before
+                if (user.getUserProvider() == UserProviderEnum.ACCOUNT_CREATION) {
+                    user.setUserProvider(UserProviderEnum.GOOGLE);
+                    updated = true;
+                }
+                
+                if (updated) {
+                    user = userRepository.save(user);
+                    log.info("Updated existing user: {}", email);
+                }
+                
+            } else {
+                // Create new user from Google account
+                String[] nameParts = name != null ? name.split(" ", 2) : new String[]{"", ""};
+                String firstName = nameParts.length > 0 ? nameParts[0] : "";
+                String lastName = nameParts.length > 1 ? nameParts[1] : "";
+                
+                user = User.builder()
+                        .email(email.toLowerCase())
+                        .firstName(firstName)
+                        .lastName(lastName)
+                        .avatarUrl(picture)
+                        .password(passwordEncoder.encode(googleId)) // Use Google ID as password (user can't login with password)
+                        .userProvider(UserProviderEnum.GOOGLE)
+                        .userRole(UserRoleEnum.USER)
+                        .fcmToken(request.getFcmToken())
+                        .registerDate(LocalDateTime.now())
+                        .build();
+                
+                user = userRepository.save(user);
+                log.info("Created new user from Google account: {}", email);
+            }
+            
+            // Generate JWT tokens
+            String accessToken = jwtService.generateToken(user);
+            String refreshToken = jwtService.generateRefreshToken(user);
+            
+            return new TokenResponse(user.getId(), UserProviderEnum.GOOGLE, accessToken, refreshToken);
+            
+        } catch (InvalidTokenException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error("Error during Google login: {}", e.getMessage(), e);
+            throw new RuntimeException("Failed to authenticate with Google: " + e.getMessage());
+        }
     }
 
 }

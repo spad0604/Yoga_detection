@@ -1,6 +1,7 @@
 package com.yogadetection.config;
 
 import com.yogadetection.entity.User;
+import com.yogadetection.entity.enums.UserProviderEnum;
 import com.yogadetection.dto.response.TokenResponse;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -62,9 +63,9 @@ public class JwtConfig {
         String accessToken = generateAccessToken(userDetails);
         String refreshToken = generateRefreshToken(userDetails);
         if (userDetails instanceof User user) {
-            return new TokenResponse(user.getId(), accessToken, refreshToken);
+            return new TokenResponse(user.getId(), user.getUserProvider(), accessToken, refreshToken);
         }
-        return new TokenResponse("", accessToken, refreshToken);
+        return new TokenResponse("", UserProviderEnum.ACCOUNT_CREATION, accessToken, refreshToken);
     }
 
     // ========================== PARSE & VALIDATE ===========================

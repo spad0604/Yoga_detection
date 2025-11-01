@@ -6,6 +6,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_starter/di.dart';
 import 'package:flutter_starter/gen/app_images.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 // ...existing code...
 import 'package:flutter_starter/presenter/navigation/navigation.dart';
 import 'package:flutter_starter/data/states/auth/auth_event.dart';
@@ -43,13 +44,68 @@ class LoginPage extends StatefulWidget implements AutoRouteWrapper {
 class _LoginPageState extends State<LoginPage> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
+  final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
 
   bool _isObscure = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeGoogleSignIn();
+  }
+
+  Future<void> _initializeGoogleSignIn() async {
+    try {
+      await _googleSignIn.initialize(
+        clientId: "908506209823-iqvdlu3hp3mppkq10thd2b7mdsegunng.apps.googleusercontent.com",
+        serverClientId: '908506209823-4re3i2k1r444lk3i28pmtmf4tqeaju5m.apps.googleusercontent.com',
+      );
+    } catch (e) {
+      // ignore: avoid_print
+      print('Google Sign-In initialization error: $e');
+      // Initialization error is not fatal - user can still try to sign in
+    }
+  }
 
   LoginBloc get _bloc => context.read<LoginBloc>();
 
   void _onLoginPressed() {
     _bloc.add(const LoginStarted());
+  }
+
+  Future<void> _onGoogleSignInPressed() async {
+    try {
+      EasyLoading.show(status: 'Signing in with Google...');
+
+      final account = await _googleSignIn.authenticate(
+        scopeHint: ['email', 'profile'],
+      );
+
+      final idToken = account.authentication.idToken;
+
+      if (idToken == null) {
+        EasyLoading.dismiss();
+        toastification.show(
+          autoCloseDuration: const Duration(seconds: 3),
+          context: context,
+          type: ToastificationType.error,
+          title: const Text('Google Sign-In failed: No ID token'),
+        );
+        return;
+      }
+
+      // Dispatch the Google login event with the ID token
+      _bloc.add(LoginEvent.googleStarted(idToken));
+    } catch (e) {
+      EasyLoading.dismiss();
+      debugPrint('Google Sign-In error: $e');
+      toastification.show(
+        autoCloseDuration: const Duration(seconds: 3),
+        context: context,
+        type: ToastificationType.error,
+        title: Text('Google Sign-In error: ${e.toString()}'),
+      );
+    }
   }
 
   void _onSuccess(BuildContext context, LoginState state) {
@@ -338,6 +394,7 @@ class _LoginPageState extends State<LoginPage> {
                         SocialLoginButton(
                           imagePath: AppImages.google,
                           text: 'Continue with Google',
+                          onPressed: _onGoogleSignInPressed,
                         ),
                         const SizedBox(height: 24),
 

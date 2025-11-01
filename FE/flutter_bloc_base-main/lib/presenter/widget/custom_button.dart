@@ -131,13 +131,17 @@ class _CustomButtonState extends State<CustomButton> with SingleTickerProviderSt
                           Icon(widget.icon, color: widget.textColor, size: 20),
                           const SizedBox(width: 8),
                         ],
-                        Text(
-                          widget.text,
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: widget.textColor,
-                            letterSpacing: 0.5,
+                        Flexible(
+                          child: Text(
+                            widget.text,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: widget.textColor,
+                              letterSpacing: 0.5,
+                            ),
                           ),
                         ),
                       ],

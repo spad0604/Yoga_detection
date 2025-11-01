@@ -12,6 +12,11 @@ abstract class AuthRepository {
     String? fcmToken,
   });
 
+  Future<BaseApiResponse<RegisterResponse>> loginWithGoogle({
+    required String idToken,
+    String? fcmToken,
+  });
+
   Future<BaseApiResponse<RegisterResponse>> register({
     required String email,
     required String password,

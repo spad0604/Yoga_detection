@@ -18,16 +18,13 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$CameraDetectionState {
   CameraDetectionStatus get status => throw _privateConstructorUsedError;
   BaseException<dynamic>? get error => throw _privateConstructorUsedError;
-  List<Pose> get poseList => throw _privateConstructorUsedError; // Socket state
-  bool get socketConnected =>
+  List<Pose> get poseList =>
       throw _privateConstructorUsedError; // Countdown state
   bool get isCountingDown => throw _privateConstructorUsedError;
   int get countdown => throw _privateConstructorUsedError; // Capture state
   bool get showResult => throw _privateConstructorUsedError;
   String? get capturedImagePath => throw _privateConstructorUsedError;
-  List<Pose> get capturedPoses =>
-      throw _privateConstructorUsedError; // Pose result from server
-  Map<String, dynamic>? get poseResult => throw _privateConstructorUsedError;
+  List<Pose> get capturedPoses => throw _privateConstructorUsedError;
 
   /// Create a copy of CameraDetectionState
   /// with the given fields replaced by the non-null parameter values.
@@ -46,13 +43,11 @@ abstract class $CameraDetectionStateCopyWith<$Res> {
       {CameraDetectionStatus status,
       BaseException<dynamic>? error,
       List<Pose> poseList,
-      bool socketConnected,
       bool isCountingDown,
       int countdown,
       bool showResult,
       String? capturedImagePath,
-      List<Pose> capturedPoses,
-      Map<String, dynamic>? poseResult});
+      List<Pose> capturedPoses});
 }
 
 /// @nodoc
@@ -74,13 +69,11 @@ class _$CameraDetectionStateCopyWithImpl<$Res,
     Object? status = null,
     Object? error = freezed,
     Object? poseList = null,
-    Object? socketConnected = null,
     Object? isCountingDown = null,
     Object? countdown = null,
     Object? showResult = null,
     Object? capturedImagePath = freezed,
     Object? capturedPoses = null,
-    Object? poseResult = freezed,
   }) {
     return _then(_value.copyWith(
       status: null == status
@@ -95,10 +88,6 @@ class _$CameraDetectionStateCopyWithImpl<$Res,
           ? _value.poseList
           : poseList // ignore: cast_nullable_to_non_nullable
               as List<Pose>,
-      socketConnected: null == socketConnected
-          ? _value.socketConnected
-          : socketConnected // ignore: cast_nullable_to_non_nullable
-              as bool,
       isCountingDown: null == isCountingDown
           ? _value.isCountingDown
           : isCountingDown // ignore: cast_nullable_to_non_nullable
@@ -119,10 +108,6 @@ class _$CameraDetectionStateCopyWithImpl<$Res,
           ? _value.capturedPoses
           : capturedPoses // ignore: cast_nullable_to_non_nullable
               as List<Pose>,
-      poseResult: freezed == poseResult
-          ? _value.poseResult
-          : poseResult // ignore: cast_nullable_to_non_nullable
-              as Map<String, dynamic>?,
     ) as $Val);
   }
 }
@@ -139,13 +124,11 @@ abstract class _$$CameraDetectionStateImplCopyWith<$Res>
       {CameraDetectionStatus status,
       BaseException<dynamic>? error,
       List<Pose> poseList,
-      bool socketConnected,
       bool isCountingDown,
       int countdown,
       bool showResult,
       String? capturedImagePath,
-      List<Pose> capturedPoses,
-      Map<String, dynamic>? poseResult});
+      List<Pose> capturedPoses});
 }
 
 /// @nodoc
@@ -164,13 +147,11 @@ class __$$CameraDetectionStateImplCopyWithImpl<$Res>
     Object? status = null,
     Object? error = freezed,
     Object? poseList = null,
-    Object? socketConnected = null,
     Object? isCountingDown = null,
     Object? countdown = null,
     Object? showResult = null,
     Object? capturedImagePath = freezed,
     Object? capturedPoses = null,
-    Object? poseResult = freezed,
   }) {
     return _then(_$CameraDetectionStateImpl(
       status: null == status
@@ -185,10 +166,6 @@ class __$$CameraDetectionStateImplCopyWithImpl<$Res>
           ? _value._poseList
           : poseList // ignore: cast_nullable_to_non_nullable
               as List<Pose>,
-      socketConnected: null == socketConnected
-          ? _value.socketConnected
-          : socketConnected // ignore: cast_nullable_to_non_nullable
-              as bool,
       isCountingDown: null == isCountingDown
           ? _value.isCountingDown
           : isCountingDown // ignore: cast_nullable_to_non_nullable
@@ -209,10 +186,6 @@ class __$$CameraDetectionStateImplCopyWithImpl<$Res>
           ? _value._capturedPoses
           : capturedPoses // ignore: cast_nullable_to_non_nullable
               as List<Pose>,
-      poseResult: freezed == poseResult
-          ? _value._poseResult
-          : poseResult // ignore: cast_nullable_to_non_nullable
-              as Map<String, dynamic>?,
     ));
   }
 }
@@ -224,16 +197,13 @@ class _$CameraDetectionStateImpl implements _CameraDetectionState {
       {this.status = CameraDetectionStatus.initial,
       this.error,
       final List<Pose> poseList = const [],
-      this.socketConnected = false,
       this.isCountingDown = false,
       this.countdown = 0,
       this.showResult = false,
       this.capturedImagePath,
-      final List<Pose> capturedPoses = const [],
-      final Map<String, dynamic>? poseResult})
+      final List<Pose> capturedPoses = const []})
       : _poseList = poseList,
-        _capturedPoses = capturedPoses,
-        _poseResult = poseResult;
+        _capturedPoses = capturedPoses;
 
   @override
   @JsonKey()
@@ -249,10 +219,6 @@ class _$CameraDetectionStateImpl implements _CameraDetectionState {
     return EqualUnmodifiableListView(_poseList);
   }
 
-// Socket state
-  @override
-  @JsonKey()
-  final bool socketConnected;
 // Countdown state
   @override
   @JsonKey()
@@ -275,21 +241,9 @@ class _$CameraDetectionStateImpl implements _CameraDetectionState {
     return EqualUnmodifiableListView(_capturedPoses);
   }
 
-// Pose result from server
-  final Map<String, dynamic>? _poseResult;
-// Pose result from server
-  @override
-  Map<String, dynamic>? get poseResult {
-    final value = _poseResult;
-    if (value == null) return null;
-    if (_poseResult is EqualUnmodifiableMapView) return _poseResult;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(value);
-  }
-
   @override
   String toString() {
-    return 'CameraDetectionState(status: $status, error: $error, poseList: $poseList, socketConnected: $socketConnected, isCountingDown: $isCountingDown, countdown: $countdown, showResult: $showResult, capturedImagePath: $capturedImagePath, capturedPoses: $capturedPoses, poseResult: $poseResult)';
+    return 'CameraDetectionState(status: $status, error: $error, poseList: $poseList, isCountingDown: $isCountingDown, countdown: $countdown, showResult: $showResult, capturedImagePath: $capturedImagePath, capturedPoses: $capturedPoses)';
   }
 
   @override
@@ -300,8 +254,6 @@ class _$CameraDetectionStateImpl implements _CameraDetectionState {
             (identical(other.status, status) || other.status == status) &&
             (identical(other.error, error) || other.error == error) &&
             const DeepCollectionEquality().equals(other._poseList, _poseList) &&
-            (identical(other.socketConnected, socketConnected) ||
-                other.socketConnected == socketConnected) &&
             (identical(other.isCountingDown, isCountingDown) ||
                 other.isCountingDown == isCountingDown) &&
             (identical(other.countdown, countdown) ||
@@ -311,9 +263,7 @@ class _$CameraDetectionStateImpl implements _CameraDetectionState {
             (identical(other.capturedImagePath, capturedImagePath) ||
                 other.capturedImagePath == capturedImagePath) &&
             const DeepCollectionEquality()
-                .equals(other._capturedPoses, _capturedPoses) &&
-            const DeepCollectionEquality()
-                .equals(other._poseResult, _poseResult));
+                .equals(other._capturedPoses, _capturedPoses));
   }
 
   @override
@@ -322,13 +272,11 @@ class _$CameraDetectionStateImpl implements _CameraDetectionState {
       status,
       error,
       const DeepCollectionEquality().hash(_poseList),
-      socketConnected,
       isCountingDown,
       countdown,
       showResult,
       capturedImagePath,
-      const DeepCollectionEquality().hash(_capturedPoses),
-      const DeepCollectionEquality().hash(_poseResult));
+      const DeepCollectionEquality().hash(_capturedPoses));
 
   /// Create a copy of CameraDetectionState
   /// with the given fields replaced by the non-null parameter values.
@@ -346,22 +294,18 @@ abstract class _CameraDetectionState implements CameraDetectionState {
       {final CameraDetectionStatus status,
       final BaseException<dynamic>? error,
       final List<Pose> poseList,
-      final bool socketConnected,
       final bool isCountingDown,
       final int countdown,
       final bool showResult,
       final String? capturedImagePath,
-      final List<Pose> capturedPoses,
-      final Map<String, dynamic>? poseResult}) = _$CameraDetectionStateImpl;
+      final List<Pose> capturedPoses}) = _$CameraDetectionStateImpl;
 
   @override
   CameraDetectionStatus get status;
   @override
   BaseException<dynamic>? get error;
   @override
-  List<Pose> get poseList; // Socket state
-  @override
-  bool get socketConnected; // Countdown state
+  List<Pose> get poseList; // Countdown state
   @override
   bool get isCountingDown;
   @override
@@ -371,9 +315,7 @@ abstract class _CameraDetectionState implements CameraDetectionState {
   @override
   String? get capturedImagePath;
   @override
-  List<Pose> get capturedPoses; // Pose result from server
-  @override
-  Map<String, dynamic>? get poseResult;
+  List<Pose> get capturedPoses;
 
   /// Create a copy of CameraDetectionState
   /// with the given fields replaced by the non-null parameter values.

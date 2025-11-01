@@ -21,7 +21,7 @@ mixin _$NotificationPageEvent {
     required TResult Function(int page, int size) loadNotifications,
     required TResult Function() refreshNotifications,
     required TResult Function() loadMoreNotifications,
-    required TResult Function(String id) markAsRead,
+    required TResult Function(int id) markAsRead,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -29,7 +29,7 @@ mixin _$NotificationPageEvent {
     TResult? Function(int page, int size)? loadNotifications,
     TResult? Function()? refreshNotifications,
     TResult? Function()? loadMoreNotifications,
-    TResult? Function(String id)? markAsRead,
+    TResult? Function(int id)? markAsRead,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -37,7 +37,7 @@ mixin _$NotificationPageEvent {
     TResult Function(int page, int size)? loadNotifications,
     TResult Function()? refreshNotifications,
     TResult Function()? loadMoreNotifications,
-    TResult Function(String id)? markAsRead,
+    TResult Function(int id)? markAsRead,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -173,7 +173,7 @@ class _$LoadNotificationsImpl implements LoadNotifications {
     required TResult Function(int page, int size) loadNotifications,
     required TResult Function() refreshNotifications,
     required TResult Function() loadMoreNotifications,
-    required TResult Function(String id) markAsRead,
+    required TResult Function(int id) markAsRead,
   }) {
     return loadNotifications(page, size);
   }
@@ -184,7 +184,7 @@ class _$LoadNotificationsImpl implements LoadNotifications {
     TResult? Function(int page, int size)? loadNotifications,
     TResult? Function()? refreshNotifications,
     TResult? Function()? loadMoreNotifications,
-    TResult? Function(String id)? markAsRead,
+    TResult? Function(int id)? markAsRead,
   }) {
     return loadNotifications?.call(page, size);
   }
@@ -195,7 +195,7 @@ class _$LoadNotificationsImpl implements LoadNotifications {
     TResult Function(int page, int size)? loadNotifications,
     TResult Function()? refreshNotifications,
     TResult Function()? loadMoreNotifications,
-    TResult Function(String id)? markAsRead,
+    TResult Function(int id)? markAsRead,
     required TResult orElse(),
   }) {
     if (loadNotifications != null) {
@@ -303,7 +303,7 @@ class _$RefreshNotificationsImpl implements RefreshNotifications {
     required TResult Function(int page, int size) loadNotifications,
     required TResult Function() refreshNotifications,
     required TResult Function() loadMoreNotifications,
-    required TResult Function(String id) markAsRead,
+    required TResult Function(int id) markAsRead,
   }) {
     return refreshNotifications();
   }
@@ -314,7 +314,7 @@ class _$RefreshNotificationsImpl implements RefreshNotifications {
     TResult? Function(int page, int size)? loadNotifications,
     TResult? Function()? refreshNotifications,
     TResult? Function()? loadMoreNotifications,
-    TResult? Function(String id)? markAsRead,
+    TResult? Function(int id)? markAsRead,
   }) {
     return refreshNotifications?.call();
   }
@@ -325,7 +325,7 @@ class _$RefreshNotificationsImpl implements RefreshNotifications {
     TResult Function(int page, int size)? loadNotifications,
     TResult Function()? refreshNotifications,
     TResult Function()? loadMoreNotifications,
-    TResult Function(String id)? markAsRead,
+    TResult Function(int id)? markAsRead,
     required TResult orElse(),
   }) {
     if (refreshNotifications != null) {
@@ -424,7 +424,7 @@ class _$LoadMoreNotificationsImpl implements LoadMoreNotifications {
     required TResult Function(int page, int size) loadNotifications,
     required TResult Function() refreshNotifications,
     required TResult Function() loadMoreNotifications,
-    required TResult Function(String id) markAsRead,
+    required TResult Function(int id) markAsRead,
   }) {
     return loadMoreNotifications();
   }
@@ -435,7 +435,7 @@ class _$LoadMoreNotificationsImpl implements LoadMoreNotifications {
     TResult? Function(int page, int size)? loadNotifications,
     TResult? Function()? refreshNotifications,
     TResult? Function()? loadMoreNotifications,
-    TResult? Function(String id)? markAsRead,
+    TResult? Function(int id)? markAsRead,
   }) {
     return loadMoreNotifications?.call();
   }
@@ -446,7 +446,7 @@ class _$LoadMoreNotificationsImpl implements LoadMoreNotifications {
     TResult Function(int page, int size)? loadNotifications,
     TResult Function()? refreshNotifications,
     TResult Function()? loadMoreNotifications,
-    TResult Function(String id)? markAsRead,
+    TResult Function(int id)? markAsRead,
     required TResult orElse(),
   }) {
     if (loadMoreNotifications != null) {
@@ -504,7 +504,7 @@ abstract class _$$MarkAsReadImplCopyWith<$Res> {
           _$MarkAsReadImpl value, $Res Function(_$MarkAsReadImpl) then) =
       __$$MarkAsReadImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({String id});
+  $Res call({int id});
 }
 
 /// @nodoc
@@ -526,7 +526,7 @@ class __$$MarkAsReadImplCopyWithImpl<$Res>
       null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
     ));
   }
 }
@@ -537,7 +537,7 @@ class _$MarkAsReadImpl implements MarkAsRead {
   const _$MarkAsReadImpl(this.id);
 
   @override
-  final String id;
+  final int id;
 
   @override
   String toString() {
@@ -569,7 +569,7 @@ class _$MarkAsReadImpl implements MarkAsRead {
     required TResult Function(int page, int size) loadNotifications,
     required TResult Function() refreshNotifications,
     required TResult Function() loadMoreNotifications,
-    required TResult Function(String id) markAsRead,
+    required TResult Function(int id) markAsRead,
   }) {
     return markAsRead(id);
   }
@@ -580,7 +580,7 @@ class _$MarkAsReadImpl implements MarkAsRead {
     TResult? Function(int page, int size)? loadNotifications,
     TResult? Function()? refreshNotifications,
     TResult? Function()? loadMoreNotifications,
-    TResult? Function(String id)? markAsRead,
+    TResult? Function(int id)? markAsRead,
   }) {
     return markAsRead?.call(id);
   }
@@ -591,7 +591,7 @@ class _$MarkAsReadImpl implements MarkAsRead {
     TResult Function(int page, int size)? loadNotifications,
     TResult Function()? refreshNotifications,
     TResult Function()? loadMoreNotifications,
-    TResult Function(String id)? markAsRead,
+    TResult Function(int id)? markAsRead,
     required TResult orElse(),
   }) {
     if (markAsRead != null) {
@@ -640,9 +640,9 @@ class _$MarkAsReadImpl implements MarkAsRead {
 }
 
 abstract class MarkAsRead implements NotificationPageEvent {
-  const factory MarkAsRead(final String id) = _$MarkAsReadImpl;
+  const factory MarkAsRead(final int id) = _$MarkAsReadImpl;
 
-  String get id;
+  int get id;
 
   /// Create a copy of NotificationPageEvent
   /// with the given fields replaced by the non-null parameter values.

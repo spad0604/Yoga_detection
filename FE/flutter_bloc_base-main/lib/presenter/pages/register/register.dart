@@ -44,7 +44,7 @@ class _RegisterPageState extends State<RegisterPage> {
   RegisterBloc get _bloc => context.read<RegisterBloc>();
 
   void _onSuccess(BuildContext context, RegisterState state) {
-    context.router.replaceAll([const CameraDetectionRoute()]);
+    context.router.replaceAll([HomeRoute()]);
   }
 
   @override

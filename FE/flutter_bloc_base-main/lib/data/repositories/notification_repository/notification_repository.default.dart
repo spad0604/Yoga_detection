@@ -38,9 +38,69 @@ class NotificationRepositoryImpl implements NotificationRepository {
   }
 
   @override
-  Future<BaseApiResponse<NotificationResponse>> getNotificationById(String id) async {
+  Future<BaseApiResponse<NotificationResponse>> getNotificationById(int id) async {
     try {
       final res = await _networkDataSource.getNotificationById(id);
+
+      final code = res.code;
+      if (code != null && code != ErrorCode.SUCCESS.code) {
+        final match = ErrorCode.values.firstWhere(
+          (e) => e.code == code,
+          orElse: () => ErrorCode.INTERNAL_SERVER_ERROR,
+        );
+        throw ServerException(match, data: res);
+      }
+
+      return res;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<BaseApiResponse<String>> markNotificationAsRead(int id) async {
+    try {
+      final res = await _networkDataSource.markNotificationAsRead(id);
+
+      final code = res.code;
+      if (code != null && code != ErrorCode.SUCCESS.code) {
+        final match = ErrorCode.values.firstWhere(
+          (e) => e.code == code,
+          orElse: () => ErrorCode.INTERNAL_SERVER_ERROR,
+        );
+        throw ServerException(match, data: res);
+      }
+
+      return res;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<BaseApiResponse<String>> markAllNotificationsAsRead() async {
+    try {
+      final res = await _networkDataSource.markAllNotificationsAsRead();
+
+      final code = res.code;
+      if (code != null && code != ErrorCode.SUCCESS.code) {
+        final match = ErrorCode.values.firstWhere(
+          (e) => e.code == code,
+          orElse: () => ErrorCode.INTERNAL_SERVER_ERROR,
+        );
+        throw ServerException(match, data: res);
+      }
+
+      return res;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<BaseApiResponse<Object?>> getUnreadNotificationCount() async {
+    try {
+      final res = await _networkDataSource.getUnreadNotificationCount();
 
       final code = res.code;
       if (code != null && code != ErrorCode.SUCCESS.code) {

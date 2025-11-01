@@ -20,9 +20,6 @@ class CameraDetectionState with _$CameraDetectionState {
     BaseException? error,
     @Default([]) List<Pose> poseList,
 
-    // Socket state
-    @Default(false) bool socketConnected,
-
     // Countdown state
     @Default(false) bool isCountingDown,
     @Default(0) int countdown,
@@ -31,8 +28,5 @@ class CameraDetectionState with _$CameraDetectionState {
     @Default(false) bool showResult,
     String? capturedImagePath,
     @Default([]) List<Pose> capturedPoses,
-
-    // Pose result from server
-    Map<String, dynamic>? poseResult,
   }) = _CameraDetectionState;
 }

@@ -12,16 +12,6 @@ class CameraDetectionEvent with _$CameraDetectionEvent {
   const factory CameraDetectionEvent.stop() = CameraDetectionStop;
   const factory CameraDetectionEvent.posesUpdated(List<Pose> poses) = CameraDetectionPosesUpdated;
 
-  // Socket events
-  const factory CameraDetectionEvent.connectSocket({
-    required String wsUrl,
-    Map<String, String>? headers,
-  }) = CameraDetectionConnectSocket;
-  const factory CameraDetectionEvent.socketConnected() = CameraDetectionSocketConnected;
-  const factory CameraDetectionEvent.socketDisconnected() = CameraDetectionSocketDisconnected;
-  const factory CameraDetectionEvent.poseResultReceived(Map<String, dynamic> data) =
-      CameraDetectionPoseResultReceived;
-
   // Capture events
   const factory CameraDetectionEvent.startCountdown() = CameraDetectionStartCountdown;
   const factory CameraDetectionEvent.countdownTick(int remaining) = CameraDetectionCountdownTick;

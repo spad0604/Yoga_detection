@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter_starter/data/entities/request/change_password.dart';
+import 'package:flutter_starter/data/entities/request/google_login_params.dart';
 import 'package:flutter_starter/data/entities/request/register_params.dart';
 import 'package:flutter_starter/data/entities/request/request_change_password.dart';
 import 'package:flutter_starter/data/entities/request/reset_password_request.dart';
@@ -48,6 +49,9 @@ abstract class NetworkDataSource {
 
   @POST('api/auth/login')
   Future<BaseApiResponse<RegisterResponse>> login(@Body() LoginParams params);
+
+  @POST('api/auth/google')
+  Future<BaseApiResponse<RegisterResponse>> loginWithGoogle(@Body() GoogleLoginParams params);
 
   @POST('api/auth/register')
   Future<BaseApiResponse<RegisterResponse>> register(@Body() RegisterParams params);
@@ -109,7 +113,16 @@ abstract class NetworkDataSource {
       @Query('page') int page, @Query('size') int size);
 
   @GET('api/notifications/{id}')
-  Future<BaseApiResponse<NotificationResponse>> getNotificationById(@Path('id') String id);
+  Future<BaseApiResponse<NotificationResponse>> getNotificationById(@Path('id') int id);
+
+  @PUT('api/notifications/{id}/read')
+  Future<BaseApiResponse<String>> markNotificationAsRead(@Path('id') int id);
+
+  @PUT('api/notifications/read-all')
+  Future<BaseApiResponse<String>> markAllNotificationsAsRead();
+
+  @GET('api/notifications/unread-count')
+  Future<BaseApiResponse<void>> getUnreadNotificationCount();
 
   // Routine APIs
   @GET('api/routines')
@@ -355,8 +368,7 @@ abstract class NetworkDataSource {
       @Query('routineId') String routineId);
 
   @GET('api/practice-sessions/{sessionId}')
-  Future<BaseApiResponse<PracticeSession>> getPracticeSession(
-      @Path('sessionId') String sessionId);
+  Future<BaseApiResponse<PracticeSession>> getPracticeSession(@Path('sessionId') String sessionId);
 
   @MultiPart()
   @POST('api/practice-sessions/{sessionId}/submit-pose')
@@ -369,16 +381,14 @@ abstract class NetworkDataSource {
   });
 
   @POST('api/practice-sessions/{sessionId}/skip')
-  Future<BaseApiResponse<PracticeSession>> skipPoseInSession(
-      @Path('sessionId') String sessionId);
+  Future<BaseApiResponse<PracticeSession>> skipPoseInSession(@Path('sessionId') String sessionId);
 
   @POST('api/practice-sessions/{sessionId}/complete')
   Future<BaseApiResponse<PracticeSession>> completePracticeSession(
       @Path('sessionId') String sessionId);
 
   @DELETE('api/practice-sessions/{sessionId}')
-  Future<BaseApiResponse<void>> abandonPracticeSession(
-      @Path('sessionId') String sessionId);
+  Future<BaseApiResponse<void>> abandonPracticeSession(@Path('sessionId') String sessionId);
 
   @GET('api/practice-sessions/history')
   Future<BaseApiResponse<List<PracticeSession>>> getPracticeSessionHistory({

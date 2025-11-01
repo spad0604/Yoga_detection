@@ -6,7 +6,7 @@ import 'package:flutter_starter/core/use_case.dart';
 import 'package:flutter_starter/data/repositories/notification_repository/notification_repository.dart';
 
 @singleton
-class GetNotificationByIdUseCase extends UseCase<NotificationResponse, String> {
+class GetNotificationByIdUseCase extends UseCase<NotificationResponse, int> {
   final NotificationRepository _notificationRepository;
 
   const GetNotificationByIdUseCase({
@@ -14,7 +14,7 @@ class GetNotificationByIdUseCase extends UseCase<NotificationResponse, String> {
   }) : _notificationRepository = notificationRepository;
 
   @override
-  FutureOr<NotificationResponse> call(String notificationId) async {
+  FutureOr<NotificationResponse> call(int notificationId) async {
     final res = await _notificationRepository.getNotificationById(notificationId);
 
     if (res.data == null) {

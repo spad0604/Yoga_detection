@@ -22,11 +22,6 @@ mixin _$CameraDetectionEvent {
     required TResult Function() start,
     required TResult Function() stop,
     required TResult Function(List<Pose> poses) posesUpdated,
-    required TResult Function(String wsUrl, Map<String, String>? headers)
-        connectSocket,
-    required TResult Function() socketConnected,
-    required TResult Function() socketDisconnected,
-    required TResult Function(Map<String, dynamic> data) poseResultReceived,
     required TResult Function() startCountdown,
     required TResult Function(int remaining) countdownTick,
     required TResult Function(
@@ -46,11 +41,6 @@ mixin _$CameraDetectionEvent {
     TResult? Function()? start,
     TResult? Function()? stop,
     TResult? Function(List<Pose> poses)? posesUpdated,
-    TResult? Function(String wsUrl, Map<String, String>? headers)?
-        connectSocket,
-    TResult? Function()? socketConnected,
-    TResult? Function()? socketDisconnected,
-    TResult? Function(Map<String, dynamic> data)? poseResultReceived,
     TResult? Function()? startCountdown,
     TResult? Function(int remaining)? countdownTick,
     TResult? Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
@@ -69,10 +59,6 @@ mixin _$CameraDetectionEvent {
     TResult Function()? start,
     TResult Function()? stop,
     TResult Function(List<Pose> poses)? posesUpdated,
-    TResult Function(String wsUrl, Map<String, String>? headers)? connectSocket,
-    TResult Function()? socketConnected,
-    TResult Function()? socketDisconnected,
-    TResult Function(Map<String, dynamic> data)? poseResultReceived,
     TResult Function()? startCountdown,
     TResult Function(int remaining)? countdownTick,
     TResult Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
@@ -92,13 +78,6 @@ mixin _$CameraDetectionEvent {
     required TResult Function(CameraDetectionStart value) start,
     required TResult Function(CameraDetectionStop value) stop,
     required TResult Function(CameraDetectionPosesUpdated value) posesUpdated,
-    required TResult Function(CameraDetectionConnectSocket value) connectSocket,
-    required TResult Function(CameraDetectionSocketConnected value)
-        socketConnected,
-    required TResult Function(CameraDetectionSocketDisconnected value)
-        socketDisconnected,
-    required TResult Function(CameraDetectionPoseResultReceived value)
-        poseResultReceived,
     required TResult Function(CameraDetectionStartCountdown value)
         startCountdown,
     required TResult Function(CameraDetectionCountdownTick value) countdownTick,
@@ -115,12 +94,6 @@ mixin _$CameraDetectionEvent {
     TResult? Function(CameraDetectionStart value)? start,
     TResult? Function(CameraDetectionStop value)? stop,
     TResult? Function(CameraDetectionPosesUpdated value)? posesUpdated,
-    TResult? Function(CameraDetectionConnectSocket value)? connectSocket,
-    TResult? Function(CameraDetectionSocketConnected value)? socketConnected,
-    TResult? Function(CameraDetectionSocketDisconnected value)?
-        socketDisconnected,
-    TResult? Function(CameraDetectionPoseResultReceived value)?
-        poseResultReceived,
     TResult? Function(CameraDetectionStartCountdown value)? startCountdown,
     TResult? Function(CameraDetectionCountdownTick value)? countdownTick,
     TResult? Function(CameraDetectionCaptureImage value)? captureImage,
@@ -136,12 +109,6 @@ mixin _$CameraDetectionEvent {
     TResult Function(CameraDetectionStart value)? start,
     TResult Function(CameraDetectionStop value)? stop,
     TResult Function(CameraDetectionPosesUpdated value)? posesUpdated,
-    TResult Function(CameraDetectionConnectSocket value)? connectSocket,
-    TResult Function(CameraDetectionSocketConnected value)? socketConnected,
-    TResult Function(CameraDetectionSocketDisconnected value)?
-        socketDisconnected,
-    TResult Function(CameraDetectionPoseResultReceived value)?
-        poseResultReceived,
     TResult Function(CameraDetectionStartCountdown value)? startCountdown,
     TResult Function(CameraDetectionCountdownTick value)? countdownTick,
     TResult Function(CameraDetectionCaptureImage value)? captureImage,
@@ -225,11 +192,6 @@ class _$CameraDetectionInitializeImpl implements CameraDetectionInitialize {
     required TResult Function() start,
     required TResult Function() stop,
     required TResult Function(List<Pose> poses) posesUpdated,
-    required TResult Function(String wsUrl, Map<String, String>? headers)
-        connectSocket,
-    required TResult Function() socketConnected,
-    required TResult Function() socketDisconnected,
-    required TResult Function(Map<String, dynamic> data) poseResultReceived,
     required TResult Function() startCountdown,
     required TResult Function(int remaining) countdownTick,
     required TResult Function(
@@ -252,11 +214,6 @@ class _$CameraDetectionInitializeImpl implements CameraDetectionInitialize {
     TResult? Function()? start,
     TResult? Function()? stop,
     TResult? Function(List<Pose> poses)? posesUpdated,
-    TResult? Function(String wsUrl, Map<String, String>? headers)?
-        connectSocket,
-    TResult? Function()? socketConnected,
-    TResult? Function()? socketDisconnected,
-    TResult? Function(Map<String, dynamic> data)? poseResultReceived,
     TResult? Function()? startCountdown,
     TResult? Function(int remaining)? countdownTick,
     TResult? Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
@@ -278,10 +235,6 @@ class _$CameraDetectionInitializeImpl implements CameraDetectionInitialize {
     TResult Function()? start,
     TResult Function()? stop,
     TResult Function(List<Pose> poses)? posesUpdated,
-    TResult Function(String wsUrl, Map<String, String>? headers)? connectSocket,
-    TResult Function()? socketConnected,
-    TResult Function()? socketDisconnected,
-    TResult Function(Map<String, dynamic> data)? poseResultReceived,
     TResult Function()? startCountdown,
     TResult Function(int remaining)? countdownTick,
     TResult Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
@@ -307,13 +260,6 @@ class _$CameraDetectionInitializeImpl implements CameraDetectionInitialize {
     required TResult Function(CameraDetectionStart value) start,
     required TResult Function(CameraDetectionStop value) stop,
     required TResult Function(CameraDetectionPosesUpdated value) posesUpdated,
-    required TResult Function(CameraDetectionConnectSocket value) connectSocket,
-    required TResult Function(CameraDetectionSocketConnected value)
-        socketConnected,
-    required TResult Function(CameraDetectionSocketDisconnected value)
-        socketDisconnected,
-    required TResult Function(CameraDetectionPoseResultReceived value)
-        poseResultReceived,
     required TResult Function(CameraDetectionStartCountdown value)
         startCountdown,
     required TResult Function(CameraDetectionCountdownTick value) countdownTick,
@@ -333,12 +279,6 @@ class _$CameraDetectionInitializeImpl implements CameraDetectionInitialize {
     TResult? Function(CameraDetectionStart value)? start,
     TResult? Function(CameraDetectionStop value)? stop,
     TResult? Function(CameraDetectionPosesUpdated value)? posesUpdated,
-    TResult? Function(CameraDetectionConnectSocket value)? connectSocket,
-    TResult? Function(CameraDetectionSocketConnected value)? socketConnected,
-    TResult? Function(CameraDetectionSocketDisconnected value)?
-        socketDisconnected,
-    TResult? Function(CameraDetectionPoseResultReceived value)?
-        poseResultReceived,
     TResult? Function(CameraDetectionStartCountdown value)? startCountdown,
     TResult? Function(CameraDetectionCountdownTick value)? countdownTick,
     TResult? Function(CameraDetectionCaptureImage value)? captureImage,
@@ -357,12 +297,6 @@ class _$CameraDetectionInitializeImpl implements CameraDetectionInitialize {
     TResult Function(CameraDetectionStart value)? start,
     TResult Function(CameraDetectionStop value)? stop,
     TResult Function(CameraDetectionPosesUpdated value)? posesUpdated,
-    TResult Function(CameraDetectionConnectSocket value)? connectSocket,
-    TResult Function(CameraDetectionSocketConnected value)? socketConnected,
-    TResult Function(CameraDetectionSocketDisconnected value)?
-        socketDisconnected,
-    TResult Function(CameraDetectionPoseResultReceived value)?
-        poseResultReceived,
     TResult Function(CameraDetectionStartCountdown value)? startCountdown,
     TResult Function(CameraDetectionCountdownTick value)? countdownTick,
     TResult Function(CameraDetectionCaptureImage value)? captureImage,
@@ -429,11 +363,6 @@ class _$CameraDetectionStartImpl implements CameraDetectionStart {
     required TResult Function() start,
     required TResult Function() stop,
     required TResult Function(List<Pose> poses) posesUpdated,
-    required TResult Function(String wsUrl, Map<String, String>? headers)
-        connectSocket,
-    required TResult Function() socketConnected,
-    required TResult Function() socketDisconnected,
-    required TResult Function(Map<String, dynamic> data) poseResultReceived,
     required TResult Function() startCountdown,
     required TResult Function(int remaining) countdownTick,
     required TResult Function(
@@ -456,11 +385,6 @@ class _$CameraDetectionStartImpl implements CameraDetectionStart {
     TResult? Function()? start,
     TResult? Function()? stop,
     TResult? Function(List<Pose> poses)? posesUpdated,
-    TResult? Function(String wsUrl, Map<String, String>? headers)?
-        connectSocket,
-    TResult? Function()? socketConnected,
-    TResult? Function()? socketDisconnected,
-    TResult? Function(Map<String, dynamic> data)? poseResultReceived,
     TResult? Function()? startCountdown,
     TResult? Function(int remaining)? countdownTick,
     TResult? Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
@@ -482,10 +406,6 @@ class _$CameraDetectionStartImpl implements CameraDetectionStart {
     TResult Function()? start,
     TResult Function()? stop,
     TResult Function(List<Pose> poses)? posesUpdated,
-    TResult Function(String wsUrl, Map<String, String>? headers)? connectSocket,
-    TResult Function()? socketConnected,
-    TResult Function()? socketDisconnected,
-    TResult Function(Map<String, dynamic> data)? poseResultReceived,
     TResult Function()? startCountdown,
     TResult Function(int remaining)? countdownTick,
     TResult Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
@@ -511,13 +431,6 @@ class _$CameraDetectionStartImpl implements CameraDetectionStart {
     required TResult Function(CameraDetectionStart value) start,
     required TResult Function(CameraDetectionStop value) stop,
     required TResult Function(CameraDetectionPosesUpdated value) posesUpdated,
-    required TResult Function(CameraDetectionConnectSocket value) connectSocket,
-    required TResult Function(CameraDetectionSocketConnected value)
-        socketConnected,
-    required TResult Function(CameraDetectionSocketDisconnected value)
-        socketDisconnected,
-    required TResult Function(CameraDetectionPoseResultReceived value)
-        poseResultReceived,
     required TResult Function(CameraDetectionStartCountdown value)
         startCountdown,
     required TResult Function(CameraDetectionCountdownTick value) countdownTick,
@@ -537,12 +450,6 @@ class _$CameraDetectionStartImpl implements CameraDetectionStart {
     TResult? Function(CameraDetectionStart value)? start,
     TResult? Function(CameraDetectionStop value)? stop,
     TResult? Function(CameraDetectionPosesUpdated value)? posesUpdated,
-    TResult? Function(CameraDetectionConnectSocket value)? connectSocket,
-    TResult? Function(CameraDetectionSocketConnected value)? socketConnected,
-    TResult? Function(CameraDetectionSocketDisconnected value)?
-        socketDisconnected,
-    TResult? Function(CameraDetectionPoseResultReceived value)?
-        poseResultReceived,
     TResult? Function(CameraDetectionStartCountdown value)? startCountdown,
     TResult? Function(CameraDetectionCountdownTick value)? countdownTick,
     TResult? Function(CameraDetectionCaptureImage value)? captureImage,
@@ -561,12 +468,6 @@ class _$CameraDetectionStartImpl implements CameraDetectionStart {
     TResult Function(CameraDetectionStart value)? start,
     TResult Function(CameraDetectionStop value)? stop,
     TResult Function(CameraDetectionPosesUpdated value)? posesUpdated,
-    TResult Function(CameraDetectionConnectSocket value)? connectSocket,
-    TResult Function(CameraDetectionSocketConnected value)? socketConnected,
-    TResult Function(CameraDetectionSocketDisconnected value)?
-        socketDisconnected,
-    TResult Function(CameraDetectionPoseResultReceived value)?
-        poseResultReceived,
     TResult Function(CameraDetectionStartCountdown value)? startCountdown,
     TResult Function(CameraDetectionCountdownTick value)? countdownTick,
     TResult Function(CameraDetectionCaptureImage value)? captureImage,
@@ -633,11 +534,6 @@ class _$CameraDetectionStopImpl implements CameraDetectionStop {
     required TResult Function() start,
     required TResult Function() stop,
     required TResult Function(List<Pose> poses) posesUpdated,
-    required TResult Function(String wsUrl, Map<String, String>? headers)
-        connectSocket,
-    required TResult Function() socketConnected,
-    required TResult Function() socketDisconnected,
-    required TResult Function(Map<String, dynamic> data) poseResultReceived,
     required TResult Function() startCountdown,
     required TResult Function(int remaining) countdownTick,
     required TResult Function(
@@ -660,11 +556,6 @@ class _$CameraDetectionStopImpl implements CameraDetectionStop {
     TResult? Function()? start,
     TResult? Function()? stop,
     TResult? Function(List<Pose> poses)? posesUpdated,
-    TResult? Function(String wsUrl, Map<String, String>? headers)?
-        connectSocket,
-    TResult? Function()? socketConnected,
-    TResult? Function()? socketDisconnected,
-    TResult? Function(Map<String, dynamic> data)? poseResultReceived,
     TResult? Function()? startCountdown,
     TResult? Function(int remaining)? countdownTick,
     TResult? Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
@@ -686,10 +577,6 @@ class _$CameraDetectionStopImpl implements CameraDetectionStop {
     TResult Function()? start,
     TResult Function()? stop,
     TResult Function(List<Pose> poses)? posesUpdated,
-    TResult Function(String wsUrl, Map<String, String>? headers)? connectSocket,
-    TResult Function()? socketConnected,
-    TResult Function()? socketDisconnected,
-    TResult Function(Map<String, dynamic> data)? poseResultReceived,
     TResult Function()? startCountdown,
     TResult Function(int remaining)? countdownTick,
     TResult Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
@@ -715,13 +602,6 @@ class _$CameraDetectionStopImpl implements CameraDetectionStop {
     required TResult Function(CameraDetectionStart value) start,
     required TResult Function(CameraDetectionStop value) stop,
     required TResult Function(CameraDetectionPosesUpdated value) posesUpdated,
-    required TResult Function(CameraDetectionConnectSocket value) connectSocket,
-    required TResult Function(CameraDetectionSocketConnected value)
-        socketConnected,
-    required TResult Function(CameraDetectionSocketDisconnected value)
-        socketDisconnected,
-    required TResult Function(CameraDetectionPoseResultReceived value)
-        poseResultReceived,
     required TResult Function(CameraDetectionStartCountdown value)
         startCountdown,
     required TResult Function(CameraDetectionCountdownTick value) countdownTick,
@@ -741,12 +621,6 @@ class _$CameraDetectionStopImpl implements CameraDetectionStop {
     TResult? Function(CameraDetectionStart value)? start,
     TResult? Function(CameraDetectionStop value)? stop,
     TResult? Function(CameraDetectionPosesUpdated value)? posesUpdated,
-    TResult? Function(CameraDetectionConnectSocket value)? connectSocket,
-    TResult? Function(CameraDetectionSocketConnected value)? socketConnected,
-    TResult? Function(CameraDetectionSocketDisconnected value)?
-        socketDisconnected,
-    TResult? Function(CameraDetectionPoseResultReceived value)?
-        poseResultReceived,
     TResult? Function(CameraDetectionStartCountdown value)? startCountdown,
     TResult? Function(CameraDetectionCountdownTick value)? countdownTick,
     TResult? Function(CameraDetectionCaptureImage value)? captureImage,
@@ -765,12 +639,6 @@ class _$CameraDetectionStopImpl implements CameraDetectionStop {
     TResult Function(CameraDetectionStart value)? start,
     TResult Function(CameraDetectionStop value)? stop,
     TResult Function(CameraDetectionPosesUpdated value)? posesUpdated,
-    TResult Function(CameraDetectionConnectSocket value)? connectSocket,
-    TResult Function(CameraDetectionSocketConnected value)? socketConnected,
-    TResult Function(CameraDetectionSocketDisconnected value)?
-        socketDisconnected,
-    TResult Function(CameraDetectionPoseResultReceived value)?
-        poseResultReceived,
     TResult Function(CameraDetectionStartCountdown value)? startCountdown,
     TResult Function(CameraDetectionCountdownTick value)? countdownTick,
     TResult Function(CameraDetectionCaptureImage value)? captureImage,
@@ -874,11 +742,6 @@ class _$CameraDetectionPosesUpdatedImpl implements CameraDetectionPosesUpdated {
     required TResult Function() start,
     required TResult Function() stop,
     required TResult Function(List<Pose> poses) posesUpdated,
-    required TResult Function(String wsUrl, Map<String, String>? headers)
-        connectSocket,
-    required TResult Function() socketConnected,
-    required TResult Function() socketDisconnected,
-    required TResult Function(Map<String, dynamic> data) poseResultReceived,
     required TResult Function() startCountdown,
     required TResult Function(int remaining) countdownTick,
     required TResult Function(
@@ -901,11 +764,6 @@ class _$CameraDetectionPosesUpdatedImpl implements CameraDetectionPosesUpdated {
     TResult? Function()? start,
     TResult? Function()? stop,
     TResult? Function(List<Pose> poses)? posesUpdated,
-    TResult? Function(String wsUrl, Map<String, String>? headers)?
-        connectSocket,
-    TResult? Function()? socketConnected,
-    TResult? Function()? socketDisconnected,
-    TResult? Function(Map<String, dynamic> data)? poseResultReceived,
     TResult? Function()? startCountdown,
     TResult? Function(int remaining)? countdownTick,
     TResult? Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
@@ -927,10 +785,6 @@ class _$CameraDetectionPosesUpdatedImpl implements CameraDetectionPosesUpdated {
     TResult Function()? start,
     TResult Function()? stop,
     TResult Function(List<Pose> poses)? posesUpdated,
-    TResult Function(String wsUrl, Map<String, String>? headers)? connectSocket,
-    TResult Function()? socketConnected,
-    TResult Function()? socketDisconnected,
-    TResult Function(Map<String, dynamic> data)? poseResultReceived,
     TResult Function()? startCountdown,
     TResult Function(int remaining)? countdownTick,
     TResult Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
@@ -956,13 +810,6 @@ class _$CameraDetectionPosesUpdatedImpl implements CameraDetectionPosesUpdated {
     required TResult Function(CameraDetectionStart value) start,
     required TResult Function(CameraDetectionStop value) stop,
     required TResult Function(CameraDetectionPosesUpdated value) posesUpdated,
-    required TResult Function(CameraDetectionConnectSocket value) connectSocket,
-    required TResult Function(CameraDetectionSocketConnected value)
-        socketConnected,
-    required TResult Function(CameraDetectionSocketDisconnected value)
-        socketDisconnected,
-    required TResult Function(CameraDetectionPoseResultReceived value)
-        poseResultReceived,
     required TResult Function(CameraDetectionStartCountdown value)
         startCountdown,
     required TResult Function(CameraDetectionCountdownTick value) countdownTick,
@@ -982,12 +829,6 @@ class _$CameraDetectionPosesUpdatedImpl implements CameraDetectionPosesUpdated {
     TResult? Function(CameraDetectionStart value)? start,
     TResult? Function(CameraDetectionStop value)? stop,
     TResult? Function(CameraDetectionPosesUpdated value)? posesUpdated,
-    TResult? Function(CameraDetectionConnectSocket value)? connectSocket,
-    TResult? Function(CameraDetectionSocketConnected value)? socketConnected,
-    TResult? Function(CameraDetectionSocketDisconnected value)?
-        socketDisconnected,
-    TResult? Function(CameraDetectionPoseResultReceived value)?
-        poseResultReceived,
     TResult? Function(CameraDetectionStartCountdown value)? startCountdown,
     TResult? Function(CameraDetectionCountdownTick value)? countdownTick,
     TResult? Function(CameraDetectionCaptureImage value)? captureImage,
@@ -1006,12 +847,6 @@ class _$CameraDetectionPosesUpdatedImpl implements CameraDetectionPosesUpdated {
     TResult Function(CameraDetectionStart value)? start,
     TResult Function(CameraDetectionStop value)? stop,
     TResult Function(CameraDetectionPosesUpdated value)? posesUpdated,
-    TResult Function(CameraDetectionConnectSocket value)? connectSocket,
-    TResult Function(CameraDetectionSocketConnected value)? socketConnected,
-    TResult Function(CameraDetectionSocketDisconnected value)?
-        socketDisconnected,
-    TResult Function(CameraDetectionPoseResultReceived value)?
-        poseResultReceived,
     TResult Function(CameraDetectionStartCountdown value)? startCountdown,
     TResult Function(CameraDetectionCountdownTick value)? countdownTick,
     TResult Function(CameraDetectionCaptureImage value)? captureImage,
@@ -1038,946 +873,6 @@ abstract class CameraDetectionPosesUpdated implements CameraDetectionEvent {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$CameraDetectionPosesUpdatedImplCopyWith<_$CameraDetectionPosesUpdatedImpl>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$CameraDetectionConnectSocketImplCopyWith<$Res> {
-  factory _$$CameraDetectionConnectSocketImplCopyWith(
-          _$CameraDetectionConnectSocketImpl value,
-          $Res Function(_$CameraDetectionConnectSocketImpl) then) =
-      __$$CameraDetectionConnectSocketImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({String wsUrl, Map<String, String>? headers});
-}
-
-/// @nodoc
-class __$$CameraDetectionConnectSocketImplCopyWithImpl<$Res>
-    extends _$CameraDetectionEventCopyWithImpl<$Res,
-        _$CameraDetectionConnectSocketImpl>
-    implements _$$CameraDetectionConnectSocketImplCopyWith<$Res> {
-  __$$CameraDetectionConnectSocketImplCopyWithImpl(
-      _$CameraDetectionConnectSocketImpl _value,
-      $Res Function(_$CameraDetectionConnectSocketImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of CameraDetectionEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? wsUrl = null,
-    Object? headers = freezed,
-  }) {
-    return _then(_$CameraDetectionConnectSocketImpl(
-      wsUrl: null == wsUrl
-          ? _value.wsUrl
-          : wsUrl // ignore: cast_nullable_to_non_nullable
-              as String,
-      headers: freezed == headers
-          ? _value._headers
-          : headers // ignore: cast_nullable_to_non_nullable
-              as Map<String, String>?,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$CameraDetectionConnectSocketImpl
-    implements CameraDetectionConnectSocket {
-  const _$CameraDetectionConnectSocketImpl(
-      {required this.wsUrl, final Map<String, String>? headers})
-      : _headers = headers;
-
-  @override
-  final String wsUrl;
-  final Map<String, String>? _headers;
-  @override
-  Map<String, String>? get headers {
-    final value = _headers;
-    if (value == null) return null;
-    if (_headers is EqualUnmodifiableMapView) return _headers;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(value);
-  }
-
-  @override
-  String toString() {
-    return 'CameraDetectionEvent.connectSocket(wsUrl: $wsUrl, headers: $headers)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$CameraDetectionConnectSocketImpl &&
-            (identical(other.wsUrl, wsUrl) || other.wsUrl == wsUrl) &&
-            const DeepCollectionEquality().equals(other._headers, _headers));
-  }
-
-  @override
-  int get hashCode => Object.hash(
-      runtimeType, wsUrl, const DeepCollectionEquality().hash(_headers));
-
-  /// Create a copy of CameraDetectionEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$CameraDetectionConnectSocketImplCopyWith<
-          _$CameraDetectionConnectSocketImpl>
-      get copyWith => __$$CameraDetectionConnectSocketImplCopyWithImpl<
-          _$CameraDetectionConnectSocketImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() initialize,
-    required TResult Function() start,
-    required TResult Function() stop,
-    required TResult Function(List<Pose> poses) posesUpdated,
-    required TResult Function(String wsUrl, Map<String, String>? headers)
-        connectSocket,
-    required TResult Function() socketConnected,
-    required TResult Function() socketDisconnected,
-    required TResult Function(Map<String, dynamic> data) poseResultReceived,
-    required TResult Function() startCountdown,
-    required TResult Function(int remaining) countdownTick,
-    required TResult Function(
-            String imagePath, Uint8List imageBytes, List<Pose> poses)
-        captureImage,
-    required TResult Function(String poseId, String imagePath,
-            Uint8List imageBytes, List<Pose> poses)
-        uploadPose,
-    required TResult Function() uploadSuccess,
-    required TResult Function(BaseException<dynamic>? error) errorOccurred,
-    required TResult Function() resetToLive,
-  }) {
-    return connectSocket(wsUrl, headers);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? initialize,
-    TResult? Function()? start,
-    TResult? Function()? stop,
-    TResult? Function(List<Pose> poses)? posesUpdated,
-    TResult? Function(String wsUrl, Map<String, String>? headers)?
-        connectSocket,
-    TResult? Function()? socketConnected,
-    TResult? Function()? socketDisconnected,
-    TResult? Function(Map<String, dynamic> data)? poseResultReceived,
-    TResult? Function()? startCountdown,
-    TResult? Function(int remaining)? countdownTick,
-    TResult? Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
-        captureImage,
-    TResult? Function(String poseId, String imagePath, Uint8List imageBytes,
-            List<Pose> poses)?
-        uploadPose,
-    TResult? Function()? uploadSuccess,
-    TResult? Function(BaseException<dynamic>? error)? errorOccurred,
-    TResult? Function()? resetToLive,
-  }) {
-    return connectSocket?.call(wsUrl, headers);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initialize,
-    TResult Function()? start,
-    TResult Function()? stop,
-    TResult Function(List<Pose> poses)? posesUpdated,
-    TResult Function(String wsUrl, Map<String, String>? headers)? connectSocket,
-    TResult Function()? socketConnected,
-    TResult Function()? socketDisconnected,
-    TResult Function(Map<String, dynamic> data)? poseResultReceived,
-    TResult Function()? startCountdown,
-    TResult Function(int remaining)? countdownTick,
-    TResult Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
-        captureImage,
-    TResult Function(String poseId, String imagePath, Uint8List imageBytes,
-            List<Pose> poses)?
-        uploadPose,
-    TResult Function()? uploadSuccess,
-    TResult Function(BaseException<dynamic>? error)? errorOccurred,
-    TResult Function()? resetToLive,
-    required TResult orElse(),
-  }) {
-    if (connectSocket != null) {
-      return connectSocket(wsUrl, headers);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(CameraDetectionInitialize value) initialize,
-    required TResult Function(CameraDetectionStart value) start,
-    required TResult Function(CameraDetectionStop value) stop,
-    required TResult Function(CameraDetectionPosesUpdated value) posesUpdated,
-    required TResult Function(CameraDetectionConnectSocket value) connectSocket,
-    required TResult Function(CameraDetectionSocketConnected value)
-        socketConnected,
-    required TResult Function(CameraDetectionSocketDisconnected value)
-        socketDisconnected,
-    required TResult Function(CameraDetectionPoseResultReceived value)
-        poseResultReceived,
-    required TResult Function(CameraDetectionStartCountdown value)
-        startCountdown,
-    required TResult Function(CameraDetectionCountdownTick value) countdownTick,
-    required TResult Function(CameraDetectionCaptureImage value) captureImage,
-    required TResult Function(CameraDetectionUploadPose value) uploadPose,
-    required TResult Function(CameraDetectionUploadSuccess value) uploadSuccess,
-    required TResult Function(CameraDetectionErrorOccurred value) errorOccurred,
-    required TResult Function(CameraDetectionResetToLive value) resetToLive,
-  }) {
-    return connectSocket(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(CameraDetectionInitialize value)? initialize,
-    TResult? Function(CameraDetectionStart value)? start,
-    TResult? Function(CameraDetectionStop value)? stop,
-    TResult? Function(CameraDetectionPosesUpdated value)? posesUpdated,
-    TResult? Function(CameraDetectionConnectSocket value)? connectSocket,
-    TResult? Function(CameraDetectionSocketConnected value)? socketConnected,
-    TResult? Function(CameraDetectionSocketDisconnected value)?
-        socketDisconnected,
-    TResult? Function(CameraDetectionPoseResultReceived value)?
-        poseResultReceived,
-    TResult? Function(CameraDetectionStartCountdown value)? startCountdown,
-    TResult? Function(CameraDetectionCountdownTick value)? countdownTick,
-    TResult? Function(CameraDetectionCaptureImage value)? captureImage,
-    TResult? Function(CameraDetectionUploadPose value)? uploadPose,
-    TResult? Function(CameraDetectionUploadSuccess value)? uploadSuccess,
-    TResult? Function(CameraDetectionErrorOccurred value)? errorOccurred,
-    TResult? Function(CameraDetectionResetToLive value)? resetToLive,
-  }) {
-    return connectSocket?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(CameraDetectionInitialize value)? initialize,
-    TResult Function(CameraDetectionStart value)? start,
-    TResult Function(CameraDetectionStop value)? stop,
-    TResult Function(CameraDetectionPosesUpdated value)? posesUpdated,
-    TResult Function(CameraDetectionConnectSocket value)? connectSocket,
-    TResult Function(CameraDetectionSocketConnected value)? socketConnected,
-    TResult Function(CameraDetectionSocketDisconnected value)?
-        socketDisconnected,
-    TResult Function(CameraDetectionPoseResultReceived value)?
-        poseResultReceived,
-    TResult Function(CameraDetectionStartCountdown value)? startCountdown,
-    TResult Function(CameraDetectionCountdownTick value)? countdownTick,
-    TResult Function(CameraDetectionCaptureImage value)? captureImage,
-    TResult Function(CameraDetectionUploadPose value)? uploadPose,
-    TResult Function(CameraDetectionUploadSuccess value)? uploadSuccess,
-    TResult Function(CameraDetectionErrorOccurred value)? errorOccurred,
-    TResult Function(CameraDetectionResetToLive value)? resetToLive,
-    required TResult orElse(),
-  }) {
-    if (connectSocket != null) {
-      return connectSocket(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class CameraDetectionConnectSocket implements CameraDetectionEvent {
-  const factory CameraDetectionConnectSocket(
-      {required final String wsUrl,
-      final Map<String, String>? headers}) = _$CameraDetectionConnectSocketImpl;
-
-  String get wsUrl;
-  Map<String, String>? get headers;
-
-  /// Create a copy of CameraDetectionEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$CameraDetectionConnectSocketImplCopyWith<
-          _$CameraDetectionConnectSocketImpl>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$CameraDetectionSocketConnectedImplCopyWith<$Res> {
-  factory _$$CameraDetectionSocketConnectedImplCopyWith(
-          _$CameraDetectionSocketConnectedImpl value,
-          $Res Function(_$CameraDetectionSocketConnectedImpl) then) =
-      __$$CameraDetectionSocketConnectedImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$CameraDetectionSocketConnectedImplCopyWithImpl<$Res>
-    extends _$CameraDetectionEventCopyWithImpl<$Res,
-        _$CameraDetectionSocketConnectedImpl>
-    implements _$$CameraDetectionSocketConnectedImplCopyWith<$Res> {
-  __$$CameraDetectionSocketConnectedImplCopyWithImpl(
-      _$CameraDetectionSocketConnectedImpl _value,
-      $Res Function(_$CameraDetectionSocketConnectedImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of CameraDetectionEvent
-  /// with the given fields replaced by the non-null parameter values.
-}
-
-/// @nodoc
-
-class _$CameraDetectionSocketConnectedImpl
-    implements CameraDetectionSocketConnected {
-  const _$CameraDetectionSocketConnectedImpl();
-
-  @override
-  String toString() {
-    return 'CameraDetectionEvent.socketConnected()';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$CameraDetectionSocketConnectedImpl);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() initialize,
-    required TResult Function() start,
-    required TResult Function() stop,
-    required TResult Function(List<Pose> poses) posesUpdated,
-    required TResult Function(String wsUrl, Map<String, String>? headers)
-        connectSocket,
-    required TResult Function() socketConnected,
-    required TResult Function() socketDisconnected,
-    required TResult Function(Map<String, dynamic> data) poseResultReceived,
-    required TResult Function() startCountdown,
-    required TResult Function(int remaining) countdownTick,
-    required TResult Function(
-            String imagePath, Uint8List imageBytes, List<Pose> poses)
-        captureImage,
-    required TResult Function(String poseId, String imagePath,
-            Uint8List imageBytes, List<Pose> poses)
-        uploadPose,
-    required TResult Function() uploadSuccess,
-    required TResult Function(BaseException<dynamic>? error) errorOccurred,
-    required TResult Function() resetToLive,
-  }) {
-    return socketConnected();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? initialize,
-    TResult? Function()? start,
-    TResult? Function()? stop,
-    TResult? Function(List<Pose> poses)? posesUpdated,
-    TResult? Function(String wsUrl, Map<String, String>? headers)?
-        connectSocket,
-    TResult? Function()? socketConnected,
-    TResult? Function()? socketDisconnected,
-    TResult? Function(Map<String, dynamic> data)? poseResultReceived,
-    TResult? Function()? startCountdown,
-    TResult? Function(int remaining)? countdownTick,
-    TResult? Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
-        captureImage,
-    TResult? Function(String poseId, String imagePath, Uint8List imageBytes,
-            List<Pose> poses)?
-        uploadPose,
-    TResult? Function()? uploadSuccess,
-    TResult? Function(BaseException<dynamic>? error)? errorOccurred,
-    TResult? Function()? resetToLive,
-  }) {
-    return socketConnected?.call();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initialize,
-    TResult Function()? start,
-    TResult Function()? stop,
-    TResult Function(List<Pose> poses)? posesUpdated,
-    TResult Function(String wsUrl, Map<String, String>? headers)? connectSocket,
-    TResult Function()? socketConnected,
-    TResult Function()? socketDisconnected,
-    TResult Function(Map<String, dynamic> data)? poseResultReceived,
-    TResult Function()? startCountdown,
-    TResult Function(int remaining)? countdownTick,
-    TResult Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
-        captureImage,
-    TResult Function(String poseId, String imagePath, Uint8List imageBytes,
-            List<Pose> poses)?
-        uploadPose,
-    TResult Function()? uploadSuccess,
-    TResult Function(BaseException<dynamic>? error)? errorOccurred,
-    TResult Function()? resetToLive,
-    required TResult orElse(),
-  }) {
-    if (socketConnected != null) {
-      return socketConnected();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(CameraDetectionInitialize value) initialize,
-    required TResult Function(CameraDetectionStart value) start,
-    required TResult Function(CameraDetectionStop value) stop,
-    required TResult Function(CameraDetectionPosesUpdated value) posesUpdated,
-    required TResult Function(CameraDetectionConnectSocket value) connectSocket,
-    required TResult Function(CameraDetectionSocketConnected value)
-        socketConnected,
-    required TResult Function(CameraDetectionSocketDisconnected value)
-        socketDisconnected,
-    required TResult Function(CameraDetectionPoseResultReceived value)
-        poseResultReceived,
-    required TResult Function(CameraDetectionStartCountdown value)
-        startCountdown,
-    required TResult Function(CameraDetectionCountdownTick value) countdownTick,
-    required TResult Function(CameraDetectionCaptureImage value) captureImage,
-    required TResult Function(CameraDetectionUploadPose value) uploadPose,
-    required TResult Function(CameraDetectionUploadSuccess value) uploadSuccess,
-    required TResult Function(CameraDetectionErrorOccurred value) errorOccurred,
-    required TResult Function(CameraDetectionResetToLive value) resetToLive,
-  }) {
-    return socketConnected(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(CameraDetectionInitialize value)? initialize,
-    TResult? Function(CameraDetectionStart value)? start,
-    TResult? Function(CameraDetectionStop value)? stop,
-    TResult? Function(CameraDetectionPosesUpdated value)? posesUpdated,
-    TResult? Function(CameraDetectionConnectSocket value)? connectSocket,
-    TResult? Function(CameraDetectionSocketConnected value)? socketConnected,
-    TResult? Function(CameraDetectionSocketDisconnected value)?
-        socketDisconnected,
-    TResult? Function(CameraDetectionPoseResultReceived value)?
-        poseResultReceived,
-    TResult? Function(CameraDetectionStartCountdown value)? startCountdown,
-    TResult? Function(CameraDetectionCountdownTick value)? countdownTick,
-    TResult? Function(CameraDetectionCaptureImage value)? captureImage,
-    TResult? Function(CameraDetectionUploadPose value)? uploadPose,
-    TResult? Function(CameraDetectionUploadSuccess value)? uploadSuccess,
-    TResult? Function(CameraDetectionErrorOccurred value)? errorOccurred,
-    TResult? Function(CameraDetectionResetToLive value)? resetToLive,
-  }) {
-    return socketConnected?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(CameraDetectionInitialize value)? initialize,
-    TResult Function(CameraDetectionStart value)? start,
-    TResult Function(CameraDetectionStop value)? stop,
-    TResult Function(CameraDetectionPosesUpdated value)? posesUpdated,
-    TResult Function(CameraDetectionConnectSocket value)? connectSocket,
-    TResult Function(CameraDetectionSocketConnected value)? socketConnected,
-    TResult Function(CameraDetectionSocketDisconnected value)?
-        socketDisconnected,
-    TResult Function(CameraDetectionPoseResultReceived value)?
-        poseResultReceived,
-    TResult Function(CameraDetectionStartCountdown value)? startCountdown,
-    TResult Function(CameraDetectionCountdownTick value)? countdownTick,
-    TResult Function(CameraDetectionCaptureImage value)? captureImage,
-    TResult Function(CameraDetectionUploadPose value)? uploadPose,
-    TResult Function(CameraDetectionUploadSuccess value)? uploadSuccess,
-    TResult Function(CameraDetectionErrorOccurred value)? errorOccurred,
-    TResult Function(CameraDetectionResetToLive value)? resetToLive,
-    required TResult orElse(),
-  }) {
-    if (socketConnected != null) {
-      return socketConnected(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class CameraDetectionSocketConnected implements CameraDetectionEvent {
-  const factory CameraDetectionSocketConnected() =
-      _$CameraDetectionSocketConnectedImpl;
-}
-
-/// @nodoc
-abstract class _$$CameraDetectionSocketDisconnectedImplCopyWith<$Res> {
-  factory _$$CameraDetectionSocketDisconnectedImplCopyWith(
-          _$CameraDetectionSocketDisconnectedImpl value,
-          $Res Function(_$CameraDetectionSocketDisconnectedImpl) then) =
-      __$$CameraDetectionSocketDisconnectedImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$CameraDetectionSocketDisconnectedImplCopyWithImpl<$Res>
-    extends _$CameraDetectionEventCopyWithImpl<$Res,
-        _$CameraDetectionSocketDisconnectedImpl>
-    implements _$$CameraDetectionSocketDisconnectedImplCopyWith<$Res> {
-  __$$CameraDetectionSocketDisconnectedImplCopyWithImpl(
-      _$CameraDetectionSocketDisconnectedImpl _value,
-      $Res Function(_$CameraDetectionSocketDisconnectedImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of CameraDetectionEvent
-  /// with the given fields replaced by the non-null parameter values.
-}
-
-/// @nodoc
-
-class _$CameraDetectionSocketDisconnectedImpl
-    implements CameraDetectionSocketDisconnected {
-  const _$CameraDetectionSocketDisconnectedImpl();
-
-  @override
-  String toString() {
-    return 'CameraDetectionEvent.socketDisconnected()';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$CameraDetectionSocketDisconnectedImpl);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() initialize,
-    required TResult Function() start,
-    required TResult Function() stop,
-    required TResult Function(List<Pose> poses) posesUpdated,
-    required TResult Function(String wsUrl, Map<String, String>? headers)
-        connectSocket,
-    required TResult Function() socketConnected,
-    required TResult Function() socketDisconnected,
-    required TResult Function(Map<String, dynamic> data) poseResultReceived,
-    required TResult Function() startCountdown,
-    required TResult Function(int remaining) countdownTick,
-    required TResult Function(
-            String imagePath, Uint8List imageBytes, List<Pose> poses)
-        captureImage,
-    required TResult Function(String poseId, String imagePath,
-            Uint8List imageBytes, List<Pose> poses)
-        uploadPose,
-    required TResult Function() uploadSuccess,
-    required TResult Function(BaseException<dynamic>? error) errorOccurred,
-    required TResult Function() resetToLive,
-  }) {
-    return socketDisconnected();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? initialize,
-    TResult? Function()? start,
-    TResult? Function()? stop,
-    TResult? Function(List<Pose> poses)? posesUpdated,
-    TResult? Function(String wsUrl, Map<String, String>? headers)?
-        connectSocket,
-    TResult? Function()? socketConnected,
-    TResult? Function()? socketDisconnected,
-    TResult? Function(Map<String, dynamic> data)? poseResultReceived,
-    TResult? Function()? startCountdown,
-    TResult? Function(int remaining)? countdownTick,
-    TResult? Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
-        captureImage,
-    TResult? Function(String poseId, String imagePath, Uint8List imageBytes,
-            List<Pose> poses)?
-        uploadPose,
-    TResult? Function()? uploadSuccess,
-    TResult? Function(BaseException<dynamic>? error)? errorOccurred,
-    TResult? Function()? resetToLive,
-  }) {
-    return socketDisconnected?.call();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initialize,
-    TResult Function()? start,
-    TResult Function()? stop,
-    TResult Function(List<Pose> poses)? posesUpdated,
-    TResult Function(String wsUrl, Map<String, String>? headers)? connectSocket,
-    TResult Function()? socketConnected,
-    TResult Function()? socketDisconnected,
-    TResult Function(Map<String, dynamic> data)? poseResultReceived,
-    TResult Function()? startCountdown,
-    TResult Function(int remaining)? countdownTick,
-    TResult Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
-        captureImage,
-    TResult Function(String poseId, String imagePath, Uint8List imageBytes,
-            List<Pose> poses)?
-        uploadPose,
-    TResult Function()? uploadSuccess,
-    TResult Function(BaseException<dynamic>? error)? errorOccurred,
-    TResult Function()? resetToLive,
-    required TResult orElse(),
-  }) {
-    if (socketDisconnected != null) {
-      return socketDisconnected();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(CameraDetectionInitialize value) initialize,
-    required TResult Function(CameraDetectionStart value) start,
-    required TResult Function(CameraDetectionStop value) stop,
-    required TResult Function(CameraDetectionPosesUpdated value) posesUpdated,
-    required TResult Function(CameraDetectionConnectSocket value) connectSocket,
-    required TResult Function(CameraDetectionSocketConnected value)
-        socketConnected,
-    required TResult Function(CameraDetectionSocketDisconnected value)
-        socketDisconnected,
-    required TResult Function(CameraDetectionPoseResultReceived value)
-        poseResultReceived,
-    required TResult Function(CameraDetectionStartCountdown value)
-        startCountdown,
-    required TResult Function(CameraDetectionCountdownTick value) countdownTick,
-    required TResult Function(CameraDetectionCaptureImage value) captureImage,
-    required TResult Function(CameraDetectionUploadPose value) uploadPose,
-    required TResult Function(CameraDetectionUploadSuccess value) uploadSuccess,
-    required TResult Function(CameraDetectionErrorOccurred value) errorOccurred,
-    required TResult Function(CameraDetectionResetToLive value) resetToLive,
-  }) {
-    return socketDisconnected(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(CameraDetectionInitialize value)? initialize,
-    TResult? Function(CameraDetectionStart value)? start,
-    TResult? Function(CameraDetectionStop value)? stop,
-    TResult? Function(CameraDetectionPosesUpdated value)? posesUpdated,
-    TResult? Function(CameraDetectionConnectSocket value)? connectSocket,
-    TResult? Function(CameraDetectionSocketConnected value)? socketConnected,
-    TResult? Function(CameraDetectionSocketDisconnected value)?
-        socketDisconnected,
-    TResult? Function(CameraDetectionPoseResultReceived value)?
-        poseResultReceived,
-    TResult? Function(CameraDetectionStartCountdown value)? startCountdown,
-    TResult? Function(CameraDetectionCountdownTick value)? countdownTick,
-    TResult? Function(CameraDetectionCaptureImage value)? captureImage,
-    TResult? Function(CameraDetectionUploadPose value)? uploadPose,
-    TResult? Function(CameraDetectionUploadSuccess value)? uploadSuccess,
-    TResult? Function(CameraDetectionErrorOccurred value)? errorOccurred,
-    TResult? Function(CameraDetectionResetToLive value)? resetToLive,
-  }) {
-    return socketDisconnected?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(CameraDetectionInitialize value)? initialize,
-    TResult Function(CameraDetectionStart value)? start,
-    TResult Function(CameraDetectionStop value)? stop,
-    TResult Function(CameraDetectionPosesUpdated value)? posesUpdated,
-    TResult Function(CameraDetectionConnectSocket value)? connectSocket,
-    TResult Function(CameraDetectionSocketConnected value)? socketConnected,
-    TResult Function(CameraDetectionSocketDisconnected value)?
-        socketDisconnected,
-    TResult Function(CameraDetectionPoseResultReceived value)?
-        poseResultReceived,
-    TResult Function(CameraDetectionStartCountdown value)? startCountdown,
-    TResult Function(CameraDetectionCountdownTick value)? countdownTick,
-    TResult Function(CameraDetectionCaptureImage value)? captureImage,
-    TResult Function(CameraDetectionUploadPose value)? uploadPose,
-    TResult Function(CameraDetectionUploadSuccess value)? uploadSuccess,
-    TResult Function(CameraDetectionErrorOccurred value)? errorOccurred,
-    TResult Function(CameraDetectionResetToLive value)? resetToLive,
-    required TResult orElse(),
-  }) {
-    if (socketDisconnected != null) {
-      return socketDisconnected(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class CameraDetectionSocketDisconnected
-    implements CameraDetectionEvent {
-  const factory CameraDetectionSocketDisconnected() =
-      _$CameraDetectionSocketDisconnectedImpl;
-}
-
-/// @nodoc
-abstract class _$$CameraDetectionPoseResultReceivedImplCopyWith<$Res> {
-  factory _$$CameraDetectionPoseResultReceivedImplCopyWith(
-          _$CameraDetectionPoseResultReceivedImpl value,
-          $Res Function(_$CameraDetectionPoseResultReceivedImpl) then) =
-      __$$CameraDetectionPoseResultReceivedImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({Map<String, dynamic> data});
-}
-
-/// @nodoc
-class __$$CameraDetectionPoseResultReceivedImplCopyWithImpl<$Res>
-    extends _$CameraDetectionEventCopyWithImpl<$Res,
-        _$CameraDetectionPoseResultReceivedImpl>
-    implements _$$CameraDetectionPoseResultReceivedImplCopyWith<$Res> {
-  __$$CameraDetectionPoseResultReceivedImplCopyWithImpl(
-      _$CameraDetectionPoseResultReceivedImpl _value,
-      $Res Function(_$CameraDetectionPoseResultReceivedImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of CameraDetectionEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? data = null,
-  }) {
-    return _then(_$CameraDetectionPoseResultReceivedImpl(
-      null == data
-          ? _value._data
-          : data // ignore: cast_nullable_to_non_nullable
-              as Map<String, dynamic>,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$CameraDetectionPoseResultReceivedImpl
-    implements CameraDetectionPoseResultReceived {
-  const _$CameraDetectionPoseResultReceivedImpl(final Map<String, dynamic> data)
-      : _data = data;
-
-  final Map<String, dynamic> _data;
-  @override
-  Map<String, dynamic> get data {
-    if (_data is EqualUnmodifiableMapView) return _data;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_data);
-  }
-
-  @override
-  String toString() {
-    return 'CameraDetectionEvent.poseResultReceived(data: $data)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$CameraDetectionPoseResultReceivedImpl &&
-            const DeepCollectionEquality().equals(other._data, _data));
-  }
-
-  @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(_data));
-
-  /// Create a copy of CameraDetectionEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$CameraDetectionPoseResultReceivedImplCopyWith<
-          _$CameraDetectionPoseResultReceivedImpl>
-      get copyWith => __$$CameraDetectionPoseResultReceivedImplCopyWithImpl<
-          _$CameraDetectionPoseResultReceivedImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() initialize,
-    required TResult Function() start,
-    required TResult Function() stop,
-    required TResult Function(List<Pose> poses) posesUpdated,
-    required TResult Function(String wsUrl, Map<String, String>? headers)
-        connectSocket,
-    required TResult Function() socketConnected,
-    required TResult Function() socketDisconnected,
-    required TResult Function(Map<String, dynamic> data) poseResultReceived,
-    required TResult Function() startCountdown,
-    required TResult Function(int remaining) countdownTick,
-    required TResult Function(
-            String imagePath, Uint8List imageBytes, List<Pose> poses)
-        captureImage,
-    required TResult Function(String poseId, String imagePath,
-            Uint8List imageBytes, List<Pose> poses)
-        uploadPose,
-    required TResult Function() uploadSuccess,
-    required TResult Function(BaseException<dynamic>? error) errorOccurred,
-    required TResult Function() resetToLive,
-  }) {
-    return poseResultReceived(data);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? initialize,
-    TResult? Function()? start,
-    TResult? Function()? stop,
-    TResult? Function(List<Pose> poses)? posesUpdated,
-    TResult? Function(String wsUrl, Map<String, String>? headers)?
-        connectSocket,
-    TResult? Function()? socketConnected,
-    TResult? Function()? socketDisconnected,
-    TResult? Function(Map<String, dynamic> data)? poseResultReceived,
-    TResult? Function()? startCountdown,
-    TResult? Function(int remaining)? countdownTick,
-    TResult? Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
-        captureImage,
-    TResult? Function(String poseId, String imagePath, Uint8List imageBytes,
-            List<Pose> poses)?
-        uploadPose,
-    TResult? Function()? uploadSuccess,
-    TResult? Function(BaseException<dynamic>? error)? errorOccurred,
-    TResult? Function()? resetToLive,
-  }) {
-    return poseResultReceived?.call(data);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initialize,
-    TResult Function()? start,
-    TResult Function()? stop,
-    TResult Function(List<Pose> poses)? posesUpdated,
-    TResult Function(String wsUrl, Map<String, String>? headers)? connectSocket,
-    TResult Function()? socketConnected,
-    TResult Function()? socketDisconnected,
-    TResult Function(Map<String, dynamic> data)? poseResultReceived,
-    TResult Function()? startCountdown,
-    TResult Function(int remaining)? countdownTick,
-    TResult Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
-        captureImage,
-    TResult Function(String poseId, String imagePath, Uint8List imageBytes,
-            List<Pose> poses)?
-        uploadPose,
-    TResult Function()? uploadSuccess,
-    TResult Function(BaseException<dynamic>? error)? errorOccurred,
-    TResult Function()? resetToLive,
-    required TResult orElse(),
-  }) {
-    if (poseResultReceived != null) {
-      return poseResultReceived(data);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(CameraDetectionInitialize value) initialize,
-    required TResult Function(CameraDetectionStart value) start,
-    required TResult Function(CameraDetectionStop value) stop,
-    required TResult Function(CameraDetectionPosesUpdated value) posesUpdated,
-    required TResult Function(CameraDetectionConnectSocket value) connectSocket,
-    required TResult Function(CameraDetectionSocketConnected value)
-        socketConnected,
-    required TResult Function(CameraDetectionSocketDisconnected value)
-        socketDisconnected,
-    required TResult Function(CameraDetectionPoseResultReceived value)
-        poseResultReceived,
-    required TResult Function(CameraDetectionStartCountdown value)
-        startCountdown,
-    required TResult Function(CameraDetectionCountdownTick value) countdownTick,
-    required TResult Function(CameraDetectionCaptureImage value) captureImage,
-    required TResult Function(CameraDetectionUploadPose value) uploadPose,
-    required TResult Function(CameraDetectionUploadSuccess value) uploadSuccess,
-    required TResult Function(CameraDetectionErrorOccurred value) errorOccurred,
-    required TResult Function(CameraDetectionResetToLive value) resetToLive,
-  }) {
-    return poseResultReceived(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(CameraDetectionInitialize value)? initialize,
-    TResult? Function(CameraDetectionStart value)? start,
-    TResult? Function(CameraDetectionStop value)? stop,
-    TResult? Function(CameraDetectionPosesUpdated value)? posesUpdated,
-    TResult? Function(CameraDetectionConnectSocket value)? connectSocket,
-    TResult? Function(CameraDetectionSocketConnected value)? socketConnected,
-    TResult? Function(CameraDetectionSocketDisconnected value)?
-        socketDisconnected,
-    TResult? Function(CameraDetectionPoseResultReceived value)?
-        poseResultReceived,
-    TResult? Function(CameraDetectionStartCountdown value)? startCountdown,
-    TResult? Function(CameraDetectionCountdownTick value)? countdownTick,
-    TResult? Function(CameraDetectionCaptureImage value)? captureImage,
-    TResult? Function(CameraDetectionUploadPose value)? uploadPose,
-    TResult? Function(CameraDetectionUploadSuccess value)? uploadSuccess,
-    TResult? Function(CameraDetectionErrorOccurred value)? errorOccurred,
-    TResult? Function(CameraDetectionResetToLive value)? resetToLive,
-  }) {
-    return poseResultReceived?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(CameraDetectionInitialize value)? initialize,
-    TResult Function(CameraDetectionStart value)? start,
-    TResult Function(CameraDetectionStop value)? stop,
-    TResult Function(CameraDetectionPosesUpdated value)? posesUpdated,
-    TResult Function(CameraDetectionConnectSocket value)? connectSocket,
-    TResult Function(CameraDetectionSocketConnected value)? socketConnected,
-    TResult Function(CameraDetectionSocketDisconnected value)?
-        socketDisconnected,
-    TResult Function(CameraDetectionPoseResultReceived value)?
-        poseResultReceived,
-    TResult Function(CameraDetectionStartCountdown value)? startCountdown,
-    TResult Function(CameraDetectionCountdownTick value)? countdownTick,
-    TResult Function(CameraDetectionCaptureImage value)? captureImage,
-    TResult Function(CameraDetectionUploadPose value)? uploadPose,
-    TResult Function(CameraDetectionUploadSuccess value)? uploadSuccess,
-    TResult Function(CameraDetectionErrorOccurred value)? errorOccurred,
-    TResult Function(CameraDetectionResetToLive value)? resetToLive,
-    required TResult orElse(),
-  }) {
-    if (poseResultReceived != null) {
-      return poseResultReceived(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class CameraDetectionPoseResultReceived
-    implements CameraDetectionEvent {
-  const factory CameraDetectionPoseResultReceived(
-          final Map<String, dynamic> data) =
-      _$CameraDetectionPoseResultReceivedImpl;
-
-  Map<String, dynamic> get data;
-
-  /// Create a copy of CameraDetectionEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$CameraDetectionPoseResultReceivedImplCopyWith<
-          _$CameraDetectionPoseResultReceivedImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
 
@@ -2031,11 +926,6 @@ class _$CameraDetectionStartCountdownImpl
     required TResult Function() start,
     required TResult Function() stop,
     required TResult Function(List<Pose> poses) posesUpdated,
-    required TResult Function(String wsUrl, Map<String, String>? headers)
-        connectSocket,
-    required TResult Function() socketConnected,
-    required TResult Function() socketDisconnected,
-    required TResult Function(Map<String, dynamic> data) poseResultReceived,
     required TResult Function() startCountdown,
     required TResult Function(int remaining) countdownTick,
     required TResult Function(
@@ -2058,11 +948,6 @@ class _$CameraDetectionStartCountdownImpl
     TResult? Function()? start,
     TResult? Function()? stop,
     TResult? Function(List<Pose> poses)? posesUpdated,
-    TResult? Function(String wsUrl, Map<String, String>? headers)?
-        connectSocket,
-    TResult? Function()? socketConnected,
-    TResult? Function()? socketDisconnected,
-    TResult? Function(Map<String, dynamic> data)? poseResultReceived,
     TResult? Function()? startCountdown,
     TResult? Function(int remaining)? countdownTick,
     TResult? Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
@@ -2084,10 +969,6 @@ class _$CameraDetectionStartCountdownImpl
     TResult Function()? start,
     TResult Function()? stop,
     TResult Function(List<Pose> poses)? posesUpdated,
-    TResult Function(String wsUrl, Map<String, String>? headers)? connectSocket,
-    TResult Function()? socketConnected,
-    TResult Function()? socketDisconnected,
-    TResult Function(Map<String, dynamic> data)? poseResultReceived,
     TResult Function()? startCountdown,
     TResult Function(int remaining)? countdownTick,
     TResult Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
@@ -2113,13 +994,6 @@ class _$CameraDetectionStartCountdownImpl
     required TResult Function(CameraDetectionStart value) start,
     required TResult Function(CameraDetectionStop value) stop,
     required TResult Function(CameraDetectionPosesUpdated value) posesUpdated,
-    required TResult Function(CameraDetectionConnectSocket value) connectSocket,
-    required TResult Function(CameraDetectionSocketConnected value)
-        socketConnected,
-    required TResult Function(CameraDetectionSocketDisconnected value)
-        socketDisconnected,
-    required TResult Function(CameraDetectionPoseResultReceived value)
-        poseResultReceived,
     required TResult Function(CameraDetectionStartCountdown value)
         startCountdown,
     required TResult Function(CameraDetectionCountdownTick value) countdownTick,
@@ -2139,12 +1013,6 @@ class _$CameraDetectionStartCountdownImpl
     TResult? Function(CameraDetectionStart value)? start,
     TResult? Function(CameraDetectionStop value)? stop,
     TResult? Function(CameraDetectionPosesUpdated value)? posesUpdated,
-    TResult? Function(CameraDetectionConnectSocket value)? connectSocket,
-    TResult? Function(CameraDetectionSocketConnected value)? socketConnected,
-    TResult? Function(CameraDetectionSocketDisconnected value)?
-        socketDisconnected,
-    TResult? Function(CameraDetectionPoseResultReceived value)?
-        poseResultReceived,
     TResult? Function(CameraDetectionStartCountdown value)? startCountdown,
     TResult? Function(CameraDetectionCountdownTick value)? countdownTick,
     TResult? Function(CameraDetectionCaptureImage value)? captureImage,
@@ -2163,12 +1031,6 @@ class _$CameraDetectionStartCountdownImpl
     TResult Function(CameraDetectionStart value)? start,
     TResult Function(CameraDetectionStop value)? stop,
     TResult Function(CameraDetectionPosesUpdated value)? posesUpdated,
-    TResult Function(CameraDetectionConnectSocket value)? connectSocket,
-    TResult Function(CameraDetectionSocketConnected value)? socketConnected,
-    TResult Function(CameraDetectionSocketDisconnected value)?
-        socketDisconnected,
-    TResult Function(CameraDetectionPoseResultReceived value)?
-        poseResultReceived,
     TResult Function(CameraDetectionStartCountdown value)? startCountdown,
     TResult Function(CameraDetectionCountdownTick value)? countdownTick,
     TResult Function(CameraDetectionCaptureImage value)? captureImage,
@@ -2269,11 +1131,6 @@ class _$CameraDetectionCountdownTickImpl
     required TResult Function() start,
     required TResult Function() stop,
     required TResult Function(List<Pose> poses) posesUpdated,
-    required TResult Function(String wsUrl, Map<String, String>? headers)
-        connectSocket,
-    required TResult Function() socketConnected,
-    required TResult Function() socketDisconnected,
-    required TResult Function(Map<String, dynamic> data) poseResultReceived,
     required TResult Function() startCountdown,
     required TResult Function(int remaining) countdownTick,
     required TResult Function(
@@ -2296,11 +1153,6 @@ class _$CameraDetectionCountdownTickImpl
     TResult? Function()? start,
     TResult? Function()? stop,
     TResult? Function(List<Pose> poses)? posesUpdated,
-    TResult? Function(String wsUrl, Map<String, String>? headers)?
-        connectSocket,
-    TResult? Function()? socketConnected,
-    TResult? Function()? socketDisconnected,
-    TResult? Function(Map<String, dynamic> data)? poseResultReceived,
     TResult? Function()? startCountdown,
     TResult? Function(int remaining)? countdownTick,
     TResult? Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
@@ -2322,10 +1174,6 @@ class _$CameraDetectionCountdownTickImpl
     TResult Function()? start,
     TResult Function()? stop,
     TResult Function(List<Pose> poses)? posesUpdated,
-    TResult Function(String wsUrl, Map<String, String>? headers)? connectSocket,
-    TResult Function()? socketConnected,
-    TResult Function()? socketDisconnected,
-    TResult Function(Map<String, dynamic> data)? poseResultReceived,
     TResult Function()? startCountdown,
     TResult Function(int remaining)? countdownTick,
     TResult Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
@@ -2351,13 +1199,6 @@ class _$CameraDetectionCountdownTickImpl
     required TResult Function(CameraDetectionStart value) start,
     required TResult Function(CameraDetectionStop value) stop,
     required TResult Function(CameraDetectionPosesUpdated value) posesUpdated,
-    required TResult Function(CameraDetectionConnectSocket value) connectSocket,
-    required TResult Function(CameraDetectionSocketConnected value)
-        socketConnected,
-    required TResult Function(CameraDetectionSocketDisconnected value)
-        socketDisconnected,
-    required TResult Function(CameraDetectionPoseResultReceived value)
-        poseResultReceived,
     required TResult Function(CameraDetectionStartCountdown value)
         startCountdown,
     required TResult Function(CameraDetectionCountdownTick value) countdownTick,
@@ -2377,12 +1218,6 @@ class _$CameraDetectionCountdownTickImpl
     TResult? Function(CameraDetectionStart value)? start,
     TResult? Function(CameraDetectionStop value)? stop,
     TResult? Function(CameraDetectionPosesUpdated value)? posesUpdated,
-    TResult? Function(CameraDetectionConnectSocket value)? connectSocket,
-    TResult? Function(CameraDetectionSocketConnected value)? socketConnected,
-    TResult? Function(CameraDetectionSocketDisconnected value)?
-        socketDisconnected,
-    TResult? Function(CameraDetectionPoseResultReceived value)?
-        poseResultReceived,
     TResult? Function(CameraDetectionStartCountdown value)? startCountdown,
     TResult? Function(CameraDetectionCountdownTick value)? countdownTick,
     TResult? Function(CameraDetectionCaptureImage value)? captureImage,
@@ -2401,12 +1236,6 @@ class _$CameraDetectionCountdownTickImpl
     TResult Function(CameraDetectionStart value)? start,
     TResult Function(CameraDetectionStop value)? stop,
     TResult Function(CameraDetectionPosesUpdated value)? posesUpdated,
-    TResult Function(CameraDetectionConnectSocket value)? connectSocket,
-    TResult Function(CameraDetectionSocketConnected value)? socketConnected,
-    TResult Function(CameraDetectionSocketDisconnected value)?
-        socketDisconnected,
-    TResult Function(CameraDetectionPoseResultReceived value)?
-        poseResultReceived,
     TResult Function(CameraDetectionStartCountdown value)? startCountdown,
     TResult Function(CameraDetectionCountdownTick value)? countdownTick,
     TResult Function(CameraDetectionCaptureImage value)? captureImage,
@@ -2544,11 +1373,6 @@ class _$CameraDetectionCaptureImageImpl implements CameraDetectionCaptureImage {
     required TResult Function() start,
     required TResult Function() stop,
     required TResult Function(List<Pose> poses) posesUpdated,
-    required TResult Function(String wsUrl, Map<String, String>? headers)
-        connectSocket,
-    required TResult Function() socketConnected,
-    required TResult Function() socketDisconnected,
-    required TResult Function(Map<String, dynamic> data) poseResultReceived,
     required TResult Function() startCountdown,
     required TResult Function(int remaining) countdownTick,
     required TResult Function(
@@ -2571,11 +1395,6 @@ class _$CameraDetectionCaptureImageImpl implements CameraDetectionCaptureImage {
     TResult? Function()? start,
     TResult? Function()? stop,
     TResult? Function(List<Pose> poses)? posesUpdated,
-    TResult? Function(String wsUrl, Map<String, String>? headers)?
-        connectSocket,
-    TResult? Function()? socketConnected,
-    TResult? Function()? socketDisconnected,
-    TResult? Function(Map<String, dynamic> data)? poseResultReceived,
     TResult? Function()? startCountdown,
     TResult? Function(int remaining)? countdownTick,
     TResult? Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
@@ -2597,10 +1416,6 @@ class _$CameraDetectionCaptureImageImpl implements CameraDetectionCaptureImage {
     TResult Function()? start,
     TResult Function()? stop,
     TResult Function(List<Pose> poses)? posesUpdated,
-    TResult Function(String wsUrl, Map<String, String>? headers)? connectSocket,
-    TResult Function()? socketConnected,
-    TResult Function()? socketDisconnected,
-    TResult Function(Map<String, dynamic> data)? poseResultReceived,
     TResult Function()? startCountdown,
     TResult Function(int remaining)? countdownTick,
     TResult Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
@@ -2626,13 +1441,6 @@ class _$CameraDetectionCaptureImageImpl implements CameraDetectionCaptureImage {
     required TResult Function(CameraDetectionStart value) start,
     required TResult Function(CameraDetectionStop value) stop,
     required TResult Function(CameraDetectionPosesUpdated value) posesUpdated,
-    required TResult Function(CameraDetectionConnectSocket value) connectSocket,
-    required TResult Function(CameraDetectionSocketConnected value)
-        socketConnected,
-    required TResult Function(CameraDetectionSocketDisconnected value)
-        socketDisconnected,
-    required TResult Function(CameraDetectionPoseResultReceived value)
-        poseResultReceived,
     required TResult Function(CameraDetectionStartCountdown value)
         startCountdown,
     required TResult Function(CameraDetectionCountdownTick value) countdownTick,
@@ -2652,12 +1460,6 @@ class _$CameraDetectionCaptureImageImpl implements CameraDetectionCaptureImage {
     TResult? Function(CameraDetectionStart value)? start,
     TResult? Function(CameraDetectionStop value)? stop,
     TResult? Function(CameraDetectionPosesUpdated value)? posesUpdated,
-    TResult? Function(CameraDetectionConnectSocket value)? connectSocket,
-    TResult? Function(CameraDetectionSocketConnected value)? socketConnected,
-    TResult? Function(CameraDetectionSocketDisconnected value)?
-        socketDisconnected,
-    TResult? Function(CameraDetectionPoseResultReceived value)?
-        poseResultReceived,
     TResult? Function(CameraDetectionStartCountdown value)? startCountdown,
     TResult? Function(CameraDetectionCountdownTick value)? countdownTick,
     TResult? Function(CameraDetectionCaptureImage value)? captureImage,
@@ -2676,12 +1478,6 @@ class _$CameraDetectionCaptureImageImpl implements CameraDetectionCaptureImage {
     TResult Function(CameraDetectionStart value)? start,
     TResult Function(CameraDetectionStop value)? stop,
     TResult Function(CameraDetectionPosesUpdated value)? posesUpdated,
-    TResult Function(CameraDetectionConnectSocket value)? connectSocket,
-    TResult Function(CameraDetectionSocketConnected value)? socketConnected,
-    TResult Function(CameraDetectionSocketDisconnected value)?
-        socketDisconnected,
-    TResult Function(CameraDetectionPoseResultReceived value)?
-        poseResultReceived,
     TResult Function(CameraDetectionStartCountdown value)? startCountdown,
     TResult Function(CameraDetectionCountdownTick value)? countdownTick,
     TResult Function(CameraDetectionCaptureImage value)? captureImage,
@@ -2836,11 +1632,6 @@ class _$CameraDetectionUploadPoseImpl implements CameraDetectionUploadPose {
     required TResult Function() start,
     required TResult Function() stop,
     required TResult Function(List<Pose> poses) posesUpdated,
-    required TResult Function(String wsUrl, Map<String, String>? headers)
-        connectSocket,
-    required TResult Function() socketConnected,
-    required TResult Function() socketDisconnected,
-    required TResult Function(Map<String, dynamic> data) poseResultReceived,
     required TResult Function() startCountdown,
     required TResult Function(int remaining) countdownTick,
     required TResult Function(
@@ -2863,11 +1654,6 @@ class _$CameraDetectionUploadPoseImpl implements CameraDetectionUploadPose {
     TResult? Function()? start,
     TResult? Function()? stop,
     TResult? Function(List<Pose> poses)? posesUpdated,
-    TResult? Function(String wsUrl, Map<String, String>? headers)?
-        connectSocket,
-    TResult? Function()? socketConnected,
-    TResult? Function()? socketDisconnected,
-    TResult? Function(Map<String, dynamic> data)? poseResultReceived,
     TResult? Function()? startCountdown,
     TResult? Function(int remaining)? countdownTick,
     TResult? Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
@@ -2889,10 +1675,6 @@ class _$CameraDetectionUploadPoseImpl implements CameraDetectionUploadPose {
     TResult Function()? start,
     TResult Function()? stop,
     TResult Function(List<Pose> poses)? posesUpdated,
-    TResult Function(String wsUrl, Map<String, String>? headers)? connectSocket,
-    TResult Function()? socketConnected,
-    TResult Function()? socketDisconnected,
-    TResult Function(Map<String, dynamic> data)? poseResultReceived,
     TResult Function()? startCountdown,
     TResult Function(int remaining)? countdownTick,
     TResult Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
@@ -2918,13 +1700,6 @@ class _$CameraDetectionUploadPoseImpl implements CameraDetectionUploadPose {
     required TResult Function(CameraDetectionStart value) start,
     required TResult Function(CameraDetectionStop value) stop,
     required TResult Function(CameraDetectionPosesUpdated value) posesUpdated,
-    required TResult Function(CameraDetectionConnectSocket value) connectSocket,
-    required TResult Function(CameraDetectionSocketConnected value)
-        socketConnected,
-    required TResult Function(CameraDetectionSocketDisconnected value)
-        socketDisconnected,
-    required TResult Function(CameraDetectionPoseResultReceived value)
-        poseResultReceived,
     required TResult Function(CameraDetectionStartCountdown value)
         startCountdown,
     required TResult Function(CameraDetectionCountdownTick value) countdownTick,
@@ -2944,12 +1719,6 @@ class _$CameraDetectionUploadPoseImpl implements CameraDetectionUploadPose {
     TResult? Function(CameraDetectionStart value)? start,
     TResult? Function(CameraDetectionStop value)? stop,
     TResult? Function(CameraDetectionPosesUpdated value)? posesUpdated,
-    TResult? Function(CameraDetectionConnectSocket value)? connectSocket,
-    TResult? Function(CameraDetectionSocketConnected value)? socketConnected,
-    TResult? Function(CameraDetectionSocketDisconnected value)?
-        socketDisconnected,
-    TResult? Function(CameraDetectionPoseResultReceived value)?
-        poseResultReceived,
     TResult? Function(CameraDetectionStartCountdown value)? startCountdown,
     TResult? Function(CameraDetectionCountdownTick value)? countdownTick,
     TResult? Function(CameraDetectionCaptureImage value)? captureImage,
@@ -2968,12 +1737,6 @@ class _$CameraDetectionUploadPoseImpl implements CameraDetectionUploadPose {
     TResult Function(CameraDetectionStart value)? start,
     TResult Function(CameraDetectionStop value)? stop,
     TResult Function(CameraDetectionPosesUpdated value)? posesUpdated,
-    TResult Function(CameraDetectionConnectSocket value)? connectSocket,
-    TResult Function(CameraDetectionSocketConnected value)? socketConnected,
-    TResult Function(CameraDetectionSocketDisconnected value)?
-        socketDisconnected,
-    TResult Function(CameraDetectionPoseResultReceived value)?
-        poseResultReceived,
     TResult Function(CameraDetectionStartCountdown value)? startCountdown,
     TResult Function(CameraDetectionCountdownTick value)? countdownTick,
     TResult Function(CameraDetectionCaptureImage value)? captureImage,
@@ -3059,11 +1822,6 @@ class _$CameraDetectionUploadSuccessImpl
     required TResult Function() start,
     required TResult Function() stop,
     required TResult Function(List<Pose> poses) posesUpdated,
-    required TResult Function(String wsUrl, Map<String, String>? headers)
-        connectSocket,
-    required TResult Function() socketConnected,
-    required TResult Function() socketDisconnected,
-    required TResult Function(Map<String, dynamic> data) poseResultReceived,
     required TResult Function() startCountdown,
     required TResult Function(int remaining) countdownTick,
     required TResult Function(
@@ -3086,11 +1844,6 @@ class _$CameraDetectionUploadSuccessImpl
     TResult? Function()? start,
     TResult? Function()? stop,
     TResult? Function(List<Pose> poses)? posesUpdated,
-    TResult? Function(String wsUrl, Map<String, String>? headers)?
-        connectSocket,
-    TResult? Function()? socketConnected,
-    TResult? Function()? socketDisconnected,
-    TResult? Function(Map<String, dynamic> data)? poseResultReceived,
     TResult? Function()? startCountdown,
     TResult? Function(int remaining)? countdownTick,
     TResult? Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
@@ -3112,10 +1865,6 @@ class _$CameraDetectionUploadSuccessImpl
     TResult Function()? start,
     TResult Function()? stop,
     TResult Function(List<Pose> poses)? posesUpdated,
-    TResult Function(String wsUrl, Map<String, String>? headers)? connectSocket,
-    TResult Function()? socketConnected,
-    TResult Function()? socketDisconnected,
-    TResult Function(Map<String, dynamic> data)? poseResultReceived,
     TResult Function()? startCountdown,
     TResult Function(int remaining)? countdownTick,
     TResult Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
@@ -3141,13 +1890,6 @@ class _$CameraDetectionUploadSuccessImpl
     required TResult Function(CameraDetectionStart value) start,
     required TResult Function(CameraDetectionStop value) stop,
     required TResult Function(CameraDetectionPosesUpdated value) posesUpdated,
-    required TResult Function(CameraDetectionConnectSocket value) connectSocket,
-    required TResult Function(CameraDetectionSocketConnected value)
-        socketConnected,
-    required TResult Function(CameraDetectionSocketDisconnected value)
-        socketDisconnected,
-    required TResult Function(CameraDetectionPoseResultReceived value)
-        poseResultReceived,
     required TResult Function(CameraDetectionStartCountdown value)
         startCountdown,
     required TResult Function(CameraDetectionCountdownTick value) countdownTick,
@@ -3167,12 +1909,6 @@ class _$CameraDetectionUploadSuccessImpl
     TResult? Function(CameraDetectionStart value)? start,
     TResult? Function(CameraDetectionStop value)? stop,
     TResult? Function(CameraDetectionPosesUpdated value)? posesUpdated,
-    TResult? Function(CameraDetectionConnectSocket value)? connectSocket,
-    TResult? Function(CameraDetectionSocketConnected value)? socketConnected,
-    TResult? Function(CameraDetectionSocketDisconnected value)?
-        socketDisconnected,
-    TResult? Function(CameraDetectionPoseResultReceived value)?
-        poseResultReceived,
     TResult? Function(CameraDetectionStartCountdown value)? startCountdown,
     TResult? Function(CameraDetectionCountdownTick value)? countdownTick,
     TResult? Function(CameraDetectionCaptureImage value)? captureImage,
@@ -3191,12 +1927,6 @@ class _$CameraDetectionUploadSuccessImpl
     TResult Function(CameraDetectionStart value)? start,
     TResult Function(CameraDetectionStop value)? stop,
     TResult Function(CameraDetectionPosesUpdated value)? posesUpdated,
-    TResult Function(CameraDetectionConnectSocket value)? connectSocket,
-    TResult Function(CameraDetectionSocketConnected value)? socketConnected,
-    TResult Function(CameraDetectionSocketDisconnected value)?
-        socketDisconnected,
-    TResult Function(CameraDetectionPoseResultReceived value)?
-        poseResultReceived,
     TResult Function(CameraDetectionStartCountdown value)? startCountdown,
     TResult Function(CameraDetectionCountdownTick value)? countdownTick,
     TResult Function(CameraDetectionCaptureImage value)? captureImage,
@@ -3296,11 +2026,6 @@ class _$CameraDetectionErrorOccurredImpl
     required TResult Function() start,
     required TResult Function() stop,
     required TResult Function(List<Pose> poses) posesUpdated,
-    required TResult Function(String wsUrl, Map<String, String>? headers)
-        connectSocket,
-    required TResult Function() socketConnected,
-    required TResult Function() socketDisconnected,
-    required TResult Function(Map<String, dynamic> data) poseResultReceived,
     required TResult Function() startCountdown,
     required TResult Function(int remaining) countdownTick,
     required TResult Function(
@@ -3323,11 +2048,6 @@ class _$CameraDetectionErrorOccurredImpl
     TResult? Function()? start,
     TResult? Function()? stop,
     TResult? Function(List<Pose> poses)? posesUpdated,
-    TResult? Function(String wsUrl, Map<String, String>? headers)?
-        connectSocket,
-    TResult? Function()? socketConnected,
-    TResult? Function()? socketDisconnected,
-    TResult? Function(Map<String, dynamic> data)? poseResultReceived,
     TResult? Function()? startCountdown,
     TResult? Function(int remaining)? countdownTick,
     TResult? Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
@@ -3349,10 +2069,6 @@ class _$CameraDetectionErrorOccurredImpl
     TResult Function()? start,
     TResult Function()? stop,
     TResult Function(List<Pose> poses)? posesUpdated,
-    TResult Function(String wsUrl, Map<String, String>? headers)? connectSocket,
-    TResult Function()? socketConnected,
-    TResult Function()? socketDisconnected,
-    TResult Function(Map<String, dynamic> data)? poseResultReceived,
     TResult Function()? startCountdown,
     TResult Function(int remaining)? countdownTick,
     TResult Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
@@ -3378,13 +2094,6 @@ class _$CameraDetectionErrorOccurredImpl
     required TResult Function(CameraDetectionStart value) start,
     required TResult Function(CameraDetectionStop value) stop,
     required TResult Function(CameraDetectionPosesUpdated value) posesUpdated,
-    required TResult Function(CameraDetectionConnectSocket value) connectSocket,
-    required TResult Function(CameraDetectionSocketConnected value)
-        socketConnected,
-    required TResult Function(CameraDetectionSocketDisconnected value)
-        socketDisconnected,
-    required TResult Function(CameraDetectionPoseResultReceived value)
-        poseResultReceived,
     required TResult Function(CameraDetectionStartCountdown value)
         startCountdown,
     required TResult Function(CameraDetectionCountdownTick value) countdownTick,
@@ -3404,12 +2113,6 @@ class _$CameraDetectionErrorOccurredImpl
     TResult? Function(CameraDetectionStart value)? start,
     TResult? Function(CameraDetectionStop value)? stop,
     TResult? Function(CameraDetectionPosesUpdated value)? posesUpdated,
-    TResult? Function(CameraDetectionConnectSocket value)? connectSocket,
-    TResult? Function(CameraDetectionSocketConnected value)? socketConnected,
-    TResult? Function(CameraDetectionSocketDisconnected value)?
-        socketDisconnected,
-    TResult? Function(CameraDetectionPoseResultReceived value)?
-        poseResultReceived,
     TResult? Function(CameraDetectionStartCountdown value)? startCountdown,
     TResult? Function(CameraDetectionCountdownTick value)? countdownTick,
     TResult? Function(CameraDetectionCaptureImage value)? captureImage,
@@ -3428,12 +2131,6 @@ class _$CameraDetectionErrorOccurredImpl
     TResult Function(CameraDetectionStart value)? start,
     TResult Function(CameraDetectionStop value)? stop,
     TResult Function(CameraDetectionPosesUpdated value)? posesUpdated,
-    TResult Function(CameraDetectionConnectSocket value)? connectSocket,
-    TResult Function(CameraDetectionSocketConnected value)? socketConnected,
-    TResult Function(CameraDetectionSocketDisconnected value)?
-        socketDisconnected,
-    TResult Function(CameraDetectionPoseResultReceived value)?
-        poseResultReceived,
     TResult Function(CameraDetectionStartCountdown value)? startCountdown,
     TResult Function(CameraDetectionCountdownTick value)? countdownTick,
     TResult Function(CameraDetectionCaptureImage value)? captureImage,
@@ -3514,11 +2211,6 @@ class _$CameraDetectionResetToLiveImpl implements CameraDetectionResetToLive {
     required TResult Function() start,
     required TResult Function() stop,
     required TResult Function(List<Pose> poses) posesUpdated,
-    required TResult Function(String wsUrl, Map<String, String>? headers)
-        connectSocket,
-    required TResult Function() socketConnected,
-    required TResult Function() socketDisconnected,
-    required TResult Function(Map<String, dynamic> data) poseResultReceived,
     required TResult Function() startCountdown,
     required TResult Function(int remaining) countdownTick,
     required TResult Function(
@@ -3541,11 +2233,6 @@ class _$CameraDetectionResetToLiveImpl implements CameraDetectionResetToLive {
     TResult? Function()? start,
     TResult? Function()? stop,
     TResult? Function(List<Pose> poses)? posesUpdated,
-    TResult? Function(String wsUrl, Map<String, String>? headers)?
-        connectSocket,
-    TResult? Function()? socketConnected,
-    TResult? Function()? socketDisconnected,
-    TResult? Function(Map<String, dynamic> data)? poseResultReceived,
     TResult? Function()? startCountdown,
     TResult? Function(int remaining)? countdownTick,
     TResult? Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
@@ -3567,10 +2254,6 @@ class _$CameraDetectionResetToLiveImpl implements CameraDetectionResetToLive {
     TResult Function()? start,
     TResult Function()? stop,
     TResult Function(List<Pose> poses)? posesUpdated,
-    TResult Function(String wsUrl, Map<String, String>? headers)? connectSocket,
-    TResult Function()? socketConnected,
-    TResult Function()? socketDisconnected,
-    TResult Function(Map<String, dynamic> data)? poseResultReceived,
     TResult Function()? startCountdown,
     TResult Function(int remaining)? countdownTick,
     TResult Function(String imagePath, Uint8List imageBytes, List<Pose> poses)?
@@ -3596,13 +2279,6 @@ class _$CameraDetectionResetToLiveImpl implements CameraDetectionResetToLive {
     required TResult Function(CameraDetectionStart value) start,
     required TResult Function(CameraDetectionStop value) stop,
     required TResult Function(CameraDetectionPosesUpdated value) posesUpdated,
-    required TResult Function(CameraDetectionConnectSocket value) connectSocket,
-    required TResult Function(CameraDetectionSocketConnected value)
-        socketConnected,
-    required TResult Function(CameraDetectionSocketDisconnected value)
-        socketDisconnected,
-    required TResult Function(CameraDetectionPoseResultReceived value)
-        poseResultReceived,
     required TResult Function(CameraDetectionStartCountdown value)
         startCountdown,
     required TResult Function(CameraDetectionCountdownTick value) countdownTick,
@@ -3622,12 +2298,6 @@ class _$CameraDetectionResetToLiveImpl implements CameraDetectionResetToLive {
     TResult? Function(CameraDetectionStart value)? start,
     TResult? Function(CameraDetectionStop value)? stop,
     TResult? Function(CameraDetectionPosesUpdated value)? posesUpdated,
-    TResult? Function(CameraDetectionConnectSocket value)? connectSocket,
-    TResult? Function(CameraDetectionSocketConnected value)? socketConnected,
-    TResult? Function(CameraDetectionSocketDisconnected value)?
-        socketDisconnected,
-    TResult? Function(CameraDetectionPoseResultReceived value)?
-        poseResultReceived,
     TResult? Function(CameraDetectionStartCountdown value)? startCountdown,
     TResult? Function(CameraDetectionCountdownTick value)? countdownTick,
     TResult? Function(CameraDetectionCaptureImage value)? captureImage,
@@ -3646,12 +2316,6 @@ class _$CameraDetectionResetToLiveImpl implements CameraDetectionResetToLive {
     TResult Function(CameraDetectionStart value)? start,
     TResult Function(CameraDetectionStop value)? stop,
     TResult Function(CameraDetectionPosesUpdated value)? posesUpdated,
-    TResult Function(CameraDetectionConnectSocket value)? connectSocket,
-    TResult Function(CameraDetectionSocketConnected value)? socketConnected,
-    TResult Function(CameraDetectionSocketDisconnected value)?
-        socketDisconnected,
-    TResult Function(CameraDetectionPoseResultReceived value)?
-        poseResultReceived,
     TResult Function(CameraDetectionStartCountdown value)? startCountdown,
     TResult Function(CameraDetectionCountdownTick value)? countdownTick,
     TResult Function(CameraDetectionCaptureImage value)? captureImage,

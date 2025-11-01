@@ -12,4 +12,19 @@ public interface NotificationService {
     void pushNotificationToUser(String userId, NotificationRequest request);
     void pushNotificationToAll(NotificationRequest request);
     Notification getNotificationById(Long id);
+    
+    /**
+     * Đánh dấu notification đã đọc
+     */
+    void markAsRead(Long notificationId, String userId);
+    
+    /**
+     * Đánh dấu tất cả notifications của user đã đọc
+     */
+    void markAllAsRead(String userId);
+    
+    /**
+     * Lấy số lượng notifications chưa đọc của user
+     */
+    long countUnreadNotifications(String userId);
 }

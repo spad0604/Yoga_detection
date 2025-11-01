@@ -51,19 +51,11 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
   Size? _capturedImageSize;
   CameraLensDirection _currentLensDirection = CameraLensDirection.back;
 
-  String? _poseIdFromArgs;
-  String? _jwtToken;
-  String? _wsBase;
-
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _initializeCameraAndDetector();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _extractRouteArgsAndConnect();
-    });
   }
 
   @override
@@ -77,44 +69,6 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
       final blocState = _bloc.state;
       if (!blocState.showResult) _startStream();
     }
-  }
-
-  Future<void> _extractRouteArgsAndConnect() async {
-    try {
-      final route = ModalRoute.of(context);
-      if (route != null && route.settings.arguments is Map) {
-        final args = route.settings.arguments as Map;
-        _jwtToken = args['token'] as String? ?? _jwtToken;
-        _wsBase = args['wsBase'] as String? ?? _wsBase;
-        if (args['poseId'] is String) _poseIdFromArgs = args['poseId'] as String;
-        if (args['item'] != null && args['item'].id != null) {
-          _poseIdFromArgs = args['item'].id as String;
-        }
-      }
-    } catch (_) {}
-
-    _wsBase ??= 'http://13.211.219.53:9080';
-
-    // Connect socket via BLoC
-    if (_jwtToken != null && _jwtToken!.isNotEmpty) {
-      final wsUrl = '${_prepareWsUrlFromBase(_wsBase!)}/ws/pose';
-      final headers = {'Authorization': 'Bearer ${_jwtToken!}'};
-      _bloc.add(CameraDetectionEvent.connectSocket(
-        wsUrl: wsUrl,
-        headers: headers,
-      ));
-    }
-  }
-
-  String _prepareWsUrlFromBase(String base) {
-    final trimmed = base.trim();
-    if (trimmed.startsWith('http://')) {
-      return trimmed.replaceFirst('http://', 'ws://').replaceAll(RegExp(r'/*$'), '');
-    }
-    if (trimmed.startsWith('https://')) {
-      return trimmed.replaceFirst('https://', 'wss://').replaceAll(RegExp(r'/*$'), '');
-    }
-    return trimmed.replaceAll(RegExp(r'/*$'), '');
   }
 
   void _showError(String message) {
@@ -184,8 +138,20 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
         poses: poses,
       ));
 
-      // Upload via BLoC
-      final poseId = _poseIdFromArgs ?? '-1';
+      // Upload via BLoC - poseId can be obtained from widget or route
+      String poseId = '-1';
+      try {
+        final route = ModalRoute.of(context);
+        if (route != null && route.settings.arguments is Map) {
+          final args = route.settings.arguments as Map;
+          if (args['poseId'] is String) {
+            poseId = args['poseId'] as String;
+          } else if (args['item'] != null && args['item'].id != null) {
+            poseId = args['item'].id as String;
+          }
+        }
+      } catch (_) {}
+
       _bloc.add(CameraDetectionEvent.uploadPose(
         poseId: poseId,
         imagePath: imageFile.path,
@@ -341,20 +307,6 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
                 // Show errors
                 if (state.status == CameraDetectionStatus.failure && state.error != null) {
                   _showError(state.error!.message);
-                }
-
-                // Show pose result
-                if (state.poseResult != null) {
-                  final data = state.poseResult!;
-                  final score = data['score'];
-                  final poseName = data['poseName'];
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Pose Result: $poseName - Score: $score'),
-                      duration: const Duration(seconds: 5),
-                      backgroundColor: Colors.green,
-                    ),
-                  );
                 }
               },
               builder: (context, state) {

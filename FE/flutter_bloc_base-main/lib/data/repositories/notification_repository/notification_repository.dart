@@ -8,5 +8,11 @@ abstract class NotificationRepository {
     required int size,
   });
 
-  Future<BaseApiResponse<NotificationResponse>> getNotificationById(String id);
+  Future<BaseApiResponse<NotificationResponse>> getNotificationById(int id);
+
+  Future<BaseApiResponse<String>> markNotificationAsRead(int id);
+
+  Future<BaseApiResponse<String>> markAllNotificationsAsRead();
+
+  Future<BaseApiResponse<Object?>> getUnreadNotificationCount();
 }
