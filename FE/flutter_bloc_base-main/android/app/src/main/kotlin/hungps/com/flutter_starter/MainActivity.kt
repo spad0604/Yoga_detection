@@ -1,4 +1,4 @@
-package com.flutter.nextai
+package com.flutter.yogadetection
 
 import io.flutter.embedding.android.FlutterActivity
 

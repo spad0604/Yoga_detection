@@ -14,6 +14,9 @@ import 'package:flutter_starter/presenter/pages/home_page/home_page_event.dart';
 import 'package:flutter_starter/presenter/pages/home_page/home_page_state.dart';
 import 'package:flutter_starter/presenter/themes/colors.dart';
 import 'package:flutter_starter/data/entities/response/yoga_pose_details.dart';
+import 'package:flutter_starter/core/utils/user_preferences.dart';
+import 'package:flutter_starter/presenter/pages/admin/admin_add_edit_pose_page.dart';
+import 'package:flutter_starter/presenter/widgets/admin_pose_delete_dialog.dart';
 import 'package:flutter_starter/main.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'dart:math';
@@ -53,6 +56,16 @@ class _HomePagePageState extends State<HomePagePage> {
   final Random _random = Random();
   YogaPoseDetails? _pendingAutoNavigateItem;
   VoidCallback? _homeShowcaseListener;
+  bool _isAdmin = false;
+
+  Future<void> _checkAdminStatus() async {
+    final isAdmin = await UserPreferences.isAdmin();
+    if (mounted) {
+      setState(() {
+        _isAdmin = isAdmin;
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -60,6 +73,7 @@ class _HomePagePageState extends State<HomePagePage> {
     _bloc.add(HomePageStarted());
     // Ensure account information is loaded for WelcomeBanner
     context.read<AccountPageBloc>().add(AccountPageEvent.getInformation());
+    _checkAdminStatus();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!_showcaseStarted) {
         _showcaseStarted = true;
@@ -116,6 +130,24 @@ class _HomePagePageState extends State<HomePagePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: _isAdmin
+          ? FloatingActionButton.extended(
+              onPressed: () async {
+                final result = await Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const AdminAddEditPosePage(),
+                  ),
+                );
+                if (result == true && mounted) {
+                  // Refresh the list
+                  _bloc.add(HomePageStarted());
+                }
+              },
+              icon: const Icon(Icons.add),
+              label: const Text('Add Pose'),
+              backgroundColor: AppColors.primaryPurple,
+            )
+          : null,
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -466,6 +498,7 @@ class _HomePagePageState extends State<HomePagePage> {
                                 padding: const EdgeInsets.only(bottom: 12.0),
                                 child: YogaPosesItem(
                                   item: item,
+                                  isAdmin: _isAdmin,
                                 ),
                               );
                               if (index == 0) {

@@ -137,7 +137,7 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
 
             if (score < 0 || score > 100) {
                 log.warn("Invalid score from AI: {}, using default", score);
-                score = 75.0;
+                score = 0.0;
             }
 
             return new EvaluationResult(score, feedback);
@@ -179,9 +179,8 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
      */
     private EvaluationResult createMockEvaluation() {
         return new EvaluationResult(
-                75.0,
-                "Tư thế của bạn khá tốt! Hãy chú ý giữ lưng thẳng hơn và căng chân đều hai bên. "
-                + "Tiếp tục luyện tập để cải thiện sự cân bằng và độ linh hoạt."
+                0.0,
+                "Xin lỗi, vui lòng thử lại vì có một số lỗi xảy ra!"
         );
     }
 }

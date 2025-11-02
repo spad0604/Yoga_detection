@@ -43,6 +43,90 @@ class ActivitiesRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [AdminAddEditPosePage]
+class AdminAddEditPoseRoute extends PageRouteInfo<AdminAddEditPoseRouteArgs> {
+  AdminAddEditPoseRoute({
+    Key? key,
+    String? poseId,
+    String? initialName,
+    int? initialMinutes,
+    int? initialCalories,
+    String? initialLevel,
+    String? initialDescription,
+    String? initialImageUrl,
+    List<PageRouteInfo>? children,
+  }) : super(
+         AdminAddEditPoseRoute.name,
+         args: AdminAddEditPoseRouteArgs(
+           key: key,
+           poseId: poseId,
+           initialName: initialName,
+           initialMinutes: initialMinutes,
+           initialCalories: initialCalories,
+           initialLevel: initialLevel,
+           initialDescription: initialDescription,
+           initialImageUrl: initialImageUrl,
+         ),
+         initialChildren: children,
+       );
+
+  static const String name = 'AdminAddEditPoseRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<AdminAddEditPoseRouteArgs>(
+        orElse: () => const AdminAddEditPoseRouteArgs(),
+      );
+      return AdminAddEditPosePage(
+        key: args.key,
+        poseId: args.poseId,
+        initialName: args.initialName,
+        initialMinutes: args.initialMinutes,
+        initialCalories: args.initialCalories,
+        initialLevel: args.initialLevel,
+        initialDescription: args.initialDescription,
+        initialImageUrl: args.initialImageUrl,
+      );
+    },
+  );
+}
+
+class AdminAddEditPoseRouteArgs {
+  const AdminAddEditPoseRouteArgs({
+    this.key,
+    this.poseId,
+    this.initialName,
+    this.initialMinutes,
+    this.initialCalories,
+    this.initialLevel,
+    this.initialDescription,
+    this.initialImageUrl,
+  });
+
+  final Key? key;
+
+  final String? poseId;
+
+  final String? initialName;
+
+  final int? initialMinutes;
+
+  final int? initialCalories;
+
+  final String? initialLevel;
+
+  final String? initialDescription;
+
+  final String? initialImageUrl;
+
+  @override
+  String toString() {
+    return 'AdminAddEditPoseRouteArgs{key: $key, poseId: $poseId, initialName: $initialName, initialMinutes: $initialMinutes, initialCalories: $initialCalories, initialLevel: $initialLevel, initialDescription: $initialDescription, initialImageUrl: $initialImageUrl}';
+  }
+}
+
+/// generated route for
 /// [CameraDetectionPage]
 class CameraDetectionRoute extends PageRouteInfo<void> {
   const CameraDetectionRoute({List<PageRouteInfo>? children})

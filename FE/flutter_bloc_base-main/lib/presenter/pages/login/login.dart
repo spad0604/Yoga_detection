@@ -21,6 +21,8 @@ import 'package:flutter_starter/presenter/widget/custom_text_field.dart';
 import 'package:flutter_starter/presenter/widget/social_login_button.dart';
 import 'package:flutter_starter/data/states/auth/auth_bloc.dart';
 import 'package:toastification/toastification.dart';
+import 'package:flutter_starter/data/sources/network/network.dart';
+import 'package:flutter_starter/core/utils/user_preferences.dart';
 // ...existing code...
 
 part 'another_login_button.dart';
@@ -85,6 +87,7 @@ class _LoginPageState extends State<LoginPage> {
 
       if (idToken == null) {
         EasyLoading.dismiss();
+        if (!mounted) return;
         toastification.show(
           autoCloseDuration: const Duration(seconds: 3),
           context: context,
@@ -99,6 +102,7 @@ class _LoginPageState extends State<LoginPage> {
     } catch (e) {
       EasyLoading.dismiss();
       debugPrint('Google Sign-In error: $e');
+      if (!mounted) return;
       toastification.show(
         autoCloseDuration: const Duration(seconds: 3),
         context: context,
@@ -108,7 +112,7 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  void _onSuccess(BuildContext context, LoginState state) {
+  void _onSuccess(BuildContext context, LoginState state) async {
     EasyLoading.dismiss();
     toastification.show(
       autoCloseDuration: Duration(seconds: 5),
@@ -121,6 +125,19 @@ class _LoginPageState extends State<LoginPage> {
       context.read<AuthBloc>().add(AuthLoggedIn(state.account!));
     }
 
+    // Get user info and save to preferences
+    try {
+      final networkDataSource = provider.get<NetworkDataSource>();
+      final response = await networkDataSource.getInformation();
+      if (response.data != null) {
+        await UserPreferences.saveUserInfo(response.data!);
+      }
+    } catch (e) {
+      debugPrint('Failed to get user info: $e');
+      // Don't block navigation on error
+    }
+
+    if (!context.mounted) return;
     context.router.replace(HomeRoute());
   }
 

@@ -2,6 +2,7 @@ package com.yogadetection.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.yogadetection.dto.request.NotificationRequest;
@@ -133,7 +134,9 @@ public class SocialPostServiceImpl implements SocialPostService {
             notificationRequest.setHtmlTitle(null);
             notificationRequest.setHtmlTitle(null);
 
-            notificationService.pushNotificationToUser(post.getAuthorId(), notificationRequest);
+            if(!Objects.equals(requester.getUsername(), post.getAuthorId())){
+                notificationService.pushNotificationToUser(post.getAuthorId(), notificationRequest);
+            }
         });
         likeRepository.save(like);
         post.setLikeCount((post.getLikeCount() == null ? 0 : post.getLikeCount()) + 1);
@@ -174,7 +177,10 @@ public class SocialPostServiceImpl implements SocialPostService {
             notificationRequest.setNormalTitle(title + " đã bình luận về bài viết của bạn");
             notificationRequest.setHtmlTitle(null);
             notificationRequest.setImageUrl(null);
-            notificationService.pushNotificationToUser(post.getAuthorId(), notificationRequest);
+
+            if(!Objects.equals(requester.getUsername(), post.getAuthorId())) {
+                notificationService.pushNotificationToUser(post.getAuthorId(), notificationRequest);
+            }
         });
 
         postRepository.save(post);

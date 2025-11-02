@@ -15,6 +15,7 @@ _$GetInformationImpl _$$GetInformationImplFromJson(Map<String, dynamic> json) =>
       email: json['email'] as String,
       registerDate: DateTime.parse(json['registerDate'] as String),
       avatarUrl: json['avatarUrl'] as String?,
+      role: json['role'] as String?,
     );
 
 Map<String, dynamic> _$$GetInformationImplToJson(
@@ -27,4 +28,5 @@ Map<String, dynamic> _$$GetInformationImplToJson(
       'email': instance.email,
       'registerDate': instance.registerDate.toIso8601String(),
       'avatarUrl': instance.avatarUrl,
+      'role': instance.role,
     };

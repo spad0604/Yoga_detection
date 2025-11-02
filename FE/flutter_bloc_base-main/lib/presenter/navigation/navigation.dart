@@ -3,6 +3,7 @@ import 'package:flutter_starter/data/entities/response/notification_response.dar
 import 'package:flutter_starter/data/entities/response/practice_session.dart';
 import 'package:flutter_starter/data/states/auth/auth_bloc.dart';
 import 'package:flutter_starter/presenter/pages/account_page/overall_account_page.dart';
+import 'package:flutter_starter/presenter/pages/admin/admin_add_edit_pose_page.dart';
 import 'package:flutter_starter/presenter/pages/home/home.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_starter/presenter/pages/home_page/home_page.dart';

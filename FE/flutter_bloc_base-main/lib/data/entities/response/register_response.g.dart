@@ -10,6 +10,7 @@ _$RegisterResponseImpl _$$RegisterResponseImplFromJson(
         Map<String, dynamic> json) =>
     _$RegisterResponseImpl(
       userId: json['userId'] as String?,
+      userRole: json['userRole'] as String?,
       accessToken: json['accessToken'] as String?,
       refreshToken: json['refreshToken'] as String?,
     );
@@ -18,6 +19,7 @@ Map<String, dynamic> _$$RegisterResponseImplToJson(
         _$RegisterResponseImpl instance) =>
     <String, dynamic>{
       'userId': instance.userId,
+      'userRole': instance.userRole,
       'accessToken': instance.accessToken,
       'refreshToken': instance.refreshToken,
     };

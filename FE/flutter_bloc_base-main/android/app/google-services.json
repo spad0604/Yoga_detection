@@ -14,11 +14,43 @@
       },
       "oauth_client": [
         {
+          "client_id": "908506209823-4re3i2k1r444lk3i28pmtmf4tqeaju5m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBY2AylGQ5UFiGiZWjiDpxXCc-ggefIGOU"
+        },
+        {
+          "current_key": "AIzaSyAL5vUSh2pk7qpvd210z6W4tc19HdX4SEc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "908506209823-4re3i2k1r444lk3i28pmtmf4tqeaju5m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:908506209823:android:0d1db00ab5092e2a0e3f2a",
+        "android_client_info": {
+          "package_name": "com.flutter.yogadetection"
+        }
+      },
+      "oauth_client": [
+        {
           "client_id": "908506209823-iqvdlu3hp3mppkq10thd2b7mdsegunng.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.flutter.nextai",
-            "certificate_hash": "4acfbdf2b96ff104b869c4a64eb9d9938f1fcfa2"
+            "package_name": "com.flutter.yogadetection",
+            "certificate_hash": "c89de56408e12141b84495409eeb168679e080ed"
           }
         },
         {
@@ -29,6 +61,9 @@
       "api_key": [
         {
           "current_key": "AIzaSyBY2AylGQ5UFiGiZWjiDpxXCc-ggefIGOU"
+        },
+        {
+          "current_key": "AIzaSyAL5vUSh2pk7qpvd210z6W4tc19HdX4SEc"
         }
       ],
       "services": {

@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_starter/core/exception.dart';
 import 'package:flutter_starter/core/firebase_config.dart';
+import 'package:flutter_starter/core/utils/user_preferences.dart';
 import 'package:flutter_starter/data/usecases/login.dart';
 import 'package:flutter_starter/data/usecases/login_with_google.dart';
 import 'package:flutter_starter/presenter/pages/login/login_event.dart';
@@ -120,6 +121,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
       _oauthTokenManager.saveAccessToken(account?.accessToken ?? '');
       _oauthTokenManager.saveRefreshToken(account?.refreshToken ?? '');
+
+      // Save user role from login response
+      await UserPreferences.saveUserRole(account?.userRole);
+
       emit(state.copyWith(
         status: LoginStatus.success,
         account: account,
@@ -156,6 +161,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
       _oauthTokenManager.saveAccessToken(account?.accessToken ?? '');
       _oauthTokenManager.saveRefreshToken(account?.refreshToken ?? '');
+
+      // Save user role from login response
+      await UserPreferences.saveUserRole(account?.userRole);
+
       emit(state.copyWith(
         status: LoginStatus.success,
         account: account,

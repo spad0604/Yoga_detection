@@ -395,4 +395,36 @@ abstract class NetworkDataSource {
     @Query('startDate') String? startDate,
     @Query('endDate') String? endDate,
   });
+
+  // ==================== ADMIN APIs ====================
+  
+  // Admin Yoga Pose Management
+  @MultiPart()
+  @POST('api/admin/yoga-poses')
+  Future<BaseApiResponse<YogaPoseDetails>> adminCreateYogaPose(@Body() FormData formData);
+
+  @MultiPart()
+  @PUT('api/admin/yoga-poses/{code}')
+  Future<BaseApiResponse<YogaPoseDetails>> adminUpdateYogaPose(
+    @Path('code') String code,
+    @Body() FormData formData,
+  );
+
+  @DELETE('api/admin/yoga-poses/{code}')
+  Future<BaseApiResponse<void>> adminDeleteYogaPose(@Path('code') String code);
+
+  // Admin Yoga Routine Management
+  @MultiPart()
+  @POST('api/admin/routines')
+  Future<BaseApiResponse<YogaRoutine>> adminCreateYogaRoutine(@Body() FormData formData);
+
+  @MultiPart()
+  @PUT('api/admin/routines/{id}')
+  Future<BaseApiResponse<YogaRoutine>> adminUpdateYogaRoutine(
+    @Path('id') String id,
+    @Body() FormData formData,
+  );
+
+  @DELETE('api/admin/routines/{id}')
+  Future<BaseApiResponse<void>> adminDeleteYogaRoutine(@Path('id') String id);
 }

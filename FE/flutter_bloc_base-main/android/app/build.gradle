@@ -12,7 +12,7 @@ flutter {
 }
 
 android {
-    namespace "com.flutter.nextai"
+    namespace "com.flutter.yogadetection"
     // camera_android requires compileSdk 36. Use the higher SDK to remain compatible with plugins.
     compileSdk = 36
 
@@ -22,17 +22,17 @@ android {
     productFlavors {
         dev {
             dimension "flavor-type"
-            applicationId "com.flutter.nextai"
+            applicationId "com.flutter.yogadetection"
             resValue "string", "app_name", "Yoga Detection"
         }
         staging {
             dimension "flavor-type"
-            applicationId "com.flutter.nextai.stg"
+            applicationId "com.flutter.yogadetection.stg"
             resValue "string", "app_name", "Yoga Detection"
         }
         production {
             dimension "flavor-type"
-            applicationId "com.flutter.nextai.dev"
+            applicationId "com.flutter.yogadetection.prod"
             resValue "string", "app_name", "Yoga Detection"
         }
     }
@@ -54,7 +54,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.flutter.nextai"
+        applicationId "com.flutter.yogadetection"
         minSdkVersion 23
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutter.versionCode

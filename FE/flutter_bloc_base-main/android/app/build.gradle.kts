@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.flutter.nextai.flutter_starter"
+    namespace = "com.flutter.yogadetection.flutter_starter"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -21,7 +21,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.flutter.nextai.flutter_starter"
+        applicationId = "com.flutter.yogadetection.flutter_starter"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion

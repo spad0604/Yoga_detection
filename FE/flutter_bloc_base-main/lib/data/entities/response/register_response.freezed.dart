@@ -22,6 +22,8 @@ RegisterResponse _$RegisterResponseFromJson(Map<String, dynamic> json) {
 mixin _$RegisterResponse {
   @JsonKey(name: 'userId')
   String? get userId => throw _privateConstructorUsedError;
+  @JsonKey(name: "userRole")
+  String? get userRole => throw _privateConstructorUsedError;
   @JsonKey(name: 'accessToken')
   String? get accessToken => throw _privateConstructorUsedError;
   @JsonKey(name: 'refreshToken')
@@ -45,6 +47,7 @@ abstract class $RegisterResponseCopyWith<$Res> {
   @useResult
   $Res call(
       {@JsonKey(name: 'userId') String? userId,
+      @JsonKey(name: "userRole") String? userRole,
       @JsonKey(name: 'accessToken') String? accessToken,
       @JsonKey(name: 'refreshToken') String? refreshToken});
 }
@@ -65,6 +68,7 @@ class _$RegisterResponseCopyWithImpl<$Res, $Val extends RegisterResponse>
   @override
   $Res call({
     Object? userId = freezed,
+    Object? userRole = freezed,
     Object? accessToken = freezed,
     Object? refreshToken = freezed,
   }) {
@@ -72,6 +76,10 @@ class _$RegisterResponseCopyWithImpl<$Res, $Val extends RegisterResponse>
       userId: freezed == userId
           ? _value.userId
           : userId // ignore: cast_nullable_to_non_nullable
+              as String?,
+      userRole: freezed == userRole
+          ? _value.userRole
+          : userRole // ignore: cast_nullable_to_non_nullable
               as String?,
       accessToken: freezed == accessToken
           ? _value.accessToken
@@ -95,6 +103,7 @@ abstract class _$$RegisterResponseImplCopyWith<$Res>
   @useResult
   $Res call(
       {@JsonKey(name: 'userId') String? userId,
+      @JsonKey(name: "userRole") String? userRole,
       @JsonKey(name: 'accessToken') String? accessToken,
       @JsonKey(name: 'refreshToken') String? refreshToken});
 }
@@ -113,6 +122,7 @@ class __$$RegisterResponseImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? userId = freezed,
+    Object? userRole = freezed,
     Object? accessToken = freezed,
     Object? refreshToken = freezed,
   }) {
@@ -120,6 +130,10 @@ class __$$RegisterResponseImplCopyWithImpl<$Res>
       userId: freezed == userId
           ? _value.userId
           : userId // ignore: cast_nullable_to_non_nullable
+              as String?,
+      userRole: freezed == userRole
+          ? _value.userRole
+          : userRole // ignore: cast_nullable_to_non_nullable
               as String?,
       accessToken: freezed == accessToken
           ? _value.accessToken
@@ -138,6 +152,7 @@ class __$$RegisterResponseImplCopyWithImpl<$Res>
 class _$RegisterResponseImpl implements _RegisterResponse {
   const _$RegisterResponseImpl(
       {@JsonKey(name: 'userId') required this.userId,
+      @JsonKey(name: "userRole") required this.userRole,
       @JsonKey(name: 'accessToken') required this.accessToken,
       @JsonKey(name: 'refreshToken') required this.refreshToken});
 
@@ -148,6 +163,9 @@ class _$RegisterResponseImpl implements _RegisterResponse {
   @JsonKey(name: 'userId')
   final String? userId;
   @override
+  @JsonKey(name: "userRole")
+  final String? userRole;
+  @override
   @JsonKey(name: 'accessToken')
   final String? accessToken;
   @override
@@ -156,7 +174,7 @@ class _$RegisterResponseImpl implements _RegisterResponse {
 
   @override
   String toString() {
-    return 'RegisterResponse(userId: $userId, accessToken: $accessToken, refreshToken: $refreshToken)';
+    return 'RegisterResponse(userId: $userId, userRole: $userRole, accessToken: $accessToken, refreshToken: $refreshToken)';
   }
 
   @override
@@ -165,6 +183,8 @@ class _$RegisterResponseImpl implements _RegisterResponse {
         (other.runtimeType == runtimeType &&
             other is _$RegisterResponseImpl &&
             (identical(other.userId, userId) || other.userId == userId) &&
+            (identical(other.userRole, userRole) ||
+                other.userRole == userRole) &&
             (identical(other.accessToken, accessToken) ||
                 other.accessToken == accessToken) &&
             (identical(other.refreshToken, refreshToken) ||
@@ -174,7 +194,7 @@ class _$RegisterResponseImpl implements _RegisterResponse {
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode =>
-      Object.hash(runtimeType, userId, accessToken, refreshToken);
+      Object.hash(runtimeType, userId, userRole, accessToken, refreshToken);
 
   /// Create a copy of RegisterResponse
   /// with the given fields replaced by the non-null parameter values.
@@ -196,6 +216,7 @@ class _$RegisterResponseImpl implements _RegisterResponse {
 abstract class _RegisterResponse implements RegisterResponse {
   const factory _RegisterResponse(
           {@JsonKey(name: 'userId') required final String? userId,
+          @JsonKey(name: "userRole") required final String? userRole,
           @JsonKey(name: 'accessToken') required final String? accessToken,
           @JsonKey(name: 'refreshToken') required final String? refreshToken}) =
       _$RegisterResponseImpl;
@@ -206,6 +227,9 @@ abstract class _RegisterResponse implements RegisterResponse {
   @override
   @JsonKey(name: 'userId')
   String? get userId;
+  @override
+  @JsonKey(name: "userRole")
+  String? get userRole;
   @override
   @JsonKey(name: 'accessToken')
   String? get accessToken;

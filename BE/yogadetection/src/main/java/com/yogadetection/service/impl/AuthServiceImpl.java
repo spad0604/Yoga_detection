@@ -52,7 +52,7 @@ public class AuthServiceImpl implements AuthService {
             userRepository.saveFcmToken(request.getFcmToken(), request.getEmail().toLowerCase());
             String accessToken = jwtService.generateToken(user);
             String refreshToken = jwtService.generateRefreshToken(user);
-            return new TokenResponse(user.getId(), user.getUserProvider(), accessToken, refreshToken);
+            return new TokenResponse(user.getId(), user.getUserProvider(), user.getUserRole(), accessToken, refreshToken);
         } else throw new InvalidPasswordException();
     }
 
@@ -74,7 +74,7 @@ public class AuthServiceImpl implements AuthService {
         User savedUser = userRepository.save(user);
         String accessToken = jwtService.generateToken(savedUser);
         String refreshToken = jwtService.generateRefreshToken(savedUser);
-        return new TokenResponse(savedUser.getId(), UserProviderEnum.ACCOUNT_CREATION, accessToken, refreshToken);
+        return new TokenResponse(savedUser.getId(), savedUser.getUserProvider(), savedUser.getUserRole(), accessToken, refreshToken);
     }
 
     @Override
@@ -95,7 +95,7 @@ public class AuthServiceImpl implements AuthService {
                 if (jwtService.isTokenValid(refreshToken, user)) {
                     String newAccessToken = jwtService.generateToken(user);
                     String newRefreshToken = jwtService.generateRefreshToken(user);
-                    return new TokenResponse(user.getId(), user.getUserProvider(), newAccessToken, newRefreshToken);
+                    return new TokenResponse(user.getId(), user.getUserProvider(), user.getUserRole(), newAccessToken, newRefreshToken);
                 } else {
                     throw new InvalidTokenException();
                 }
@@ -137,7 +137,6 @@ public class AuthServiceImpl implements AuthService {
                 throw new InvalidTokenException();
             }
             
-            // Extract user info from Google token
             GoogleIdToken.Payload payload = idToken.getPayload();
             String email = payload.getEmail();
             String googleId = payload.getSubject();
@@ -146,28 +145,23 @@ public class AuthServiceImpl implements AuthService {
             
             log.info("Google login attempt for email: {}", email);
             
-            // Find or create user
             Optional<User> existingUser = userRepository.findByEmail(email.toLowerCase());
             User user;
             
             if (existingUser.isPresent()) {
-                // User exists - update info if needed
                 user = existingUser.get();
                 boolean updated = false;
                 
-                // Update avatar if changed
                 if (picture != null && !picture.equals(user.getAvatarUrl())) {
                     user.setAvatarUrl(picture);
                     updated = true;
                 }
                 
-                // Update FCM token if provided
                 if (request.getFcmToken() != null && !request.getFcmToken().isEmpty()) {
                     user.setFcmToken(request.getFcmToken());
                     updated = true;
                 }
                 
-                // Update provider if user was created with email/password before
                 if (user.getUserProvider() == UserProviderEnum.ACCOUNT_CREATION) {
                     user.setUserProvider(UserProviderEnum.GOOGLE);
                     updated = true;
@@ -179,7 +173,6 @@ public class AuthServiceImpl implements AuthService {
                 }
                 
             } else {
-                // Create new user from Google account
                 String[] nameParts = name != null ? name.split(" ", 2) : new String[]{"", ""};
                 String firstName = nameParts.length > 0 ? nameParts[0] : "";
                 String lastName = nameParts.length > 1 ? nameParts[1] : "";
@@ -189,7 +182,7 @@ public class AuthServiceImpl implements AuthService {
                         .firstName(firstName)
                         .lastName(lastName)
                         .avatarUrl(picture)
-                        .password(passwordEncoder.encode(googleId)) // Use Google ID as password (user can't login with password)
+                        .password(passwordEncoder.encode(googleId))
                         .userProvider(UserProviderEnum.GOOGLE)
                         .userRole(UserRoleEnum.USER)
                         .fcmToken(request.getFcmToken())
@@ -204,7 +197,7 @@ public class AuthServiceImpl implements AuthService {
             String accessToken = jwtService.generateToken(user);
             String refreshToken = jwtService.generateRefreshToken(user);
             
-            return new TokenResponse(user.getId(), UserProviderEnum.GOOGLE, accessToken, refreshToken);
+            return new TokenResponse(user.getId(), UserProviderEnum.GOOGLE, user.getUserRole(), accessToken, refreshToken);
             
         } catch (InvalidTokenException e) {
             throw e;

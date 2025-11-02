@@ -1,33 +1,33 @@
 flavors:
   dev:
     app:
-      name: "[Dev] NextAi"
+      name: "[Dev] Yoga Detection"
     android:
-      applicationId: "com.flutter.nextai.dev"
+      applicationId: "com.flutter.yogadetection.dev"
     ios:
-      bundleId: "com.flutter.nextai.dev"
+      bundleId: "com.flutter.yogadetection.dev"
     macos:
-      bundleId: "com.flutter.nextai.dev"
+      bundleId: "com.flutter.yogadetection.dev"
 
   staging:
     app:
-      name: "[Stg] NextAi"
+      name: "[Stg] Yoga Detection"
     android:
-      applicationId: "com.flutter.nextai.stg"
+      applicationId: "com.flutter.yogadetection.stg"
     ios:
-      bundleId: "com.flutter.nextai.stg"
+      bundleId: "com.flutter.yogadetection.stg"
     macos:
-      bundleId: "com.flutter.nextai.stg"
+      bundleId: "com.flutter.yogadetection.stg"
 
   production:
     app:
-      name: "NextAi"
+      name: "Yoga Detection"
     android:
-      applicationId: "com.flutter.nextai"
+      applicationId: "com.flutter.yogadetection"
     ios:
-      bundleId: "com.flutter.nextai"
+      bundleId: "com.flutter.yogadetection"
     macos:
-      bundleId: "com.flutter.nextai"
+      bundleId: "com.flutter.yogadetection"
 
 instructions:
   - 'assets:download'

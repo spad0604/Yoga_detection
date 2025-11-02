@@ -2,7 +2,13 @@ part of 'home_page.dart';
 
 class YogaPosesItem extends StatefulWidget {
   final YogaPoseDetails item;
-  const YogaPosesItem({super.key, required this.item});
+  final bool isAdmin;
+  
+  const YogaPosesItem({
+    super.key, 
+    required this.item,
+    this.isAdmin = false,
+  });
 
   @override
   State<YogaPosesItem> createState() => _YogaPosesItemState();
@@ -13,13 +19,15 @@ class _YogaPosesItemState extends State<YogaPosesItem> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTapDown: (_) => setState(() => _isPressed = true),
-      onTapUp: (_) {
-        setState(() => _isPressed = false);
-        context.router.push(PoseDetailsRoute(item: widget.item));
-      },
-      onTapCancel: () => setState(() => _isPressed = false),
+    return Stack(
+      children: [
+        GestureDetector(
+          onTapDown: (_) => setState(() => _isPressed = true),
+          onTapUp: (_) {
+            setState(() => _isPressed = false);
+            context.router.push(PoseDetailsRoute(item: widget.item));
+          },
+          onTapCancel: () => setState(() => _isPressed = false),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
         transform: Matrix4.identity()..scale(_isPressed ? 0.98 : 1.0),
@@ -182,6 +190,94 @@ class _YogaPosesItemState extends State<YogaPosesItem> {
           ],
         ),
       ),
+    ),
+        // Admin buttons
+        if (widget.isAdmin)
+          Positioned(
+            top: 8,
+            right: 8,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Delete button
+                InkWell(
+                  onTap: () async {
+                    final result = await AdminPoseDeleteDialog.show(
+                      context,
+                      widget.item.id,
+                      widget.item.name,
+                    );
+                    if (result == true) {
+                      // Refresh parent list
+                      context.read<HomePageBloc>().add(HomePageStarted());
+                    }
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Icon(
+                      Icons.delete_outline,
+                      size: 18,
+                      color: Colors.red[400],
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                // Edit button
+                InkWell(
+                  onTap: () async {
+                    final result = await Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => AdminAddEditPosePage(
+                          poseId: widget.item.id,
+                          initialName: widget.item.name,
+                          initialMinutes: widget.item.totalMinutes,
+                          initialCalories: widget.item.totalCalories,
+                          initialLevel: widget.item.level,
+                          initialDescription: widget.item.description,
+                          initialImageUrl: widget.item.imageUrl,
+                        ),
+                      ),
+                    );
+                    if (result == true) {
+                      // Refresh parent list
+                      context.read<HomePageBloc>().add(HomePageStarted());
+                    }
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Icon(
+                      Icons.edit,
+                      size: 18,
+                      color: AppColors.primaryPurple,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+      ],
     );
   }
 }

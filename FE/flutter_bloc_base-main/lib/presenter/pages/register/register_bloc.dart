@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_starter/core/utils/user_preferences.dart';
 import 'package:flutter_starter/data/usecases/register.dart';
 import 'package:flutter_starter/services/oauth_token_manager/oauth_token_manager.dart';
 import 'package:injectable/injectable.dart';
@@ -120,6 +121,9 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
 
       _oauthTokenManager.saveAccessToken(response.accessToken);
       _oauthTokenManager.saveRefreshToken(response.refreshToken);
+
+      // Save user role from register response
+      await UserPreferences.saveUserRole(response.userRole);
 
       emit(state.copyWith(status: RegisterStatus.success));
     } catch (e) {
