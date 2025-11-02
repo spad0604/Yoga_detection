@@ -27,12 +27,12 @@ android {
         }
         staging {
             dimension "flavor-type"
-            applicationId "com.flutter.yogadetection.stg"
+            applicationId "com.flutter.yogadetection"
             resValue "string", "app_name", "Yoga Detection"
         }
         production {
             dimension "flavor-type"
-            applicationId "com.flutter.yogadetection.prod"
+            applicationId "com.flutter.yogadetection"
             resValue "string", "app_name", "Yoga Detection"
         }
     }

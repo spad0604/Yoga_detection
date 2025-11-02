@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:auto_route/auto_route.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_starter/data/entities/response/practice_session.dart';
 import 'package:flutter_starter/data/states/practice_session/practice_session_bloc.dart';
@@ -12,6 +14,8 @@ import 'package:flutter_starter/data/states/practice_session/practice_session_st
 import 'package:flutter_starter/di.dart';
 import 'package:flutter_starter/presenter/pages/practice_session_summary/practice_session_summary_page.dart';
 import 'package:google_mlkit_pose_detection/google_mlkit_pose_detection.dart';
+
+part 'pose_painter.dart';
 
 @RoutePage()
 class RoutinePracticeSessionPage extends StatefulWidget {
@@ -34,9 +38,23 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
   int _elapsedSeconds = 0;
   CameraLensDirection _currentLensDirection = CameraLensDirection.front;
 
+  // Capture and detection state
+  bool _isAnalyzing = false;
+  bool _showCapturedImage = false;
+  XFile? _capturedImage;
+  List<Pose> _detectedPoses = [];
+  Size? _capturedImageSize;
+
   @override
   void initState() {
     super.initState();
+    // Support all orientations for better flexibility
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
     _initializeCamera();
     _initializePoseDetector();
   }
@@ -59,7 +77,12 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
       );
 
       await _cameraController!.initialize();
-      
+
+      // Disable flash
+      try {
+        await _cameraController!.setFlashMode(FlashMode.off);
+      } catch (_) {}
+
       if (mounted) {
         setState(() {
           _isCameraInitialized = true;
@@ -92,7 +115,8 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
 
   void _initializePoseDetector() {
     final options = PoseDetectorOptions(
-      mode: PoseDetectionMode.single,
+      mode: PoseDetectionMode.stream,
+      model: PoseDetectionModel.accurate,
     );
     _poseDetector = PoseDetector(options: options);
   }
@@ -117,6 +141,7 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
     if (_cameraController == null || !_isCameraInitialized) return;
     if (session.currentPoseCode == null) return;
     if (_poseDetector == null) return;
+    if (_isAnalyzing) return; // Prevent multiple captures
 
     try {
       // Stop timer
@@ -125,16 +150,34 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
       // Take picture
       final XFile imageFile = await _cameraController!.takePicture();
       debugPrint('📸 Image captured: ${imageFile.path}');
-      
+
+      // Get image size
+      final bytes = await imageFile.readAsBytes();
+      final image = await decodeImageFromList(bytes);
+      final imageSize = Size(image.width.toDouble(), image.height.toDouble());
+
+      // Freeze camera on captured image
+      setState(() {
+        _capturedImage = imageFile;
+        _capturedImageSize = imageSize;
+        _showCapturedImage = true;
+        _isAnalyzing = true;
+      });
+
       // Detect pose from captured image
       final inputImage = InputImage.fromFilePath(imageFile.path);
       final poses = await _poseDetector!.processImage(inputImage);
-      
+
+      setState(() {
+        _detectedPoses = poses;
+      });
+
       // Extract landmarks from detected pose
       String? landmarkData;
       if (poses.isNotEmpty) {
-        debugPrint('✅ Detected ${poses.length} pose(s) with ${poses.first.landmarks.length} landmarks');
-        
+        debugPrint(
+            '✅ Detected ${poses.length} pose(s) with ${poses.first.landmarks.length} landmarks');
+
         // Convert landmarks to JSON string
         final landmarks = poses.first.landmarks.entries.map((entry) {
           final landmark = entry.value;
@@ -145,75 +188,53 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
             'z': landmark.z,
           };
         }).toList();
-        
+
         landmarkData = jsonEncode({
           'landmarks': landmarks,
         });
-        
-        debugPrint('📊 Landmark data preview: ${landmarkData.substring(0, landmarkData.length > 200 ? 200 : landmarkData.length)}...');
+
+        debugPrint(
+            '📊 Landmark data preview: ${landmarkData.substring(0, landmarkData.length > 200 ? 200 : landmarkData.length)}...');
       } else {
         debugPrint('⚠️ No poses detected in captured image');
       }
-      
-      // Show AI evaluation loading
-      _showEvaluatingDialog();
 
       // Submit to backend with landmark data
       blocContext.read<PracticeSessionBloc>().add(
-        PracticeSessionEvent.submitPose(
-          poseCode: session.currentPoseCode!,
-          imagePath: imageFile.path,
-          timeSpentSeconds: _elapsedSeconds,
-          landmarkData: landmarkData,
-        ),
-      );
-
+            PracticeSessionEvent.submitPose(
+              poseCode: session.currentPoseCode!,
+              imagePath: imageFile.path,
+              timeSpentSeconds: _elapsedSeconds,
+              landmarkData: landmarkData,
+            ),
+          );
     } catch (e) {
       debugPrint('❌ Error capturing/detecting: $e');
-      Navigator.of(context).pop(); // Close loading dialog
-      _showErrorDialog('Không thể chụp ảnh: $e');
+      if (mounted) {
+        _showErrorDialog('Không thể chụp ảnh: $e');
+        // Reset state on error
+        setState(() {
+          _showCapturedImage = false;
+          _isAnalyzing = false;
+          _capturedImage = null;
+          _detectedPoses = [];
+          _capturedImageSize = null;
+        });
+      }
     }
   }
 
-  void _showEvaluatingDialog() {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => Center(
-        child: Container(
-          margin: const EdgeInsets.all(40),
-          padding: const EdgeInsets.all(32),
-          decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.9),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: const Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              CircularProgressIndicator(
-                color: Colors.white,
-                strokeWidth: 3,
-              ),
-              SizedBox(height: 24),
-              Text(
-                'AI đang đánh giá tư thế...',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+  void _resetToLiveMode() {
+    setState(() {
+      _showCapturedImage = false;
+      _isAnalyzing = false;
+      _capturedImage = null;
+      _detectedPoses = [];
+      _capturedImageSize = null;
+    });
   }
 
   void _showResultDialog(PoseSubmissionResult result) {
-    Navigator.of(context).pop(); // Close evaluating dialog
-
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -240,7 +261,7 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
                   ),
                 ),
                 const SizedBox(height: 20),
-                
+
                 // Score with circular background
                 Container(
                   width: 140,
@@ -276,7 +297,7 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
                   ),
                 ),
                 const SizedBox(height: 24),
-                
+
                 // Feedback
                 if (result.feedback != null && result.feedback!.isNotEmpty) ...[
                   Container(
@@ -316,13 +337,15 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
                   ),
                 ],
                 const SizedBox(height: 24),
-                
+
                 // Continue button
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
                       Navigator.of(context).pop();
+                      // Reset to live camera mode
+                      _resetToLiveMode();
                       _startTimer();
                     },
                     style: ElevatedButton.styleFrom(
@@ -433,8 +456,8 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
 
   void _skipCurrentPose() {
     context.read<PracticeSessionBloc>().add(
-      const PracticeSessionEvent.skipPose(),
-    );
+          const PracticeSessionEvent.skipPose(),
+        );
     _stopTimer();
     _startTimer();
   }
@@ -460,8 +483,8 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
 
     if (shouldComplete == true && mounted) {
       context.read<PracticeSessionBloc>().add(
-        const PracticeSessionEvent.completeSession(),
-      );
+            const PracticeSessionEvent.completeSession(),
+          );
     }
   }
 
@@ -480,71 +503,71 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
         ..add(PracticeSessionEvent.startSession(widget.routineId)),
       child: BlocConsumer<PracticeSessionBloc, PracticeSessionState>(
         listener: (context, state) {
-        // Show result dialog when pose is submitted
-        if (state.lastSubmission != null && !state.isSubmitting) {
-          _showResultDialog(state.lastSubmission!);
-        }
+          // Show result dialog when pose is submitted
+          if (state.lastSubmission != null && !state.isSubmitting) {
+            _showResultDialog(state.lastSubmission!);
+          }
 
-        // Navigate to summary when session is completed
-        if (state.session?.status == SessionStatus.completed) {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (_) => PracticeSessionSummaryPage(
-                session: state.session!,
+          // Navigate to summary when session is completed
+          if (state.session?.status == SessionStatus.completed) {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (_) => PracticeSessionSummaryPage(
+                  session: state.session!,
+                ),
+              ),
+            );
+          }
+
+          // Show error
+          if (state.error != null) {
+            _showErrorDialog(state.error!);
+          }
+        },
+        builder: (context, state) {
+          if (state.isLoading && state.session == null) {
+            return const Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          }
+
+          final session = state.session;
+          if (session == null) {
+            return Scaffold(
+              appBar: AppBar(title: const Text('Lỗi')),
+              body: const Center(
+                child: Text('Không thể bắt đầu buổi tập'),
+              ),
+            );
+          }
+
+          // Start timer when session starts
+          if (_timer == null || !_timer!.isActive) {
+            _startTimer();
+          }
+
+          return Scaffold(
+            backgroundColor: Colors.black,
+            body: SafeArea(
+              child: Column(
+                children: [
+                  // Header
+                  _buildHeader(session),
+
+                  // Camera preview
+                  Expanded(
+                    child: _buildCameraPreview(session),
+                  ),
+
+                  // Controls
+                  _buildControls(session, context),
+                ],
               ),
             ),
           );
-        }
-
-        // Show error
-        if (state.error != null) {
-          _showErrorDialog(state.error!);
-        }
-      },
-      builder: (context, state) {
-        if (state.isLoading && state.session == null) {
-          return const Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(),
-            ),
-          );
-        }
-
-        final session = state.session;
-        if (session == null) {
-          return Scaffold(
-            appBar: AppBar(title: const Text('Lỗi')),
-            body: const Center(
-              child: Text('Không thể bắt đầu buổi tập'),
-            ),
-          );
-        }
-
-        // Start timer when session starts
-        if (_timer == null || !_timer!.isActive) {
-          _startTimer();
-        }
-
-        return Scaffold(
-          backgroundColor: Colors.black,
-          body: SafeArea(
-            child: Column(
-              children: [
-                // Header
-                _buildHeader(session),
-                
-                // Camera preview
-                Expanded(
-                  child: _buildCameraPreview(session),
-                ),
-                
-                // Controls
-                _buildControls(session, context),
-              ],
-            ),
-          ),
-        );
-      },
+        },
       ),
     );
   }
@@ -597,109 +620,162 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
         child: Stack(
           fit: StackFit.expand,
           children: [
-            // Camera
-            if (_isCameraInitialized && _cameraController != null)
+            // Show captured image if analyzing, otherwise show live camera
+            if (_showCapturedImage && _capturedImage != null)
+              // Captured image with pose overlay
+              Image.file(
+                File(_capturedImage!.path),
+                fit: BoxFit.cover,
+              )
+            else if (_isCameraInitialized && _cameraController != null)
+              // Live camera preview
               CameraPreview(_cameraController!)
             else
               const Center(
                 child: CircularProgressIndicator(color: Colors.white),
               ),
             
-            // Current pose info overlay (top)
-            Positioned(
-              top: 20,
-              left: 20,
-              right: 20,
-              child: Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.6),
-                  borderRadius: BorderRadius.circular(15),
+            // Pose overlay on captured image
+            if (_showCapturedImage && _detectedPoses.isNotEmpty && _capturedImageSize != null)
+              Positioned.fill(
+                child: CustomPaint(
+                  painter: PosePainter(
+                    poses: _detectedPoses,
+                    imageSize: _capturedImageSize!,
+                  ),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      session.currentPoseName ?? 'Đang tải...',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    if (session.currentPoseDescription != null) ...[
-                      const SizedBox(height: 6),
-                      Text(
-                        session.currentPoseDescription!,
-                        style: const TextStyle(
-                          color: Colors.white70,
-                          fontSize: 13,
+              ),
+            
+            // Loading overlay when analyzing
+            if (_isAnalyzing)
+              Positioned.fill(
+                child: Container(
+                  color: Colors.black.withOpacity(0.3),
+                  child: const Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 4,
                         ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-            ),
-            
-            // Timer (bottom left)
-            Positioned(
-              bottom: 20,
-              left: 20,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.6),
-                  borderRadius: BorderRadius.circular(25),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(Icons.timer, color: Colors.white, size: 18),
-                    const SizedBox(width: 8),
-                    Text(
-                      _formatTime(_elapsedSeconds),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            
-            // Camera flip button (top right)
-            Positioned(
-              top: 20,
-              right: 20,
-              child: Material(
-                color: Colors.black.withOpacity(0.6),
-                shape: const CircleBorder(),
-                child: InkWell(
-                  onTap: _switchCamera,
-                  customBorder: const CircleBorder(),
-                  child: Container(
-                    padding: const EdgeInsets.all(12),
-                    child: const Icon(
-                      Icons.flip_camera_ios,
-                      color: Colors.white,
-                      size: 24,
+                        SizedBox(height: 16),
+                        Text(
+                          'Đang phân tích tư thế...',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            shadows: [
+                              Shadow(
+                                blurRadius: 10,
+                                color: Colors.black,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ),
-            ),
+            
+            // Current pose info overlay (top)
+            if (!_isAnalyzing)
+              Positioned(
+                top: 20,
+                left: 20,
+                right: 20,
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.6),
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        session.currentPoseName ?? 'Đang tải...',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      if (session.currentPoseDescription != null) ...[
+                        const SizedBox(height: 6),
+                        Text(
+                          session.currentPoseDescription!,
+                          style: const TextStyle(
+                            color: Colors.white70,
+                            fontSize: 13,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ),
+            
+            // Timer (bottom left)
+            if (!_isAnalyzing)
+              Positioned(
+                bottom: 20,
+                left: 20,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.6),
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.timer, color: Colors.white, size: 18),
+                      const SizedBox(width: 8),
+                      Text(
+                        _formatTime(_elapsedSeconds),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            
+            // Camera flip button (top right)
+            if (!_isAnalyzing && !_showCapturedImage)
+              Positioned(
+                top: 20,
+                right: 20,
+                child: Material(
+                  color: Colors.black.withOpacity(0.6),
+                  shape: const CircleBorder(),
+                  child: InkWell(
+                    onTap: _switchCamera,
+                    customBorder: const CircleBorder(),
+                    child: Container(
+                      padding: const EdgeInsets.all(12),
+                      child: const Icon(
+                        Icons.flip_camera_ios,
+                        color: Colors.white,
+                        size: 24,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
           ],
         ),
       ),
     );
-  }
-
-  Widget _buildControls(PracticeSession session, BuildContext blocContext) {
+  }  Widget _buildControls(PracticeSession session, BuildContext blocContext) {
     final isLastPose = session.currentPoseIndex >= session.totalPoses - 1;
 
     return SafeArea(
@@ -715,7 +791,7 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
               backgroundColor: Colors.orange,
               onPressed: _skipCurrentPose,
             ),
-            
+
             // Capture button (larger)
             _buildControlButton(
               icon: Icons.camera_alt,
@@ -725,7 +801,7 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
               size: 70,
               iconSize: 32,
             ),
-            
+
             // Complete or Next button
             if (isLastPose)
               _buildControlButton(

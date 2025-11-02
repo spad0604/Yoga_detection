@@ -3,11 +3,11 @@ flavors:
     app:
       name: "[Dev] Yoga Detection"
     android:
-      applicationId: "com.flutter.yogadetection.dev"
+      applicationId: "com.flutter.yogadetection"
     ios:
-      bundleId: "com.flutter.yogadetection.dev"
+      bundleId: "com.flutter.yogadetection"
     macos:
-      bundleId: "com.flutter.yogadetection.dev"
+      bundleId: "com.flutter.yogadetection"
 
   staging:
     app:

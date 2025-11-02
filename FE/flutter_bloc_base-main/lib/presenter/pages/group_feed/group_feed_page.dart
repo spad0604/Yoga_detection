@@ -57,20 +57,21 @@ class _GroupFeedPageState extends State<GroupFeedPage> {
     final TextEditingController controller = TextEditingController();
     // Capture the bloc reference before showing the sheet so StatefulBuilder can use it
     final bloc = context.read<GroupFeedBloc>();
+    List<XFile> pickedImages = []; // Move outside builder to preserve state
+
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (BuildContext bottomSheetContext) {
         // maintain local state for picked images inside the bottom sheet
-        List<XFile> pickedImages = [];
         return StatefulBuilder(
-          builder: (statefulContext, setState) {
+          builder: (statefulContext, setModalState) {
             Future<void> pickImages() async {
               try {
                 final List<XFile>? images = await ImagePicker().pickMultiImage();
                 if (images != null && images.isNotEmpty) {
-                  setState(() {
+                  setModalState(() {
                     pickedImages.addAll(images);
                   });
                 }
@@ -171,7 +172,8 @@ class _GroupFeedPageState extends State<GroupFeedPage> {
                                         top: 2,
                                         right: 2,
                                         child: GestureDetector(
-                                          onTap: () => setState(() => pickedImages.removeAt(i)),
+                                          onTap: () =>
+                                              setModalState(() => pickedImages.removeAt(i)),
                                           child: Container(
                                             decoration: BoxDecoration(
                                               color: Colors.black45,

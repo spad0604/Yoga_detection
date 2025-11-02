@@ -20,8 +20,8 @@ class RoutineDetailsPage extends StatefulWidget implements AutoRouteWrapper {
   @override
   Widget wrappedRoute(BuildContext context) {
     return BlocProvider<RoutineDetailsBloc>(
-      create: (ctx) => provider.get<RoutineDetailsBloc>()
-        ..add(RoutineDetailsLoadRequested(routineId)),
+      create: (ctx) =>
+          provider.get<RoutineDetailsBloc>()..add(RoutineDetailsLoadRequested(routineId)),
       child: this,
     );
   }
@@ -77,163 +77,163 @@ class _RoutineDetailsPageState extends State<RoutineDetailsPage> {
           slivers: [
             // App Bar with Image
             SliverAppBar(
-          expandedHeight: 250,
-          pinned: true,
-          flexibleSpace: FlexibleSpaceBar(
-            title: Text(
-              routine.name,
-              style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                shadows: [
-                  Shadow(
-                    offset: Offset(0, 1),
-                    blurRadius: 3.0,
-                    color: Colors.black54,
-                  ),
-                ],
-              ),
-            ),
-            background: routine.imageUrl != null
-                ? Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      Image.network(
-                        routine.imageUrl!,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => Container(
-                          color: Colors.grey[300],
-                        ),
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              Colors.transparent,
-                              Colors.black.withOpacity(0.7),
-                            ],
-                          ),
-                        ),
+              expandedHeight: 250,
+              pinned: true,
+              flexibleSpace: FlexibleSpaceBar(
+                title: Text(
+                  routine.name,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    shadows: [
+                      Shadow(
+                        offset: Offset(0, 1),
+                        blurRadius: 3.0,
+                        color: Colors.black54,
                       ),
                     ],
-                  )
-                : Container(color: Colors.grey[300]),
+                  ),
+                ),
+                background: routine.imageUrl != null
+                    ? Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          Image.network(
+                            routine.imageUrl!,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => Container(
+                              color: Colors.grey[300],
+                            ),
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Colors.transparent,
+                                  Colors.black.withOpacity(0.7),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    : Container(color: Colors.grey[300]),
+              ),
             ),
-          ),
 
-          // Content
-          SliverToBoxAdapter(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Info chips
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
+            // Content
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _InfoChip(
-                      icon: Icons.access_time,
-                      label: '${routine.durationMinutes ?? 0} min',
-                      color: Colors.blue,
+                    // Info chips
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        _InfoChip(
+                          icon: Icons.access_time,
+                          label: '${routine.durationMinutes ?? 0} min',
+                          color: Colors.blue,
+                        ),
+                        _InfoChip(
+                          icon: Icons.local_fire_department,
+                          label: '${routine.estimatedCalories ?? 0} kcal',
+                          color: Colors.orange,
+                        ),
+                        _InfoChip(
+                          icon: Icons.fitness_center,
+                          label: routine.level ?? 'BEGINNER',
+                          color: Colors.green,
+                        ),
+                        _InfoChip(
+                          icon: Icons.self_improvement,
+                          label: '${routine.totalPoses ?? 0} poses',
+                          color: Colors.purple,
+                        ),
+                      ],
                     ),
-                    _InfoChip(
-                      icon: Icons.local_fire_department,
-                      label: '${routine.estimatedCalories ?? 0} kcal',
-                      color: Colors.orange,
+
+                    const SizedBox(height: 16),
+
+                    // Description
+                    if (routine.description != null) ...[
+                      Text(
+                        'About',
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        routine.description!,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                      const SizedBox(height: 24),
+                    ],
+
+                    // Tags
+                    if (routine.tags != null && routine.tags!.isNotEmpty) ...[
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: routine.tags!
+                            .map((tag) => Chip(
+                                  label: Text(tag),
+                                  backgroundColor: Colors.grey[200],
+                                ))
+                            .toList(),
+                      ),
+                      const SizedBox(height: 24),
+                    ],
+
+                    // Progress (if exists)
+                    if (routine.userProgress != null) ...[
+                      Text(
+                        'Your Progress',
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
+                      const SizedBox(height: 12),
+                      _ProgressCard(progress: routine.userProgress!),
+                      const SizedBox(height: 24),
+                    ],
+
+                    // Poses List
+                    Text(
+                      'Poses in this Routine',
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
                     ),
-                    _InfoChip(
-                      icon: Icons.fitness_center,
-                      label: routine.level ?? 'BEGINNER',
-                      color: Colors.green,
-                    ),
-                    _InfoChip(
-                      icon: Icons.self_improvement,
-                      label: '${routine.totalPoses ?? 0} poses',
-                      color: Colors.purple,
-                    ),
+                    const SizedBox(height: 12),
                   ],
                 ),
+              ),
+            ),
 
-                const SizedBox(height: 16),
-
-                // Description
-                if (routine.description != null) ...[
-                  Text(
-                    'About',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    routine.description!,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                  const SizedBox(height: 24),
-                ],
-
-                // Tags
-                if (routine.tags != null && routine.tags!.isNotEmpty) ...[
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: routine.tags!
-                        .map((tag) => Chip(
-                              label: Text(tag),
-                              backgroundColor: Colors.grey[200],
-                            ))
-                        .toList(),
-                  ),
-                  const SizedBox(height: 24),
-                ],
-
-                // Progress (if exists)
-                if (routine.userProgress != null) ...[
-                  Text(
-                    'Your Progress',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  _ProgressCard(progress: routine.userProgress!),
-                  const SizedBox(height: 24),
-                ],
-
-                // Poses List
-                Text(
-                  'Poses in this Routine',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+            // Poses List
+            if (routine.poses != null)
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    final pose = routine.poses![index];
+                    return _PoseListItem(pose: pose);
+                  },
+                  childCount: routine.poses!.length,
                 ),
-                const SizedBox(height: 12),
-              ],
-            ),
-          ),
-          ),
-
-          // Poses List
-          if (routine.poses != null)
-            SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                final pose = routine.poses![index];
-                return _PoseListItem(pose: pose);
-              },
-              childCount: routine.poses!.length,
-            ),
-          ),
+              ),
 
             // Bottom spacing for button
             const SliverToBoxAdapter(child: SizedBox(height: 80)),
           ],
         ),
-        
+
         // Floating action button
         Positioned(
           bottom: 16,
@@ -341,15 +341,15 @@ class _ProgressCard extends StatelessWidget {
                 Text(
                   progress.isCompleted ? 'Completed! 🎉' : 'In Progress',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: progress.isCompleted ? Colors.green : Colors.orange,
-                  ),
+                        fontWeight: FontWeight.bold,
+                        color: progress.isCompleted ? Colors.green : Colors.orange,
+                      ),
                 ),
                 Text(
                   '${progress.completionPercentage.toStringAsFixed(0)}%',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
               ],
             ),
@@ -396,8 +396,7 @@ class _PoseListItem extends StatelessWidget {
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (pose.durationSeconds != null)
-              Text('Duration: ${pose.durationSeconds}s'),
+            if (pose.durationSeconds != null) Text('Duration: ${pose.durationSeconds}s'),
             if (pose.instructions != null)
               Text(
                 pose.instructions!,
@@ -423,4 +422,3 @@ class _PoseListItem extends StatelessWidget {
     );
   }
 }
-

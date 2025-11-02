@@ -760,20 +760,20 @@ class _ActivitiesPageState extends State<ActivitiesPage> with SingleTickerProvid
     final TextEditingController controller = TextEditingController();
     final socialRepo = provider.get<SocialPostsRepository>();
     final activitiesBloc = context.read<ActivitiesBloc>();
+    List<XFile> pickedImages = []; // Move outside builder to preserve state
 
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (BuildContext bottomSheetContext) {
-        List<XFile> pickedImages = [];
         return StatefulBuilder(
-          builder: (statefulContext, setState) {
+          builder: (statefulContext, setModalState) {
             Future<void> pickImages() async {
               try {
                 final images = await ImagePicker().pickMultiImage();
                 if (images.isNotEmpty) {
-                  setState(() => pickedImages.addAll(images));
+                  setModalState(() => pickedImages.addAll(images));
                 }
               } catch (_) {}
             }
@@ -856,7 +856,8 @@ class _ActivitiesPageState extends State<ActivitiesPage> with SingleTickerProvid
                                         top: 2,
                                         right: 2,
                                         child: GestureDetector(
-                                          onTap: () => setState(() => pickedImages.removeAt(i)),
+                                          onTap: () =>
+                                              setModalState(() => pickedImages.removeAt(i)),
                                           child: Container(
                                             decoration: BoxDecoration(
                                                 color: Colors.black45, shape: BoxShape.circle),
@@ -1028,19 +1029,19 @@ class _ActivitiesPageContentState extends State<ActivitiesPageContent>
     final TextEditingController controller = TextEditingController();
     final socialRepo = provider.get<SocialPostsRepository>();
     final activitiesBloc = context.read<ActivitiesBloc>();
+    List<XFile> pickedImages = []; // Move outside builder to preserve state
 
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (BuildContext bottomSheetContext) {
-        List<XFile> pickedImages = [];
         return StatefulBuilder(
-          builder: (statefulContext, setState) {
+          builder: (statefulContext, setModalState) {
             Future<void> pickImages() async {
               try {
                 final images = await ImagePicker().pickMultiImage();
-                if (images.isNotEmpty) setState(() => pickedImages.addAll(images));
+                if (images.isNotEmpty) setModalState(() => pickedImages.addAll(images));
               } catch (_) {}
             }
 
@@ -1102,7 +1103,8 @@ class _ActivitiesPageContentState extends State<ActivitiesPageContent>
                                         top: 2,
                                         right: 2,
                                         child: GestureDetector(
-                                          onTap: () => setState(() => pickedImages.removeAt(i)),
+                                          onTap: () =>
+                                              setModalState(() => pickedImages.removeAt(i)),
                                           child: Container(
                                             decoration: BoxDecoration(
                                                 color: Colors.black45, shape: BoxShape.circle),

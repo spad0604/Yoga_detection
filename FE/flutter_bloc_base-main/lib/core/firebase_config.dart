@@ -8,64 +8,73 @@ import 'package:flutter_starter/di.dart';
 
 class FirebaseConfig {
   Future<void> initFCM() async {
-    FirebaseMessaging messaging = FirebaseMessaging.instance;
-
-    NotificationSettings settings =
-        await messaging.requestPermission(alert: true, badge: true, sound: true);
-
-    String? token = await messaging.getToken();
-    // debug log
     try {
-      // ignore: avoid_print
-      print('[FirebaseConfig] initial FCM token: $token');
-    } catch (_) {}
+      FirebaseMessaging messaging = FirebaseMessaging.instance;
 
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      // Hiển thị notification hệ thống khi app đang foreground
+      // Request permission
+      await messaging.requestPermission(alert: true, badge: true, sound: true);
+
+      // Try to get token, but don't crash if it fails
+      String? token;
       try {
-        final notification = message.notification;
-        final data = message.data;
-        final title = notification?.title ?? data['title'] ?? 'Thông báo';
-        final body = notification?.body ?? data['body'] ?? '';
-
-        // Hiển thị notification với flutter_local_notifications
-        final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-            FlutterLocalNotificationsPlugin();
-
-        const AndroidNotificationChannel channel = AndroidNotificationChannel(
-          'high_importance_channel',
-          'Thông báo quan trọng',
-          description: 'Kênh này được sử dụng cho các thông báo quan trọng.',
-          importance: Importance.high,
-        );
-
-        flutterLocalNotificationsPlugin.show(
-          message.hashCode,
-          title,
-          body,
-          NotificationDetails(
-            android: AndroidNotificationDetails(
-              channel.id,
-              channel.name,
-              channelDescription: channel.description,
-              importance: Importance.high,
-              priority: Priority.high,
-              icon: '@mipmap/ic_launcher',
-            ),
-          ),
-        );
+        token = await messaging.getToken();
+        print('[FirebaseConfig] initial FCM token: $token');
       } catch (e) {
-        // ignore: avoid_print
-        print('[FirebaseConfig] Error showing notification: $e');
+        print('[FirebaseConfig] Failed to get FCM token: $e');
+        // Continue without token - app can still work
       }
-    });
 
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      // Navigate to Friends page when user taps notification
-      try {
-        AppRouter(authBloc: provider.get<AuthBloc>()).push(const FriendsRoute());
-      } catch (_) {}
-    });
+      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+        // Hiển thị notification hệ thống khi app đang foreground
+        try {
+          final notification = message.notification;
+          final data = message.data;
+          final title = notification?.title ?? data['title'] ?? 'Thông báo';
+          final body = notification?.body ?? data['body'] ?? '';
+
+          // Hiển thị notification với flutter_local_notifications
+          final FlutterLocalNotificationsPlugin
+              flutterLocalNotificationsPlugin =
+              FlutterLocalNotificationsPlugin();
+
+          const AndroidNotificationChannel channel = AndroidNotificationChannel(
+            'high_importance_channel',
+            'Thông báo quan trọng',
+            description: 'Kênh này được sử dụng cho các thông báo quan trọng.',
+            importance: Importance.high,
+          );
+
+          flutterLocalNotificationsPlugin.show(
+            message.hashCode,
+            title,
+            body,
+            NotificationDetails(
+              android: AndroidNotificationDetails(
+                channel.id,
+                channel.name,
+                channelDescription: channel.description,
+                importance: Importance.high,
+                priority: Priority.high,
+                icon: '@mipmap/ic_launcher',
+              ),
+            ),
+          );
+        } catch (e) {
+          print('[FirebaseConfig] Error showing notification: $e');
+        }
+      });
+
+      FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+        // Navigate to Friends page when user taps notification
+        try {
+          AppRouter(authBloc: provider.get<AuthBloc>())
+              .push(const FriendsRoute());
+        } catch (_) {}
+      });
+    } catch (e) {
+      print('[FirebaseConfig] initFCM error: $e');
+      // Don't crash the app if Firebase fails
+    }
   }
 
   Future<String?> getFcmToken() async {
@@ -74,7 +83,8 @@ class FirebaseConfig {
       try {
         final token = await FirebaseMessaging.instance.getToken();
         // ignore: avoid_print
-        print('[FirebaseConfig] getFcmToken attempt=${attempt + 1}, token=$token');
+        print(
+            '[FirebaseConfig] getFcmToken attempt=${attempt + 1}, token=$token');
         if (token != null && token.isNotEmpty) return token;
       } catch (e) {
         // ignore: avoid_print

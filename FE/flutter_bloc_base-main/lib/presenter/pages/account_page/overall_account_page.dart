@@ -244,7 +244,9 @@ class _OverallAccountPageState extends State<OverallAccountPage> {
                       title: 'Settings',
                       subtitle: 'App preferences',
                       color: AppColors.accentCoral,
-                      onTap: () {},
+                      onTap: () {
+                        _showSettingsDialog(context);
+                      },
                     ),
                     const SizedBox(height: 16),
                     _buildModernItem(
@@ -253,7 +255,9 @@ class _OverallAccountPageState extends State<OverallAccountPage> {
                       title: 'Help & Support',
                       subtitle: 'Get assistance',
                       color: AppColors.primaryPurpleLight,
-                      onTap: () {},
+                      onTap: () {
+                        _showHelpSupportDialog(context);
+                      },
                     ),
                     const SizedBox(height: 16),
                     _buildModernItem(
@@ -295,6 +299,288 @@ class _OverallAccountPageState extends State<OverallAccountPage> {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  void _showSettingsDialog(BuildContext context) {
+    String selectedLanguage = 'English'; // Default language
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) => Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: AppColors.accentCoral.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      Icons.settings,
+                      color: AppColors.accentCoral,
+                      size: 24,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  const Text(
+                    'Settings',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const Spacer(),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              const Text(
+                'Language',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey.shade300),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  children: [
+                    _buildLanguageOption(
+                      context: context,
+                      language: 'English',
+                      flag: '🇬🇧',
+                      isSelected: selectedLanguage == 'English',
+                      onTap: () {
+                        setState(() => selectedLanguage = 'English');
+                        // TODO: Implement language change
+                      },
+                    ),
+                    Divider(height: 1, color: Colors.grey.shade300),
+                    _buildLanguageOption(
+                      context: context,
+                      language: 'Tiếng Việt',
+                      flag: '🇻🇳',
+                      isSelected: selectedLanguage == 'Tiếng Việt',
+                      onTap: () {
+                        setState(() => selectedLanguage = 'Tiếng Việt');
+                        // TODO: Implement language change
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'More settings coming soon...',
+                style: TextStyle(
+                  fontSize: 13,
+                  color: Colors.grey.shade600,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+              const SizedBox(height: 24),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLanguageOption({
+    required BuildContext context,
+    required String language,
+    required String flag,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: Row(
+          children: [
+            Text(
+              flag,
+              style: const TextStyle(fontSize: 24),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                language,
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                  color: isSelected ? AppColors.accentCoral : Colors.black87,
+                ),
+              ),
+            ),
+            if (isSelected)
+              Icon(
+                Icons.check_circle,
+                color: AppColors.accentCoral,
+                size: 20,
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showHelpSupportDialog(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryPurpleLight.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    Icons.help,
+                    color: AppColors.primaryPurpleLight,
+                    size: 24,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                const Text(
+                  'Help & Support',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const Spacer(),
+                IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+            _buildHelpItem(
+              icon: Icons.email,
+              title: 'Contact LA Tech',
+              subtitle: 'latech1303@gmail.com',
+              onTap: () {
+                // TODO: Open email app
+              },
+            ),
+            const SizedBox(height: 12),
+            _buildHelpItem(
+              icon: Icons.description,
+              title: 'Documentation',
+              subtitle: 'Learn how to use the app',
+              onTap: () {
+                // TODO: Open documentation
+              },
+            ),
+            const SizedBox(height: 12),
+            _buildHelpItem(
+              icon: Icons.bug_report,
+              title: 'Report a Bug',
+              subtitle: 'Help us improve',
+              onTap: () {
+                // TODO: Open bug report form
+              },
+            ),
+            const SizedBox(height: 24),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHelpItem({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey.shade200),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: AppColors.primaryPurpleLight.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(
+                icon,
+                color: AppColors.primaryPurpleLight,
+                size: 20,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: Colors.grey.shade600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              Icons.arrow_forward_ios,
+              color: Colors.grey.shade400,
+              size: 14,
+            ),
+          ],
         ),
       ),
     );

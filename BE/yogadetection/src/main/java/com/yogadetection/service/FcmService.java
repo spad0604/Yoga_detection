@@ -20,8 +20,15 @@ public class FcmService {
      */
     public boolean sendNotification(String token, String title, String body) {
         try {
-            if (token == null || token.isEmpty()) {
+            // Validate token format
+            if (token == null || token.trim().isEmpty()) {
                 log.warn("FCM token is null or empty, skipping notification");
+                return false;
+            }
+            
+            // Check if token looks valid (basic check)
+            if (token.length() < 20) {
+                log.warn("FCM token appears invalid (too short): {}", token.substring(0, Math.min(10, token.length())));
                 return false;
             }
             
@@ -32,19 +39,23 @@ public class FcmService {
 
             Message message = Message.builder()
                     .setNotification(notification)
-                    .setToken(token)
+                    .setToken(token.trim())
                     .build();
 
             String response = FirebaseMessaging.getInstance().send(message);
-            log.info("Notification sent successfully. Message ID: {}", response);
+            log.info("✅ FCM notification sent successfully. Message ID: {}", response);
             return true;
             
         } catch (FirebaseMessagingException e) {
-            log.error("Failed to send FCM notification: {} - Error code: {}", 
-                    e.getMessage(), e.getMessagingErrorCode());
+            if ("INVALID_ARGUMENT".equals(e.getMessagingErrorCode().name())) {
+                log.warn("⚠️ Invalid FCM token detected - User needs to re-register device. Error: {}", e.getMessage());
+            } else {
+                log.error("❌ Failed to send FCM notification: {} - Error code: {}", 
+                        e.getMessage(), e.getMessagingErrorCode());
+            }
             return false;
         } catch (Exception e) {
-            log.error("Unexpected error sending notification: {}", e.getMessage(), e);
+            log.error("❌ Unexpected error sending notification: {}", e.getMessage(), e);
             return false;
         }
     }
@@ -55,8 +66,15 @@ public class FcmService {
     public boolean sendNotificationWithData(String token, String title, String body, 
                                            java.util.Map<String, String> data) {
         try {
-            if (token == null || token.isEmpty()) {
-                log.warn("FCM token is null or empty, skipping notification");
+            // Validate token format
+            if (token == null || token.trim().isEmpty()) {
+                log.warn("FCM token is null or empty, skipping notification with data");
+                return false;
+            }
+            
+            // Check if token looks valid
+            if (token.length() < 20) {
+                log.warn("FCM token appears invalid (too short): {}", token.substring(0, Math.min(10, token.length())));
                 return false;
             }
             
@@ -67,22 +85,26 @@ public class FcmService {
 
             Message.Builder messageBuilder = Message.builder()
                     .setNotification(notification)
-                    .setToken(token);
+                    .setToken(token.trim());
             
             if (data != null && !data.isEmpty()) {
                 messageBuilder.putAllData(data);
             }
 
             String response = FirebaseMessaging.getInstance().send(messageBuilder.build());
-            log.info("Notification with data sent successfully. Message ID: {}", response);
+            log.info("✅ FCM notification with data sent successfully. Message ID: {}", response);
             return true;
             
         } catch (FirebaseMessagingException e) {
-            log.error("Failed to send FCM notification with data: {} - Error code: {}", 
-                    e.getMessage(), e.getMessagingErrorCode());
+            if ("INVALID_ARGUMENT".equals(e.getMessagingErrorCode().name())) {
+                log.warn("⚠️ Invalid FCM token detected - User needs to re-register device. Error: {}", e.getMessage());
+            } else {
+                log.error("❌ Failed to send FCM notification with data: {} - Error code: {}", 
+                        e.getMessage(), e.getMessagingErrorCode());
+            }
             return false;
         } catch (Exception e) {
-            log.error("Unexpected error sending notification with data: {}", e.getMessage(), e);
+            log.error("❌ Unexpected error sending notification with data: {}", e.getMessage(), e);
             return false;
         }
     }

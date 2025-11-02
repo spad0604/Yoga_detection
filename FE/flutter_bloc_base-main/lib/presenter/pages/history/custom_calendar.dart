@@ -11,15 +11,15 @@ class CustomCalendar extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: AppColors.grey600),
-        color: Colors.white, // White background like in the image
+        color: Colors.white,
       ),
       padding: const EdgeInsets.all(16),
       child: CalendarDatePicker2(
         config: CalendarDatePicker2Config(
-          calendarType: CalendarDatePicker2Type.multi, // Multi date picker for highlighted dates
+          calendarType: CalendarDatePicker2Type.range, // Range picker: start date and end date only
           firstDate: DateTime.now().subtract(const Duration(days: 365)),
           lastDate: DateTime.now().add(const Duration(days: 365)),
-          selectedDayHighlightColor: AppColors.primaryBlue, // Blue highlight color
+          selectedDayHighlightColor: AppColors.primaryBlue,
           selectedDayTextStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           dayTextStyle: const TextStyle(color: Colors.black, fontSize: 16),
           weekdayLabelTextStyle: const TextStyle(
@@ -33,6 +33,13 @@ class CustomCalendar extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
           centerAlignModePicker: false,
+          // Range styling
+          rangeBidirectional: true,
+          selectedRangeHighlightColor: AppColors.primaryBlue.withOpacity(0.2),
+          selectedRangeDayTextStyle: TextStyle(
+            color: AppColors.primaryBlue,
+            fontWeight: FontWeight.w600,
+          ),
         ),
         value: value,
         onValueChanged: onChanged,

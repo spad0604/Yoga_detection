@@ -40,54 +40,51 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
             String poseName = poseDetails != null ? poseDetails.getName() : "Unknown Pose";
             String poseDescription = poseDetails != null ? poseDetails.getDescription() : "";
 
-            // Tạo prompt cho AI
             String prompt = buildEvaluationPrompt(poseName, poseDescription, landmarkData);
-
-            // Gọi OpenAI API với vision
             EvaluationResult result = callOpenAIVision(imageUrl, prompt);
 
-            log.info("AI Evaluation completed for pose {}: score={}, feedback length={}",
+            log.info("✅ AI evaluation completed for pose {} → score={} | feedback length={}",
                     poseCode, result.getScore(), result.getFeedback().length());
 
             return result;
 
         } catch (Exception e) {
-            log.error("Failed to evaluate pose with AI: {}", e.getMessage(), e);
-            // Fallback: trả về kết quả mặc định
-            return new EvaluationResult(
-                    0.0,
-                    "Unable to evaluate pose automatically. Please try again later."
-            );
+            log.error("❌ Failed to evaluate pose with AI: {}", e.getMessage(), e);
+            return new EvaluationResult(0.0, "Lỗi khi đánh giá tư thế. Vui lòng thử lại sau.");
         }
     }
 
     private String buildEvaluationPrompt(String poseName, String poseDescription, PoseLandmarkRequest landmarkData) {
         StringBuilder prompt = new StringBuilder();
 
-        prompt.append("You are a professional yoga instructor evaluating a student's yoga pose.\n\n");
-        prompt.append("Pose Name: ").append(poseName).append("\n");
-        prompt.append("Pose Description: ").append(poseDescription).append("\n\n");
+        prompt.append("Bạn là huấn luyện viên Yoga chuyên nghiệp. ");
+        prompt.append("Nhiệm vụ của bạn là ĐÁNH GIÁ TƯ THẾ YOGA của học viên dựa trên ảnh và dữ liệu khớp xương.\n\n");
+
+        prompt.append("Thông tin tư thế:\n");
+        prompt.append("- Tên tư thế: ").append(poseName).append("\n");
+        prompt.append("- Mô tả tư thế: ").append(poseDescription).append("\n\n");
 
         if (landmarkData != null && landmarkData.getLandmarks() != null && !landmarkData.getLandmarks().isEmpty()) {
-            prompt.append("Student's Body Landmarks (33 key points):\n");
-            prompt.append(formatLandmarks(landmarkData.getLandmarks()));
-            prompt.append("\n\n");
-            prompt.append("Please analyze BOTH the image and the landmarks data provided.\n\n");
+            prompt.append("Dữ liệu khớp xương của học viên (33 điểm):\n");
+            prompt.append(formatLandmarks(landmarkData.getLandmarks())).append("\n\n");
         } else {
-            prompt.append("Note: Only image analysis available (no landmark data provided).\n\n");
+            prompt.append("⚠️ Không có dữ liệu khớp xương. Chỉ có ảnh để đánh giá.\n\n");
         }
 
-        prompt.append("Please provide:\n");
-        prompt.append("1. A score from 0 to 100 (100 being perfect alignment)\n");
-        prompt.append("2. Detailed feedback in Vietnamese including:\n");
-        prompt.append("   - What the student is doing well\n");
-        prompt.append("   - What needs improvement\n");
-        prompt.append("   - Specific corrections for alignment, balance, or form\n\n");
-        prompt.append("Format your response as JSON:\n");
+        prompt.append("Yêu cầu:\n");
+        prompt.append("1️⃣ Đưa ra điểm số từ 0 đến 100 (100 là hoàn hảo).\n");
+        prompt.append("2️⃣ Viết nhận xét chi tiết bằng TIẾNG VIỆT, bao gồm:\n");
+        prompt.append("   - Học viên làm tốt điểm nào.\n");
+        prompt.append("   - Cần cải thiện điều gì.\n");
+        prompt.append("   - Gợi ý điều chỉnh cụ thể.\n\n");
+        prompt.append("3️⃣ Chỉ trả về **JSON hợp lệ** theo đúng mẫu dưới đây:\n");
         prompt.append("{\n");
-        prompt.append("  \"score\": <number 0-100>,\n");
-        prompt.append("  \"feedback\": \"<detailed feedback in Vietnamese>\"\n");
-        prompt.append("}");
+        prompt.append("  \"score\": <số từ 0 đến 100>,\n");
+        prompt.append("  \"feedback\": \"<nhận xét chi tiết bằng tiếng Việt>\"\n");
+        prompt.append("}\n\n");
+        prompt.append("❗Không trả lời dưới dạng markdown, không thêm ```json``` hoặc văn bản ngoài JSON.\n");
+        prompt.append("Nếu không thể xác định tư thế trong hình ảnh, hãy trả về đúng JSON sau (nhớ chèn tên tư thế thực tế vào chỗ <pose_name>):\n");
+        prompt.append("{\"score\": 0, \"feedback\": \"Bạn đang không thực hiện đúng dáng <pose_name> rồi! Hãy nghiêm túc hơn và thử lại nhé 😄\"}");
 
         return prompt.toString();
     }
@@ -101,11 +98,11 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
     private EvaluationResult callOpenAIVision(String imageUrl, String prompt) {
         try {
             if (apiKey == null || apiKey.isEmpty()) {
-                log.warn("OpenAI API key not configured, using mock evaluation");
-                return createMockEvaluation();
+                log.warn("⚠️ OpenAI API key not configured → dùng kết quả giả lập");
+                return new EvaluationResult(70.0, "Chưa cấu hình API key. Dùng kết quả mô phỏng.");
             }
 
-            log.info("Calling OpenAI Vision API with image: {}", imageUrl);
+            log.info("📤 Sending image to OpenAI Vision: {}", imageUrl);
 
             UserMessage userMessage = new UserMessage(
                     prompt,
@@ -117,70 +114,46 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
                     .call()
                     .content();
 
-            log.info("OpenAI response received: {}", response.substring(0, Math.min(100, response.length())));
+            log.info("📥 Raw OpenAI response: {}", response.replaceAll("[\\r\\n]+", " ").trim());
 
-            // Parse JSON từ response
             return parseAIResponse(response);
 
         } catch (Exception e) {
-            log.error("Error calling OpenAI API: {}", e.getMessage(), e);
-            return createMockEvaluation();
+            log.error("❌ Error calling OpenAI API: {}", e.getMessage(), e);
+            return new EvaluationResult(0.0, "Không thể kết nối tới OpenAI API.");
         }
     }
 
     private EvaluationResult parseAIResponse(String response) {
         try {
-            String sanitized = sanitizeAIResponse(response);
-            JsonNode result = objectMapper.readTree(sanitized);
-            Double score = result.path("score").asDouble();
-            String feedback = result.path("feedback").asText();
+            String json = sanitizeAIResponse(response);
+            JsonNode node = objectMapper.readTree(json);
 
-            if (score < 0 || score > 100) {
-                log.warn("Invalid score from AI: {}, using default", score);
-                score = 0.0;
-            }
+            double score = node.path("score").asDouble(0.0);
+            String feedback = node.path("feedback").asText("Không thể phân tích phản hồi.");
+
+            if (score < 0 || score > 100) score = 0.0;
 
             return new EvaluationResult(score, feedback);
 
         } catch (Exception e) {
-            log.error("Error parsing AI response: {}", e.getMessage());
-            return createMockEvaluation();
+            log.warn("⚠️ Non-JSON AI response → fallback. Reason: {}", e.getMessage());
+            return new EvaluationResult(0.0, "AI trả về dữ liệu không đúng định dạng JSON.");
         }
     }
 
-    /**
-     * Sanitize AI response by removing markdown fences and extracting the first
-     * JSON object If JSON braces are present, extract substring between first
-     * '{' and last '}'
-     */
     private String sanitizeAIResponse(String response) {
-        if (response == null) {
-            return "{}";
+        if (response == null || response.isBlank()) return "{}";
+        String s = response.trim()
+                .replaceAll("^```[a-zA-Z]*", "")
+                .replaceAll("```$", "")
+                .trim();
+
+        int first = s.indexOf('{');
+        int last = s.lastIndexOf('}');
+        if (first >= 0 && last > first) {
+            return s.substring(first, last + 1);
         }
-        String s = response.trim();
-
-        if (s.startsWith("```") && s.contains("```")) {
-            s = s.replaceAll("(?s)^```[a-zA-Z]*\\n?", "").replaceAll("```$", "").trim();
-        }
-
-        // Try to extract JSON object by finding first '{' and last '}'
-        int firstBrace = s.indexOf('{');
-        int lastBrace = s.lastIndexOf('}');
-        if (firstBrace >= 0 && lastBrace > firstBrace) {
-            String candidate = s.substring(firstBrace, lastBrace + 1).trim();
-            return candidate;
-        }
-
-        return s.replace("`", "").trim();
-    }
-
-    /**
-     * Tạo đánh giá giả lập khi không có API key hoặc API lỗi
-     */
-    private EvaluationResult createMockEvaluation() {
-        return new EvaluationResult(
-                0.0,
-                "Xin lỗi, vui lòng thử lại vì có một số lỗi xảy ra!"
-        );
+        return s;
     }
 }

@@ -68,21 +68,32 @@ class PosePainter extends CustomPainter {
 
     final paintLine = Paint()
       ..color = Colors.greenAccent
-      ..strokeWidth = 3.0
+      ..strokeWidth = 4.0
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
 
-    // Calculate scale factors based on how the image fits in the display
-    // The image might be portrait or landscape, and display size is fixed
-    final scaleX = size.width / imageSize.width;
-    final scaleY = size.height / imageSize.height;
+    // Calculate scale factors with proper aspect ratio handling
+    // Check if image and canvas have different orientations
+    final imageIsPortrait = imageSize.height > imageSize.width;
+    final canvasIsPortrait = size.height > size.width;
 
-    // Use uniform scaling to maintain aspect ratio
-    final scale = scaleX < scaleY ? scaleX : scaleY;
+    double scaleX, scaleY, scale, offsetX, offsetY;
 
-    // Calculate offsets to center the image
-    final offsetX = (size.width - imageSize.width * scale) / 2;
-    final offsetY = (size.height - imageSize.height * scale) / 2;
+    if (imageIsPortrait == canvasIsPortrait) {
+      // Same orientation - standard scaling
+      scaleX = size.width / imageSize.width;
+      scaleY = size.height / imageSize.height;
+      scale = scaleX < scaleY ? scaleX : scaleY;
+      offsetX = (size.width - imageSize.width * scale) / 2;
+      offsetY = (size.height - imageSize.height * scale) / 2;
+    } else {
+      // Different orientation - swap dimensions for scaling
+      scaleX = size.width / imageSize.height;
+      scaleY = size.height / imageSize.width;
+      scale = scaleX < scaleY ? scaleX : scaleY;
+      offsetX = (size.width - imageSize.height * scale) / 2;
+      offsetY = (size.height - imageSize.width * scale) / 2;
+    }
 
     Color _colorFor(String label) {
       if (label.startsWith('left')) return Colors.lightBlueAccent;
@@ -116,8 +127,8 @@ class PosePainter extends CustomPainter {
 
         if (lm1 == null || lm2 == null) continue;
 
-        // Check likelihood/confidence if available
-        if (lm1.likelihood < 0.5 || lm2.likelihood < 0.5) continue;
+        // Check likelihood/confidence - lowered threshold for better visibility
+        if (lm1.likelihood < 0.3 || lm2.likelihood < 0.3) continue;
 
         double x1 = lm1.x * scale + offsetX;
         double y1 = lm1.y * scale + offsetY;
@@ -130,10 +141,11 @@ class PosePainter extends CustomPainter {
         }
 
         final lineColor = _lineColorFor(type1, type2);
+        final opacity = ((lm1.likelihood + lm2.likelihood) / 2).clamp(0.3, 1.0);
         canvas.drawLine(
           Offset(x1, y1),
           Offset(x2, y2),
-          paintLine..color = lineColor.withOpacity(0.8),
+          paintLine..color = lineColor.withOpacity(opacity),
         );
       }
 
@@ -142,8 +154,8 @@ class PosePainter extends CustomPainter {
         final type = entry.key;
         final lm = entry.value;
 
-        // Skip low confidence landmarks
-        if (lm.likelihood < 0.5) continue;
+        // Skip very low confidence landmarks
+        if (lm.likelihood < 0.3) continue;
 
         double dx = lm.x * scale + offsetX;
         double dy = lm.y * scale + offsetY;
@@ -151,21 +163,31 @@ class PosePainter extends CustomPainter {
 
         final label = type.toString().split('.').last;
         final pointColor = _colorFor(label);
+        final opacity = lm.likelihood.clamp(0.3, 1.0);
+
+        // Draw outer glow for better visibility
+        canvas.drawCircle(
+          Offset(dx, dy),
+          8.0,
+          Paint()
+            ..color = pointColor.withOpacity(0.2)
+            ..style = PaintingStyle.fill,
+        );
 
         // Draw outer circle for better visibility
         canvas.drawCircle(
           Offset(dx, dy),
           6.0,
           Paint()
-            ..color = Colors.black.withOpacity(0.5)
+            ..color = Colors.black.withOpacity(0.6)
             ..style = PaintingStyle.fill,
         );
 
         // Draw point
         canvas.drawCircle(
           Offset(dx, dy),
-          4.0,
-          paintPointCenter..color = pointColor,
+          4.5,
+          paintPointCenter..color = pointColor.withOpacity(opacity),
         );
 
         // Draw label if enabled
@@ -175,18 +197,18 @@ class PosePainter extends CustomPainter {
               text: label,
               style: const TextStyle(
                 color: Colors.white,
-                fontSize: 9,
+                fontSize: 10,
                 fontWeight: FontWeight.bold,
                 shadows: [
-                  Shadow(blurRadius: 3, color: Colors.black, offset: Offset(0, 0)),
-                  Shadow(blurRadius: 3, color: Colors.black, offset: Offset(1, 1)),
+                  Shadow(blurRadius: 4, color: Colors.black, offset: Offset(0, 0)),
+                  Shadow(blurRadius: 4, color: Colors.black, offset: Offset(1, 1)),
                 ],
               ),
             ),
             textDirection: TextDirection.ltr,
             maxLines: 1,
           )..layout();
-          textPainter.paint(canvas, Offset(dx + 7, dy - 5));
+          textPainter.paint(canvas, Offset(dx + 8, dy - 6));
         }
       }
     }

@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_starter/presenter/navigation/navigation.dart';
@@ -28,8 +29,7 @@ import 'package:google_mlkit_commons/google_mlkit_commons.dart'
         InputImageMetadata,
         InputImageFormat,
         InputImageFormatValue,
-        InputImageRotation,
-        InputImageRotationValue;
+        InputImageRotation;
 
 part 'camera_icon_button.dart';
 part 'pose_painter.dart';
@@ -75,6 +75,13 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    // Lock orientation to portrait for better tracking accuracy
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
     _initializeCameraAndDetector();
   }
 
@@ -135,6 +142,11 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
       _showResult = false;
     });
 
+    // Ensure flash is OFF before countdown
+    try {
+      await _cameraController!.setFlashMode(FlashMode.off);
+    } catch (_) {}
+
     // Countdown from 5 to 1
     for (int i = 5; i > 0; i--) {
       if (!mounted || !_isCountingDown) return;
@@ -142,7 +154,7 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
       await Future.delayed(const Duration(seconds: 1));
     }
 
-    // Capture image
+    // Capture image ONCE
     await _captureAndDetect();
 
     setState(() {
@@ -159,7 +171,12 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
       // Stop stream before capturing
       await _stopStream();
 
-      // Take picture
+      // Ensure flash is OFF
+      try {
+        await _cameraController!.setFlashMode(FlashMode.off);
+      } catch (_) {}
+
+      // Take picture ONCE
       final XFile imageFile = await _cameraController!.takePicture();
       debugPrint('📸 Image captured: ${imageFile.path}');
 
@@ -174,9 +191,15 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
       debugPrint('📐 Image size: ${actualImageSize.width}x${actualImageSize.height}');
       debugPrint('📐 Preview size: ${_previewSize?.width}x${_previewSize?.height}');
 
-      // Process image with ML Kit
+      // Get device orientation for proper image processing
+      final orientation = MediaQuery.of(context).orientation;
+      debugPrint('📱 Device orientation: ${orientation.name}');
+
+      // Process image with ML Kit with proper rotation
       final inputImage = InputImage.fromFilePath(imageFile.path);
       final poses = await _poseDetector!.processImage(inputImage);
+
+      debugPrint('🎯 Detected ${poses.length} pose(s)');
 
       setState(() {
         _capturedImage = imageFile;
@@ -422,19 +445,19 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
 
         await controller.initialize();
 
-        // Try to enable autofocus/exposure for a sharper preview
+        // Disable flash completely
         try {
-          await controller.setFocusMode(FocusMode.auto);
+          await controller.setFlashMode(FlashMode.off);
         } catch (_) {}
+
+        // Set focus mode to locked to avoid continuous autofocus (which causes flash blinking)
         try {
-          // Center focus/exposure point (normalized 0..1)
-          await controller.setFocusPoint(const Offset(0.5, 0.5));
+          await controller.setFocusMode(FocusMode.locked);
         } catch (_) {}
+
+        // Set exposure mode to auto but without continuous adjustment
         try {
           await controller.setExposureMode(ExposureMode.auto);
-        } catch (_) {}
-        try {
-          await controller.setExposurePoint(const Offset(0.5, 0.5));
         } catch (_) {}
 
         if (controller.value.isInitialized) {
@@ -452,15 +475,17 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
 
       _previewSize = _cameraController!.value.previewSize;
 
-      // Use accurate pose detection for better results
+      // Use accurate pose detection with static mode for better accuracy
+      // Use stream mode for live preview, but switch to single image mode for capture
       _poseDetector = PoseDetector(
         options: PoseDetectorOptions(
-          mode: PoseDetectionMode.stream,
-          model: PoseDetectionModel.accurate,
+          mode: PoseDetectionMode.stream, // Stream mode for live tracking
+          model: PoseDetectionModel.accurate, // Accurate model for better results
         ),
       );
 
       debugPrint('Camera initialized: ${_previewSize?.width}x${_previewSize?.height}');
+      debugPrint('Pose detector mode: stream, model: accurate');
 
       // Auto-start stream for live preview
       if (mounted) {
@@ -485,10 +510,11 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
     try {
       final bytes = _concatenatePlanes(image.planes);
 
-      final rotationEnum = InputImageRotationValue.fromRawValue(
-            _cameraController!.description.sensorOrientation,
-          ) ??
-          InputImageRotation.rotation0deg;
+      // Get proper rotation based on device orientation and camera sensor
+      final sensorOrientation = _cameraController!.description.sensorOrientation;
+      final rotationCompensation = _getRotationCompensation(sensorOrientation);
+
+      final rotationEnum = rotationCompensation;
 
       final formatEnum =
           InputImageFormatValue.fromRawValue(image.format.raw) ?? InputImageFormat.nv21;
@@ -504,19 +530,12 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
 
       final poses = await _poseDetector!.processImage(inputImage);
 
-      // Log detection results
+      // Log detection results with more detail
       if (poses.isNotEmpty) {
+        final highConfidenceLandmarks =
+            poses.first.landmarks.values.where((lm) => lm.likelihood >= 0.5).length;
         debugPrint(
-            '✅ Detected ${poses.length} pose(s) with ${poses.first.landmarks.length} landmarks');
-
-        // Optionally log JSON data for debugging (currently disabled for performance)
-        // Uncomment to see full pose data:
-        // try {
-        //   final jsonData = _posesToJson(poses);
-        //   debugPrint(jsonEncode(jsonData));
-        // } catch (_) {
-        //   // ignore serialization errors
-        // }
+            '✅ Detected ${poses.length} pose(s) - ${highConfidenceLandmarks}/${poses.first.landmarks.length} landmarks (confidence ≥ 0.5)');
       } else {
         // Only log occasionally to avoid spam
         if (DateTime.now().millisecondsSinceEpoch % 30 == 0) {
@@ -526,22 +545,56 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
 
       _bloc.add(CameraDetectionEvent.posesUpdated(poses));
     } catch (e) {
+      debugPrint('❌ Error processing image: $e');
       _bloc.add(const CameraDetectionEvent.errorOccurred());
     } finally {
       _isProcessing = false;
     }
   }
 
-  // Convert the detected poses into a JSON-friendly structure.
-  // Example output:
-  // [
-  //   {
-  //     "landmarks": [
-  //       {"type": "leftShoulder", "x": 123.4, "y": 567.8, "z": 0.0},
-  //       ...
-  //     ]
-  //   }
-  // ]
+  // Get proper rotation compensation for accurate pose tracking
+  InputImageRotation _getRotationCompensation(int sensorOrientation) {
+    // Get current device orientation
+    final orientation = MediaQuery.of(context).orientation;
+
+    // Calculate rotation based on sensor orientation and device orientation
+    int rotationDegrees = sensorOrientation;
+
+    // Adjust for device orientation
+    if (orientation == Orientation.landscape) {
+      // Landscape mode
+      if (_currentLensDirection == CameraLensDirection.front) {
+        rotationDegrees = (sensorOrientation + 270) % 360;
+      } else {
+        rotationDegrees = (sensorOrientation + 90) % 360;
+      }
+    } else {
+      // Portrait mode
+      if (_currentLensDirection == CameraLensDirection.front) {
+        rotationDegrees = (sensorOrientation + 270) % 360;
+      } else {
+        rotationDegrees = sensorOrientation;
+      }
+    }
+
+    debugPrint(
+        '🔄 Rotation - Sensor: $sensorOrientation°, Device: ${orientation.name}, Final: $rotationDegrees°');
+
+    // Convert degrees to InputImageRotation enum
+    switch (rotationDegrees) {
+      case 0:
+        return InputImageRotation.rotation0deg;
+      case 90:
+        return InputImageRotation.rotation90deg;
+      case 180:
+        return InputImageRotation.rotation180deg;
+      case 270:
+        return InputImageRotation.rotation270deg;
+      default:
+        return InputImageRotation.rotation0deg;
+    }
+  }
+
   List<Map<String, dynamic>> _posesToJson(List<Pose> poses, {required String poseId}) {
     final allTypes = PoseLandmarkType.values;
     return poses.map((pose) {
