@@ -46,7 +46,7 @@ class OverView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Overview',
+                      LocaleKeys.Overview.tr(),
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -56,7 +56,7 @@ class OverView extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Your weekly progress',
+                      LocaleKeys.YourWeeklyProgress.tr(),
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
@@ -88,7 +88,7 @@ class OverView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Total Sessions',
+                      LocaleKeys.TotalSessions.tr(),
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
@@ -113,7 +113,7 @@ class OverView extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(bottom: 8),
                           child: Text(
-                            'poses',
+                            LocaleKeys.Poses.tr(),
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,

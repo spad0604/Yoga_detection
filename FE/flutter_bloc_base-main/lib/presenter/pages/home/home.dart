@@ -1,8 +1,10 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_starter/di.dart';
 import 'package:flutter_starter/main.dart';
+import 'package:flutter_starter/presenter/languages/translation_keys.g.dart';
 import 'package:flutter_starter/presenter/pages/account_page/account_page_bloc.dart';
 import 'package:flutter_starter/presenter/pages/account_page/overall_account_page.dart';
 import 'package:flutter_starter/presenter/pages/activities_page/activities_page.dart';
@@ -155,7 +157,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   child: const Icon(Icons.home_rounded, size: 24, color: AppColors.primaryPurple),
                 ),
-                label: 'Home',
+                label: LocaleKeys.Home.tr(),
               ),
               BottomNavigationBarItem(
                 icon: Container(
@@ -173,7 +175,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   child: Icon(Icons.rss_feed_rounded, size: 24, color: AppColors.secondaryTeal),
                 ),
-                label: 'Feed',
+                label: LocaleKeys.Feed.tr(),
               ),
               BottomNavigationBarItem(
                 icon: Container(
@@ -191,7 +193,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   child: const Icon(Icons.people_rounded, size: 24, color: Colors.blue),
                 ),
-                label: 'Friends',
+                label: LocaleKeys.Friends.tr(),
               ),
               BottomNavigationBarItem(
                 icon: Showcase(
@@ -213,7 +215,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   child: const Icon(Icons.history_rounded, size: 24, color: Colors.orange),
                 ),
-                label: 'History',
+                label: LocaleKeys.History.tr(),
               ),
               BottomNavigationBarItem(
                 icon: Showcase(
@@ -235,7 +237,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   child: const Icon(Icons.person_rounded, size: 24, color: AppColors.accentCoral),
                 ),
-                label: 'Account',
+                label: LocaleKeys.Account.tr(),
               ),
             ],
             onTap: (value) {

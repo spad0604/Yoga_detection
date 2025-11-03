@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_starter/data/entities/response/notification_response.dart';
 import 'package:flutter_starter/presenter/themes/colors.dart';
 import 'package:flutter_starter/presenter/themes/extensions.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_starter/presenter/languages/translation_keys.g.dart';
 
 @RoutePage()
 class NotificationDetailsPage extends StatelessWidget {
@@ -18,7 +20,7 @@ class NotificationDetailsPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Chi tiết thông báo'),
+        title: Text(LocaleKeys.NotificationDetails.tr()),
         backgroundColor: Colors.white,
         elevation: 0,
       ),
@@ -173,24 +175,24 @@ class NotificationDetailsPage extends StatelessWidget {
   }
 
   Widget _buildActionButton(BuildContext context) {
-    String buttonText = 'Xem chi tiết';
+    String buttonText = LocaleKeys.ViewDetails.tr();
     IconData buttonIcon = Icons.arrow_forward;
 
     switch (notification.type) {
       case 'POSE_RESULT':
-        buttonText = 'Xem kết quả';
+        buttonText = LocaleKeys.ViewResults.tr();
         buttonIcon = Icons.self_improvement;
         break;
       case 'SOCIAL':
-        buttonText = 'Xem bài viết';
+        buttonText = LocaleKeys.ViewPost.tr();
         buttonIcon = Icons.article;
         break;
       case 'ROUTINE_REMINDER':
-        buttonText = 'Bắt đầu tập';
+        buttonText = LocaleKeys.StartPractice.tr();
         buttonIcon = Icons.play_arrow;
         break;
       default:
-        buttonText = 'Xem chi tiết';
+        buttonText = LocaleKeys.ViewDetails.tr();
         buttonIcon = Icons.arrow_forward;
     }
 
@@ -221,19 +223,25 @@ class NotificationDetailsPage extends StatelessWidget {
         // Navigate to pose attempt details
         // context.router.push(PoseAttemptDetailsRoute(attemptId: notification.referenceId!));
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Navigate to pose result: ${notification.referenceId}')),
+          SnackBar(
+              content: Text(LocaleKeys.NavigateToPoseResult.tr(
+                  namedArgs: {'id': notification.referenceId ?? ''}))),
         );
         break;
       case 'SOCIAL':
         // Navigate to social post
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Navigate to post: ${notification.referenceId}')),
+          SnackBar(
+              content: Text(
+                  LocaleKeys.NavigateToPost.tr(namedArgs: {'id': notification.referenceId ?? ''}))),
         );
         break;
       case 'ROUTINE_REMINDER':
         // Navigate to routine
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Navigate to routine: ${notification.referenceId}')),
+          SnackBar(
+              content: Text(LocaleKeys.NavigateToRoutine.tr(
+                  namedArgs: {'id': notification.referenceId ?? ''}))),
         );
         break;
       default:

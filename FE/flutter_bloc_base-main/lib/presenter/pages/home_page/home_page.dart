@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_starter/di.dart';
 import 'package:flutter_starter/services/oauth_token_manager/oauth_token_manager.dart';
 import 'package:flutter_starter/gen/app_images.dart';
@@ -19,6 +19,7 @@ import 'package:flutter_starter/presenter/pages/admin/admin_add_edit_pose_page.d
 import 'package:flutter_starter/presenter/widgets/admin_pose_delete_dialog.dart';
 import 'package:flutter_starter/main.dart';
 import 'package:showcaseview/showcaseview.dart';
+import 'package:flutter_starter/presenter/languages/translation_keys.g.dart';
 import 'dart:math';
 
 part 'welcome_banner.dart';
@@ -144,7 +145,7 @@ class _HomePagePageState extends State<HomePagePage> {
                 }
               },
               icon: const Icon(Icons.add),
-              label: const Text('Add Pose'),
+              label: Text(LocaleKeys.AddPose.tr()),
               backgroundColor: AppColors.primaryPurple,
             )
           : null,
@@ -214,8 +215,8 @@ class _HomePagePageState extends State<HomePagePage> {
                       shaderCallback: (bounds) => LinearGradient(
                         colors: AppColors.gradientPurple,
                       ).createShader(bounds),
-                      child: const Text(
-                        'Yoga',
+                      child: Text(
+                        LocaleKeys.Yoga.tr(),
                         style: TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
@@ -306,8 +307,8 @@ class _HomePagePageState extends State<HomePagePage> {
                       // Yoga Poses Section Header
                       Row(
                         children: [
-                          const Text(
-                            'Yoga Poses',
+                          Text(
+                            LocaleKeys.YogaPoses.tr(),
                             style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
@@ -340,9 +341,9 @@ class _HomePagePageState extends State<HomePagePage> {
                                 ),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
-                                  children: const [
+                                  children: [
                                     Text(
-                                      'View All',
+                                      LocaleKeys.ViewAll.tr(),
                                       style: TextStyle(
                                         fontSize: 14,
                                         color: Colors.white,
@@ -385,7 +386,7 @@ class _HomePagePageState extends State<HomePagePage> {
                                     ),
                                     const SizedBox(height: 16),
                                     Text(
-                                      'Loading poses...',
+                                      LocaleKeys.LoadingPoses.tr(),
                                       style: TextStyle(
                                         color: AppColors.textSecondary,
                                         fontSize: 14,
@@ -418,7 +419,7 @@ class _HomePagePageState extends State<HomePagePage> {
                                   ),
                                   const SizedBox(height: 12),
                                   Text(
-                                    'Failed to load poses',
+                                    LocaleKeys.FailedToLoadPoses.tr(),
                                     style: TextStyle(
                                       color: AppColors.error,
                                       fontSize: 16,
@@ -481,7 +482,7 @@ class _HomePagePageState extends State<HomePagePage> {
                                   ),
                                   const SizedBox(height: 16),
                                   Text(
-                                    'No poses available',
+                                    LocaleKeys.NoPosesAvailable.tr(),
                                     style: TextStyle(
                                       color: AppColors.textSecondary,
                                       fontSize: 16,

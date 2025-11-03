@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_starter/gen/app_images.dart';
+import 'package:flutter_starter/presenter/languages/translation_keys.g.dart';
 import 'package:flutter_starter/presenter/navigation/navigation.dart';
-import 'package:flutter_starter/presenter/pages/forgot_password/change_password.dart';
 import 'package:flutter_starter/presenter/pages/forgot_password/forgot_password_bloc.dart';
 import 'package:flutter_starter/presenter/pages/forgot_password/forgot_password_event.dart';
 import 'package:flutter_starter/presenter/pages/forgot_password/forgot_password_state.dart';
@@ -50,7 +50,7 @@ class _TypeCodePageState extends State<TypeCodePage> {
               autoCloseDuration: Duration(seconds: 1),
               context: context,
               type: ToastificationType.success,
-              title: const Text('OTP verified successfully'),
+              title: Text(LocaleKeys.OTPVerifiedSuccessfully.tr()),
             );
             context.router.push(const ResetPasswordRoute());
           } else if (state.status == ForgotPasswordStatus.failure) {

@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_starter/data/states/group_feed/group_feed_bloc.dart';
 import 'package:flutter_starter/data/entities/response/post_response.dart';
 import 'package:flutter_starter/data/entities/response/comment_response.dart';
@@ -13,6 +14,7 @@ import 'package:flutter_starter/data/states/group_feed/group_feed_state.dart';
 import 'package:flutter_starter/presenter/themes/colors.dart';
 import 'package:flutter_starter/di.dart';
 import 'package:flutter_starter/data/repositories/group_posts_repository/group_posts_repository.dart';
+import 'package:flutter_starter/presenter/languages/translation_keys.g.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 @RoutePage()
@@ -98,7 +100,7 @@ class _GroupFeedPageState extends State<GroupFeedPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Create Post',
+                          LocaleKeys.CreatePost.tr(),
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -116,7 +118,7 @@ class _GroupFeedPageState extends State<GroupFeedPage> {
                       controller: controller,
                       maxLines: 6,
                       decoration: InputDecoration(
-                        hintText: 'Share your yoga journey with the group...',
+                        hintText: LocaleKeys.ShareYourYogaJourney.tr(),
                         hintStyle: TextStyle(color: AppColors.textSecondary.withOpacity(0.5)),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16),
@@ -137,7 +139,7 @@ class _GroupFeedPageState extends State<GroupFeedPage> {
                         ElevatedButton.icon(
                           onPressed: pickImages,
                           icon: const Icon(Icons.photo_library),
-                          label: const Text('Add images'),
+                          label: Text(LocaleKeys.AddImages.tr()),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.primaryPurple,
                             foregroundColor: Colors.white,
@@ -219,11 +221,11 @@ class _GroupFeedPageState extends State<GroupFeedPage> {
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Icon(Icons.send, size: 20),
-                          SizedBox(width: 8),
+                        children: [
+                          const Icon(Icons.send, size: 20),
+                          const SizedBox(width: 8),
                           Text(
-                            'Post',
+                            LocaleKeys.Post.tr(),
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
@@ -265,7 +267,7 @@ class _GroupFeedPageState extends State<GroupFeedPage> {
               ),
             ),
             Text(
-              'Group Feed',
+              LocaleKeys.GroupFeed.tr(),
               style: TextStyle(
                 fontSize: 12,
                 color: AppColors.textSecondary,
@@ -314,7 +316,7 @@ class _GroupFeedPageState extends State<GroupFeedPage> {
         onPressed: _showCreatePostDialog,
         backgroundColor: AppColors.primaryPurple,
         icon: const Icon(Icons.add),
-        label: const Text('New Post'),
+        label: Text(LocaleKeys.NewPost.tr()),
       ),
     );
   }
@@ -340,7 +342,7 @@ class _GroupFeedPageState extends State<GroupFeedPage> {
           ),
           const SizedBox(height: 24),
           Text(
-            'No posts yet',
+            LocaleKeys.NoPostsYet.tr(),
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w600,
@@ -349,7 +351,7 @@ class _GroupFeedPageState extends State<GroupFeedPage> {
           ),
           const SizedBox(height: 8),
           Text(
-            'Be the first to share something!',
+            LocaleKeys.BeTheFirstToShare.tr(),
             style: TextStyle(
               fontSize: 14,
               color: AppColors.textSecondary,
@@ -359,7 +361,7 @@ class _GroupFeedPageState extends State<GroupFeedPage> {
           ElevatedButton.icon(
             onPressed: _showCreatePostDialog,
             icon: const Icon(Icons.add),
-            label: const Text('Create Post'),
+            label: Text(LocaleKeys.CreatePost.tr()),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primaryPurple,
               foregroundColor: Colors.white,
@@ -386,7 +388,7 @@ class _GroupFeedPageState extends State<GroupFeedPage> {
           ),
           const SizedBox(height: 16),
           Text(
-            'Failed to load feed',
+            LocaleKeys.FailedToLoadFeed.tr(),
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
@@ -410,7 +412,7 @@ class _GroupFeedPageState extends State<GroupFeedPage> {
                   );
             },
             icon: const Icon(Icons.refresh),
-            label: const Text('Retry'),
+            label: Text(LocaleKeys.Retry.tr()),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primaryPurple,
               foregroundColor: Colors.white,
@@ -674,12 +676,12 @@ class _GroupFeedPageState extends State<GroupFeedPage> {
   }
 
   String _formatTimeAgo(String? createdAt) {
-    if (createdAt == null) return 'Just now';
+    if (createdAt == null) return LocaleKeys.JustNow.tr();
     try {
       final DateTime dateTime = DateTime.parse(createdAt);
       return timeago.format(dateTime, locale: 'en_short');
     } catch (e) {
-      return 'Just now';
+      return LocaleKeys.JustNow.tr();
     }
   }
 
@@ -771,19 +773,19 @@ class _GroupPostDetailSheetState extends State<_GroupPostDetailSheet> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to post comment: $e')),
+          SnackBar(content: Text('${LocaleKeys.FailedToPostComment.tr()}: $e')),
         );
       }
     }
   }
 
   String _formatTimeAgo(String? createdAt) {
-    if (createdAt == null) return 'Just now';
+    if (createdAt == null) return LocaleKeys.JustNow.tr();
     try {
       final DateTime dateTime = DateTime.parse(createdAt);
       return timeago.format(dateTime, locale: 'en_short');
     } catch (e) {
-      return 'Just now';
+      return LocaleKeys.JustNow.tr();
     }
   }
 
@@ -815,7 +817,7 @@ class _GroupPostDetailSheetState extends State<_GroupPostDetailSheet> {
                   children: [
                     Expanded(
                       child: Text(
-                        'Post & Comments',
+                        LocaleKeys.PostAndComments.tr(),
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -841,7 +843,7 @@ class _GroupPostDetailSheetState extends State<_GroupPostDetailSheet> {
                     const SizedBox(height: 16),
                     // Comments section
                     Text(
-                      'Comments',
+                      LocaleKeys.Comments.tr(),
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
@@ -853,7 +855,7 @@ class _GroupPostDetailSheetState extends State<_GroupPostDetailSheet> {
                       const Center(child: CircularProgressIndicator())
                     else if (_comments.isEmpty)
                       Text(
-                        'No comments yet. Be the first!',
+                        LocaleKeys.NoCommentsYet.tr(),
                         style: TextStyle(
                           fontSize: 14,
                           color: AppColors.textSecondary,
@@ -887,7 +889,7 @@ class _GroupPostDetailSheetState extends State<_GroupPostDetailSheet> {
                         controller: _commentController,
                         textInputAction: TextInputAction.send,
                         decoration: InputDecoration(
-                          hintText: 'Write a comment...',
+                          hintText: LocaleKeys.WriteAComment.tr(),
                           hintStyle: TextStyle(
                             color: AppColors.textSecondary.withOpacity(0.5),
                           ),

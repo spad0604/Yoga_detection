@@ -1,4 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_starter/presenter/languages/translation_keys.g.dart';
 // navigation import removed; dialog now returns a boolean and the caller handles navigation
 import 'package:flutter_starter/presenter/themes/colors.dart';
 import 'package:flutter_starter/presenter/widget/custom_button.dart';
@@ -15,12 +17,12 @@ class LogoutDialog extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Logout',
+              LocaleKeys.LogOut.tr(),
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red),
             ),
             const SizedBox(height: 16),
             Text(
-              'Are you sure you want to logout?',
+              LocaleKeys.AreYouSureYouWantToLogout.tr(),
               style: TextStyle(fontSize: 16, color: Colors.black),
             ),
             const SizedBox(height: 24),
@@ -28,7 +30,7 @@ class LogoutDialog extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 CustomButton(
-                  text: 'Cancel',
+                  text: LocaleKeys.Cancel.tr(),
                   backgroundColor: AppColors.cyan,
                   onPressed: () {
                     Navigator.of(context).pop(false);
@@ -38,7 +40,7 @@ class LogoutDialog extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 CustomButton(
-                  text: 'Logout',
+                  text: LocaleKeys.Logout.tr(),
                   backgroundColor: Colors.red,
                   onPressed: () {
                     // Return true to indicate the user confirmed logout.

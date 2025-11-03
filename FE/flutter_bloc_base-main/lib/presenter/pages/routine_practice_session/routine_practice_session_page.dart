@@ -14,6 +14,8 @@ import 'package:flutter_starter/data/states/practice_session/practice_session_st
 import 'package:flutter_starter/di.dart';
 import 'package:flutter_starter/presenter/pages/practice_session_summary/practice_session_summary_page.dart';
 import 'package:google_mlkit_pose_detection/google_mlkit_pose_detection.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_starter/presenter/languages/translation_keys.g.dart';
 
 part 'pose_painter.dart';
 
@@ -355,9 +357,9 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: const Text(
-                      'Tiếp tục',
-                      style: TextStyle(
+                    child: Text(
+                      'Continue'.tr(),
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
@@ -466,16 +468,16 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
     final shouldComplete = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Hoàn thành bài tập?'),
-        content: const Text('Bạn có chắc chắn muốn hoàn thành bài tập này?'),
+        title: Text(LocaleKeys.CompleteSessionConfirmTitle.tr()),
+        content: Text(LocaleKeys.CompleteSessionConfirmContent.tr()),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Hủy'),
+            child: Text(LocaleKeys.Cancel.tr()),
           ),
           ElevatedButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Hoàn thành'),
+            child: Text(LocaleKeys.Complete.tr()),
           ),
         ],
       ),
@@ -536,9 +538,9 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
           final session = state.session;
           if (session == null) {
             return Scaffold(
-              appBar: AppBar(title: const Text('Lỗi')),
-              body: const Center(
-                child: Text('Không thể bắt đầu buổi tập'),
+              appBar: AppBar(title: Text(LocaleKeys.Error.tr())),
+              body: Center(
+                child: Text(LocaleKeys.CannotStartSession.tr()),
               ),
             );
           }
@@ -634,7 +636,7 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
               const Center(
                 child: CircularProgressIndicator(color: Colors.white),
               ),
-            
+
             // Pose overlay on captured image
             if (_showCapturedImage && _detectedPoses.isNotEmpty && _capturedImageSize != null)
               Positioned.fill(
@@ -645,13 +647,13 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
                   ),
                 ),
               ),
-            
+
             // Loading overlay when analyzing
             if (_isAnalyzing)
               Positioned.fill(
                 child: Container(
                   color: Colors.black.withOpacity(0.3),
-                  child: const Center(
+                  child: Center(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -661,7 +663,7 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
                         ),
                         SizedBox(height: 16),
                         Text(
-                          'Đang phân tích tư thế...',
+                          'AnalyzingPose'.tr(),
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 16,
@@ -679,7 +681,7 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
                   ),
                 ),
               ),
-            
+
             // Current pose info overlay (top)
             if (!_isAnalyzing)
               Positioned(
@@ -696,7 +698,7 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        session.currentPoseName ?? 'Đang tải...',
+                        session.currentPoseName ?? 'Hello'.tr(),
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 18,
@@ -719,7 +721,7 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
                   ),
                 ),
               ),
-            
+
             // Timer (bottom left)
             if (!_isAnalyzing)
               Positioned(
@@ -748,7 +750,7 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
                   ),
                 ),
               ),
-            
+
             // Camera flip button (top right)
             if (!_isAnalyzing && !_showCapturedImage)
               Positioned(
@@ -775,7 +777,9 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
         ),
       ),
     );
-  }  Widget _buildControls(PracticeSession session, BuildContext blocContext) {
+  }
+
+  Widget _buildControls(PracticeSession session, BuildContext blocContext) {
     final isLastPose = session.currentPoseIndex >= session.totalPoses - 1;
 
     return SafeArea(

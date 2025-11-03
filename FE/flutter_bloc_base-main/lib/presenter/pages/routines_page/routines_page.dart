@@ -1,12 +1,14 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_starter/data/entities/response/yoga_routine.dart';
 import 'package:flutter_starter/data/states/routines/routines_bloc.dart';
 import 'package:flutter_starter/data/states/routines/routines_event.dart';
 import 'package:flutter_starter/data/states/routines/routines_state.dart';
 import 'package:flutter_starter/di.dart';
 import 'package:flutter_starter/presenter/navigation/navigation.dart';
+import 'package:flutter_starter/presenter/languages/translation_keys.g.dart';
 
 @RoutePage()
 class RoutinesPage extends StatefulWidget implements AutoRouteWrapper {
@@ -43,13 +45,13 @@ class _RoutinesPageState extends State<RoutinesPage> with SingleTickerProviderSt
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Workout Programs'),
+        title: Text(LocaleKeys.WorkoutPrograms.tr()),
         bottom: TabBar(
           controller: _tabController,
-          tabs: const [
-            Tab(text: 'All Routines'),
-            Tab(text: 'In Progress'),
-            Tab(text: 'Completed'),
+          tabs: [
+            Tab(text: LocaleKeys.AllRoutines.tr()),
+            Tab(text: LocaleKeys.InProgress.tr()),
+            Tab(text: LocaleKeys.Completed.tr()),
           ],
         ),
       ),
@@ -82,7 +84,7 @@ class _RoutinesPageState extends State<RoutinesPage> with SingleTickerProviderSt
                   onPressed: () {
                     context.read<RoutinesBloc>().add(const RoutinesLoadRequested());
                   },
-                  child: const Text('Retry'),
+                  child: Text(LocaleKeys.Retry.tr()),
                 ),
               ],
             ),
@@ -119,8 +121,8 @@ class _RoutinesPageState extends State<RoutinesPage> with SingleTickerProviderSt
         }
 
         if (state.inProgressRoutines.isEmpty) {
-          return const Center(
-            child: Text('No routines in progress.\nStart a routine to see it here!'),
+          return Center(
+            child: Text(LocaleKeys.NoRoutinesInProgress.tr()),
           );
         }
 
@@ -144,8 +146,8 @@ class _RoutinesPageState extends State<RoutinesPage> with SingleTickerProviderSt
         }
 
         if (state.completedRoutines.isEmpty) {
-          return const Center(
-            child: Text('No completed routines yet.\nKeep practicing!'),
+          return Center(
+            child: Text(LocaleKeys.NoCompletedRoutinesYet.tr()),
           );
         }
 
@@ -194,7 +196,7 @@ class _RoutineCard extends StatelessWidget {
                   ),
                 ),
               ),
-            
+
             Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
@@ -207,8 +209,8 @@ class _RoutineCard extends StatelessWidget {
                         child: Text(
                           routine.name,
                           style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                                fontWeight: FontWeight.bold,
+                              ),
                         ),
                       ),
                       if (routine.isPremium)
@@ -218,8 +220,8 @@ class _RoutineCard extends StatelessWidget {
                             color: Colors.amber,
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: const Text(
-                            'PRO',
+                          child: Text(
+                            LocaleKeys.PRO.tr(),
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
@@ -229,9 +231,9 @@ class _RoutineCard extends StatelessWidget {
                         ),
                     ],
                   ),
-                  
+
                   const SizedBox(height: 8),
-                  
+
                   // Description
                   if (routine.description != null)
                     Text(
@@ -239,12 +241,12 @@ class _RoutineCard extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.grey[600],
-                      ),
+                            color: Colors.grey[600],
+                          ),
                     ),
-                  
+
                   const SizedBox(height: 12),
-                  
+
                   // Info row
                   Row(
                     children: [
@@ -264,23 +266,25 @@ class _RoutineCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  
+
                   // Progress bar (if exists)
-                  if (routine.userProgress != null && 
+                  if (routine.userProgress != null &&
                       routine.userProgress!.completionPercentage > 0) ...[
                     const SizedBox(height: 12),
                     LinearProgressIndicator(
                       value: routine.userProgress!.completionPercentage / 100,
                       backgroundColor: Colors.grey[200],
                       valueColor: AlwaysStoppedAnimation<Color>(
-                        routine.userProgress!.isCompleted 
-                            ? Colors.green 
+                        routine.userProgress!.isCompleted
+                            ? Colors.green
                             : Theme.of(context).primaryColor,
                       ),
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '${routine.userProgress!.completionPercentage.toStringAsFixed(0)}% completed',
+                      LocaleKeys.PercentCompleted.tr(namedArgs: {
+                        'percent': routine.userProgress!.completionPercentage.toStringAsFixed(0)
+                      }),
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],
@@ -364,7 +368,8 @@ class _ProgressCard extends StatelessWidget {
               value: progress.completionPercentage / 100,
             ),
             const SizedBox(height: 4),
-            Text('${progress.completionPercentage.toStringAsFixed(0)}% completed'),
+            Text(LocaleKeys.PercentCompleted.tr(
+                namedArgs: {'percent': progress.completionPercentage.toStringAsFixed(0)})),
           ],
         ),
         isThreeLine: true,
@@ -372,4 +377,3 @@ class _ProgressCard extends StatelessWidget {
     );
   }
 }
-

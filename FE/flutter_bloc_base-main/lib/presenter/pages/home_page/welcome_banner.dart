@@ -62,7 +62,7 @@ class WelcomeBanner extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Hi, ${_bloc.state.information?.firstName ?? 'User'} 👋',
+                            '${LocaleKeys.Hi.tr()}, ${_bloc.state.information?.firstName ?? LocaleKeys.User.tr()} 👋',
                             style: const TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
@@ -72,7 +72,7 @@ class WelcomeBanner extends StatelessWidget {
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            'Ready for your\nyoga journey today?',
+                            LocaleKeys.ReadyForYogaJourney.tr(),
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w500,
@@ -105,7 +105,7 @@ class WelcomeBanner extends StatelessWidget {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text(
-                                    'Begin',
+                                    LocaleKeys.Begin.tr(),
                                     style: TextStyle(
                                       fontSize: 16,
                                       color: AppColors.secondaryTeal,

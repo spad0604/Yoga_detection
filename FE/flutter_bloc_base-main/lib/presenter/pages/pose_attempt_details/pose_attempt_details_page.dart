@@ -1,8 +1,10 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_starter/data/entities/response/user_yoga_pose_model.dart';
 import 'package:flutter_starter/presenter/themes/colors.dart';
 import 'package:flutter_starter/presenter/themes/extensions.dart';
+import 'package:flutter_starter/presenter/languages/translation_keys.g.dart';
 
 @RoutePage()
 class PoseAttemptDetailsPage extends StatelessWidget {
@@ -21,7 +23,7 @@ class PoseAttemptDetailsPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Chi tiết kết quả'),
+        title: Text(LocaleKeys.PoseResultDetails.tr()),
         backgroundColor: Colors.white,
         elevation: 0,
       ),
@@ -93,7 +95,7 @@ class PoseAttemptDetailsPage extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Điểm số',
+                              LocaleKeys.Score.tr(),
                               style: TextStyle(
                                 fontSize: 14,
                                 color: AppColors.textSecondary,
@@ -127,7 +129,7 @@ class PoseAttemptDetailsPage extends StatelessWidget {
                   // Date info
                   _buildInfoRow(
                     icon: Icons.calendar_today,
-                    label: 'Ngày thực hiện',
+                    label: LocaleKeys.DatePerformed.tr(),
                     value: poseAttempt.createAt.dateTimeToDayMonDay(),
                   ),
 
@@ -135,7 +137,7 @@ class PoseAttemptDetailsPage extends StatelessWidget {
 
                   _buildInfoRow(
                     icon: Icons.access_time,
-                    label: 'Thời gian',
+                    label: LocaleKeys.TimePerformed.tr(),
                     value:
                         '${poseAttempt.createAt.hour.toString().padLeft(2, '0')}:${poseAttempt.createAt.minute.toString().padLeft(2, '0')}',
                   ),
@@ -166,7 +168,7 @@ class PoseAttemptDetailsPage extends StatelessWidget {
                               ),
                               const SizedBox(width: 8),
                               Text(
-                                'Nhận xét từ AI',
+                                LocaleKeys.AIComments.tr(),
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
@@ -266,10 +268,10 @@ class PoseAttemptDetailsPage extends StatelessWidget {
   }
 
   String _getScoreLabel(double score) {
-    if (score >= 90) return 'Xuất sắc!';
-    if (score >= 80) return 'Tốt!';
-    if (score >= 70) return 'Khá!';
-    if (score >= 60) return 'Trung bình';
-    return 'Cần cải thiện';
+    if (score >= 90) return LocaleKeys.Excellent.tr();
+    if (score >= 80) return LocaleKeys.Good.tr();
+    if (score >= 70) return LocaleKeys.Fair.tr();
+    if (score >= 60) return LocaleKeys.Average.tr();
+    return LocaleKeys.NeedsImprovement.tr();
   }
 }

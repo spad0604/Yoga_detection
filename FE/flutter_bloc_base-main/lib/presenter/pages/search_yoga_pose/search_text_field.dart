@@ -20,7 +20,7 @@ class SearchTextField extends StatelessWidget {
         decoration: InputDecoration(
           hoverColor: AppColors.primaryBlue,
           focusColor: AppColors.primaryBlue,
-          hintText: 'Search',
+          hintText: LocaleKeys.Search.tr(),
           fillColor: AppColors.grey200,
           border: OutlineInputBorder(
             borderSide: BorderSide.none,

@@ -6,6 +6,8 @@ import 'package:flutter_starter/data/states/routine_details/routine_details_bloc
 import 'package:flutter_starter/data/states/routine_details/routine_details_event.dart';
 import 'package:flutter_starter/data/states/routine_details/routine_details_state.dart';
 import 'package:flutter_starter/di.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_starter/presenter/languages/translation_keys.g.dart';
 import 'package:flutter_starter/presenter/pages/routine_practice_session/routine_practice_session_page.dart';
 
 @RoutePage()
@@ -53,7 +55,7 @@ class _RoutineDetailsPageState extends State<RoutineDetailsPage> {
                             RoutineDetailsLoadRequested(widget.routineId),
                           );
                     },
-                    child: const Text('Retry'),
+                    child: Text(LocaleKeys.Retry.tr()),
                   ),
                 ],
               ),
@@ -61,7 +63,7 @@ class _RoutineDetailsPageState extends State<RoutineDetailsPage> {
           }
 
           if (state.routine == null) {
-            return const Center(child: Text('Routine not found'));
+            return Center(child: Text(LocaleKeys.RoutineNotFound.tr()));
           }
 
           return _buildContent(context, state.routine!);
@@ -396,7 +398,9 @@ class _PoseListItem extends StatelessWidget {
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (pose.durationSeconds != null) Text('Duration: ${pose.durationSeconds}s'),
+            if (pose.durationSeconds != null)
+              Text(
+                  LocaleKeys.DurationSeconds.tr(namedArgs: {'seconds': '${pose.durationSeconds}'})),
             if (pose.instructions != null)
               Text(
                 pose.instructions!,

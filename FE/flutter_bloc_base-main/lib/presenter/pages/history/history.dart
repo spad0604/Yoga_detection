@@ -2,6 +2,7 @@ import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_starter/data/entities/response/practice_session.dart';
 import 'package:flutter_starter/data/entities/response/user_yoga_pose_model.dart';
 import 'package:flutter_starter/di.dart';
@@ -12,6 +13,7 @@ import 'package:flutter_starter/presenter/pages/history/history_state.dart';
 import 'package:flutter_starter/presenter/pages/practice_session_summary/practice_session_summary_page.dart';
 import 'package:flutter_starter/presenter/themes/colors.dart';
 import 'package:flutter_starter/presenter/themes/extensions.dart';
+import 'package:flutter_starter/presenter/languages/translation_keys.g.dart';
 
 part 'custom_calendar.dart';
 part 'session_history_card.dart';
@@ -94,8 +96,8 @@ class _HistoryPageState extends State<HistoryPage> with SingleTickerProviderStat
             shaderCallback: (bounds) => LinearGradient(
               colors: AppColors.gradientPurple,
             ).createShader(bounds),
-            child: const Text(
-              'Workout History',
+            child: Text(
+              LocaleKeys.WorkoutHistory.tr(),
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -118,9 +120,9 @@ class _HistoryPageState extends State<HistoryPage> with SingleTickerProviderStat
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
                   ),
-                  tabs: const [
-                    Tab(text: 'Practice Sessions'),
-                    Tab(text: 'Individual Poses'),
+                  tabs: [
+                    Tab(text: LocaleKeys.PracticeSessions.tr()),
+                    Tab(text: LocaleKeys.IndividualPoses.tr()),
                   ],
                 ),
                 Container(
@@ -196,7 +198,7 @@ class _HistoryPageState extends State<HistoryPage> with SingleTickerProviderStat
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          _selectedDate?.dateTimeToDayMonDay() ?? 'Select a date',
+                          _selectedDate?.dateTimeToDayMonDay() ?? LocaleKeys.SelectADate.tr(),
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
@@ -215,7 +217,7 @@ class _HistoryPageState extends State<HistoryPage> with SingleTickerProviderStat
                     Expanded(
                       child: _statsCard(
                         icon: Icons.fitness_center,
-                        label: 'Total',
+                        label: LocaleKeys.Total.tr(),
                         value: state.sessions.length.toString(),
                         color: AppColors.primaryPurple,
                       ),
@@ -224,7 +226,7 @@ class _HistoryPageState extends State<HistoryPage> with SingleTickerProviderStat
                     Expanded(
                       child: _statsCard(
                         icon: Icons.star,
-                        label: 'Avg Score',
+                        label: LocaleKeys.AverageScore.tr(),
                         value: state.sessions.isEmpty
                             ? '0'
                             : (state.sessions.map((s) => s.averageScore).reduce((a, b) => a + b) /
@@ -245,7 +247,7 @@ class _HistoryPageState extends State<HistoryPage> with SingleTickerProviderStat
                   Padding(
                     padding: const EdgeInsets.only(bottom: 12),
                     child: Text(
-                      'Practice Sessions',
+                      LocaleKeys.PracticeSessions.tr(),
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w600,
@@ -272,7 +274,7 @@ class _HistoryPageState extends State<HistoryPage> with SingleTickerProviderStat
                           const Icon(Icons.error_outline, size: 48, color: Colors.red),
                           const SizedBox(height: 16),
                           Text(
-                            state.error?.message ?? 'Failed to load history',
+                            state.error?.message ?? LocaleKeys.FailedToLoadHistory.tr(),
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 14,
@@ -282,8 +284,8 @@ class _HistoryPageState extends State<HistoryPage> with SingleTickerProviderStat
                         ],
                       ),
                     ),
-                  )
-                else if (state.sessions.isEmpty)
+                  ),
+                if (state.poses.isEmpty)
                   Center(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 24),
@@ -309,7 +311,7 @@ class _HistoryPageState extends State<HistoryPage> with SingleTickerProviderStat
                           ),
                           const SizedBox(height: 16),
                           Text(
-                            'No practice sessions yet',
+                            LocaleKeys.NoPracticeSessionsYet.tr(),
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
@@ -318,7 +320,7 @@ class _HistoryPageState extends State<HistoryPage> with SingleTickerProviderStat
                           ),
                           const SizedBox(height: 6),
                           Text(
-                            'Start practicing with routines',
+                            LocaleKeys.StartPracticingWithRoutines.tr(),
                             style: TextStyle(
                               fontSize: 13,
                               color: AppColors.textSecondary,
@@ -386,7 +388,7 @@ class _HistoryPageState extends State<HistoryPage> with SingleTickerProviderStat
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          _selectedDate?.dateTimeToDayMonDay() ?? 'Select a date',
+                          _selectedDate?.dateTimeToDayMonDay() ?? LocaleKeys.SelectADate.tr(),
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
@@ -435,7 +437,7 @@ class _HistoryPageState extends State<HistoryPage> with SingleTickerProviderStat
                   Padding(
                     padding: const EdgeInsets.only(bottom: 12),
                     child: Text(
-                      'Workout Sessions',
+                      LocaleKeys.WorkoutSessions.tr(),
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w600,
@@ -499,7 +501,7 @@ class _HistoryPageState extends State<HistoryPage> with SingleTickerProviderStat
                           ),
                           const SizedBox(height: 16),
                           Text(
-                            'No workouts yet',
+                            LocaleKeys.NoWorkoutsYet.tr(),
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
@@ -508,7 +510,7 @@ class _HistoryPageState extends State<HistoryPage> with SingleTickerProviderStat
                           ),
                           const SizedBox(height: 6),
                           Text(
-                            'Start practicing yoga',
+                            LocaleKeys.StartPracticingYoga.tr(),
                             style: TextStyle(
                               fontSize: 13,
                               color: AppColors.textSecondary,

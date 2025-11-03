@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_starter/data/entities/response/friend_response.dart';
@@ -6,6 +7,7 @@ import 'package:flutter_starter/data/states/friends/friends_bloc.dart';
 import 'package:flutter_starter/data/states/friends/friends_event.dart';
 import 'package:flutter_starter/data/states/friends/friends_state.dart';
 import 'package:flutter_starter/di.dart';
+import 'package:flutter_starter/presenter/languages/translation_keys.g.dart';
 
 @RoutePage()
 class FriendsPage extends StatefulWidget implements AutoRouteWrapper {
@@ -56,12 +58,12 @@ class _FriendsPageState extends State<FriendsPage> with SingleTickerProviderStat
   Widget _buildContent() {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Friends'),
+        title: Text(LocaleKeys.Friends.tr()),
         bottom: TabBar(
           controller: _tabController,
-          tabs: const [
-            Tab(text: 'My Friends', icon: Icon(Icons.people)),
-            Tab(text: 'Requests', icon: Icon(Icons.person_add)),
+          tabs: [
+            Tab(text: LocaleKeys.MyFriends.tr(), icon: const Icon(Icons.people)),
+            Tab(text: LocaleKeys.Requests.tr(), icon: const Icon(Icons.person_add)),
           ],
         ),
       ),
@@ -75,7 +77,7 @@ class _FriendsPageState extends State<FriendsPage> with SingleTickerProviderStat
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddFriendDialog(context),
         child: const Icon(Icons.person_add),
-        tooltip: 'Add Friend',
+        tooltip: LocaleKeys.AddFriend.tr(),
       ),
     );
   }
@@ -98,7 +100,7 @@ class _FriendsPageState extends State<FriendsPage> with SingleTickerProviderStat
                   onPressed: () {
                     context.read<FriendsBloc>().add(const FriendsLoadFriends());
                   },
-                  child: const Text('Retry'),
+                  child: Text(LocaleKeys.Retry.tr()),
                 ),
               ],
             ),
@@ -113,12 +115,12 @@ class _FriendsPageState extends State<FriendsPage> with SingleTickerProviderStat
                 Icon(Icons.people_outline, size: 64, color: Colors.grey[400]),
                 const SizedBox(height: 16),
                 Text(
-                  'No friends yet',
+                  LocaleKeys.NoFriendsYet.tr(),
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Add friends by email to get started!',
+                  LocaleKeys.AddFriendsByEmail.tr(),
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Colors.grey[600],
                       ),
@@ -160,12 +162,12 @@ class _FriendsPageState extends State<FriendsPage> with SingleTickerProviderStat
                 Icon(Icons.person_add_outlined, size: 64, color: Colors.grey[400]),
                 const SizedBox(height: 16),
                 Text(
-                  'No pending requests',
+                  LocaleKeys.NoPendingRequests.tr(),
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Friend requests will appear here',
+                  LocaleKeys.FriendRequestsWillAppearHere.tr(),
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Colors.grey[600],
                       ),
@@ -243,7 +245,7 @@ class _FriendsPageState extends State<FriendsPage> with SingleTickerProviderStat
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Add Friend',
+                            LocaleKeys.AddFriend.tr(),
                             style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
@@ -252,7 +254,7 @@ class _FriendsPageState extends State<FriendsPage> with SingleTickerProviderStat
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            'Enter your friend\'s email',
+                            LocaleKeys.EnterFriendsEmail.tr(),
                             style: TextStyle(
                               fontSize: 14,
                               color: Colors.grey.shade600,
@@ -323,7 +325,7 @@ class _FriendsPageState extends State<FriendsPage> with SingleTickerProviderStat
                           side: BorderSide(color: Colors.grey.shade300),
                         ),
                         child: Text(
-                          'Cancel',
+                          LocaleKeys.Cancel.tr(),
                           style: TextStyle(
                             color: Colors.grey.shade700,
                             fontWeight: FontWeight.w600,
@@ -343,11 +345,11 @@ class _FriendsPageState extends State<FriendsPage> with SingleTickerProviderStat
                             Navigator.pop(dialogContext);
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                content: const Row(
+                                content: Row(
                                   children: [
                                     Icon(Icons.check_circle, color: Colors.white),
                                     SizedBox(width: 8),
-                                    Text('Friend request sent!'),
+                                    Text(LocaleKeys.FriendRequestSent.tr()),
                                   ],
                                 ),
                                 backgroundColor: Colors.green,
@@ -368,8 +370,8 @@ class _FriendsPageState extends State<FriendsPage> with SingleTickerProviderStat
                           ),
                           elevation: 2,
                         ),
-                        child: const Text(
-                          'Send Request',
+                        child: Text(
+                          LocaleKeys.SendRequest.tr(),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
@@ -388,7 +390,8 @@ class _FriendsPageState extends State<FriendsPage> with SingleTickerProviderStat
   }
 }
 
-class _FriendsPageContentState extends State<FriendsPageContent> with SingleTickerProviderStateMixin {
+class _FriendsPageContentState extends State<FriendsPageContent>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -407,12 +410,12 @@ class _FriendsPageContentState extends State<FriendsPageContent> with SingleTick
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Friends'),
+        title: Text(LocaleKeys.Friends.tr()),
         bottom: TabBar(
           controller: _tabController,
-          tabs: const [
-            Tab(text: 'My Friends', icon: Icon(Icons.people)),
-            Tab(text: 'Requests', icon: Icon(Icons.person_add)),
+          tabs: [
+            Tab(text: LocaleKeys.MyFriends.tr(), icon: const Icon(Icons.people)),
+            Tab(text: LocaleKeys.Requests.tr(), icon: const Icon(Icons.person_add)),
           ],
         ),
       ),
@@ -426,7 +429,7 @@ class _FriendsPageContentState extends State<FriendsPageContent> with SingleTick
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddFriendDialog(context),
         child: const Icon(Icons.person_add),
-        tooltip: 'Add Friend',
+        tooltip: LocaleKeys.AddFriend.tr(),
       ),
     );
   }
@@ -449,7 +452,7 @@ class _FriendsPageContentState extends State<FriendsPageContent> with SingleTick
                   onPressed: () {
                     context.read<FriendsBloc>().add(const FriendsLoadFriends());
                   },
-                  child: const Text('Retry'),
+                  child: Text(LocaleKeys.Retry.tr()),
                 ),
               ],
             ),
@@ -464,12 +467,12 @@ class _FriendsPageContentState extends State<FriendsPageContent> with SingleTick
                 Icon(Icons.people_outline, size: 64, color: Colors.grey[400]),
                 const SizedBox(height: 16),
                 Text(
-                  'No friends yet',
+                  LocaleKeys.NoFriendsYet.tr(),
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Add friends by email to get started!',
+                  LocaleKeys.AddFriendsByEmail.tr(),
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Colors.grey[600],
                       ),
@@ -511,12 +514,12 @@ class _FriendsPageContentState extends State<FriendsPageContent> with SingleTick
                 Icon(Icons.person_add_outlined, size: 64, color: Colors.grey[400]),
                 const SizedBox(height: 16),
                 Text(
-                  'No pending requests',
+                  LocaleKeys.NoPendingRequests.tr(),
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Friend requests will appear here',
+                  LocaleKeys.FriendRequestsWillAppearHere.tr(),
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Colors.grey[600],
                       ),
@@ -594,7 +597,7 @@ class _FriendsPageContentState extends State<FriendsPageContent> with SingleTick
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Add Friend',
+                            LocaleKeys.AddFriend.tr(),
                             style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
@@ -621,7 +624,7 @@ class _FriendsPageContentState extends State<FriendsPageContent> with SingleTick
                   keyboardType: TextInputType.emailAddress,
                   autofocus: true,
                   decoration: InputDecoration(
-                    labelText: 'Email Address',
+                    labelText: LocaleKeys.Email.tr(),
                     hintText: 'friend@example.com',
                     prefixIcon: Container(
                       margin: const EdgeInsets.all(8),
@@ -674,7 +677,7 @@ class _FriendsPageContentState extends State<FriendsPageContent> with SingleTick
                           side: BorderSide(color: Colors.grey.shade300),
                         ),
                         child: Text(
-                          'Cancel',
+                          LocaleKeys.Cancel.tr(),
                           style: TextStyle(
                             color: Colors.grey.shade700,
                             fontWeight: FontWeight.w600,
@@ -694,11 +697,11 @@ class _FriendsPageContentState extends State<FriendsPageContent> with SingleTick
                             Navigator.pop(dialogContext);
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                content: const Row(
+                                content: Row(
                                   children: [
                                     Icon(Icons.check_circle, color: Colors.white),
                                     SizedBox(width: 8),
-                                    Text('Friend request sent!'),
+                                    Text(LocaleKeys.FriendRequestSent.tr()),
                                   ],
                                 ),
                                 backgroundColor: Colors.green,
@@ -719,8 +722,8 @@ class _FriendsPageContentState extends State<FriendsPageContent> with SingleTick
                           ),
                           elevation: 2,
                         ),
-                        child: const Text(
-                          'Send Request',
+                        child: Text(
+                          LocaleKeys.SendRequest.tr(),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
@@ -752,14 +755,10 @@ class _FriendCard extends StatelessWidget {
         leading: CircleAvatar(
           radius: 28,
           backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
-          backgroundImage: friend.avatarUrl != null
-              ? NetworkImage(friend.avatarUrl!)
-              : null,
+          backgroundImage: friend.avatarUrl != null ? NetworkImage(friend.avatarUrl!) : null,
           child: friend.avatarUrl == null
               ? Text(
-                  friend.username.isNotEmpty
-                      ? friend.username[0].toUpperCase()
-                      : '?',
+                  friend.username.isNotEmpty ? friend.username[0].toUpperCase() : '?',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -782,7 +781,8 @@ class _FriendCard extends StatelessWidget {
                 children: [
                   Icon(Icons.star, size: 16, color: Colors.amber),
                   const SizedBox(width: 4),
-                  Text('Avg Score: ${friend.averageScore!.toStringAsFixed(1)}'),
+                  Text(LocaleKeys.AvgScore.tr(
+                      namedArgs: {'score': friend.averageScore!.toStringAsFixed(1)})),
                 ],
               ),
             ],
@@ -790,13 +790,13 @@ class _FriendCard extends StatelessWidget {
         ),
         trailing: PopupMenuButton(
           itemBuilder: (context) => [
-            const PopupMenuItem(
+            PopupMenuItem(
               value: 'remove',
               child: Row(
                 children: [
-                  Icon(Icons.delete, color: Colors.red),
-                  SizedBox(width: 8),
-                  Text('Remove Friend'),
+                  const Icon(Icons.delete, color: Colors.red),
+                  const SizedBox(width: 8),
+                  Text(LocaleKeys.RemoveFriend.tr()),
                 ],
               ),
             ),
@@ -816,12 +816,12 @@ class _FriendCard extends StatelessWidget {
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Remove Friend'),
-        content: Text('Are you sure you want to remove ${friend.username}?'),
+        title: Text(LocaleKeys.RemoveFriend.tr()),
+        content: Text(LocaleKeys.ConfirmRemoveFriend.tr(namedArgs: {'username': friend.username})),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
-            child: const Text('Cancel'),
+            child: Text(LocaleKeys.Cancel.tr()),
           ),
           ElevatedButton(
             onPressed: () {
@@ -830,11 +830,11 @@ class _FriendCard extends StatelessWidget {
                   );
               Navigator.pop(dialogContext);
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Friend removed')),
+                SnackBar(content: Text(LocaleKeys.FriendRemoved.tr())),
               );
             },
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text('Remove'),
+            child: Text(LocaleKeys.Remove.tr()),
           ),
         ],
       ),
@@ -855,14 +855,10 @@ class _PendingRequestCard extends StatelessWidget {
         leading: CircleAvatar(
           radius: 28,
           backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
-          backgroundImage: request.avatarUrl != null
-              ? NetworkImage(request.avatarUrl!)
-              : null,
+          backgroundImage: request.avatarUrl != null ? NetworkImage(request.avatarUrl!) : null,
           child: request.avatarUrl == null
               ? Text(
-                  request.username.isNotEmpty
-                      ? request.username[0].toUpperCase()
-                      : '?',
+                  request.username.isNotEmpty ? request.username[0].toUpperCase() : '?',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -886,13 +882,13 @@ class _PendingRequestCard extends StatelessWidget {
                       FriendsAcceptRequest(request.friendshipId),
                     );
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Friend request accepted!'),
+                  SnackBar(
+                    content: Text(LocaleKeys.FriendRequestAccepted.tr()),
                     backgroundColor: Colors.green,
                   ),
                 );
               },
-              tooltip: 'Accept',
+              tooltip: LocaleKeys.Accept.tr(),
             ),
             IconButton(
               icon: const Icon(Icons.cancel, color: Colors.red),
@@ -901,10 +897,10 @@ class _PendingRequestCard extends StatelessWidget {
                       FriendsRejectRequest(request.friendshipId),
                     );
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Request rejected')),
+                  SnackBar(content: Text(LocaleKeys.RequestRejected.tr())),
                 );
               },
-              tooltip: 'Reject',
+              tooltip: LocaleKeys.Reject.tr(),
             ),
           ],
         ),
@@ -912,4 +908,3 @@ class _PendingRequestCard extends StatelessWidget {
     );
   }
 }
-

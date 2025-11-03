@@ -2,30 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter_starter/di.dart';
 import 'package:flutter_starter/data/sources/network/network.dart';
 import 'package:dio/dio.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_starter/presenter/languages/translation_keys.g.dart';
 
 class AdminPoseDeleteDialog {
   static Future<bool?> show(BuildContext context, String poseId, String poseName) {
     return showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Pose'),
-        content: Text('Are you sure you want to delete "$poseName"?\n\nThis action cannot be undone.'),
+        title: Text(LocaleKeys.DeletePose.tr()),
+        content: Text(LocaleKeys.DeletePoseConfirm.tr(namedArgs: {'poseName': poseName})),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
+            child: Text(LocaleKeys.Cancel.tr()),
           ),
           TextButton(
             onPressed: () async {
               try {
                 final networkDataSource = provider.get<NetworkDataSource>();
                 await networkDataSource.adminDeleteYogaPose(poseId);
-                
+
                 if (context.mounted) {
                   Navigator.of(context).pop(true);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Pose deleted successfully'),
+                    SnackBar(
+                      content: Text(LocaleKeys.PoseDeletedSuccessfully.tr()),
                       backgroundColor: Colors.green,
                     ),
                   );
@@ -33,18 +35,18 @@ class AdminPoseDeleteDialog {
               } catch (e) {
                 if (context.mounted) {
                   Navigator.of(context).pop(false);
-                  
-                  String errorMessage = 'Failed to delete pose';
+
+                  String errorMessage = LocaleKeys.FailedToDeletePose.tr();
                   if (e is DioException) {
                     if (e.response?.statusCode == 401) {
-                      errorMessage = 'Unauthorized. Please login again.';
+                      errorMessage = LocaleKeys.UnauthorizedPleaseLoginAgain.tr();
                     } else if (e.response?.statusCode == 403) {
-                      errorMessage = 'Access denied. Admin permission required.';
+                      errorMessage = LocaleKeys.AccessDeniedAdminRequired.tr();
                     } else if (e.response?.data != null) {
                       errorMessage = e.response?.data['message'] ?? errorMessage;
                     }
                   }
-                  
+
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(errorMessage),
@@ -58,7 +60,7 @@ class AdminPoseDeleteDialog {
             style: TextButton.styleFrom(
               foregroundColor: Colors.red,
             ),
-            child: const Text('Delete'),
+            child: Text(LocaleKeys.Delete.tr()),
           ),
         ],
       ),

@@ -1,6 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_starter/data/entities/response/practice_session.dart';
+import 'package:flutter_starter/presenter/languages/translation_keys.g.dart';
 import 'package:intl/intl.dart';
 
 @RoutePage()
@@ -16,7 +18,7 @@ class PracticeSessionSummaryPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Kết quả buổi tập'),
+        title: Text(LocaleKeys.PracticeSessionResults.tr()),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -71,8 +73,8 @@ class PracticeSessionSummaryPage extends StatelessWidget {
               color: Colors.white,
             ),
             const SizedBox(height: 16),
-            const Text(
-              'Chúc mừng!',
+            Text(
+              LocaleKeys.Congratulations.tr(),
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 28,
@@ -81,7 +83,7 @@ class PracticeSessionSummaryPage extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              'Bạn đã hoàn thành: ${session.routineName}',
+              LocaleKeys.YouHaveCompleted.tr(namedArgs: {'routineName': session.routineName}),
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 16,
@@ -100,7 +102,7 @@ class PracticeSessionSummaryPage extends StatelessWidget {
         Expanded(
           child: _buildStatCard(
             icon: Icons.star,
-            title: 'Điểm TB',
+            title: LocaleKeys.AverageScore.tr(),
             value: session.averageScore.toStringAsFixed(1),
             color: _getScoreColor(session.averageScore),
           ),
@@ -109,7 +111,7 @@ class PracticeSessionSummaryPage extends StatelessWidget {
         Expanded(
           child: _buildStatCard(
             icon: Icons.timer,
-            title: 'Thời gian',
+            title: LocaleKeys.Time.tr(),
             value: _formatDuration(session.totalTimeSpentSeconds),
             color: Colors.orange,
           ),
@@ -118,7 +120,7 @@ class PracticeSessionSummaryPage extends StatelessWidget {
         Expanded(
           child: _buildStatCard(
             icon: Icons.fitness_center,
-            title: 'Poses',
+            title: LocaleKeys.Poses.tr(),
             value: '${session.completedPoses.length}/${session.totalPoses}',
             color: Colors.green,
           ),
@@ -177,8 +179,8 @@ class PracticeSessionSummaryPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Chi tiết các tư thế',
+            Text(
+              LocaleKeys.PoseDetails.tr(),
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -186,10 +188,10 @@ class PracticeSessionSummaryPage extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             if (session.completedPoses.isEmpty)
-              const Center(
+              Center(
                 child: Padding(
                   padding: EdgeInsets.all(16),
-                  child: Text('Chưa có tư thế nào được hoàn thành'),
+                  child: Text(LocaleKeys.NoPosesCompletedYet.tr()),
                 ),
               )
             else
@@ -313,7 +315,7 @@ class PracticeSessionSummaryPage extends StatelessWidget {
               context.router.popUntilRoot();
             },
             icon: const Icon(Icons.home),
-            label: const Text('Về trang chủ'),
+            label: Text(LocaleKeys.BackToHome.tr()),
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.all(16),
               textStyle: const TextStyle(fontSize: 16),
@@ -328,7 +330,7 @@ class PracticeSessionSummaryPage extends StatelessWidget {
               // TODO: Share results
             },
             icon: const Icon(Icons.share),
-            label: const Text('Chia sẻ kết quả'),
+            label: Text(LocaleKeys.ShareResults.tr()),
             style: OutlinedButton.styleFrom(
               padding: const EdgeInsets.all(16),
               textStyle: const TextStyle(fontSize: 16),

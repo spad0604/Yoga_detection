@@ -23,6 +23,7 @@ import 'package:flutter_starter/data/states/auth/auth_bloc.dart';
 import 'package:toastification/toastification.dart';
 import 'package:flutter_starter/data/sources/network/network.dart';
 import 'package:flutter_starter/core/utils/user_preferences.dart';
+import 'package:flutter_starter/presenter/languages/translation_keys.g.dart';
 // ...existing code...
 
 part 'another_login_button.dart';
@@ -92,7 +93,7 @@ class _LoginPageState extends State<LoginPage> {
           autoCloseDuration: const Duration(seconds: 3),
           context: context,
           type: ToastificationType.error,
-          title: const Text('Google Sign-In failed: No ID token'),
+          title: Text(LocaleKeys.GoogleSignInFailed.tr()),
         );
         return;
       }
@@ -107,7 +108,7 @@ class _LoginPageState extends State<LoginPage> {
         autoCloseDuration: const Duration(seconds: 3),
         context: context,
         type: ToastificationType.error,
-        title: Text('Google Sign-In error: ${e.toString()}'),
+        title: Text(LocaleKeys.GoogleSignInError.tr(namedArgs: {'error': e.toString()})),
       );
     }
   }
@@ -245,8 +246,8 @@ class _LoginPageState extends State<LoginPage> {
                           shaderCallback: (bounds) => LinearGradient(
                             colors: AppColors.gradientPurple,
                           ).createShader(bounds),
-                          child: const Text(
-                            'Yoga Detection',
+                          child: Text(
+                            LocaleKeys.YogaDetection.tr(),
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
@@ -258,7 +259,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          'Welcome back! Please login to your account',
+                          LocaleKeys.WelcomeBack.tr(),
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 14,
@@ -275,7 +276,7 @@ class _LoginPageState extends State<LoginPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Email',
+                                LocaleKeys.Email.tr(),
                                 style: TextStyle(
                                   fontWeight: FontWeight.w600,
                                   fontSize: 14,
@@ -285,7 +286,7 @@ class _LoginPageState extends State<LoginPage> {
                               const SizedBox(height: 8),
                               CustomTextField(
                                 controller: _usernameController,
-                                hintText: 'Enter your email',
+                                hintText: LocaleKeys.EnterYourEmail.tr(),
                                 onChanged: (v) => _bloc.add(LoginEmailChanged(v)),
                                 errorText: emailError,
                                 prefixIcon: Icons.email_outlined,
@@ -303,7 +304,7 @@ class _LoginPageState extends State<LoginPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Password',
+                                LocaleKeys.Password.tr(),
                                 style: TextStyle(
                                   fontWeight: FontWeight.w600,
                                   fontSize: 14,
@@ -314,7 +315,7 @@ class _LoginPageState extends State<LoginPage> {
                               CustomTextField(
                                 isPassword: _isObscure,
                                 controller: _passwordController,
-                                hintText: 'Enter your password',
+                                hintText: LocaleKeys.EnterYourPassword.tr(),
                                 onChanged: (v) => _bloc.add(LoginPasswordChanged(v)),
                                 errorText: passwordError,
                                 suffixIcon: _isObscure ? AppImages.ic_eye_off : AppImages.ic_eye_on,
@@ -350,7 +351,7 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                                 const SizedBox(width: 8),
                                 Text(
-                                  'Remember me',
+                                  LocaleKeys.RememberMe.tr(),
                                   style: TextStyle(
                                     fontSize: 13,
                                     color: AppColors.textSecondary,
@@ -362,7 +363,7 @@ class _LoginPageState extends State<LoginPage> {
                             GestureDetector(
                               onTap: () => context.router.pushNamed('/forgot-password'),
                               child: Text(
-                                'Forgot Password?',
+                                LocaleKeys.ForgotPassword.tr(),
                                 style: TextStyle(
                                   fontWeight: FontWeight.w600,
                                   fontSize: 13,
@@ -389,7 +390,7 @@ class _LoginPageState extends State<LoginPage> {
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 16),
                               child: Text(
-                                'OR',
+                                LocaleKeys.OR.tr(),
                                 style: TextStyle(
                                   color: AppColors.textSecondary,
                                   fontWeight: FontWeight.w600,
@@ -405,12 +406,12 @@ class _LoginPageState extends State<LoginPage> {
                         // Social login buttons
                         SocialLoginButton(
                           imagePath: AppImages.facebook,
-                          text: 'Continue with Facebook',
+                          text: LocaleKeys.ContinueWithFacebook.tr(),
                         ),
                         const SizedBox(height: 12),
                         SocialLoginButton(
                           imagePath: AppImages.google,
-                          text: 'Continue with Google',
+                          text: LocaleKeys.ContinueWithGoogle.tr(),
                           onPressed: _onGoogleSignInPressed,
                         ),
                         const SizedBox(height: 24),
@@ -421,7 +422,7 @@ class _LoginPageState extends State<LoginPage> {
                             onTap: () => context.router.pushNamed('/register'),
                             child: RichText(
                               text: TextSpan(
-                                text: 'Don\'t have an account? ',
+                                text: LocaleKeys.DontHaveAccount.tr(),
                                 style: TextStyle(
                                   fontSize: 14,
                                   color: AppColors.textSecondary,
@@ -429,7 +430,7 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                                 children: [
                                   TextSpan(
-                                    text: 'Sign Up',
+                                    text: LocaleKeys.SignUp.tr(),
                                     style: TextStyle(
                                       fontWeight: FontWeight.w700,
                                       fontSize: 14,

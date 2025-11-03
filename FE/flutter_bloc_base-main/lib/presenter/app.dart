@@ -48,6 +48,7 @@ class _AppState extends State<App> {
         debugShowCheckedModeBanner: false,
         title: F.title,
         theme: appTheme.themeData,
+        locale: context.locale,
         supportedLocales: context.supportedLocales,
         localizationsDelegates: [
           ...context.localizationDelegates,

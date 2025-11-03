@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_starter/data/entities/request/create_body_progress_request.dart';
 import 'package:flutter_starter/data/entities/response/body_progress_response.dart';
 import 'package:flutter_starter/data/states/my_body/my_body_bloc.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_starter/data/states/my_body/my_body_event.dart';
 import 'package:flutter_starter/data/states/my_body/my_body_state.dart';
 import 'package:flutter_starter/di.dart';
 import 'package:flutter_starter/presenter/themes/colors.dart';
+import 'package:flutter_starter/presenter/languages/translation_keys.g.dart';
 import 'package:intl/intl.dart';
 
 @RoutePage()
@@ -45,8 +47,8 @@ class _MyBodyPageState extends State<MyBodyPage> {
           shaderCallback: (bounds) => LinearGradient(
             colors: [Colors.white, Colors.white.withOpacity(0.9)],
           ).createShader(bounds),
-          child: const Text(
-            'My Body',
+          child: Text(
+            LocaleKeys.MyBody.tr(),
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 28,
@@ -78,7 +80,7 @@ class _MyBodyPageState extends State<MyBodyPage> {
                     onPressed: () {
                       context.read<MyBodyBloc>().add(const MyBodyLoadRequested());
                     },
-                    child: const Text('Retry'),
+                    child: Text(LocaleKeys.Retry.tr()),
                   ),
                 ],
               ),
@@ -108,8 +110,8 @@ class _MyBodyPageState extends State<MyBodyPage> {
                   const SizedBox(height: 24),
 
                   // History Section
-                  const Text(
-                    'History',
+                  Text(
+                    LocaleKeys.History.tr(),
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -135,8 +137,8 @@ class _MyBodyPageState extends State<MyBodyPage> {
         onPressed: () => _showAddBodyProgressDialog(context),
         backgroundColor: AppColors.primaryPurple,
         icon: const Icon(Icons.add, color: Colors.white),
-        label: const Text(
-          'Add Record',
+        label: Text(
+          LocaleKeys.AddRecord.tr(),
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
@@ -175,9 +177,9 @@ class _MyBodyPageState extends State<MyBodyPage> {
                 child: const Icon(Icons.fitness_center, color: Colors.white, size: 24),
               ),
               const SizedBox(width: 12),
-              const Expanded(
+              Expanded(
                 child: Text(
-                  'Latest Record',
+                  LocaleKeys.LatestRecord.tr(),
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -198,7 +200,7 @@ class _MyBodyPageState extends State<MyBodyPage> {
           Row(
             children: [
               _buildStatItem(
-                'Weight',
+                LocaleKeys.Weight.tr(),
                 '${(progress.weightKg ?? 0.0).toStringAsFixed(1)} kg',
                 Icons.monitor_weight,
               ),
@@ -212,7 +214,8 @@ class _MyBodyPageState extends State<MyBodyPage> {
           ),
           const SizedBox(height: 12),
           Text(
-            'Height: ${(progress.heightCm ?? 0.0).toStringAsFixed(1)} cm',
+            LocaleKeys.HeightValue.tr(
+                namedArgs: {'height': (progress.heightCm ?? 0.0).toStringAsFixed(1)}),
             style: TextStyle(
               fontSize: 14,
               color: Colors.white.withOpacity(0.9),
@@ -296,12 +299,12 @@ class _MyBodyPageState extends State<MyBodyPage> {
                   ),
                 ),
                 const SizedBox(width: 16),
-                const Expanded(
+                Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Add New Record',
+                        LocaleKeys.AddNewRecord.tr(),
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -310,7 +313,7 @@ class _MyBodyPageState extends State<MyBodyPage> {
                       ),
                       SizedBox(height: 4),
                       Text(
-                        'Track your body measurements',
+                        LocaleKeys.TrackYourBodyMeasurements.tr(),
                         style: TextStyle(
                           fontSize: 13,
                           color: Colors.grey,
@@ -481,8 +484,8 @@ class _MyBodyPageState extends State<MyBodyPage> {
               ),
             ),
             const SizedBox(height: 16),
-            const Text(
-              'No records yet',
+            Text(
+              LocaleKeys.NoRecordsYet.tr(),
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -491,7 +494,7 @@ class _MyBodyPageState extends State<MyBodyPage> {
             ),
             const SizedBox(height: 8),
             Text(
-              'Start tracking your body progress',
+              LocaleKeys.StartTrackingYourBodyProgress.tr(),
               style: TextStyle(
                 fontSize: 14,
                 color: Colors.grey.shade600,
@@ -549,9 +552,9 @@ class _MyBodyPageState extends State<MyBodyPage> {
                         ),
                       ),
                       const SizedBox(width: 12),
-                      const Expanded(
+                      Expanded(
                         child: Text(
-                          'Add Body Record',
+                          LocaleKeys.AddBodyRecord.tr(),
                           style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
@@ -564,14 +567,14 @@ class _MyBodyPageState extends State<MyBodyPage> {
                   const SizedBox(height: 24),
                   _buildTextField(
                     controller: weightController,
-                    label: 'Weight (kg)',
+                    label: LocaleKeys.WeightKg.tr(),
                     icon: Icons.monitor_weight,
                     keyboardType: TextInputType.number,
                   ),
                   const SizedBox(height: 16),
                   _buildTextField(
                     controller: heightController,
-                    label: 'Height (cm)',
+                    label: LocaleKeys.HeightCm.tr(),
                     icon: Icons.height,
                     keyboardType: TextInputType.number,
                   ),
@@ -581,7 +584,7 @@ class _MyBodyPageState extends State<MyBodyPage> {
                       Expanded(
                         child: _buildTextField(
                           controller: waistController,
-                          label: 'Waist (cm)',
+                          label: LocaleKeys.WaistCm.tr(),
                           icon: Icons.straighten,
                           keyboardType: TextInputType.number,
                         ),
@@ -590,7 +593,7 @@ class _MyBodyPageState extends State<MyBodyPage> {
                       Expanded(
                         child: _buildTextField(
                           controller: chestController,
-                          label: 'Chest (cm)',
+                          label: LocaleKeys.ChestCm.tr(),
                           icon: Icons.accessibility_new,
                           keyboardType: TextInputType.number,
                         ),
@@ -600,14 +603,14 @@ class _MyBodyPageState extends State<MyBodyPage> {
                   const SizedBox(height: 16),
                   _buildTextField(
                     controller: hipController,
-                    label: 'Hip (cm)',
+                    label: LocaleKeys.HipCm.tr(),
                     icon: Icons.accessibility_new,
                     keyboardType: TextInputType.number,
                   ),
                   const SizedBox(height: 16),
                   _buildTextField(
                     controller: notesController,
-                    label: 'Notes (optional)',
+                    label: LocaleKeys.NotesOptional.tr(),
                     icon: Icons.note_outlined,
                     maxLines: 3,
                   ),
@@ -625,7 +628,7 @@ class _MyBodyPageState extends State<MyBodyPage> {
                             side: BorderSide(color: Colors.grey.shade300),
                           ),
                           child: Text(
-                            'Cancel',
+                            LocaleKeys.Cancel.tr(),
                             style: TextStyle(
                               color: Colors.grey.shade700,
                               fontWeight: FontWeight.w600,
@@ -663,11 +666,11 @@ class _MyBodyPageState extends State<MyBodyPage> {
                               Navigator.pop(dialogContext);
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                  content: const Row(
+                                  content: Row(
                                     children: [
                                       Icon(Icons.check_circle, color: Colors.white),
                                       SizedBox(width: 8),
-                                      Text('Body record added successfully!'),
+                                      Text(LocaleKeys.BodyRecordAddedSuccessfully.tr()),
                                     ],
                                   ),
                                   backgroundColor: Colors.green,
@@ -688,8 +691,8 @@ class _MyBodyPageState extends State<MyBodyPage> {
                             ),
                             elevation: 2,
                           ),
-                          child: const Text(
-                            'Save',
+                          child: Text(
+                            LocaleKeys.Save.tr(),
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
@@ -748,10 +751,10 @@ class _MyBodyPageState extends State<MyBodyPage> {
         if (value != null && value.isNotEmpty) {
           final num = double.tryParse(value);
           if (num == null) {
-            return 'Please enter a valid number';
+            return LocaleKeys.PleaseEnterAValidNumber.tr();
           }
           if (num < 0) {
-            return 'Value must be positive';
+            return LocaleKeys.ValueMustBePositive.tr();
           }
         }
         return null;

@@ -7,6 +7,8 @@ import 'package:flutter_starter/presenter/pages/account_page/account_page_event.
 import 'package:flutter_starter/presenter/pages/account_page/account_page_state.dart';
 import 'package:flutter_starter/presenter/themes/colors.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_starter/presenter/languages/translation_keys.g.dart';
 part 'menu_item.dart';
 
 // TODO: Add the page to the router
@@ -53,9 +55,9 @@ class _AccountPagePageState extends State<AccountPagePage> {
           shaderCallback: (bounds) => LinearGradient(
             colors: [Colors.white, Colors.white.withOpacity(0.9)],
           ).createShader(bounds),
-          child: const Text(
-            'My Profile',
-            style: TextStyle(
+          child: Text(
+            LocaleKeys.MyProfile.tr(),
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 28,
               color: Colors.white,
@@ -102,10 +104,12 @@ class _AccountPagePageState extends State<AccountPagePage> {
                     child: CircleAvatar(
                       radius: 50,
                       backgroundColor: Colors.white,
-                      backgroundImage: (state.information?.avatarUrl != null && (state.information!.avatarUrl!.isNotEmpty))
+                      backgroundImage: (state.information?.avatarUrl != null &&
+                              (state.information!.avatarUrl!.isNotEmpty))
                           ? NetworkImage(state.information!.avatarUrl!)
                           : null,
-                      child: (state.information?.avatarUrl == null || (state.information!.avatarUrl!.isEmpty))
+                      child: (state.information?.avatarUrl == null ||
+                              (state.information!.avatarUrl!.isEmpty))
                           ? const Icon(
                               Icons.person,
                               size: 50,
@@ -140,7 +144,7 @@ class _AccountPagePageState extends State<AccountPagePage> {
                   FilledButton.icon(
                     onPressed: _openEditProfile,
                     icon: const Icon(Icons.edit),
-                    label: const Text('Chỉnh sửa hồ sơ'),
+                    label: Text(LocaleKeys.EditProfile.tr()),
                   ),
                   const SizedBox(height: 24),
                   // Info Cards
@@ -148,7 +152,7 @@ class _AccountPagePageState extends State<AccountPagePage> {
                     context,
                     icon: Icons.person_outline,
                     iconColor: AppColors.primaryPurple,
-                    title: 'Full Name',
+                    title: LocaleKeys.FullName.tr(),
                     value: ((state.information?.firstName ?? '').isEmpty &&
                             (state.information?.lastName ?? '').isEmpty)
                         ? 'Nguyen Van A'
@@ -160,7 +164,7 @@ class _AccountPagePageState extends State<AccountPagePage> {
                     context,
                     icon: Icons.email_outlined,
                     iconColor: AppColors.secondaryTeal,
-                    title: 'Email',
+                    title: LocaleKeys.Email.tr(),
                     value: state.information?.email ?? 'giapt2k29@cht.edu.vn',
                   ),
                   const SizedBox(height: 16),
@@ -168,7 +172,7 @@ class _AccountPagePageState extends State<AccountPagePage> {
                     context,
                     icon: Icons.phone_outlined,
                     iconColor: Colors.green,
-                    title: 'Phone Number',
+                    title: LocaleKeys.PhoneNumber.tr(),
                     value: '0975265932',
                   ),
                   const SizedBox(height: 16),
@@ -176,7 +180,7 @@ class _AccountPagePageState extends State<AccountPagePage> {
                     context,
                     icon: Icons.cake_outlined,
                     iconColor: Colors.orange,
-                    title: 'Birthday',
+                    title: LocaleKeys.Birthday.tr(),
                     value: '01/01/2000',
                   ),
                 ],
@@ -199,7 +203,8 @@ class _AccountPagePageState extends State<AccountPagePage> {
     await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
       builder: (ctx) {
         return Padding(
           padding: EdgeInsets.only(
@@ -214,7 +219,7 @@ class _AccountPagePageState extends State<AccountPagePage> {
               children: [
                 Row(
                   children: [
-                    const Text('Chỉnh sửa', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
+                    Text(LocaleKeys.Edit.tr()),
                     const Spacer(),
                     IconButton(
                       icon: const Icon(Icons.close),
@@ -227,7 +232,7 @@ class _AccountPagePageState extends State<AccountPagePage> {
                   children: [
                     Expanded(
                       child: TextField(
-                        decoration: const InputDecoration(labelText: 'Họ'),
+                        decoration: InputDecoration(labelText: LocaleKeys.LastName.tr()),
                         controller: TextEditingController(text: lastName),
                         onChanged: (v) => lastName = v,
                       ),
@@ -235,7 +240,7 @@ class _AccountPagePageState extends State<AccountPagePage> {
                     const SizedBox(width: 12),
                     Expanded(
                       child: TextField(
-                        decoration: const InputDecoration(labelText: 'Tên'),
+                        decoration: InputDecoration(labelText: LocaleKeys.FirstName.tr()),
                         controller: TextEditingController(text: firstName),
                         onChanged: (v) => firstName = v,
                       ),
@@ -259,8 +264,10 @@ class _AccountPagePageState extends State<AccountPagePage> {
                           }
                         },
                         child: InputDecorator(
-                          decoration: const InputDecoration(labelText: 'Ngày sinh'),
-                          child: Text(dob != null ? '${dob!.year}-${dob!.month.toString().padLeft(2, '0')}-${dob!.day.toString().padLeft(2, '0')}' : 'Chọn ngày'),
+                          decoration: InputDecoration(labelText: LocaleKeys.DateOfBirth.tr()),
+                          child: Text(dob != null
+                              ? '${dob!.year}-${dob!.month.toString().padLeft(2, '0')}-${dob!.day.toString().padLeft(2, '0')}'
+                              : LocaleKeys.ChooseDate.tr()),
                         ),
                       ),
                     ),
@@ -268,13 +275,16 @@ class _AccountPagePageState extends State<AccountPagePage> {
                     OutlinedButton.icon(
                       onPressed: () async {
                         final picker = ImagePicker();
-                        final picked = await picker.pickImage(source: ImageSource.gallery, imageQuality: 85);
+                        final picked =
+                            await picker.pickImage(source: ImageSource.gallery, imageQuality: 85);
                         if (picked != null) {
                           setModal(() => avatarPath = picked.path);
                         }
                       },
                       icon: const Icon(Icons.image),
-                      label: Text(avatarPath == null ? 'Chọn ảnh' : 'Ảnh đã chọn'),
+                      label: Text(avatarPath == null
+                          ? LocaleKeys.ChooseImage.tr()
+                          : LocaleKeys.ImageSelected.tr()),
                     ),
                   ],
                 ),
@@ -291,7 +301,7 @@ class _AccountPagePageState extends State<AccountPagePage> {
                         avatarFilePath: avatarPath,
                       ));
                     },
-                    child: const Text('Lưu'),
+                    child: Text(LocaleKeys.Save.tr()),
                   ),
                 ),
                 const SizedBox(height: 12),

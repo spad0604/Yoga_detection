@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,6 +14,7 @@ import 'package:showcaseview/showcaseview.dart';
 import 'package:flutter_starter/services/oauth_token_manager/oauth_token_manager.dart';
 import 'package:flutter_starter/presenter/pages/camera_detection/camera_detection.dart';
 import 'package:flutter_starter/data/states/camera_detection/camera_detection_bloc.dart';
+import 'package:flutter_starter/presenter/languages/translation_keys.g.dart';
 
 part 'information_details_items.dart';
 
@@ -138,12 +140,12 @@ class _PoseDetailsPageState extends State<PoseDetailsPage> {
                         Expanded(
                           child: Showcase(
                             key: minutesShowCaseWidget,
-                            description: 'Duration of the session',
+                            description: LocaleKeys.DurationOfTheSession.tr(),
                             child: _buildStatCard(
                               icon: Icons.timer,
-                              title: 'Duration',
+                              title: LocaleKeys.Duration.tr(),
                               value: '${widget.item.totalMinutes ?? 0}',
-                              unit: 'mins',
+                              unit: LocaleKeys.Mins.tr(),
                               color: AppColors.primaryPurple,
                             ),
                           ),
@@ -152,7 +154,7 @@ class _PoseDetailsPageState extends State<PoseDetailsPage> {
                         Expanded(
                           child: Showcase(
                             key: caloriesShowCaseWidget,
-                            description: 'Estimated calories burned',
+                            description: LocaleKeys.EstimatedCaloriesBurned.tr(),
                             child: _buildStatCard(
                               icon: Icons.local_fire_department,
                               title: 'Calories',
@@ -168,7 +170,7 @@ class _PoseDetailsPageState extends State<PoseDetailsPage> {
 
                     // Description Section
                     _buildSection(
-                      title: 'Description',
+                      title: LocaleKeys.Description.tr(),
                       icon: Icons.description,
                       content: _bloc.state.yogaPoseDetails?.description ??
                           'A detailed yoga pose that helps improve flexibility and balance.',
@@ -177,7 +179,7 @@ class _PoseDetailsPageState extends State<PoseDetailsPage> {
 
                     // Benefits Section
                     _buildSection(
-                      title: 'Benefits',
+                      title: LocaleKeys.Benefits.tr(),
                       icon: Icons.favorite,
                       content: _bloc.state.yogaPoseDetails?.description ??
                           'Improves flexibility, balance, and strength. Helps reduce stress and anxiety while promoting better posture and body awareness.',
@@ -187,7 +189,7 @@ class _PoseDetailsPageState extends State<PoseDetailsPage> {
                     // Start Button
                     Showcase(
                       key: playShowCaseWidget,
-                      description: 'Start practice',
+                      description: LocaleKeys.StartPractice.tr(),
                       child: Container(
                         width: double.infinity,
                         height: 56,

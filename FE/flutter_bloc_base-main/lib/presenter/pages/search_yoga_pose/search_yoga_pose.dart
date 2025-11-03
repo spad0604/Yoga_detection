@@ -10,6 +10,8 @@ import 'package:flutter_starter/presenter/pages/search_yoga_pose/search_yoga_pos
 import 'package:flutter_starter/presenter/pages/search_yoga_pose/search_yoga_pose_event.dart';
 import 'package:flutter_starter/presenter/pages/search_yoga_pose/search_yoga_pose_state.dart';
 import 'package:flutter_starter/presenter/themes/colors.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_starter/presenter/languages/translation_keys.g.dart';
 
 part 'search_text_field.dart';
 
@@ -90,8 +92,8 @@ class _SearchYogaPosePageState extends State<SearchYogaPosePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text(
-            'Yoga Poses',
+          title: Text(
+            LocaleKeys.YogaPoses.tr(),
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.black),
           ),
         ),
@@ -109,7 +111,7 @@ class _SearchYogaPosePageState extends State<SearchYogaPosePage> {
                     return const Center(child: CircularProgressIndicator());
                   }
                   if (state.status == SearchYogaPoseStatus.failure) {
-                    return const Center(child: Text('Failed to load poses'));
+                    return Center(child: Text(LocaleKeys.FailedToLoadPoses.tr()));
                   }
                   return ListView.builder(
                     controller: _scrollController,

@@ -1,12 +1,14 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_starter/data/entities/response/yoga_group_response.dart';
 import 'package:flutter_starter/data/states/groups/groups_bloc.dart';
 import 'package:flutter_starter/data/states/groups/groups_event.dart';
 import 'package:flutter_starter/data/states/groups/groups_state.dart';
 import 'package:flutter_starter/di.dart';
 import 'package:flutter_starter/data/states/auth/auth_bloc.dart';
+import 'package:flutter_starter/presenter/languages/translation_keys.g.dart';
 
 @RoutePage()
 class GroupsPage extends StatefulWidget implements AutoRouteWrapper {
@@ -47,12 +49,12 @@ class _GroupsPageState extends State<GroupsPage> with SingleTickerProviderStateM
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Yoga Groups'),
+        title: Text(LocaleKeys.YogaGroups.tr()),
         bottom: TabBar(
           controller: _tabController,
-          tabs: const [
-            Tab(text: 'My Groups', icon: Icon(Icons.group)),
-            Tab(text: 'Discover', icon: Icon(Icons.explore)),
+          tabs: [
+            Tab(text: LocaleKeys.MyGroups.tr(), icon: Icon(Icons.group)),
+            Tab(text: LocaleKeys.Discover.tr(), icon: Icon(Icons.explore)),
           ],
         ),
       ),
@@ -64,7 +66,7 @@ class _GroupsPageState extends State<GroupsPage> with SingleTickerProviderStateM
             child: TextField(
               controller: _searchController,
               decoration: InputDecoration(
-                hintText: 'Search groups...',
+                hintText: LocaleKeys.SearchGroups.tr(),
                 prefixIcon: const Icon(Icons.search),
                 suffixIcon: _searchController.text.isNotEmpty
                     ? IconButton(
@@ -99,7 +101,7 @@ class _GroupsPageState extends State<GroupsPage> with SingleTickerProviderStateM
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showCreateGroupDialog(context),
         child: const Icon(Icons.add),
-        tooltip: 'Create Group',
+        tooltip: LocaleKeys.CreateGroup.tr(),
       ),
     );
   }
@@ -119,12 +121,12 @@ class _GroupsPageState extends State<GroupsPage> with SingleTickerProviderStateM
                 Icon(Icons.group_outlined, size: 64, color: Colors.grey[400]),
                 const SizedBox(height: 16),
                 Text(
-                  'No groups yet',
+                  LocaleKeys.NoGroupsYet.tr(),
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Create or join a group to get started!',
+                  LocaleKeys.CreateOrJoinGroupToGetStarted.tr(),
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Colors.grey[600],
                       ),
@@ -177,8 +179,8 @@ class _GroupsPageState extends State<GroupsPage> with SingleTickerProviderStateM
                 const SizedBox(height: 16),
                 Text(
                   state.searchKeyword != null && state.searchKeyword!.isNotEmpty
-                      ? 'No groups found'
-                      : 'No public groups',
+                      ? LocaleKeys.NoGroupsFound.tr()
+                      : LocaleKeys.NoPublicGroups.tr(),
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
               ],
@@ -223,32 +225,32 @@ class _GroupsPageState extends State<GroupsPage> with SingleTickerProviderStateM
       context: context,
       builder: (dialogContext) => StatefulBuilder(
         builder: (innerContext, setState) => AlertDialog(
-          title: const Text('Create Group'),
+          title: Text(LocaleKeys.CreateGroup.tr()),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextField(
                   controller: nameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Group Name',
-                    hintText: 'Enter group name',
+                  decoration: InputDecoration(
+                    labelText: LocaleKeys.GroupName.tr(),
+                    hintText: LocaleKeys.EnterGroupName.tr(),
                   ),
                   autofocus: true,
                 ),
                 const SizedBox(height: 16),
                 TextField(
                   controller: descriptionController,
-                  decoration: const InputDecoration(
-                    labelText: 'Description (Optional)',
-                    hintText: 'What is this group about?',
+                  decoration: InputDecoration(
+                    labelText: LocaleKeys.DescriptionOptional.tr(),
+                    hintText: LocaleKeys.WhatIsThisGroupAbout.tr(),
                   ),
                   maxLines: 3,
                 ),
                 const SizedBox(height: 16),
                 SwitchListTile(
-                  title: const Text('Private Group'),
-                  subtitle: const Text('Only invited members can join'),
+                  title: Text(LocaleKeys.PrivateGroup.tr()),
+                  subtitle: Text(LocaleKeys.OnlyInvitedMembersCanJoin.tr()),
                   value: isPrivate,
                   onChanged: (value) => setState(() => isPrivate = value),
                 ),
@@ -258,7 +260,7 @@ class _GroupsPageState extends State<GroupsPage> with SingleTickerProviderStateM
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(dialogContext),
-              child: const Text('Cancel'),
+              child: Text(LocaleKeys.Cancel.tr()),
             ),
             ElevatedButton(
               onPressed: () {
@@ -277,14 +279,14 @@ class _GroupsPageState extends State<GroupsPage> with SingleTickerProviderStateM
                       );
                   Navigator.pop(dialogContext);
                   ScaffoldMessenger.of(pageContext).showSnackBar(
-                    const SnackBar(
-                      content: Text('Group created successfully!'),
+                    SnackBar(
+                      content: Text(LocaleKeys.GroupCreatedSuccessfully.tr()),
                       backgroundColor: Colors.green,
                     ),
                   );
                 }
               },
-              child: const Text('Create'),
+              child: Text(LocaleKeys.Create.tr()),
             ),
           ],
         ),
@@ -399,14 +401,14 @@ class _GroupCard extends StatelessWidget {
                     onPressed: () {
                       context.read<GroupsBloc>().add(GroupsJoinGroup(group.id));
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Joined group!'),
+                        SnackBar(
+                          content: Text(LocaleKeys.JoinedGroup.tr()),
                           backgroundColor: Colors.green,
                         ),
                       );
                     },
                     icon: const Icon(Icons.group_add, size: 16),
-                    label: const Text('Join'),
+                    label: Text(LocaleKeys.Join.tr()),
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                     ),

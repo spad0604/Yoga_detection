@@ -1,6 +1,8 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_starter/data/entities/response/user_yoga_pose_model.dart';
+import 'package:flutter_starter/presenter/languages/translation_keys.g.dart';
 import 'package:share_plus/share_plus.dart';
 
 @RoutePage()
@@ -19,12 +21,13 @@ class PoseResultPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Kết quả tư thế'),
+        title: Text(LocaleKeys.PoseResult.tr()),
         actions: [
           IconButton(
             icon: const Icon(Icons.share),
             onPressed: () async {
-              final text = 'Mình vừa luyện tập tư thế "$displayPoseName" và đạt ${score.toStringAsFixed(0)} điểm!';
+              final text =
+                  'Mình vừa luyện tập tư thế "$displayPoseName" và đạt ${score.toStringAsFixed(0)} điểm!';
               final url = result.imageUrl;
               if (url != null && url.isNotEmpty) {
                 await Share.share('$text\n$url');
@@ -104,5 +107,3 @@ class PoseResultPage extends StatelessWidget {
     );
   }
 }
-
-

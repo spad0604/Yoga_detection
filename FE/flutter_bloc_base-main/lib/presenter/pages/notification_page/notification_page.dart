@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_starter/presenter/pages/notification_page/notification_page_bloc.dart';
 import 'package:flutter_starter/presenter/pages/notification_page/notification_page_event.dart';
 import 'package:flutter_starter/presenter/pages/notification_page/notification_page_state.dart';
 import 'package:flutter_starter/presenter/themes/colors.dart';
 import 'package:flutter_starter/data/entities/response/notification_response.dart';
 import 'package:flutter_starter/presenter/navigation/navigation.dart';
+import 'package:flutter_starter/presenter/languages/translation_keys.g.dart';
 import 'package:flutter_starter/di.dart' as di;
 
 @RoutePage()
@@ -53,18 +55,28 @@ class _NotificationPagePageState extends State<NotificationPagePage> {
 
     if (difference.inDays > 365) {
       final years = (difference.inDays / 365).floor();
-      return '$years year${years > 1 ? 's' : ''} ago';
+      return years > 1
+          ? LocaleKeys.YearsAgo.tr(namedArgs: {'count': years.toString()})
+          : LocaleKeys.YearAgo.tr(namedArgs: {'count': years.toString()});
     } else if (difference.inDays > 30) {
       final months = (difference.inDays / 30).floor();
-      return '$months month${months > 1 ? 's' : ''} ago';
+      return months > 1
+          ? LocaleKeys.MonthsAgo.tr(namedArgs: {'count': months.toString()})
+          : LocaleKeys.MonthAgo.tr(namedArgs: {'count': months.toString()});
     } else if (difference.inDays > 0) {
-      return '${difference.inDays} day${difference.inDays > 1 ? 's' : ''} ago';
+      return difference.inDays > 1
+          ? LocaleKeys.DaysAgo.tr(namedArgs: {'count': difference.inDays.toString()})
+          : LocaleKeys.DayAgo.tr(namedArgs: {'count': difference.inDays.toString()});
     } else if (difference.inHours > 0) {
-      return '${difference.inHours} hour${difference.inHours > 1 ? 's' : ''} ago';
+      return difference.inHours > 1
+          ? LocaleKeys.HoursAgo.tr(namedArgs: {'count': difference.inHours.toString()})
+          : LocaleKeys.HourAgo.tr(namedArgs: {'count': difference.inHours.toString()});
     } else if (difference.inMinutes > 0) {
-      return '${difference.inMinutes} minute${difference.inMinutes > 1 ? 's' : ''} ago';
+      return difference.inMinutes > 1
+          ? LocaleKeys.MinutesAgo.tr(namedArgs: {'count': difference.inMinutes.toString()})
+          : LocaleKeys.MinuteAgo.tr(namedArgs: {'count': difference.inMinutes.toString()});
     } else {
-      return 'Just now';
+      return LocaleKeys.JustNow.tr();
     }
   }
 
@@ -83,8 +95,8 @@ class _NotificationPagePageState extends State<NotificationPagePage> {
           shaderCallback: (bounds) => LinearGradient(
             colors: AppColors.gradientPurple,
           ).createShader(bounds),
-          child: const Text(
-            'Notifications',
+          child: Text(
+            LocaleKeys.Notifications.tr(),
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
@@ -124,7 +136,7 @@ class _NotificationPagePageState extends State<NotificationPagePage> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Failed to load notifications',
+                    LocaleKeys.FailedToLoadNotifications.tr(),
                     style: TextStyle(
                       fontSize: 16,
                       color: AppColors.textSecondary,
@@ -147,7 +159,7 @@ class _NotificationPagePageState extends State<NotificationPagePage> {
                           );
                     },
                     icon: const Icon(Icons.refresh),
-                    label: const Text('Retry'),
+                    label: Text(LocaleKeys.Retry.tr()),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primaryPurple,
                       foregroundColor: Colors.white,
@@ -180,7 +192,7 @@ class _NotificationPagePageState extends State<NotificationPagePage> {
                   ),
                   const SizedBox(height: 24),
                   Text(
-                    'No notifications yet',
+                    LocaleKeys.NoNotificationsYet.tr(),
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
@@ -189,7 +201,7 @@ class _NotificationPagePageState extends State<NotificationPagePage> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'You\'ll see notifications here when you get them',
+                    LocaleKeys.YouWillSeeNotificationsHere.tr(),
                     style: TextStyle(
                       fontSize: 14,
                       color: AppColors.textSecondary,

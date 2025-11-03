@@ -3,6 +3,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_starter/di.dart';
 import 'package:flutter_starter/gen/app_images.dart';
+import 'package:flutter_starter/presenter/languages/translation_keys.g.dart';
 import 'package:flutter_starter/presenter/pages/forgot_password/forgot_password_bloc.dart';
 import 'package:flutter_starter/presenter/pages/forgot_password/forgot_password_state.dart';
 import 'package:flutter_starter/presenter/pages/forgot_password/forgot_password_event.dart';
@@ -68,7 +69,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       autoCloseDuration: const Duration(seconds: 1),
                       context: context,
                       type: ToastificationType.success,
-                      title: const Text('OTP sent successfully'),
+                      title: Text(LocaleKeys.OTPSentSuccessfully.tr()),
                     );
                     Navigator.push(
                       context,
@@ -134,8 +135,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                                   shaderCallback: (bounds) => LinearGradient(
                                     colors: [Colors.white, Colors.white.withOpacity(0.9)],
                                   ).createShader(bounds),
-                                  child: const Text(
-                                    'Forgot\nPassword',
+                                  child: Text(
+                                    LocaleKeys.ForgotPasswordTitle.tr(),
                                     style: TextStyle(
                                       fontSize: 36,
                                       fontWeight: FontWeight.bold,
@@ -146,7 +147,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                                 ),
                                 const SizedBox(height: 12),
                                 Text(
-                                  'Don\'t worry, we\'ll help you reset it!',
+                                  LocaleKeys.ForgotPasswordSubtitle.tr(),
                                   style: TextStyle(
                                     fontSize: 14,
                                     color: Colors.white.withOpacity(0.9),
@@ -205,9 +206,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                               ),
                             ),
                             const SizedBox(width: 12),
-                            const Expanded(
+                            Expanded(
                               child: Text(
-                                'Type your registered email',
+                                LocaleKeys.TypeYourRegisteredEmail.tr(),
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
@@ -219,7 +220,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                         ),
                         const SizedBox(height: 16),
                         CustomTextField(
-                          hintText: 'Enter your email',
+                          hintText: LocaleKeys.EnterYourEmail.tr(),
                           controller: _emailController,
                           isPassword: false,
                           suffixIcon: AppImages.ic_mail,
@@ -243,7 +244,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                         const SizedBox(width: 12),
                         Expanded(
                           child: Text(
-                            'We\'ll send you a verification code to reset your password',
+                            LocaleKeys.VerificationCodeInfo.tr(),
                             style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w500,
@@ -276,7 +277,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       ],
                     ),
                     child: CustomButton(
-                      text: 'Send Verification Code',
+                      text: LocaleKeys.SendVerificationCode.tr(),
                       backgroundColor: Colors.transparent,
                       textColor: Colors.white,
                       onPressed: () {
@@ -291,7 +292,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     child: TextButton(
                       onPressed: () => Navigator.pop(context),
                       child: Text(
-                        'Back to Login',
+                        LocaleKeys.BackToLogin.tr(),
                         style: TextStyle(
                           color: AppColors.primaryBlue,
                           fontWeight: FontWeight.w600,

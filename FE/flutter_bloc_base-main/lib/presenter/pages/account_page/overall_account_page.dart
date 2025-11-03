@@ -2,6 +2,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_starter/di.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_starter/presenter/languages/translation_keys.g.dart';
 import 'package:flutter_starter/presenter/navigation/navigation.dart';
 import 'package:flutter_starter/presenter/pages/account_page/account_page_bloc.dart';
 import 'package:flutter_starter/presenter/pages/account_page/account_page_event.dart';
@@ -58,9 +60,9 @@ class _OverallAccountPageState extends State<OverallAccountPage> {
             shaderCallback: (bounds) => LinearGradient(
               colors: [Colors.white, Colors.white.withOpacity(0.9)],
             ).createShader(bounds),
-            child: const Text(
-              'Account',
-              style: TextStyle(
+            child: Text(
+              LocaleKeys.Account.tr(),
+              style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 32,
                 color: Colors.white,
@@ -175,8 +177,8 @@ class _OverallAccountPageState extends State<OverallAccountPage> {
                     _buildModernItem(
                       context,
                       icon: Icons.fitness_center,
-                      title: 'My Body',
-                      subtitle: 'Track your progress',
+                      title: LocaleKeys.MyBody.tr(),
+                      subtitle: LocaleKeys.TrackYourProgress.tr(),
                       color: AppColors.primaryPurple,
                       onTap: () {
                         context.router.push(const MyBodyRoute());
@@ -186,8 +188,8 @@ class _OverallAccountPageState extends State<OverallAccountPage> {
                     _buildModernItem(
                       context,
                       icon: Icons.book,
-                      title: 'Workout Programs',
-                      subtitle: 'Explore routines',
+                      title: LocaleKeys.WorkoutPrograms.tr(),
+                      subtitle: LocaleKeys.ExploreRoutines.tr(),
                       color: AppColors.secondaryTeal,
                       onTap: () {
                         context.router.push(const RoutinesRoute());
@@ -197,8 +199,8 @@ class _OverallAccountPageState extends State<OverallAccountPage> {
                     _buildModernItem(
                       context,
                       icon: Icons.people,
-                      title: 'Friends',
-                      subtitle: 'Connect with friends',
+                      title: LocaleKeys.Friends.tr(),
+                      subtitle: LocaleKeys.ConnectWithFriends.tr(),
                       color: Colors.blue,
                       onTap: () {
                         context.router.push(const FriendsRoute());
@@ -208,8 +210,8 @@ class _OverallAccountPageState extends State<OverallAccountPage> {
                     _buildModernItem(
                       context,
                       icon: Icons.group,
-                      title: 'Groups',
-                      subtitle: 'Join yoga communities',
+                      title: LocaleKeys.Groups.tr(),
+                      subtitle: LocaleKeys.JoinYogaCommunities.tr(),
                       color: Colors.green,
                       onTap: () {
                         context.router.push(const GroupsRoute());
@@ -219,8 +221,8 @@ class _OverallAccountPageState extends State<OverallAccountPage> {
                     _buildModernItem(
                       context,
                       icon: Icons.rss_feed,
-                      title: 'Activity Feed',
-                      subtitle: 'See what friends are doing',
+                      title: LocaleKeys.ActivityFeed.tr(),
+                      subtitle: LocaleKeys.SeeWhatFriendsAreDoing.tr(),
                       color: Colors.orange,
                       onTap: () {
                         context.router.push(const ActivitiesRoute());
@@ -230,8 +232,8 @@ class _OverallAccountPageState extends State<OverallAccountPage> {
                     _buildModernItem(
                       context,
                       icon: Icons.notifications,
-                      title: 'Notifications',
-                      subtitle: 'Manage your alerts',
+                      title: LocaleKeys.Notifications.tr(),
+                      subtitle: LocaleKeys.ManageYourAlerts.tr(),
                       color: AppColors.secondaryTeal,
                       onTap: () {
                         context.router.push(NotificationRouteRoute());
@@ -241,8 +243,8 @@ class _OverallAccountPageState extends State<OverallAccountPage> {
                     _buildModernItem(
                       context,
                       icon: Icons.settings,
-                      title: 'Settings',
-                      subtitle: 'App preferences',
+                      title: LocaleKeys.Settings.tr(),
+                      subtitle: LocaleKeys.AppPreferences.tr(),
                       color: AppColors.accentCoral,
                       onTap: () {
                         _showSettingsDialog(context);
@@ -252,8 +254,8 @@ class _OverallAccountPageState extends State<OverallAccountPage> {
                     _buildModernItem(
                       context,
                       icon: Icons.help,
-                      title: 'Help & Support',
-                      subtitle: 'Get assistance',
+                      title: LocaleKeys.HelpAndSupport.tr(),
+                      subtitle: LocaleKeys.GetAssistance.tr(),
                       color: AppColors.primaryPurpleLight,
                       onTap: () {
                         _showHelpSupportDialog(context);
@@ -263,8 +265,8 @@ class _OverallAccountPageState extends State<OverallAccountPage> {
                     _buildModernItem(
                       context,
                       icon: Icons.logout,
-                      title: 'Log Out',
-                      subtitle: 'Sign out of your account',
+                      title: LocaleKeys.LogOut.tr(),
+                      subtitle: LocaleKeys.SignOutOfYourAccount.tr(),
                       color: Colors.red,
                       onTap: () async {
                         final shouldLogout = await showModalBottomSheet<bool>(
@@ -305,7 +307,9 @@ class _OverallAccountPageState extends State<OverallAccountPage> {
   }
 
   void _showSettingsDialog(BuildContext context) {
-    String selectedLanguage = 'English'; // Default language
+    // initialize selected language from current locale
+    final currentCode = context.locale.languageCode;
+    String selectedLanguage = currentCode == 'vi' ? 'Tiếng Việt' : 'English';
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -334,9 +338,9 @@ class _OverallAccountPageState extends State<OverallAccountPage> {
                     ),
                   ),
                   const SizedBox(width: 12),
-                  const Text(
-                    'Settings',
-                    style: TextStyle(
+                  Text(
+                    LocaleKeys.Settings.tr(),
+                    style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
@@ -349,9 +353,9 @@ class _OverallAccountPageState extends State<OverallAccountPage> {
                 ],
               ),
               const SizedBox(height: 24),
-              const Text(
-                'Language',
-                style: TextStyle(
+              Text(
+                LocaleKeys.Language.tr(),
+                style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   color: Colors.black87,
@@ -367,23 +371,25 @@ class _OverallAccountPageState extends State<OverallAccountPage> {
                   children: [
                     _buildLanguageOption(
                       context: context,
-                      language: 'English',
+                      language: LocaleKeys.English.tr(),
                       flag: '🇬🇧',
                       isSelected: selectedLanguage == 'English',
-                      onTap: () {
+                      onTap: () async {
+                        // Change app locale to English
+                        await context.setLocale(const Locale('en'));
                         setState(() => selectedLanguage = 'English');
-                        // TODO: Implement language change
                       },
                     ),
                     Divider(height: 1, color: Colors.grey.shade300),
                     _buildLanguageOption(
                       context: context,
-                      language: 'Tiếng Việt',
+                      language: LocaleKeys.Vietnamese.tr(),
                       flag: '🇻🇳',
                       isSelected: selectedLanguage == 'Tiếng Việt',
-                      onTap: () {
+                      onTap: () async {
+                        // Change app locale to Vietnamese
+                        await context.setLocale(const Locale('vi'));
                         setState(() => selectedLanguage = 'Tiếng Việt');
-                        // TODO: Implement language change
                       },
                     ),
                   ],
@@ -391,7 +397,7 @@ class _OverallAccountPageState extends State<OverallAccountPage> {
               ),
               const SizedBox(height: 16),
               Text(
-                'More settings coming soon...',
+                LocaleKeys.MoreSettingsComingSoon.tr(),
                 style: TextStyle(
                   fontSize: 13,
                   color: Colors.grey.shade600,
@@ -474,8 +480,8 @@ class _OverallAccountPageState extends State<OverallAccountPage> {
                   ),
                 ),
                 const SizedBox(width: 12),
-                const Text(
-                  'Help & Support',
+                Text(
+                  'HelpAndSupport'.tr(),
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -491,7 +497,7 @@ class _OverallAccountPageState extends State<OverallAccountPage> {
             const SizedBox(height: 24),
             _buildHelpItem(
               icon: Icons.email,
-              title: 'Contact LA Tech',
+              title: 'ContactLATech'.tr(),
               subtitle: 'latech1303@gmail.com',
               onTap: () {
                 // TODO: Open email app
@@ -500,7 +506,7 @@ class _OverallAccountPageState extends State<OverallAccountPage> {
             const SizedBox(height: 12),
             _buildHelpItem(
               icon: Icons.description,
-              title: 'Documentation',
+              title: 'Documentation'.tr(),
               subtitle: 'Learn how to use the app',
               onTap: () {
                 // TODO: Open documentation
@@ -509,7 +515,7 @@ class _OverallAccountPageState extends State<OverallAccountPage> {
             const SizedBox(height: 12),
             _buildHelpItem(
               icon: Icons.bug_report,
-              title: 'Report a Bug',
+              title: 'ReportABug'.tr(),
               subtitle: 'Help us improve',
               onTap: () {
                 // TODO: Open bug report form

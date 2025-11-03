@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_starter/di.dart';
 import 'package:flutter_starter/gen/app_images.dart';
-import 'package:flutter_starter/presenter/app.dart';
 import 'package:flutter_starter/presenter/navigation/navigation.dart';
 import 'package:flutter_starter/presenter/pages/register/register_bloc.dart';
 import 'package:flutter_starter/presenter/pages/register/register_event.dart';
@@ -11,6 +11,7 @@ import 'package:flutter_starter/presenter/pages/register/register_state.dart';
 import 'package:flutter_starter/presenter/themes/colors.dart';
 import 'package:flutter_starter/presenter/widget/custom_button.dart';
 import 'package:flutter_starter/presenter/widget/custom_text_field.dart';
+import 'package:flutter_starter/presenter/languages/translation_keys.g.dart';
 
 // TODO: Add the page to the router
 @RoutePage()
@@ -102,8 +103,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                 shaderCallback: (bounds) => LinearGradient(
                                   colors: [Colors.white, Colors.white.withOpacity(0.9)],
                                 ).createShader(bounds),
-                                child: const Text(
-                                  'Register',
+                                child: Text(
+                                  LocaleKeys.Register.tr(),
                                   style: TextStyle(
                                     fontSize: 36,
                                     fontWeight: FontWeight.bold,
@@ -113,7 +114,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               ),
                               const SizedBox(height: 8),
                               Text(
-                                'Create an account to continue!',
+                                LocaleKeys.CreateAccountToContinue.tr(),
                                 style: TextStyle(
                                   fontSize: 14,
                                   color: Colors.white.withOpacity(0.9),
@@ -146,7 +147,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       Expanded(
                         child: CustomTextField(
                           controller: _firstNameController,
-                          hintText: 'First name',
+                          hintText: LocaleKeys.FirstName.tr(),
                           onChanged: (v) => _bloc.add(const RegisterErrorOccurred(null)),
                           suffixIcon: AppImages.ic_indentity,
                         ),
@@ -155,7 +156,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       Expanded(
                         child: CustomTextField(
                           controller: _lastNameController,
-                          hintText: 'Last name',
+                          hintText: LocaleKeys.LastName.tr(),
                           onChanged: (v) => _bloc.add(const RegisterErrorOccurred(null)),
                           suffixIcon: AppImages.ic_indentity,
                         ),
@@ -169,7 +170,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   BlocBuilder<RegisterBloc, RegisterState>(builder: (context, state) {
                     return CustomTextField(
                       controller: _emailController,
-                      hintText: 'Email',
+                      hintText: LocaleKeys.Email.tr(),
                       onChanged: (v) => _bloc.add(const RegisterErrorOccurred(null)),
                       errorText: state.emailError,
                       suffixIcon: AppImages.ic_mail,
@@ -182,7 +183,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   BlocBuilder<RegisterBloc, RegisterState>(builder: (context, state) {
                     return CustomTextField(
                       controller: _phoneNumberController,
-                      hintText: 'Phone Number',
+                      hintText: LocaleKeys.PhoneNumber.tr(),
                       onChanged: (v) => _bloc.add(const RegisterErrorOccurred(null)),
                       errorText: state.phoneError,
                       suffixIcon: AppImages.ic_phone,
@@ -212,7 +213,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       child: BlocBuilder<RegisterBloc, RegisterState>(builder: (context, state) {
                         return CustomTextField(
                           controller: _dateOfBirthController,
-                          hintText: 'Date of Birth (yyyy-MM-dd)',
+                          hintText: LocaleKeys.DateOfBirth.tr(),
                           onChanged: (v) => _bloc.add(const RegisterErrorOccurred(null)),
                           errorText: state.birthDateError,
                           suffixIcon: AppImages.ic_calendar,
@@ -228,7 +229,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     return CustomTextField(
                       isPassword: !_isPasswordVisible,
                       controller: _passwordController,
-                      hintText: 'Password',
+                      hintText: LocaleKeys.Password.tr(),
                       onChanged: (v) => _bloc.add(const RegisterErrorOccurred(null)),
                       errorText: state.passwordError,
                       suffixIcon: _isPasswordVisible ? AppImages.ic_eye_on : AppImages.ic_eye_off,
@@ -247,7 +248,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     return CustomTextField(
                       isPassword: !_isConfirmPasswordVisible,
                       controller: _confirmPasswordController,
-                      hintText: 'Confirm Password',
+                      hintText: LocaleKeys.ConfirmPassword.tr(),
                       onChanged: (v) => _bloc.add(const RegisterErrorOccurred(null)),
                       errorText: state.confirmPasswordError,
                       suffixIcon:
@@ -280,7 +281,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       ],
                     ),
                     child: CustomButton(
-                      text: 'Register',
+                      text: LocaleKeys.Register.tr(),
                       textColor: Colors.white,
                       backgroundColor: Colors.transparent,
                       onPressed: () {
@@ -319,13 +320,13 @@ class _RegisterPageState extends State<RegisterPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'Already have an account? ',
+                          LocaleKeys.AlreadyHaveAccount.tr(),
                           style: TextStyle(color: Colors.grey.shade700),
                         ),
                         GestureDetector(
                           onTap: () => context.router.popAndPush(LoginRoute()),
                           child: Text(
-                            'Log in',
+                            LocaleKeys.LogIn.tr(),
                             style: TextStyle(
                               color: AppColors.primaryPurple,
                               fontWeight: FontWeight.bold,

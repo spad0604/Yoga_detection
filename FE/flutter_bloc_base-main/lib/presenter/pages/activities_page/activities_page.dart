@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'dart:convert';
 import 'package:flutter_starter/data/entities/response/post_response.dart';
 import 'package:flutter_starter/data/entities/response/comment_response.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_starter/di.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_starter/data/repositories/social_posts_repository/social_posts_repository.dart';
+import 'package:flutter_starter/presenter/languages/translation_keys.g.dart';
 import 'package:flutter_starter/presenter/themes/colors.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -69,7 +71,7 @@ class _SocialFeedWidgetState extends State<SocialFeedWidget> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) return const Center(child: CircularProgressIndicator());
-    if (_error != null) return Center(child: Text('Failed to load posts: $_error'));
+    if (_error != null) return Center(child: Text('${LocaleKeys.FailedToLoadPosts.tr()}: $_error'));
     if (_posts.isEmpty) {
       return Center(
         child: Column(
@@ -77,9 +79,9 @@ class _SocialFeedWidgetState extends State<SocialFeedWidget> {
           children: [
             Icon(Icons.rss_feed_outlined, size: 64, color: Colors.grey[400]),
             const SizedBox(height: 12),
-            Text('No posts yet', style: Theme.of(context).textTheme.titleLarge),
+            Text(LocaleKeys.NoPostsYet.tr(), style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 8),
-            Text('Social posts will appear here',
+            Text(LocaleKeys.SocialPostsWillAppearHere.tr(),
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey[600])),
           ],
         ),
@@ -223,7 +225,7 @@ class _PostCardState extends State<PostCard> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            widget.post.authorName ?? 'Anonymous',
+                            widget.post.authorName ?? LocaleKeys.Anonymous.tr(),
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
@@ -437,7 +439,7 @@ class _PostDetailSheetState extends State<_PostDetailSheet> {
       widget.onRefresh?.call();
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to post comment: $e')),
+        SnackBar(content: Text('${LocaleKeys.FailedToPostComment.tr()}: $e')),
       );
     }
   }
@@ -470,7 +472,7 @@ class _PostDetailSheetState extends State<_PostDetailSheet> {
                   children: [
                     Expanded(
                       child: Text(
-                        'Post Details',
+                        LocaleKeys.PostDetails.tr(),
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -496,7 +498,7 @@ class _PostDetailSheetState extends State<_PostDetailSheet> {
                     const SizedBox(height: 16),
                     // Comments section
                     Text(
-                      'Comments',
+                      LocaleKeys.Comments.tr(),
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -508,7 +510,7 @@ class _PostDetailSheetState extends State<_PostDetailSheet> {
                       const Center(child: CircularProgressIndicator())
                     else if (_comments.isEmpty)
                       Text(
-                        'No comments yet. Be the first!',
+                        LocaleKeys.NoCommentsYet.tr(),
                         style: TextStyle(
                           fontSize: 14,
                           color: AppColors.textSecondary,
@@ -627,7 +629,7 @@ class _CommentTile extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        comment.username ?? 'Anonymous',
+                        comment.username ?? LocaleKeys.Anonymous.tr(),
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.bold,
@@ -709,7 +711,7 @@ class _ActivitiesPageState extends State<ActivitiesPage> with SingleTickerProvid
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Social Feed',
+              LocaleKeys.SocialFeed.tr(),
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -727,9 +729,9 @@ class _ActivitiesPageState extends State<ActivitiesPage> with SingleTickerProvid
                 labelColor: AppColors.primaryPurple,
                 unselectedLabelColor: AppColors.textSecondary,
                 indicatorColor: AppColors.primaryPurple,
-                tabs: const [
-                  Tab(text: 'Friends', icon: Icon(Icons.people)),
-                  Tab(text: 'My Activity', icon: Icon(Icons.person)),
+                tabs: [
+                  Tab(text: LocaleKeys.Friends.tr(), icon: Icon(Icons.people)),
+                  Tab(text: LocaleKeys.MyActivity.tr(), icon: Icon(Icons.person)),
                 ],
               ),
               Container(
@@ -751,7 +753,7 @@ class _ActivitiesPageState extends State<ActivitiesPage> with SingleTickerProvid
         onPressed: _showCreateSocialPostDialog,
         backgroundColor: AppColors.primaryPurple,
         icon: const Icon(Icons.add),
-        label: const Text('New Post'),
+        label: Text(LocaleKeys.NewPost.tr()),
       ),
     );
   }
@@ -794,7 +796,7 @@ class _ActivitiesPageState extends State<ActivitiesPage> with SingleTickerProvid
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Create Post',
+                          LocaleKeys.CreatePost.tr(),
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -812,7 +814,7 @@ class _ActivitiesPageState extends State<ActivitiesPage> with SingleTickerProvid
                       controller: controller,
                       maxLines: 6,
                       decoration: InputDecoration(
-                        hintText: 'Share your thoughts...',
+                        hintText: LocaleKeys.ShareYourThoughts.tr(),
                         hintStyle: TextStyle(color: AppColors.textSecondary.withOpacity(0.5)),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16),
@@ -832,7 +834,7 @@ class _ActivitiesPageState extends State<ActivitiesPage> with SingleTickerProvid
                         ElevatedButton.icon(
                           onPressed: pickImages,
                           icon: const Icon(Icons.photo_library),
-                          label: const Text('Add images'),
+                          label: Text(LocaleKeys.AddImages.tr()),
                         ),
                         const SizedBox(width: 12),
                         if (pickedImages.isNotEmpty)
@@ -890,10 +892,11 @@ class _ActivitiesPageState extends State<ActivitiesPage> with SingleTickerProvid
                           activitiesBloc.add(const ActivitiesLoadMyActivities());
                           activitiesBloc.add(const ActivitiesLoadFriendActivities());
                           ScaffoldMessenger.of(context)
-                              .showSnackBar(const SnackBar(content: Text('Posted')));
+                              .showSnackBar(SnackBar(content: Text(LocaleKeys.Posted.tr())));
                         } catch (e) {
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(SnackBar(content: Text('Failed to post: $e')));
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(
+                                  LocaleKeys.FailedToPost.tr(namedArgs: {'error': e.toString()}))));
                         }
                       },
                       style: ElevatedButton.styleFrom(
@@ -907,11 +910,11 @@ class _ActivitiesPageState extends State<ActivitiesPage> with SingleTickerProvid
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
+                        children: [
                           Icon(Icons.send, size: 20),
                           SizedBox(width: 8),
                           Text(
-                            'Post',
+                            LocaleKeys.Post.tr(),
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
@@ -978,7 +981,7 @@ class _ActivitiesPageContentState extends State<ActivitiesPageContent>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Social Feed',
+              LocaleKeys.SocialFeed.tr(),
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -996,9 +999,9 @@ class _ActivitiesPageContentState extends State<ActivitiesPageContent>
                 labelColor: AppColors.primaryPurple,
                 unselectedLabelColor: AppColors.textSecondary,
                 indicatorColor: AppColors.primaryPurple,
-                tabs: const [
-                  Tab(text: 'Friends', icon: Icon(Icons.people)),
-                  Tab(text: 'My Activity', icon: Icon(Icons.person)),
+                tabs: [
+                  Tab(text: LocaleKeys.Friends.tr(), icon: Icon(Icons.people)),
+                  Tab(text: LocaleKeys.MyActivity.tr(), icon: Icon(Icons.person)),
                 ],
               ),
               Container(
@@ -1020,7 +1023,7 @@ class _ActivitiesPageContentState extends State<ActivitiesPageContent>
         onPressed: _showCreateSocialPostDialogContent,
         backgroundColor: AppColors.primaryPurple,
         icon: const Icon(Icons.add),
-        label: const Text('New Post'),
+        label: Text(LocaleKeys.NewPost.tr()),
       ),
     );
   }
@@ -1060,7 +1063,8 @@ class _ActivitiesPageContentState extends State<ActivitiesPageContent>
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('New Post', style: Theme.of(context).textTheme.titleMedium),
+                        Text(LocaleKeys.NewPost.tr(),
+                            style: Theme.of(context).textTheme.titleMedium),
                         IconButton(
                           icon: const Icon(Icons.close),
                           onPressed: () => Navigator.of(bottomSheetContext).pop(),
@@ -1071,7 +1075,9 @@ class _ActivitiesPageContentState extends State<ActivitiesPageContent>
                     TextField(
                       controller: controller,
                       maxLines: 6,
-                      decoration: InputDecoration(hintText: 'Share something...'),
+                      decoration: InputDecoration(
+                          hintText: LocaleKeys.ShareSomething.tr(),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8))),
                     ),
                     const SizedBox(height: 12),
                     Row(
@@ -1079,7 +1085,7 @@ class _ActivitiesPageContentState extends State<ActivitiesPageContent>
                         ElevatedButton.icon(
                           onPressed: pickImages,
                           icon: const Icon(Icons.photo_library),
-                          label: const Text('Add images'),
+                          label: Text(LocaleKeys.AddImages.tr()),
                         ),
                         const SizedBox(width: 12),
                         if (pickedImages.isNotEmpty)
@@ -1136,13 +1142,14 @@ class _ActivitiesPageContentState extends State<ActivitiesPageContent>
                           activitiesBloc.add(const ActivitiesLoadMyActivities());
                           activitiesBloc.add(const ActivitiesLoadFriendActivities());
                           ScaffoldMessenger.of(context)
-                              .showSnackBar(const SnackBar(content: Text('Posted')));
+                              .showSnackBar(SnackBar(content: Text(LocaleKeys.Posted.tr())));
                         } catch (e) {
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(SnackBar(content: Text('Failed to post: $e')));
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(LocaleKeys.FailedToPostWithError.tr(
+                                  namedArgs: {'error': e.toString()}))));
                         }
                       },
-                      child: const Text('Post'),
+                      child: Text(LocaleKeys.Post.tr()),
                     ),
                   ],
                 ),
