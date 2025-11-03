@@ -9,6 +9,8 @@ import 'package:flutter_starter/di.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_starter/presenter/languages/translation_keys.g.dart';
 import 'package:flutter_starter/presenter/pages/routine_practice_session/routine_practice_session_page.dart';
+import 'package:flutter_starter/data/states/practice_session/practice_session_bloc.dart';
+import 'package:flutter_starter/data/states/practice_session/practice_session_event.dart';
 
 @RoutePage()
 class RoutineDetailsPage extends StatefulWidget implements AutoRouteWrapper {
@@ -247,8 +249,12 @@ class _RoutineDetailsPageState extends State<RoutineDetailsPage> {
                 // Navigate to practice session page
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => RoutinePracticeSessionPage(
-                      routineId: routine.id,
+                    builder: (context) => BlocProvider<PracticeSessionBloc>(
+                      create: (_) => provider.get<PracticeSessionBloc>()
+                        ..add(PracticeSessionEvent.startSession(routine.id)),
+                      child: RoutinePracticeSessionPage(
+                        routineId: routine.id,
+                      ),
                     ),
                   ),
                 );

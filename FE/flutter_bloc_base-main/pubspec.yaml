@@ -89,6 +89,10 @@ dependencies:
 
   # Time formatting
   timeago: ^3.7.0
+  
+  # Text-to-Speech
+  flutter_tts: ^4.2.3
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter

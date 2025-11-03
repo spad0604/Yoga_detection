@@ -3,10 +3,12 @@ part of 'routine_practice_session_page.dart';
 class PosePainter extends CustomPainter {
   final List<Pose> poses;
   final Size imageSize;
+  final bool isFrontCamera;
 
   PosePainter({
     required this.poses,
     required this.imageSize,
+    this.isFrontCamera = false,
   });
 
   // Define proper skeleton connections for human body
@@ -114,10 +116,16 @@ class PosePainter extends CustomPainter {
         if (lm1 == null || lm2 == null) continue;
         if (lm1.likelihood < 0.3 || lm2.likelihood < 0.3) continue;
 
-        final x1 = lm1.x * scale + offsetX;
-        final y1 = lm1.y * scale + offsetY;
-        final x2 = lm2.x * scale + offsetX;
-        final y2 = lm2.y * scale + offsetY;
+        double x1 = lm1.x * scale + offsetX;
+        double y1 = lm1.y * scale + offsetY;
+        double x2 = lm2.x * scale + offsetX;
+        double y2 = lm2.y * scale + offsetY;
+
+        // Mirror for front camera
+        if (isFrontCamera) {
+          x1 = size.width - x1;
+          x2 = size.width - x2;
+        }
 
         final lineColor = _lineColorFor(type1, type2);
         final opacity = ((lm1.likelihood + lm2.likelihood) / 2).clamp(0.3, 1.0);
@@ -133,8 +141,14 @@ class PosePainter extends CustomPainter {
       landmarksMap.forEach((type, landmark) {
         if (landmark.likelihood < 0.3) return;
 
-        final x = landmark.x * scale + offsetX;
-        final y = landmark.y * scale + offsetY;
+        double x = landmark.x * scale + offsetX;
+        double y = landmark.y * scale + offsetY;
+
+        // Mirror for front camera
+        if (isFrontCamera) {
+          x = size.width - x;
+        }
+
         final name = type.toString().split('.').last;
 
         Color pointColor;

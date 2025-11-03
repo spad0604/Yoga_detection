@@ -134,11 +134,29 @@ public class PracticeSessionServiceImpl implements PracticeSessionService {
             log.info("Uploaded pose image: {}", imageUrl);
         }
         
-        // Evaluate pose with AI
+        // Get pose details for AI evaluation
+        String poseDescription = null;
+        try {
+            YogaPoseDetails poseDetails = poseDetailsRepository.getYogaPoseDetails(currentPose.getPoseCode());
+            if (poseDetails != null) {
+                poseDescription = poseDetails.getDescription();
+            }
+        } catch (Exception e) {
+            log.warn("Failed to get pose details for AI evaluation: {}", e.getMessage());
+        }
+        
+        // Evaluate pose with AI - sử dụng thông tin từ routine_pose và pose_details
         AIPoseEvaluationService.EvaluationResult evaluation = null;
         if (imageUrl != null && request.getLandmarkData() != null) {
             try {
-                evaluation = aiEvaluationService.evaluatePose(imageUrl, request.getLandmarkData(), request.getPoseCode());
+                // Truyền poseName từ routine_pose và description từ pose_details
+                evaluation = aiEvaluationService.evaluatePose(
+                    imageUrl, 
+                    request.getLandmarkData(), 
+                    request.getPoseCode(),
+                    currentPose.getPoseName(),
+                    poseDescription != null ? poseDescription : "Không có mô tả"
+                );
                 log.info("AI evaluation completed: score={}, feedback length={}", 
                     evaluation.getScore(), evaluation.getFeedback().length());
             } catch (Exception e) {

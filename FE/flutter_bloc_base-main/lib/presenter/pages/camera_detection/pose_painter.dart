@@ -192,22 +192,23 @@ class PosePainter extends CustomPainter {
 
         // Draw label if enabled
         if (showLabels) {
-          final textPainter = TextPainter(
-            text: TextSpan(
-              text: label,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 10,
-                fontWeight: FontWeight.bold,
-                shadows: [
-                  Shadow(blurRadius: 4, color: Colors.black, offset: Offset(0, 0)),
-                  Shadow(blurRadius: 4, color: Colors.black, offset: Offset(1, 1)),
-                ],
-              ),
+          final textSpan = TextSpan(
+            text: label,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 10,
+              fontWeight: FontWeight.bold,
+              shadows: [
+                Shadow(blurRadius: 4, color: Colors.black, offset: Offset(0, 0)),
+                Shadow(blurRadius: 4, color: Colors.black, offset: Offset(1, 1)),
+              ],
             ),
-            textDirection: TextDirection.ltr,
-            maxLines: 1,
-          )..layout();
+          );
+          final textPainter = TextPainter(
+            text: textSpan,
+            textDirection: ui.TextDirection.ltr,
+          );
+          textPainter.layout();
           textPainter.paint(canvas, Offset(dx + 8, dy - 6));
         }
       }

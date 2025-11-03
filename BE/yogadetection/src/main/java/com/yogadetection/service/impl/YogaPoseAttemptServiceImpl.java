@@ -71,7 +71,14 @@ public class YogaPoseAttemptServiceImpl implements YogaPoseAttemptService {
         AIPoseEvaluationService.EvaluationResult evaluation = null;
         if (imageUrl != null) {
             log.info("Calling AI evaluation for pose {} with image: {}", poseCode, imageUrl);
-            evaluation = aiEvaluationService.evaluatePose(imageUrl, landmarkData, poseCode);
+            // Sử dụng thông tin từ poseDetails
+            evaluation = aiEvaluationService.evaluatePose(
+                imageUrl, 
+                landmarkData, 
+                poseCode,
+                poseDetails.getName(),
+                poseDetails.getDescription()
+            );
             log.info("AI evaluation completed for pose {}: score={}, feedback length={}", 
                     poseCode, evaluation.getScore(), evaluation.getFeedback().length());
         } else {

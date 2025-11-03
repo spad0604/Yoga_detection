@@ -35,6 +35,14 @@ abstract class  LocaleKeys {
   static const MoreSettingsComingSoon = 'MoreSettingsComingSoon';
   static const Continue = 'Continue';
   static const AnalyzingPose = 'AnalyzingPose';
+  static const LiveCamera = 'LiveCamera';
+  static const PoseDetected = 'PoseDetected';
+  static const MoveFurtherAway = 'MoveFurtherAway';
+  static const MoveCloser = 'MoveCloser';
+  static const HoldStill = 'HoldStill';
+  static const PreparingToCapture = 'PreparingToCapture';
+  static const NoPoseDetectedMessage = 'NoPoseDetectedMessage';
+  static const TryAgainBetterPositioning = 'TryAgainBetterPositioning';
   static const CompleteSessionConfirmTitle = 'CompleteSessionConfirmTitle';
   static const CompleteSessionConfirmContent = 'CompleteSessionConfirmContent';
   static const Cancel = 'Cancel';

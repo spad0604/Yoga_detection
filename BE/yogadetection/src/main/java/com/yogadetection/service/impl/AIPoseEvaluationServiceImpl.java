@@ -34,17 +34,17 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
     private String apiKey;
 
     @Override
-    public EvaluationResult evaluatePose(String imageUrl, PoseLandmarkRequest landmarkData, String poseCode) {
+    public EvaluationResult evaluatePose(String imageUrl, PoseLandmarkRequest landmarkData, String poseCode, String poseName, String poseDescription) {
         try {
-            YogaPoseDetails poseDetails = poseDetailsRepository.getYogaPoseDetails(poseCode);
-            String poseName = poseDetails != null ? poseDetails.getName() : "Unknown Pose";
-            String poseDescription = poseDetails != null ? poseDetails.getDescription() : "";
+            // Sử dụng thông tin từ routine_pose thay vì query yoga_pose_details
+            String actualPoseName = poseName != null ? poseName : "Unknown Pose";
+            String actualDescription = poseDescription != null ? poseDescription : "";
 
-            String prompt = buildEvaluationPrompt(poseName, poseDescription, landmarkData);
+            String prompt = buildEvaluationPrompt(actualPoseName, actualDescription, landmarkData);
             EvaluationResult result = callOpenAIVision(imageUrl, prompt);
 
-            log.info("✅ AI evaluation completed for pose {} → score={} | feedback length={}",
-                    poseCode, result.getScore(), result.getFeedback().length());
+            log.info("✅ AI evaluation completed for pose {} ({}) → score={} | feedback length={}",
+                    poseCode, actualPoseName, result.getScore(), result.getFeedback().length());
 
             return result;
 

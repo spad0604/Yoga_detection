@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:typed_data';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui' as ui;
 
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
@@ -21,6 +22,9 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_starter/data/entities/request/post_yoga_pose_model.dart';
 import 'package:flutter_starter/data/usecases/post_yoga_pose_uc.dart';
 import 'package:flutter_starter/data/entities/response/yoga_pose_details.dart';
+import 'package:flutter_tts/flutter_tts.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_starter/presenter/languages/translation_keys.g.dart';
 
 // ignore: depend_on_referenced_packages
 import 'package:google_mlkit_commons/google_mlkit_commons.dart'
@@ -71,6 +75,15 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
   bool _showResult = false;
   Size? _capturedImageSize; // Store actual captured image size
 
+  // Distance detection and TTS
+  FlutterTts? _flutterTts;
+  String _distanceStatus = ''; // 'too_close', 'too_far', 'perfect'
+  DateTime? _lastSpeechTime;
+  bool _autoCountdownEnabled = true;
+  DateTime? _perfectPositionStartTime;
+  static const _perfectPositionDuration =
+      Duration(seconds: 2); // Hold perfect position for 2s before countdown
+
   @override
   void initState() {
     super.initState();
@@ -82,6 +95,7 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
     ]);
+    _initializeTts();
     _initializeCameraAndDetector();
   }
 
@@ -102,6 +116,95 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(message)),
       );
+    }
+  }
+
+  // Initialize Text-to-Speech
+  Future<void> _initializeTts() async {
+    _flutterTts = FlutterTts();
+    await _flutterTts?.setLanguage("vi-VN"); // Force Vietnamese
+    await _flutterTts?.setSpeechRate(0.5);
+    await _flutterTts?.setVolume(1.0);
+    await _flutterTts?.setPitch(1.0);
+  }
+
+  // Speak guidance message (with debounce to avoid spam)
+  Future<void> _speak(String message) async {
+    if (_flutterTts == null) return;
+
+    final now = DateTime.now();
+    if (_lastSpeechTime != null && now.difference(_lastSpeechTime!) < const Duration(seconds: 3)) {
+      return; // Debounce: don't speak if last speech was less than 3 seconds ago
+    }
+
+    _lastSpeechTime = now;
+    await _flutterTts?.speak(message);
+  }
+
+  // Calculate distance based on shoulder width (approximate)
+  double _calculateDistance(Pose pose) {
+    final leftShoulder = pose.landmarks[PoseLandmarkType.leftShoulder];
+    final rightShoulder = pose.landmarks[PoseLandmarkType.rightShoulder];
+
+    if (leftShoulder == null || rightShoulder == null) return 0;
+
+    // Calculate shoulder width in pixels
+    final dx = leftShoulder.x - rightShoulder.x;
+    final dy = leftShoulder.y - rightShoulder.y;
+    final shoulderWidth = (dx * dx + dy * dy).toDouble().abs();
+
+    return shoulderWidth;
+  }
+
+  // Check distance and provide guidance
+  Future<void> _checkDistanceAndGuide(List<Pose> poses) async {
+    if (poses.isEmpty || _isCountingDown || _showResult) {
+      _perfectPositionStartTime = null;
+      return;
+    }
+
+    final distance = _calculateDistance(poses.first);
+    String newStatus = '';
+    String? guidanceMessage;
+
+    // Thresholds (adjust based on testing)
+    const double tooCloseThreshold = 50000.0; // If shoulder width > this, too close
+    const double tooFarThreshold = 10000.0; // If shoulder width < this, too far
+
+    if (distance > tooCloseThreshold) {
+      newStatus = 'too_close';
+      guidanceMessage = LocaleKeys.MoveFurtherAway.tr();
+      _perfectPositionStartTime = null;
+    } else if (distance < tooFarThreshold && distance > 0) {
+      newStatus = 'too_far';
+      guidanceMessage = LocaleKeys.MoveCloser.tr();
+      _perfectPositionStartTime = null;
+    } else if (distance > 0) {
+      newStatus = 'perfect';
+      guidanceMessage = LocaleKeys.HoldStill.tr();
+
+      // Start timing perfect position
+      if (_perfectPositionStartTime == null) {
+        _perfectPositionStartTime = DateTime.now();
+      } else {
+        // Check if user has held perfect position long enough
+        final holdDuration = DateTime.now().difference(_perfectPositionStartTime!);
+        if (holdDuration >= _perfectPositionDuration && _autoCountdownEnabled && !_isCountingDown) {
+          // Auto-trigger countdown
+          _speak(LocaleKeys.PreparingToCapture.tr());
+          await Future.delayed(const Duration(milliseconds: 500));
+          _startCountdownAndCapture();
+          return;
+        }
+      }
+    }
+
+    // Update status and speak if changed
+    if (newStatus != _distanceStatus) {
+      setState(() => _distanceStatus = newStatus);
+      if (guidanceMessage != null) {
+        _speak(guidanceMessage);
+      }
     }
   }
 
@@ -440,7 +543,8 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
           selectedCamera,
           ResolutionPreset.high, // Use high resolution for better pose detection
           enableAudio: false,
-          imageFormatGroup: ImageFormatGroup.yuv420,
+          imageFormatGroup:
+              ImageFormatGroup.nv21, // Changed from yuv420 to nv21 for ML Kit compatibility
         );
 
         await controller.initialize();
@@ -536,11 +640,15 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
             poses.first.landmarks.values.where((lm) => lm.likelihood >= 0.5).length;
         debugPrint(
             '✅ Detected ${poses.length} pose(s) - ${highConfidenceLandmarks}/${poses.first.landmarks.length} landmarks (confidence ≥ 0.5)');
+
+        // Check distance and provide guidance
+        await _checkDistanceAndGuide(poses);
       } else {
         // Only log occasionally to avoid spam
         if (DateTime.now().millisecondsSinceEpoch % 30 == 0) {
           debugPrint('⚠️ No poses detected - ensure person is fully visible in frame');
         }
+        _perfectPositionStartTime = null;
       }
 
       _bloc.add(CameraDetectionEvent.posesUpdated(poses));
@@ -554,31 +662,44 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
 
   // Get proper rotation compensation for accurate pose tracking
   InputImageRotation _getRotationCompensation(int sensorOrientation) {
-    // Get current device orientation
+    // For Android, we need to calculate the rotation based on:
+    // 1. Camera sensor orientation
+    // 2. Device natural orientation
+    // 3. Current device rotation
+
+    // Most Android phones have sensor orientation of 90° (landscape-primary when held portrait)
+    // Some have 270° (landscape-secondary when held portrait)
+
+    // For portrait mode (phone held upright):
+    // - Back camera with sensor 90°: use rotation90deg
+    // - Back camera with sensor 270°: use rotation270deg
+    // - Front camera with sensor 270°: use rotation270deg
+
+    // For landscape mode (phone rotated):
+    // - Adjust by 90° accordingly
+
     final orientation = MediaQuery.of(context).orientation;
+    int rotationDegrees;
 
-    // Calculate rotation based on sensor orientation and device orientation
-    int rotationDegrees = sensorOrientation;
-
-    // Adjust for device orientation
-    if (orientation == Orientation.landscape) {
-      // Landscape mode
-      if (_currentLensDirection == CameraLensDirection.front) {
-        rotationDegrees = (sensorOrientation + 270) % 360;
+    if (orientation == Orientation.portrait) {
+      // Portrait mode - use sensor orientation directly for back camera
+      if (_currentLensDirection == CameraLensDirection.back) {
+        rotationDegrees = sensorOrientation;
       } else {
-        rotationDegrees = (sensorOrientation + 90) % 360;
+        // Front camera - typically needs adjustment
+        rotationDegrees = sensorOrientation;
       }
     } else {
-      // Portrait mode
-      if (_currentLensDirection == CameraLensDirection.front) {
-        rotationDegrees = (sensorOrientation + 270) % 360;
+      // Landscape mode - add 90° rotation
+      if (_currentLensDirection == CameraLensDirection.back) {
+        rotationDegrees = (sensorOrientation + 90) % 360;
       } else {
-        rotationDegrees = sensorOrientation;
+        rotationDegrees = (sensorOrientation + 270) % 360;
       }
     }
 
     debugPrint(
-        '🔄 Rotation - Sensor: $sensorOrientation°, Device: ${orientation.name}, Final: $rotationDegrees°');
+        '🔄 Rotation - Sensor: $sensorOrientation°, Device: ${orientation.name}, Camera: ${_currentLensDirection.name}, Final: $rotationDegrees°');
 
     // Convert degrees to InputImageRotation enum
     switch (rotationDegrees) {
@@ -640,6 +761,7 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
     _stopStream(); // Stop stream first
     _cameraController?.dispose();
     _poseDetector?.close();
+    _flutterTts?.stop();
     super.dispose();
   }
 
@@ -658,7 +780,7 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
                     height: 50,
                     child: Center(
                       child: Text(
-                        _showResult ? 'Pose Detected' : 'Live Camera',
+                        _showResult ? LocaleKeys.PoseDetected.tr() : LocaleKeys.LiveCamera.tr(),
                         style: Theme.of(context)
                             .textTheme
                             .titleLarge
@@ -678,9 +800,16 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
                           children: [
                             // Show captured image or live camera preview
                             if (_showResult && _capturedImage != null)
-                              Image.file(
-                                File(_capturedImage!.path),
-                                fit: BoxFit.contain, // Use contain to maintain aspect ratio
+                              Transform(
+                                alignment: Alignment.center,
+                                transform: _controller.description.lensDirection ==
+                                        CameraLensDirection.front
+                                    ? (Matrix4.identity()..scale(-1.0, 1.0, 1.0))
+                                    : Matrix4.identity(),
+                                child: Image.file(
+                                  File(_capturedImage!.path),
+                                  fit: BoxFit.contain, // Use contain to maintain aspect ratio
+                                ),
                               )
                             else
                               CameraPreview(_controller),
@@ -753,27 +882,80 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
                                     color: Colors.red.withOpacity(0.8),
                                     borderRadius: BorderRadius.circular(15),
                                   ),
-                                  child: const Column(
+                                  child: Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Icon(Icons.error_outline, color: Colors.white, size: 48),
-                                      SizedBox(height: 10),
+                                      const Icon(Icons.error_outline,
+                                          color: Colors.white, size: 48),
+                                      const SizedBox(height: 10),
                                       Text(
-                                        'No Pose Detected',
+                                        LocaleKeys.NoPoseDetectedMessage.tr(),
                                         textAlign: TextAlign.center,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           color: Colors.white,
                                           fontSize: 18,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                      SizedBox(height: 5),
+                                      const SizedBox(height: 5),
                                       Text(
-                                        'Please try again with better positioning',
+                                        LocaleKeys.TryAgainBetterPositioning.tr(),
                                         textAlign: TextAlign.center,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           color: Colors.white,
                                           fontSize: 14,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+                            // Distance status overlay (only in live mode, not during countdown)
+                            if (!_showResult && !_isCountingDown && _distanceStatus.isNotEmpty)
+                              Positioned(
+                                top: 20,
+                                left: 20,
+                                right: 20,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                                  decoration: BoxDecoration(
+                                    color: _distanceStatus == 'perfect'
+                                        ? Colors.green.withOpacity(0.9)
+                                        : Colors.orange.withOpacity(0.9),
+                                    borderRadius: BorderRadius.circular(12),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.3),
+                                        blurRadius: 8,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        _distanceStatus == 'perfect'
+                                            ? Icons.check_circle
+                                            : _distanceStatus == 'too_close'
+                                                ? Icons.arrow_back
+                                                : Icons.arrow_forward,
+                                        color: Colors.white,
+                                        size: 24,
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: Text(
+                                          _distanceStatus == 'perfect'
+                                              ? LocaleKeys.HoldStill.tr()
+                                              : _distanceStatus == 'too_close'
+                                                  ? LocaleKeys.MoveFurtherAway.tr()
+                                                  : LocaleKeys.MoveCloser.tr(),
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
                                       ),
                                     ],

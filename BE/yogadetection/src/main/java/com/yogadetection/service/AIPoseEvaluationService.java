@@ -9,9 +9,11 @@ public interface AIPoseEvaluationService {
      * @param imageUrl URL ảnh tư thế
      * @param landmarkData Dữ liệu 33 landmarks
      * @param poseCode Mã tư thế cần đánh giá
+     * @param poseName Tên tư thế (từ routine_pose)
+     * @param poseDescription Mô tả tư thế (từ routine_pose)
      * @return Object chứa score và feedback
      */
-    EvaluationResult evaluatePose(String imageUrl, PoseLandmarkRequest landmarkData, String poseCode);
+    EvaluationResult evaluatePose(String imageUrl, PoseLandmarkRequest landmarkData, String poseCode, String poseName, String poseDescription);
     
     /**
      * Result class cho kết quả đánh giá

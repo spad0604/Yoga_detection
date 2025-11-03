@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:auto_route/auto_route.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
@@ -16,17 +17,36 @@ import 'package:flutter_starter/presenter/pages/practice_session_summary/practic
 import 'package:google_mlkit_pose_detection/google_mlkit_pose_detection.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_starter/presenter/languages/translation_keys.g.dart';
+import 'package:flutter_tts/flutter_tts.dart';
+
+// ignore: depend_on_referenced_packages
+import 'package:google_mlkit_commons/google_mlkit_commons.dart'
+    show
+        InputImage,
+        InputImageMetadata,
+        InputImageFormat,
+        InputImageFormatValue,
+        InputImageRotation;
 
 part 'pose_painter.dart';
 
 @RoutePage()
-class RoutinePracticeSessionPage extends StatefulWidget {
+class RoutinePracticeSessionPage extends StatefulWidget implements AutoRouteWrapper {
   final String routineId;
 
   const RoutinePracticeSessionPage({
     super.key,
     required this.routineId,
   });
+
+  @override
+  Widget wrappedRoute(BuildContext context) {
+    return BlocProvider<PracticeSessionBloc>(
+      create: (_) =>
+          provider.get<PracticeSessionBloc>()..add(PracticeSessionEvent.startSession(routineId)),
+      child: this,
+    );
+  }
 
   @override
   State<RoutinePracticeSessionPage> createState() => _RoutinePracticeSessionPageState();
@@ -39,6 +59,8 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
   Timer? _timer;
   int _elapsedSeconds = 0;
   CameraLensDirection _currentLensDirection = CameraLensDirection.front;
+  FlutterTts? _flutterTts;
+  PracticeSession? _currentSession; // Cache current session for async operations
 
   // Capture and detection state
   bool _isAnalyzing = false;
@@ -46,6 +68,19 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
   XFile? _capturedImage;
   List<Pose> _detectedPoses = [];
   Size? _capturedImageSize;
+
+  // Real-time pose detection
+  bool _isProcessing = false;
+  List<Pose> _livePoses = [];
+  Size? _previewSize;
+
+  // Auto-countdown state
+  bool _isCountingDown = false;
+  int _countdown = 3;
+  DateTime? _perfectPositionStartTime;
+  final Duration _perfectPositionDuration = const Duration(seconds: 2);
+  String _distanceStatus = '';
+  DateTime? _lastSpeechTime;
 
   @override
   void initState() {
@@ -59,6 +94,96 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
     ]);
     _initializeCamera();
     _initializePoseDetector();
+    _initializeTts();
+  }
+
+  // Initialize Text-to-Speech
+  Future<void> _initializeTts() async {
+    _flutterTts = FlutterTts();
+    await _flutterTts?.setLanguage("vi-VN"); // Force Vietnamese
+    await _flutterTts?.setSpeechRate(0.5);
+    await _flutterTts?.setVolume(1.0);
+    await _flutterTts?.setPitch(1.0);
+  }
+
+  // Speak guidance message (with debounce to avoid spam)
+  Future<void> _speak(String message) async {
+    if (_flutterTts == null) return;
+
+    final now = DateTime.now();
+    if (_lastSpeechTime != null && now.difference(_lastSpeechTime!) < const Duration(seconds: 3)) {
+      return; // Debounce: don't speak if last speech was less than 3 seconds ago
+    }
+
+    _lastSpeechTime = now;
+    await _flutterTts?.speak(message);
+  }
+
+  // Calculate distance based on shoulder width (approximate)
+  double _calculateDistance(Pose pose) {
+    final leftShoulder = pose.landmarks[PoseLandmarkType.leftShoulder];
+    final rightShoulder = pose.landmarks[PoseLandmarkType.rightShoulder];
+
+    if (leftShoulder == null || rightShoulder == null) return 0;
+
+    // Calculate shoulder width in pixels
+    final dx = leftShoulder.x - rightShoulder.x;
+    final dy = leftShoulder.y - rightShoulder.y;
+    final shoulderWidth = (dx * dx + dy * dy).toDouble().abs();
+
+    return shoulderWidth;
+  }
+
+  // Check distance and provide guidance
+  Future<void> _checkDistanceAndGuide(List<Pose> poses, PracticeSession? session) async {
+    if (poses.isEmpty || _isCountingDown || _showCapturedImage || session == null) {
+      _perfectPositionStartTime = null;
+      return;
+    }
+
+    final distance = _calculateDistance(poses.first);
+    String newStatus = '';
+    String? guidanceMessage;
+
+    // Thresholds (adjust based on testing)
+    const double tooCloseThreshold = 50000.0; // If shoulder width > this, too close
+    const double tooFarThreshold = 10000.0; // If shoulder width < this, too far
+
+    if (distance > tooCloseThreshold) {
+      newStatus = 'too_close';
+      guidanceMessage = LocaleKeys.MoveFurtherAway.tr();
+      _perfectPositionStartTime = null;
+    } else if (distance < tooFarThreshold && distance > 0) {
+      newStatus = 'too_far';
+      guidanceMessage = LocaleKeys.MoveCloser.tr();
+      _perfectPositionStartTime = null;
+    } else if (distance > 0) {
+      newStatus = 'perfect';
+      guidanceMessage = LocaleKeys.HoldStill.tr();
+
+      // Start timing perfect position
+      if (_perfectPositionStartTime == null) {
+        _perfectPositionStartTime = DateTime.now();
+      } else {
+        // Check if user has held perfect position long enough
+        final holdDuration = DateTime.now().difference(_perfectPositionStartTime!);
+        if (holdDuration >= _perfectPositionDuration && !_isCountingDown) {
+          // Auto-trigger countdown
+          _speak(LocaleKeys.PreparingToCapture.tr());
+          await Future.delayed(const Duration(milliseconds: 500));
+          _startCountdownAndCapture(session);
+          return;
+        }
+      }
+    }
+
+    // Update status and speak guidance if changed
+    if (newStatus != _distanceStatus) {
+      _distanceStatus = newStatus;
+      if (guidanceMessage != null) {
+        _speak(guidanceMessage);
+      }
+    }
   }
 
   Future<void> _initializeCamera() async {
@@ -75,10 +200,12 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
         selectedCamera,
         ResolutionPreset.high,
         enableAudio: false,
-        imageFormatGroup: ImageFormatGroup.yuv420,
+        imageFormatGroup: ImageFormatGroup.nv21, // Changed to nv21 for ML Kit compatibility
       );
 
       await _cameraController!.initialize();
+
+      _previewSize = _cameraController!.value.previewSize;
 
       // Disable flash
       try {
@@ -89,6 +216,8 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
         setState(() {
           _isCameraInitialized = true;
         });
+        // Start image stream for real-time pose detection
+        _startImageStream();
       }
     } catch (e) {
       debugPrint('Error initializing camera: $e');
@@ -97,6 +226,9 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
 
   Future<void> _switchCamera() async {
     if (_cameraController == null) return;
+
+    // Stop image stream first
+    await _stopImageStream();
 
     // Dispose controller
     await _cameraController!.dispose();
@@ -110,9 +242,123 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
     // Reinitialize with new camera
     setState(() {
       _isCameraInitialized = false;
+      _livePoses = [];
     });
 
     await _initializeCamera();
+  }
+
+  // Start real-time image stream for pose detection
+  Future<void> _startImageStream() async {
+    if (_cameraController == null || !_cameraController!.value.isInitialized) return;
+    if (_cameraController!.value.isStreamingImages) return;
+
+    await _cameraController!.startImageStream(_processCameraImage);
+  }
+
+  // Stop image stream
+  Future<void> _stopImageStream() async {
+    if (_cameraController == null) return;
+    if (_cameraController!.value.isStreamingImages) {
+      await _cameraController!.stopImageStream();
+    }
+  }
+
+  // Process camera images for real-time pose detection
+  Future<void> _processCameraImage(CameraImage image) async {
+    if (_isProcessing || _poseDetector == null || _showCapturedImage) return;
+    _isProcessing = true;
+
+    try {
+      // Get correct rotation
+      final camera = _cameraController!.description;
+      final sensorOrientation = camera.sensorOrientation;
+      final rotationCompensation = _getRotationCompensation(sensorOrientation);
+
+      // Convert CameraImage to InputImage
+      final bytes = _concatenatePlanes(image.planes);
+      final inputImageFormat =
+          InputImageFormatValue.fromRawValue(image.format.raw) ?? InputImageFormat.nv21;
+
+      final inputImageMetadata = InputImageMetadata(
+        size: Size(image.width.toDouble(), image.height.toDouble()),
+        rotation: rotationCompensation,
+        format: inputImageFormat,
+        bytesPerRow: image.planes.isNotEmpty ? image.planes[0].bytesPerRow : image.width,
+      );
+
+      final inputImage = InputImage.fromBytes(
+        bytes: bytes,
+        metadata: inputImageMetadata,
+      );
+
+      final poses = await _poseDetector!.processImage(inputImage);
+
+      if (mounted) {
+        setState(() {
+          _livePoses = poses;
+        });
+
+        // Check distance and provide guidance
+        await _checkDistanceAndGuide(poses, _currentSession);
+      }
+    } catch (e) {
+      debugPrint('Error processing live image: $e');
+    } finally {
+      _isProcessing = false;
+    }
+  }
+
+  Uint8List _concatenatePlanes(List<Plane> planes) {
+    final WriteBuffer allBytes = WriteBuffer();
+    for (final plane in planes) {
+      allBytes.putUint8List(plane.bytes);
+    }
+    return allBytes.done().buffer.asUint8List();
+  }
+
+  InputImageRotation _getRotationCompensation(int sensorOrientation) {
+    // For Android, we need to calculate the rotation based on:
+    // 1. Camera sensor orientation
+    // 2. Device natural orientation
+    // 3. Current device rotation
+
+    final orientation = MediaQuery.of(context).orientation;
+    int rotationDegrees;
+
+    if (orientation == Orientation.portrait) {
+      // Portrait mode - use sensor orientation directly
+      if (_currentLensDirection == CameraLensDirection.back) {
+        rotationDegrees = sensorOrientation;
+      } else {
+        // Front camera - typically needs adjustment
+        rotationDegrees = sensorOrientation;
+      }
+    } else {
+      // Landscape mode - add 90° rotation
+      if (_currentLensDirection == CameraLensDirection.back) {
+        rotationDegrees = (sensorOrientation + 90) % 360;
+      } else {
+        rotationDegrees = (sensorOrientation + 270) % 360;
+      }
+    }
+
+    debugPrint(
+        '🔄 Rotation - Sensor: $sensorOrientation°, Device: ${orientation.name}, Camera: ${_currentLensDirection.name}, Final: $rotationDegrees°');
+
+    // Convert degrees to InputImageRotation enum
+    switch (rotationDegrees) {
+      case 0:
+        return InputImageRotation.rotation0deg;
+      case 90:
+        return InputImageRotation.rotation90deg;
+      case 180:
+        return InputImageRotation.rotation180deg;
+      case 270:
+        return InputImageRotation.rotation270deg;
+      default:
+        return InputImageRotation.rotation0deg;
+    }
   }
 
   void _initializePoseDetector() {
@@ -139,15 +385,51 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
     _timer?.cancel();
   }
 
-  Future<void> _captureAndSubmitPose(PracticeSession session, BuildContext blocContext) async {
+  // Start countdown and auto-capture
+  Future<void> _startCountdownAndCapture(PracticeSession session) async {
+    if (_isCountingDown) return;
+
+    setState(() {
+      _isCountingDown = true;
+      _countdown = 3;
+    });
+
+    // Countdown from 3 to 1
+    for (int i = 3; i > 0; i--) {
+      if (!mounted || !_isCountingDown) break;
+
+      setState(() {
+        _countdown = i;
+      });
+
+      await Future.delayed(const Duration(seconds: 1));
+    }
+
+    // Capture the pose
+    if (mounted && _isCountingDown) {
+      await _captureAndSubmitPose(session);
+    }
+
+    if (mounted) {
+      setState(() {
+        _isCountingDown = false;
+      });
+    }
+  }
+
+  Future<void> _captureAndSubmitPose(PracticeSession session) async {
     if (_cameraController == null || !_isCameraInitialized) return;
     if (session.currentPoseCode == null) return;
     if (_poseDetector == null) return;
     if (_isAnalyzing) return; // Prevent multiple captures
 
+    // Get bloc instance BEFORE any async operations
+    final bloc = context.read<PracticeSessionBloc>();
+
     try {
-      // Stop timer
+      // Stop timer and image stream
       _stopTimer();
+      await _stopImageStream();
 
       // Take picture
       final XFile imageFile = await _cameraController!.takePicture();
@@ -201,15 +483,15 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
         debugPrint('⚠️ No poses detected in captured image');
       }
 
-      // Submit to backend with landmark data
-      blocContext.read<PracticeSessionBloc>().add(
-            PracticeSessionEvent.submitPose(
-              poseCode: session.currentPoseCode!,
-              imagePath: imageFile.path,
-              timeSpentSeconds: _elapsedSeconds,
-              landmarkData: landmarkData,
-            ),
-          );
+      // Submit to backend with landmark data using saved bloc instance
+      bloc.add(
+        PracticeSessionEvent.submitPose(
+          poseCode: session.currentPoseCode!,
+          imagePath: imageFile.path,
+          timeSpentSeconds: _elapsedSeconds,
+          landmarkData: landmarkData,
+        ),
+      );
     } catch (e) {
       debugPrint('❌ Error capturing/detecting: $e');
       if (mounted) {
@@ -234,9 +516,20 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
       _detectedPoses = [];
       _capturedImageSize = null;
     });
+    // Restart image stream
+    _startImageStream();
   }
 
   void _showResultDialog(PoseSubmissionResult result) {
+    // Auto-close and continue after 3 seconds
+    Future.delayed(const Duration(seconds: 10), () {
+      if (mounted && Navigator.canPop(context)) {
+        Navigator.of(context).pop();
+        _resetToLiveMode();
+        _startTimer();
+      }
+    });
+
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -340,6 +633,34 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
                 ],
                 const SizedBox(height: 24),
 
+                // Auto-advance message
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.blue.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.blue.withOpacity(0.5)),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.info_outline, color: Colors.blue, size: 18),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          'Tự động chuyển sang bước tiếp theo sau 3 giây...',
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Colors.blue.shade200,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+
                 // Continue button
                 SizedBox(
                   width: double.infinity,
@@ -358,7 +679,7 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
                       ),
                     ),
                     child: Text(
-                      'Continue'.tr(),
+                      'Tiếp tục ngay',
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -493,84 +814,87 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
   @override
   void dispose() {
     _timer?.cancel();
+    _stopImageStream();
     _cameraController?.dispose();
     _poseDetector?.close();
+    _flutterTts?.stop();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<PracticeSessionBloc>(
-      create: (_) => provider.get<PracticeSessionBloc>()
-        ..add(PracticeSessionEvent.startSession(widget.routineId)),
-      child: BlocConsumer<PracticeSessionBloc, PracticeSessionState>(
-        listener: (context, state) {
-          // Show result dialog when pose is submitted
-          if (state.lastSubmission != null && !state.isSubmitting) {
-            _showResultDialog(state.lastSubmission!);
-          }
+    return BlocConsumer<PracticeSessionBloc, PracticeSessionState>(
+      listener: (context, state) {
+        // Update current session cache
+        if (state.session != null) {
+          _currentSession = state.session;
+        }
 
-          // Navigate to summary when session is completed
-          if (state.session?.status == SessionStatus.completed) {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: (_) => PracticeSessionSummaryPage(
-                  session: state.session!,
-                ),
-              ),
-            );
-          }
+        // Show result dialog when pose is submitted
+        if (state.lastSubmission != null && !state.isSubmitting) {
+          _showResultDialog(state.lastSubmission!);
+        }
 
-          // Show error
-          if (state.error != null) {
-            _showErrorDialog(state.error!);
-          }
-        },
-        builder: (context, state) {
-          if (state.isLoading && state.session == null) {
-            return const Scaffold(
-              body: Center(
-                child: CircularProgressIndicator(),
-              ),
-            );
-          }
-
-          final session = state.session;
-          if (session == null) {
-            return Scaffold(
-              appBar: AppBar(title: Text(LocaleKeys.Error.tr())),
-              body: Center(
-                child: Text(LocaleKeys.CannotStartSession.tr()),
-              ),
-            );
-          }
-
-          // Start timer when session starts
-          if (_timer == null || !_timer!.isActive) {
-            _startTimer();
-          }
-
-          return Scaffold(
-            backgroundColor: Colors.black,
-            body: SafeArea(
-              child: Column(
-                children: [
-                  // Header
-                  _buildHeader(session),
-
-                  // Camera preview
-                  Expanded(
-                    child: _buildCameraPreview(session),
-                  ),
-
-                  // Controls
-                  _buildControls(session, context),
-                ],
+        // Navigate to summary when session is completed
+        if (state.session?.status == SessionStatus.completed) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (_) => PracticeSessionSummaryPage(
+                session: state.session!,
               ),
             ),
           );
-        },
-      ),
+        }
+
+        // Show error
+        if (state.error != null) {
+          _showErrorDialog(state.error!);
+        }
+      },
+      builder: (context, state) {
+        if (state.isLoading && state.session == null) {
+          return const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+
+        final session = state.session;
+        if (session == null) {
+          return Scaffold(
+            appBar: AppBar(title: Text(LocaleKeys.Error.tr())),
+            body: Center(
+              child: Text(LocaleKeys.CannotStartSession.tr()),
+            ),
+          );
+        }
+
+        // Start timer when session starts
+        if (_timer == null || !_timer!.isActive) {
+          _startTimer();
+        }
+
+        return Scaffold(
+          backgroundColor: Colors.black,
+          body: SafeArea(
+            child: Column(
+              children: [
+                // Header
+                _buildHeader(session),
+
+                // Camera preview
+                Expanded(
+                  child: _buildCameraPreview(session),
+                ),
+
+                // Controls
+                _buildControls(session, context),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -624,10 +948,17 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
           children: [
             // Show captured image if analyzing, otherwise show live camera
             if (_showCapturedImage && _capturedImage != null)
-              // Captured image with pose overlay
-              Image.file(
-                File(_capturedImage!.path),
-                fit: BoxFit.cover,
+              // Captured image with pose overlay (transform to prevent mirroring on front camera)
+              Transform(
+                alignment: Alignment.center,
+                transform: _currentLensDirection == CameraLensDirection.front
+                    ? (Matrix4.identity()
+                      ..scale(-1.0, 1.0, 1.0)) // Flip horizontally for front camera
+                    : Matrix4.identity(),
+                child: Image.file(
+                  File(_capturedImage!.path),
+                  fit: BoxFit.cover,
+                ),
               )
             else if (_isCameraInitialized && _cameraController != null)
               // Live camera preview
@@ -637,6 +968,18 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
                 child: CircularProgressIndicator(color: Colors.white),
               ),
 
+            // Real-time pose overlay on live camera (only when not showing captured image)
+            if (!_showCapturedImage && _livePoses.isNotEmpty && _previewSize != null)
+              Positioned.fill(
+                child: CustomPaint(
+                  painter: PosePainter(
+                    poses: _livePoses,
+                    imageSize: _previewSize!,
+                    isFrontCamera: _currentLensDirection == CameraLensDirection.front,
+                  ),
+                ),
+              ),
+
             // Pose overlay on captured image
             if (_showCapturedImage && _detectedPoses.isNotEmpty && _capturedImageSize != null)
               Positioned.fill(
@@ -644,6 +987,7 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
                   painter: PosePainter(
                     poses: _detectedPoses,
                     imageSize: _capturedImageSize!,
+                    isFrontCamera: _currentLensDirection == CameraLensDirection.front,
                   ),
                 ),
               ),
@@ -674,6 +1018,97 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
                                 color: Colors.black,
                               ),
                             ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+
+            // Countdown overlay (center)
+            if (_isCountingDown && _countdown > 0)
+              Positioned.fill(
+                child: Container(
+                  color: Colors.black.withOpacity(0.3),
+                  child: Center(
+                    child: Container(
+                      width: 150,
+                      height: 150,
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.7),
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Colors.white,
+                          width: 3,
+                        ),
+                      ),
+                      child: Center(
+                        child: Text(
+                          '$_countdown',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 80,
+                            fontWeight: FontWeight.bold,
+                            shadows: [
+                              Shadow(
+                                blurRadius: 20,
+                                color: Colors.black,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+            // Distance status indicator (top center)
+            if (!_showCapturedImage && !_isAnalyzing && _distanceStatus.isNotEmpty)
+              Positioned(
+                top: 100,
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    decoration: BoxDecoration(
+                      color: _distanceStatus == 'perfect'
+                          ? Colors.green.withOpacity(0.8)
+                          : Colors.orange.withOpacity(0.8),
+                      borderRadius: BorderRadius.circular(25),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.3),
+                          blurRadius: 10,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          _distanceStatus == 'perfect'
+                              ? Icons.check_circle
+                              : _distanceStatus == 'too_close'
+                                  ? Icons.arrow_back
+                                  : Icons.arrow_forward,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          _distanceStatus == 'perfect'
+                              ? LocaleKeys.HoldStill.tr()
+                              : _distanceStatus == 'too_close'
+                                  ? LocaleKeys.MoveFurtherAway.tr()
+                                  : LocaleKeys.MoveCloser.tr(),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ],
@@ -801,7 +1236,7 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
               icon: Icons.camera_alt,
               label: 'Chụp',
               backgroundColor: Colors.green,
-              onPressed: () => _captureAndSubmitPose(session, blocContext),
+              onPressed: () => _captureAndSubmitPose(session),
               size: 70,
               iconSize: 32,
             ),
