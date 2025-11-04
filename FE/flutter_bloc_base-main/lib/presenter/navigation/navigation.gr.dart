@@ -695,9 +695,11 @@ class RoutinePracticeSessionRoute
     name,
     builder: (data) {
       final args = data.argsAs<RoutinePracticeSessionRouteArgs>();
-      return RoutinePracticeSessionPage(
-        key: args.key,
-        routineId: args.routineId,
+      return WrappedRoute(
+        child: RoutinePracticeSessionPage(
+          key: args.key,
+          routineId: args.routineId,
+        ),
       );
     },
   );

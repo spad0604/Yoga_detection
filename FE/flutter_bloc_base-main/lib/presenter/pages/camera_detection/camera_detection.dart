@@ -25,6 +25,7 @@ import 'package:flutter_starter/data/entities/response/yoga_pose_details.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_starter/presenter/languages/translation_keys.g.dart';
+import 'package:flutter_starter/core/utils/image_crop_helper.dart';
 
 // ignore: depend_on_referenced_packages
 import 'package:google_mlkit_commons/google_mlkit_commons.dart'
@@ -344,6 +345,14 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
       final imagePath = '${dir.path}${Platform.pathSeparator}pose_image_$timestamp.jpg';
       await File(imagePath).writeAsBytes(imageBytes);
 
+      // Crop image to focus on person
+      debugPrint('🔲 Cropping image to focus on person...');
+      final croppedImagePath = await ImageCropHelper.cropImageToPerson(
+        originalImagePath: imagePath,
+        poses: poses,
+        paddingFactor: 0.15, // 15% padding
+      );
+
       // Create model with landmarks
       final landmarks = landmarksJson.isNotEmpty
           ? (landmarksJson.first['landmarks'] as List)
@@ -367,7 +376,8 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
       debugPrint('📤 UPLOADING POSE VIA HTTP');
       debugPrint('${'=' * 60}');
       debugPrint('Pose ID: $poseId');
-      debugPrint('Image path: $imagePath');
+      debugPrint('Original image path: $imagePath');
+      debugPrint('Cropped image path: $croppedImagePath');
       debugPrint('Landmarks count: ${landmarks.length}');
       debugPrint('Waiting for API response...');
       debugPrint('${'=' * 60}\n');
@@ -379,7 +389,7 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
       }
 
       final result = await useCase(PostYogaPoseParams(
-        imagePath: imagePath,
+        imagePath: croppedImagePath, // Use cropped image
         model: model,
       ));
 
@@ -554,12 +564,12 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
           await controller.setFlashMode(FlashMode.off);
         } catch (_) {}
 
-        // Set focus mode to locked to avoid continuous autofocus (which causes flash blinking)
+        // Set focus mode to auto for continuous autofocus
         try {
-          await controller.setFocusMode(FocusMode.locked);
+          await controller.setFocusMode(FocusMode.auto);
         } catch (_) {}
 
-        // Set exposure mode to auto but without continuous adjustment
+        // Set exposure mode to auto
         try {
           await controller.setExposureMode(ExposureMode.auto);
         } catch (_) {}

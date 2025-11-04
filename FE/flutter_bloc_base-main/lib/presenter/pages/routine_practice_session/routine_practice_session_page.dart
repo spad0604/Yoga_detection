@@ -18,6 +18,7 @@ import 'package:google_mlkit_pose_detection/google_mlkit_pose_detection.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_starter/presenter/languages/translation_keys.g.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:flutter_starter/core/utils/image_crop_helper.dart';
 
 // ignore: depend_on_referenced_packages
 import 'package:google_mlkit_commons/google_mlkit_commons.dart'
@@ -210,6 +211,16 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
       // Disable flash
       try {
         await _cameraController!.setFlashMode(FlashMode.off);
+      } catch (_) {}
+
+      // Set focus mode to auto for continuous autofocus
+      try {
+        await _cameraController!.setFocusMode(FocusMode.auto);
+      } catch (_) {}
+
+      // Set exposure mode to auto
+      try {
+        await _cameraController!.setExposureMode(ExposureMode.auto);
       } catch (_) {}
 
       if (mounted) {
@@ -456,6 +467,14 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
         _detectedPoses = poses;
       });
 
+      // Crop image to focus on person before submitting
+      debugPrint('🔲 Cropping image to focus on person...');
+      final croppedImagePath = await ImageCropHelper.cropImageToPerson(
+        originalImagePath: imageFile.path,
+        poses: poses,
+        paddingFactor: 0.15, // 15% padding
+      );
+
       // Extract landmarks from detected pose
       String? landmarkData;
       if (poses.isNotEmpty) {
@@ -483,11 +502,14 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
         debugPrint('⚠️ No poses detected in captured image');
       }
 
-      // Submit to backend with landmark data using saved bloc instance
+      // Submit to backend with cropped image and landmark data using saved bloc instance
+      debugPrint('📤 Submitting with original: ${imageFile.path}');
+      debugPrint('📤 Submitting with cropped: $croppedImagePath');
+
       bloc.add(
         PracticeSessionEvent.submitPose(
           poseCode: session.currentPoseCode!,
-          imagePath: imageFile.path,
+          imagePath: croppedImagePath, // Use cropped image
           timeSpentSeconds: _elapsedSeconds,
           landmarkData: landmarkData,
         ),
