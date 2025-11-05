@@ -8,6 +8,7 @@ part 'home_page_state.freezed.dart';
 enum HomePageStatus {
   initial,
   loading,
+  loadingMore,
   success,
   failure,
 }
@@ -19,5 +20,7 @@ class HomePageState with _$HomePageState {
     PageResponse<YogaPoseDetails>? yogaPoses,
     @Default('') String chooseYogaPose,
     BaseException? error,
+    @Default(1) int currentPage,
+    @Default(false) bool hasReachedMax,
   }) = _HomePageState;
 }

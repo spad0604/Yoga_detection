@@ -21,6 +21,7 @@ mixin _$HomePageEvent {
     required TResult Function(BaseException<dynamic>? error) errorOccurred,
     required TResult Function() started,
     required TResult Function(String code) fetchYogaPoses,
+    required TResult Function() loadMore,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -28,6 +29,7 @@ mixin _$HomePageEvent {
     TResult? Function(BaseException<dynamic>? error)? errorOccurred,
     TResult? Function()? started,
     TResult? Function(String code)? fetchYogaPoses,
+    TResult? Function()? loadMore,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -35,6 +37,7 @@ mixin _$HomePageEvent {
     TResult Function(BaseException<dynamic>? error)? errorOccurred,
     TResult Function()? started,
     TResult Function(String code)? fetchYogaPoses,
+    TResult Function()? loadMore,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -43,6 +46,7 @@ mixin _$HomePageEvent {
     required TResult Function(HomePageErrorOccurred value) errorOccurred,
     required TResult Function(HomePageStarted value) started,
     required TResult Function(HomePageFetchYogaPoses value) fetchYogaPoses,
+    required TResult Function(HomePageLoadMore value) loadMore,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -50,6 +54,7 @@ mixin _$HomePageEvent {
     TResult? Function(HomePageErrorOccurred value)? errorOccurred,
     TResult? Function(HomePageStarted value)? started,
     TResult? Function(HomePageFetchYogaPoses value)? fetchYogaPoses,
+    TResult? Function(HomePageLoadMore value)? loadMore,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -57,6 +62,7 @@ mixin _$HomePageEvent {
     TResult Function(HomePageErrorOccurred value)? errorOccurred,
     TResult Function(HomePageStarted value)? started,
     TResult Function(HomePageFetchYogaPoses value)? fetchYogaPoses,
+    TResult Function(HomePageLoadMore value)? loadMore,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -156,6 +162,7 @@ class _$HomePageErrorOccurredImpl implements HomePageErrorOccurred {
     required TResult Function(BaseException<dynamic>? error) errorOccurred,
     required TResult Function() started,
     required TResult Function(String code) fetchYogaPoses,
+    required TResult Function() loadMore,
   }) {
     return errorOccurred(error);
   }
@@ -166,6 +173,7 @@ class _$HomePageErrorOccurredImpl implements HomePageErrorOccurred {
     TResult? Function(BaseException<dynamic>? error)? errorOccurred,
     TResult? Function()? started,
     TResult? Function(String code)? fetchYogaPoses,
+    TResult? Function()? loadMore,
   }) {
     return errorOccurred?.call(error);
   }
@@ -176,6 +184,7 @@ class _$HomePageErrorOccurredImpl implements HomePageErrorOccurred {
     TResult Function(BaseException<dynamic>? error)? errorOccurred,
     TResult Function()? started,
     TResult Function(String code)? fetchYogaPoses,
+    TResult Function()? loadMore,
     required TResult orElse(),
   }) {
     if (errorOccurred != null) {
@@ -190,6 +199,7 @@ class _$HomePageErrorOccurredImpl implements HomePageErrorOccurred {
     required TResult Function(HomePageErrorOccurred value) errorOccurred,
     required TResult Function(HomePageStarted value) started,
     required TResult Function(HomePageFetchYogaPoses value) fetchYogaPoses,
+    required TResult Function(HomePageLoadMore value) loadMore,
   }) {
     return errorOccurred(this);
   }
@@ -200,6 +210,7 @@ class _$HomePageErrorOccurredImpl implements HomePageErrorOccurred {
     TResult? Function(HomePageErrorOccurred value)? errorOccurred,
     TResult? Function(HomePageStarted value)? started,
     TResult? Function(HomePageFetchYogaPoses value)? fetchYogaPoses,
+    TResult? Function(HomePageLoadMore value)? loadMore,
   }) {
     return errorOccurred?.call(this);
   }
@@ -210,6 +221,7 @@ class _$HomePageErrorOccurredImpl implements HomePageErrorOccurred {
     TResult Function(HomePageErrorOccurred value)? errorOccurred,
     TResult Function(HomePageStarted value)? started,
     TResult Function(HomePageFetchYogaPoses value)? fetchYogaPoses,
+    TResult Function(HomePageLoadMore value)? loadMore,
     required TResult orElse(),
   }) {
     if (errorOccurred != null) {
@@ -276,6 +288,7 @@ class _$HomePageStartedImpl implements HomePageStarted {
     required TResult Function(BaseException<dynamic>? error) errorOccurred,
     required TResult Function() started,
     required TResult Function(String code) fetchYogaPoses,
+    required TResult Function() loadMore,
   }) {
     return started();
   }
@@ -286,6 +299,7 @@ class _$HomePageStartedImpl implements HomePageStarted {
     TResult? Function(BaseException<dynamic>? error)? errorOccurred,
     TResult? Function()? started,
     TResult? Function(String code)? fetchYogaPoses,
+    TResult? Function()? loadMore,
   }) {
     return started?.call();
   }
@@ -296,6 +310,7 @@ class _$HomePageStartedImpl implements HomePageStarted {
     TResult Function(BaseException<dynamic>? error)? errorOccurred,
     TResult Function()? started,
     TResult Function(String code)? fetchYogaPoses,
+    TResult Function()? loadMore,
     required TResult orElse(),
   }) {
     if (started != null) {
@@ -310,6 +325,7 @@ class _$HomePageStartedImpl implements HomePageStarted {
     required TResult Function(HomePageErrorOccurred value) errorOccurred,
     required TResult Function(HomePageStarted value) started,
     required TResult Function(HomePageFetchYogaPoses value) fetchYogaPoses,
+    required TResult Function(HomePageLoadMore value) loadMore,
   }) {
     return started(this);
   }
@@ -320,6 +336,7 @@ class _$HomePageStartedImpl implements HomePageStarted {
     TResult? Function(HomePageErrorOccurred value)? errorOccurred,
     TResult? Function(HomePageStarted value)? started,
     TResult? Function(HomePageFetchYogaPoses value)? fetchYogaPoses,
+    TResult? Function(HomePageLoadMore value)? loadMore,
   }) {
     return started?.call(this);
   }
@@ -330,6 +347,7 @@ class _$HomePageStartedImpl implements HomePageStarted {
     TResult Function(HomePageErrorOccurred value)? errorOccurred,
     TResult Function(HomePageStarted value)? started,
     TResult Function(HomePageFetchYogaPoses value)? fetchYogaPoses,
+    TResult Function(HomePageLoadMore value)? loadMore,
     required TResult orElse(),
   }) {
     if (started != null) {
@@ -417,6 +435,7 @@ class _$HomePageFetchYogaPosesImpl implements HomePageFetchYogaPoses {
     required TResult Function(BaseException<dynamic>? error) errorOccurred,
     required TResult Function() started,
     required TResult Function(String code) fetchYogaPoses,
+    required TResult Function() loadMore,
   }) {
     return fetchYogaPoses(code);
   }
@@ -427,6 +446,7 @@ class _$HomePageFetchYogaPosesImpl implements HomePageFetchYogaPoses {
     TResult? Function(BaseException<dynamic>? error)? errorOccurred,
     TResult? Function()? started,
     TResult? Function(String code)? fetchYogaPoses,
+    TResult? Function()? loadMore,
   }) {
     return fetchYogaPoses?.call(code);
   }
@@ -437,6 +457,7 @@ class _$HomePageFetchYogaPosesImpl implements HomePageFetchYogaPoses {
     TResult Function(BaseException<dynamic>? error)? errorOccurred,
     TResult Function()? started,
     TResult Function(String code)? fetchYogaPoses,
+    TResult Function()? loadMore,
     required TResult orElse(),
   }) {
     if (fetchYogaPoses != null) {
@@ -451,6 +472,7 @@ class _$HomePageFetchYogaPosesImpl implements HomePageFetchYogaPoses {
     required TResult Function(HomePageErrorOccurred value) errorOccurred,
     required TResult Function(HomePageStarted value) started,
     required TResult Function(HomePageFetchYogaPoses value) fetchYogaPoses,
+    required TResult Function(HomePageLoadMore value) loadMore,
   }) {
     return fetchYogaPoses(this);
   }
@@ -461,6 +483,7 @@ class _$HomePageFetchYogaPosesImpl implements HomePageFetchYogaPoses {
     TResult? Function(HomePageErrorOccurred value)? errorOccurred,
     TResult? Function(HomePageStarted value)? started,
     TResult? Function(HomePageFetchYogaPoses value)? fetchYogaPoses,
+    TResult? Function(HomePageLoadMore value)? loadMore,
   }) {
     return fetchYogaPoses?.call(this);
   }
@@ -471,6 +494,7 @@ class _$HomePageFetchYogaPosesImpl implements HomePageFetchYogaPoses {
     TResult Function(HomePageErrorOccurred value)? errorOccurred,
     TResult Function(HomePageStarted value)? started,
     TResult Function(HomePageFetchYogaPoses value)? fetchYogaPoses,
+    TResult Function(HomePageLoadMore value)? loadMore,
     required TResult orElse(),
   }) {
     if (fetchYogaPoses != null) {
@@ -491,4 +515,121 @@ abstract class HomePageFetchYogaPoses implements HomePageEvent {
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$HomePageFetchYogaPosesImplCopyWith<_$HomePageFetchYogaPosesImpl>
       get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$HomePageLoadMoreImplCopyWith<$Res> {
+  factory _$$HomePageLoadMoreImplCopyWith(_$HomePageLoadMoreImpl value,
+          $Res Function(_$HomePageLoadMoreImpl) then) =
+      __$$HomePageLoadMoreImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$HomePageLoadMoreImplCopyWithImpl<$Res>
+    extends _$HomePageEventCopyWithImpl<$Res, _$HomePageLoadMoreImpl>
+    implements _$$HomePageLoadMoreImplCopyWith<$Res> {
+  __$$HomePageLoadMoreImplCopyWithImpl(_$HomePageLoadMoreImpl _value,
+      $Res Function(_$HomePageLoadMoreImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of HomePageEvent
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+
+class _$HomePageLoadMoreImpl implements HomePageLoadMore {
+  const _$HomePageLoadMoreImpl();
+
+  @override
+  String toString() {
+    return 'HomePageEvent.loadMore()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _$HomePageLoadMoreImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(BaseException<dynamic>? error) errorOccurred,
+    required TResult Function() started,
+    required TResult Function(String code) fetchYogaPoses,
+    required TResult Function() loadMore,
+  }) {
+    return loadMore();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(BaseException<dynamic>? error)? errorOccurred,
+    TResult? Function()? started,
+    TResult? Function(String code)? fetchYogaPoses,
+    TResult? Function()? loadMore,
+  }) {
+    return loadMore?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(BaseException<dynamic>? error)? errorOccurred,
+    TResult Function()? started,
+    TResult Function(String code)? fetchYogaPoses,
+    TResult Function()? loadMore,
+    required TResult orElse(),
+  }) {
+    if (loadMore != null) {
+      return loadMore();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(HomePageErrorOccurred value) errorOccurred,
+    required TResult Function(HomePageStarted value) started,
+    required TResult Function(HomePageFetchYogaPoses value) fetchYogaPoses,
+    required TResult Function(HomePageLoadMore value) loadMore,
+  }) {
+    return loadMore(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(HomePageErrorOccurred value)? errorOccurred,
+    TResult? Function(HomePageStarted value)? started,
+    TResult? Function(HomePageFetchYogaPoses value)? fetchYogaPoses,
+    TResult? Function(HomePageLoadMore value)? loadMore,
+  }) {
+    return loadMore?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(HomePageErrorOccurred value)? errorOccurred,
+    TResult Function(HomePageStarted value)? started,
+    TResult Function(HomePageFetchYogaPoses value)? fetchYogaPoses,
+    TResult Function(HomePageLoadMore value)? loadMore,
+    required TResult orElse(),
+  }) {
+    if (loadMore != null) {
+      return loadMore(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class HomePageLoadMore implements HomePageEvent {
+  const factory HomePageLoadMore() = _$HomePageLoadMoreImpl;
 }

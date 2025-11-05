@@ -303,6 +303,12 @@ abstract class NetworkDataSource {
     @Query('size') int size,
   );
 
+  @DELETE('api/social/groups/{groupId}/posts/{postId}')
+  Future<BaseApiResponse<void>> deleteGroupPost(
+    @Path('groupId') String groupId,
+    @Path('postId') String postId,
+  );
+
   // ========== Social Posts (Public/Friends) ==========
   @MultiPart()
   @POST('api/social/posts')
@@ -332,6 +338,9 @@ abstract class NetworkDataSource {
     @Query('page') int page,
     @Query('size') int size,
   );
+
+  @DELETE('api/social/posts/{postId}')
+  Future<BaseApiResponse<void>> deleteSocialPost(@Path('postId') String postId);
 
   // Body Progress APIs
   @POST('api/body-progress')

@@ -92,6 +92,19 @@ public class SocialPostController {
         PagedResponse<CommentResponse> response = postService.getComments(postId, page, size);
         return ApiResponse.success(response);
     }
+
+    /**
+     * DELETE /api/social/posts/{postId} - Xóa bài viết
+     * Chỉ owner của post hoặc ADMIN mới có quyền xóa
+     */
+    @org.springframework.web.bind.annotation.DeleteMapping("/{postId}")
+    public ApiResponse<Void> deletePost(
+            @PathVariable String postId,
+            @RequestHeader("Authorization") String authHeader) {
+        String userId = authHeaderUtil.extractUserId(authHeader);
+        postService.deletePost(userId, postId);
+        return ApiResponse.defaultResponse();
+    }
 }
 
 

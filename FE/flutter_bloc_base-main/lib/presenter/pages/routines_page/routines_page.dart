@@ -9,6 +9,9 @@ import 'package:flutter_starter/data/states/routines/routines_state.dart';
 import 'package:flutter_starter/di.dart';
 import 'package:flutter_starter/presenter/navigation/navigation.dart';
 import 'package:flutter_starter/presenter/languages/translation_keys.g.dart';
+import 'package:flutter_starter/core/utils/user_preferences.dart';
+import 'package:flutter_starter/presenter/pages/admin/admin_add_edit_routine_page.dart';
+import 'package:flutter_starter/presenter/widgets/admin_routine_delete_dialog.dart';
 
 @RoutePage()
 class RoutinesPage extends StatefulWidget implements AutoRouteWrapper {
@@ -28,11 +31,22 @@ class RoutinesPage extends StatefulWidget implements AutoRouteWrapper {
 
 class _RoutinesPageState extends State<RoutinesPage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  bool _isAdmin = false;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    _checkAdminStatus();
+  }
+
+  Future<void> _checkAdminStatus() async {
+    final isAdmin = await UserPreferences.isAdmin();
+    if (mounted) {
+      setState(() {
+        _isAdmin = isAdmin;
+      });
+    }
   }
 
   @override
@@ -63,6 +77,21 @@ class _RoutinesPageState extends State<RoutinesPage> with SingleTickerProviderSt
           _buildCompletedTab(),
         ],
       ),
+      floatingActionButton: _isAdmin
+          ? FloatingActionButton(
+              onPressed: () async {
+                final result = await Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const AdminAddEditRoutinePage(),
+                  ),
+                );
+                if (result == true && mounted) {
+                  context.read<RoutinesBloc>().add(const RoutinesRefreshRequested());
+                }
+              },
+              child: const Icon(Icons.add),
+            )
+          : null,
     );
   }
 
@@ -102,8 +131,12 @@ class _RoutinesPageState extends State<RoutinesPage> with SingleTickerProviderSt
               final routine = state.routines[index];
               return _RoutineCard(
                 routine: routine,
+                isAdmin: _isAdmin,
                 onTap: () {
                   context.router.push(RoutineDetailsRoute(routineId: routine.id));
+                },
+                onRefresh: () {
+                  context.read<RoutinesBloc>().add(const RoutinesRefreshRequested());
                 },
               );
             },
@@ -167,10 +200,14 @@ class _RoutinesPageState extends State<RoutinesPage> with SingleTickerProviderSt
 class _RoutineCard extends StatelessWidget {
   final YogaRoutine routine;
   final VoidCallback onTap;
+  final bool isAdmin;
+  final VoidCallback onRefresh;
 
   const _RoutineCard({
     required this.routine,
     required this.onTap,
+    this.isAdmin = false,
+    required this.onRefresh,
   });
 
   @override
@@ -183,19 +220,85 @@ class _RoutineCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Image
-            if (routine.imageUrl != null)
-              AspectRatio(
-                aspectRatio: 16 / 9,
-                child: Image.network(
-                  routine.imageUrl!,
-                  fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => Container(
-                    color: Colors.grey[300],
-                    child: const Icon(Icons.image, size: 50),
+            // Image with admin buttons
+            Stack(
+              children: [
+                if (routine.imageUrl != null)
+                  AspectRatio(
+                    aspectRatio: 16 / 9,
+                    child: Image.network(
+                      routine.imageUrl!,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => Container(
+                        color: Colors.grey[300],
+                        child: const Icon(Icons.image, size: 50),
+                      ),
+                    ),
                   ),
-                ),
-              ),
+                
+                // Admin buttons
+                if (isAdmin)
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: Row(
+                      children: [
+                        // Delete button
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            shape: BoxShape.circle,
+                          ),
+                          child: IconButton(
+                            icon: const Icon(Icons.delete, color: Colors.white),
+                            onPressed: () async {
+                              final result = await AdminRoutineDeleteDialog.show(
+                                context,
+                                routine.id,
+                                routine.name,
+                              );
+                              if (result == true) {
+                                onRefresh();
+                              }
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        // Edit button
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.blue,
+                            shape: BoxShape.circle,
+                          ),
+                          child: IconButton(
+                            icon: const Icon(Icons.edit, color: Colors.white),
+                            onPressed: () async {
+                              final result = await Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => AdminAddEditRoutinePage(
+                                    routineId: routine.id,
+                                    initialName: routine.name,
+                                    initialDescription: routine.description,
+                                    initialLevel: routine.level,
+                                    initialDuration: routine.durationMinutes,
+                                    initialCalories: routine.estimatedCalories,
+                                    initialTags: routine.tags?.join(', '),
+                                    initialIsPremium: routine.isPremium,
+                                    initialImageUrl: routine.imageUrl,
+                                  ),
+                                ),
+                              );
+                              if (result == true) {
+                                onRefresh();
+                              }
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
 
             Padding(
               padding: const EdgeInsets.all(16),

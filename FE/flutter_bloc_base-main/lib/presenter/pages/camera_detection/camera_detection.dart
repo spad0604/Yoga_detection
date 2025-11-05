@@ -26,6 +26,8 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_starter/presenter/languages/translation_keys.g.dart';
 import 'package:flutter_starter/core/utils/image_crop_helper.dart';
+import 'package:flutter_starter/core/utils/image_quality_enhancer.dart';
+import 'package:flutter_starter/presenter/pages/pose_guide/pose_capture_guide_dialog.dart';
 
 // ignore: depend_on_referenced_packages
 import 'package:google_mlkit_commons/google_mlkit_commons.dart'
@@ -345,10 +347,15 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
       final imagePath = '${dir.path}${Platform.pathSeparator}pose_image_$timestamp.jpg';
       await File(imagePath).writeAsBytes(imageBytes);
 
+      // 🆕 ENHANCE IMAGE QUALITY FIRST!
+      debugPrint('✨ Enhancing image quality (resize, sharpen, adjust colors)...');
+      final enhancedImagePath = await _enhanceImageQuality(imagePath);
+      debugPrint('✅ Image enhanced: $enhancedImagePath');
+
       // Crop image to focus on person
       debugPrint('🔲 Cropping image to focus on person...');
       final croppedImagePath = await ImageCropHelper.cropImageToPerson(
-        originalImagePath: imagePath,
+        originalImagePath: enhancedImagePath, // Use enhanced image instead of original
         poses: poses,
         paddingFactor: 0.15, // 15% padding
       );
@@ -423,6 +430,18 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
     } catch (e) {
       debugPrint('❌ Failed to upload pose via HTTP: $e');
       _showError('Failed to upload pose: $e');
+    }
+  }
+
+  /// 🆕 Enhance image quality before upload
+  Future<String> _enhanceImageQuality(String originalImagePath) async {
+    try {
+      final originalFile = File(originalImagePath);
+      final enhancedFile = await ImageQualityEnhancer.enhanceImage(originalFile);
+      return enhancedFile.path;
+    } catch (e) {
+      debugPrint('⚠️ Failed to enhance image, using original: $e');
+      return originalImagePath; // Fallback to original if enhancement fails
     }
   }
 
@@ -788,6 +807,26 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
                 children: [
                   Container(
                     height: 50,
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: Row(
+                      children: [
+                        // Back button
+                        IconButton(
+                          icon: const Icon(Icons.arrow_back, color: Colors.white),
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                        const Spacer(),
+                        // 🆕 Guide button
+                        IconButton(
+                          icon: const Icon(Icons.help_outline, color: Colors.white),
+                          onPressed: () => PoseCaptureGuideDialog.show(context),
+                          tooltip: 'Hướng dẫn chụp ảnh',
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    height: 0,
                     child: Center(
                       child: Text(
                         _showResult ? LocaleKeys.PoseDetected.tr() : LocaleKeys.LiveCamera.tr(),

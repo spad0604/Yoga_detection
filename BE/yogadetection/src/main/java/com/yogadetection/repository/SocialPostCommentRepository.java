@@ -8,6 +8,7 @@ import com.yogadetection.entity.SocialPostComment;
 
 public interface SocialPostCommentRepository extends JpaRepository<SocialPostComment, String> {
     Page<SocialPostComment> findByPostIdOrderByCreatedAtDesc(String postId, Pageable pageable);
+    void deleteByPostId(String postId);
 }
 
 

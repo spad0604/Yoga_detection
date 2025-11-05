@@ -21,6 +21,8 @@ mixin _$HomePageState {
       throw _privateConstructorUsedError;
   String get chooseYogaPose => throw _privateConstructorUsedError;
   BaseException<dynamic>? get error => throw _privateConstructorUsedError;
+  int get currentPage => throw _privateConstructorUsedError;
+  bool get hasReachedMax => throw _privateConstructorUsedError;
 
   /// Create a copy of HomePageState
   /// with the given fields replaced by the non-null parameter values.
@@ -39,7 +41,9 @@ abstract class $HomePageStateCopyWith<$Res> {
       {HomePageStatus status,
       PageResponse<YogaPoseDetails>? yogaPoses,
       String chooseYogaPose,
-      BaseException<dynamic>? error});
+      BaseException<dynamic>? error,
+      int currentPage,
+      bool hasReachedMax});
 
   $PageResponseCopyWith<YogaPoseDetails, $Res>? get yogaPoses;
 }
@@ -63,6 +67,8 @@ class _$HomePageStateCopyWithImpl<$Res, $Val extends HomePageState>
     Object? yogaPoses = freezed,
     Object? chooseYogaPose = null,
     Object? error = freezed,
+    Object? currentPage = null,
+    Object? hasReachedMax = null,
   }) {
     return _then(_value.copyWith(
       status: null == status
@@ -81,6 +87,14 @@ class _$HomePageStateCopyWithImpl<$Res, $Val extends HomePageState>
           ? _value.error
           : error // ignore: cast_nullable_to_non_nullable
               as BaseException<dynamic>?,
+      currentPage: null == currentPage
+          ? _value.currentPage
+          : currentPage // ignore: cast_nullable_to_non_nullable
+              as int,
+      hasReachedMax: null == hasReachedMax
+          ? _value.hasReachedMax
+          : hasReachedMax // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 
@@ -112,7 +126,9 @@ abstract class _$$HomePageStateImplCopyWith<$Res>
       {HomePageStatus status,
       PageResponse<YogaPoseDetails>? yogaPoses,
       String chooseYogaPose,
-      BaseException<dynamic>? error});
+      BaseException<dynamic>? error,
+      int currentPage,
+      bool hasReachedMax});
 
   @override
   $PageResponseCopyWith<YogaPoseDetails, $Res>? get yogaPoses;
@@ -135,6 +151,8 @@ class __$$HomePageStateImplCopyWithImpl<$Res>
     Object? yogaPoses = freezed,
     Object? chooseYogaPose = null,
     Object? error = freezed,
+    Object? currentPage = null,
+    Object? hasReachedMax = null,
   }) {
     return _then(_$HomePageStateImpl(
       status: null == status
@@ -153,6 +171,14 @@ class __$$HomePageStateImplCopyWithImpl<$Res>
           ? _value.error
           : error // ignore: cast_nullable_to_non_nullable
               as BaseException<dynamic>?,
+      currentPage: null == currentPage
+          ? _value.currentPage
+          : currentPage // ignore: cast_nullable_to_non_nullable
+              as int,
+      hasReachedMax: null == hasReachedMax
+          ? _value.hasReachedMax
+          : hasReachedMax // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -164,7 +190,9 @@ class _$HomePageStateImpl implements _HomePageState {
       {this.status = HomePageStatus.initial,
       this.yogaPoses,
       this.chooseYogaPose = '',
-      this.error});
+      this.error,
+      this.currentPage = 1,
+      this.hasReachedMax = false});
 
   @override
   @JsonKey()
@@ -176,10 +204,16 @@ class _$HomePageStateImpl implements _HomePageState {
   final String chooseYogaPose;
   @override
   final BaseException<dynamic>? error;
+  @override
+  @JsonKey()
+  final int currentPage;
+  @override
+  @JsonKey()
+  final bool hasReachedMax;
 
   @override
   String toString() {
-    return 'HomePageState(status: $status, yogaPoses: $yogaPoses, chooseYogaPose: $chooseYogaPose, error: $error)';
+    return 'HomePageState(status: $status, yogaPoses: $yogaPoses, chooseYogaPose: $chooseYogaPose, error: $error, currentPage: $currentPage, hasReachedMax: $hasReachedMax)';
   }
 
   @override
@@ -192,12 +226,16 @@ class _$HomePageStateImpl implements _HomePageState {
                 other.yogaPoses == yogaPoses) &&
             (identical(other.chooseYogaPose, chooseYogaPose) ||
                 other.chooseYogaPose == chooseYogaPose) &&
-            (identical(other.error, error) || other.error == error));
+            (identical(other.error, error) || other.error == error) &&
+            (identical(other.currentPage, currentPage) ||
+                other.currentPage == currentPage) &&
+            (identical(other.hasReachedMax, hasReachedMax) ||
+                other.hasReachedMax == hasReachedMax));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, status, yogaPoses, chooseYogaPose, error);
+  int get hashCode => Object.hash(runtimeType, status, yogaPoses,
+      chooseYogaPose, error, currentPage, hasReachedMax);
 
   /// Create a copy of HomePageState
   /// with the given fields replaced by the non-null parameter values.
@@ -213,7 +251,9 @@ abstract class _HomePageState implements HomePageState {
       {final HomePageStatus status,
       final PageResponse<YogaPoseDetails>? yogaPoses,
       final String chooseYogaPose,
-      final BaseException<dynamic>? error}) = _$HomePageStateImpl;
+      final BaseException<dynamic>? error,
+      final int currentPage,
+      final bool hasReachedMax}) = _$HomePageStateImpl;
 
   @override
   HomePageStatus get status;
@@ -223,6 +263,10 @@ abstract class _HomePageState implements HomePageState {
   String get chooseYogaPose;
   @override
   BaseException<dynamic>? get error;
+  @override
+  int get currentPage;
+  @override
+  bool get hasReachedMax;
 
   /// Create a copy of HomePageState
   /// with the given fields replaced by the non-null parameter values.

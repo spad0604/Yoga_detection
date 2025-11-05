@@ -15,6 +15,8 @@ import 'package:flutter_starter/presenter/themes/colors.dart';
 import 'package:flutter_starter/di.dart';
 import 'package:flutter_starter/data/repositories/group_posts_repository/group_posts_repository.dart';
 import 'package:flutter_starter/presenter/languages/translation_keys.g.dart';
+import 'package:flutter_starter/core/utils/user_preferences.dart';
+import 'package:flutter_starter/data/sources/network/network.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 @RoutePage()
@@ -491,6 +493,35 @@ class _GroupFeedPageState extends State<GroupFeedPage> {
                         ],
                       ),
                     ),
+                    // Menu button for delete
+                    FutureBuilder<bool>(
+                      future: canDeletePost(post),
+                      builder: (context, snapshot) {
+                        if (snapshot.data == true) {
+                          return PopupMenuButton<String>(
+                            icon: Icon(Icons.more_vert, color: AppColors.textSecondary),
+                            onSelected: (value) {
+                              if (value == 'delete') {
+                                showDeletePostDialog(context, post);
+                              }
+                            },
+                            itemBuilder: (context) => [
+                              PopupMenuItem(
+                                value: 'delete',
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.delete, color: Colors.red),
+                                    SizedBox(width: 8),
+                                    Text(LocaleKeys.Delete.tr(), style: TextStyle(color: Colors.red)),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          );
+                        }
+                        return SizedBox.shrink();
+                      },
+                    ),
                   ],
                 ),
                 const SizedBox(height: 16),
@@ -702,6 +733,65 @@ class _GroupFeedPageState extends State<GroupFeedPage> {
         );
       },
     );
+  }
+
+  Future<bool> canDeletePost(PostResponse post) async {
+    final userInfo = await UserPreferences.getUserInfo();
+    final currentUserId = userInfo?.id;
+    final isAdmin = await UserPreferences.isAdmin();
+    
+    // Can delete if user is owner or admin
+    return (currentUserId != null && post.authorId == currentUserId) || isAdmin;
+  }
+
+  Future<void> showDeletePostDialog(BuildContext context, PostResponse post) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(LocaleKeys.DeletePost.tr()),
+        content: Text(LocaleKeys.DeletePostConfirm.tr()),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(LocaleKeys.Cancel.tr()),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.red,
+            ),
+            child: Text(LocaleKeys.Delete.tr()),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true && mounted) {
+      try {
+        final networkDataSource = provider.get<NetworkDataSource>();
+        await networkDataSource.deleteGroupPost(widget.groupId, post.id);
+        
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(LocaleKeys.PostDeletedSuccessfully.tr()),
+              backgroundColor: Colors.green,
+            ),
+          );
+          // Refresh feed
+          context.read<GroupFeedBloc>().add(GroupFeedEvent.fetchFeed(groupId: widget.groupId));
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('${LocaleKeys.FailedToDeletePost.tr()}: $e'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    }
   }
 }
 

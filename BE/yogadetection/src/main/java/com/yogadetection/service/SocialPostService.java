@@ -16,6 +16,7 @@ public interface SocialPostService {
     void unlikePost(String userId, String postId);
     CommentResponse addComment(String userId, String postId, CreateCommentRequest request);
     PagedResponse<CommentResponse> getComments(String postId, int page, int size);
+    void deletePost(String userId, String postId);
 }
 
 

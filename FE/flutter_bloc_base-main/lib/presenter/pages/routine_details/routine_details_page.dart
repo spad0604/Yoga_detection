@@ -11,6 +11,8 @@ import 'package:flutter_starter/presenter/languages/translation_keys.g.dart';
 import 'package:flutter_starter/presenter/pages/routine_practice_session/routine_practice_session_page.dart';
 import 'package:flutter_starter/data/states/practice_session/practice_session_bloc.dart';
 import 'package:flutter_starter/data/states/practice_session/practice_session_event.dart';
+import 'package:flutter_starter/core/utils/user_preferences.dart';
+import 'package:flutter_starter/presenter/pages/admin/admin_add_edit_routine_page.dart';
 
 @RoutePage()
 class RoutineDetailsPage extends StatefulWidget implements AutoRouteWrapper {
@@ -35,6 +37,23 @@ class RoutineDetailsPage extends StatefulWidget implements AutoRouteWrapper {
 }
 
 class _RoutineDetailsPageState extends State<RoutineDetailsPage> {
+  bool _isAdmin = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkAdminStatus();
+  }
+
+  Future<void> _checkAdminStatus() async {
+    final isAdmin = await UserPreferences.isAdmin();
+    if (mounted) {
+      setState(() {
+        _isAdmin = isAdmin;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,6 +102,35 @@ class _RoutineDetailsPageState extends State<RoutineDetailsPage> {
             SliverAppBar(
               expandedHeight: 250,
               pinned: true,
+              actions: _isAdmin
+                  ? [
+                      IconButton(
+                        icon: const Icon(Icons.edit),
+                        onPressed: () async {
+                          final result = await Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => AdminAddEditRoutinePage(
+                                routineId: routine.id,
+                                initialName: routine.name,
+                                initialDescription: routine.description,
+                                initialLevel: routine.level,
+                                initialDuration: routine.durationMinutes,
+                                initialCalories: routine.estimatedCalories,
+                                initialTags: routine.tags?.join(', '),
+                                initialIsPremium: routine.isPremium,
+                                initialImageUrl: routine.imageUrl,
+                              ),
+                            ),
+                          );
+                          if (result == true && mounted) {
+                            context.read<RoutineDetailsBloc>().add(
+                                  RoutineDetailsLoadRequested(widget.routineId),
+                                );
+                          }
+                        },
+                      ),
+                    ]
+                  : null,
               flexibleSpace: FlexibleSpaceBar(
                 title: Text(
                   routine.name,

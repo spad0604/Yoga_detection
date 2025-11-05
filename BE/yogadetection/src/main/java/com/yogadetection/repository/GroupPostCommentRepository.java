@@ -14,6 +14,8 @@ public interface GroupPostCommentRepository extends JpaRepository<GroupPostComme
 
     @Query("SELECT c FROM GroupPostComment c WHERE c.postId = :postId ORDER BY c.createdAt ASC")
     Page<GroupPostComment> findByPostId(@Param("postId") String postId, Pageable pageable);
+    
+    void deleteByPostId(String postId);
 }
 
 

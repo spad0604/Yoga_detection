@@ -17,6 +17,8 @@ public interface GroupPostLikeRepository extends JpaRepository<GroupPostLike, St
 
     @Query("SELECT COUNT(l) FROM GroupPostLike l WHERE l.postId = :postId")
     long countByPostId(@Param("postId") String postId);
+    
+    void deleteByPostId(String postId);
 }
 
 

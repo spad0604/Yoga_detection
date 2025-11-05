@@ -10,4 +10,6 @@ class HomePageEvent with _$HomePageEvent {
   const factory HomePageEvent.started() = HomePageStarted;
 
   const factory HomePageEvent.fetchYogaPoses(String code) = HomePageFetchYogaPoses;
+  
+  const factory HomePageEvent.loadMore() = HomePageLoadMore;
 }

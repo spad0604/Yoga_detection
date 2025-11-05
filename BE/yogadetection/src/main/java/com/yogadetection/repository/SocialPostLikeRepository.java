@@ -8,6 +8,7 @@ import com.yogadetection.entity.SocialPostLike;
 
 public interface SocialPostLikeRepository extends JpaRepository<SocialPostLike, String> {
     Optional<SocialPostLike> findByPostIdAndUserId(String postId, String userId);
+    void deleteByPostId(String postId);
 }
 
 

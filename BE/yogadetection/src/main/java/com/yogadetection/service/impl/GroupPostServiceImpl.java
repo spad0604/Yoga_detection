@@ -194,6 +194,29 @@ public class GroupPostServiceImpl implements GroupPostService {
                 .createdAt(c.getCreatedAt())
                 .build();
     }
+
+    @Override
+    @Transactional
+    public void deletePost(String userId, String postId) {
+        GroupPost post = postRepository.findById(postId)
+                .orElseThrow(() -> new EntityNotFoundException("Post not found"));
+        
+        // Check permission: only owner or admin can delete
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        
+        boolean isOwner = post.getAuthorId().equals(userId);
+        boolean isAdmin = user.getUserRole().name().equals("ADMIN");
+        
+        if (!isOwner && !isAdmin) {
+            throw new SecurityException("You don't have permission to delete this post");
+        }
+        
+        // Delete all related data
+        likeRepository.deleteByPostId(postId);
+        commentRepository.deleteByPostId(postId);
+        postRepository.delete(post);
+    }
 }
 
 

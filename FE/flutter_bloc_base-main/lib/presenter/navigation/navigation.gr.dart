@@ -127,6 +127,115 @@ class AdminAddEditPoseRouteArgs {
 }
 
 /// generated route for
+/// [AdminAddEditRoutinePage]
+class AdminAddEditRoutineRoute
+    extends PageRouteInfo<AdminAddEditRoutineRouteArgs> {
+  AdminAddEditRoutineRoute({
+    Key? key,
+    String? routineId,
+    String? initialName,
+    String? initialDescription,
+    String? initialLevel,
+    int? initialDuration,
+    int? initialCalories,
+    String? initialTags,
+    bool? initialIsPremium,
+    int? initialOrderIndex,
+    String? initialPoseIds,
+    String? initialImageUrl,
+    List<PageRouteInfo>? children,
+  }) : super(
+         AdminAddEditRoutineRoute.name,
+         args: AdminAddEditRoutineRouteArgs(
+           key: key,
+           routineId: routineId,
+           initialName: initialName,
+           initialDescription: initialDescription,
+           initialLevel: initialLevel,
+           initialDuration: initialDuration,
+           initialCalories: initialCalories,
+           initialTags: initialTags,
+           initialIsPremium: initialIsPremium,
+           initialOrderIndex: initialOrderIndex,
+           initialPoseIds: initialPoseIds,
+           initialImageUrl: initialImageUrl,
+         ),
+         initialChildren: children,
+       );
+
+  static const String name = 'AdminAddEditRoutineRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<AdminAddEditRoutineRouteArgs>(
+        orElse: () => const AdminAddEditRoutineRouteArgs(),
+      );
+      return AdminAddEditRoutinePage(
+        key: args.key,
+        routineId: args.routineId,
+        initialName: args.initialName,
+        initialDescription: args.initialDescription,
+        initialLevel: args.initialLevel,
+        initialDuration: args.initialDuration,
+        initialCalories: args.initialCalories,
+        initialTags: args.initialTags,
+        initialIsPremium: args.initialIsPremium,
+        initialOrderIndex: args.initialOrderIndex,
+        initialPoseIds: args.initialPoseIds,
+        initialImageUrl: args.initialImageUrl,
+      );
+    },
+  );
+}
+
+class AdminAddEditRoutineRouteArgs {
+  const AdminAddEditRoutineRouteArgs({
+    this.key,
+    this.routineId,
+    this.initialName,
+    this.initialDescription,
+    this.initialLevel,
+    this.initialDuration,
+    this.initialCalories,
+    this.initialTags,
+    this.initialIsPremium,
+    this.initialOrderIndex,
+    this.initialPoseIds,
+    this.initialImageUrl,
+  });
+
+  final Key? key;
+
+  final String? routineId;
+
+  final String? initialName;
+
+  final String? initialDescription;
+
+  final String? initialLevel;
+
+  final int? initialDuration;
+
+  final int? initialCalories;
+
+  final String? initialTags;
+
+  final bool? initialIsPremium;
+
+  final int? initialOrderIndex;
+
+  final String? initialPoseIds;
+
+  final String? initialImageUrl;
+
+  @override
+  String toString() {
+    return 'AdminAddEditRoutineRouteArgs{key: $key, routineId: $routineId, initialName: $initialName, initialDescription: $initialDescription, initialLevel: $initialLevel, initialDuration: $initialDuration, initialCalories: $initialCalories, initialTags: $initialTags, initialIsPremium: $initialIsPremium, initialOrderIndex: $initialOrderIndex, initialPoseIds: $initialPoseIds, initialImageUrl: $initialImageUrl}';
+  }
+}
+
+/// generated route for
 /// [CameraDetectionPage]
 class CameraDetectionRoute extends PageRouteInfo<void> {
   const CameraDetectionRoute({List<PageRouteInfo>? children})
