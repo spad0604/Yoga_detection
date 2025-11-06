@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yogadetection.dto.request.CreateCommentRequest;
@@ -36,7 +37,7 @@ public class GroupPostController {
     public ApiResponse<PostResponse> createPost(
             @PathVariable String groupId,
             @RequestParam("content") String content,
-            @RequestParam(value = "images", required = false) org.springframework.web.multipart.MultipartFile[] images,
+            @RequestPart(value = "images", required = false) org.springframework.web.multipart.MultipartFile[] images,
             @RequestHeader("Authorization") String authHeader) {
         String userId = authHeaderUtil.extractUserId(authHeader);
         CreatePostRequest request = new CreatePostRequest();

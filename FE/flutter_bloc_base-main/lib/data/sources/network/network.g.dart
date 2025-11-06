@@ -2528,11 +2528,14 @@ class _NetworkDataSource implements NetworkDataSource {
     String? landmarkData,
   }) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'poseCode': poseCode,
+      r'timeSpentSeconds': timeSpentSeconds,
+      r'landmarkData': landmarkData,
+    };
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     final _data = FormData();
-    _data.fields.add(MapEntry('poseCode', poseCode));
     _data.files.add(
       MapEntry(
         'image',
@@ -2542,14 +2545,6 @@ class _NetworkDataSource implements NetworkDataSource {
         ),
       ),
     );
-    if (timeSpentSeconds != null) {
-      _data.fields.add(
-        MapEntry('timeSpentSeconds', timeSpentSeconds.toString()),
-      );
-    }
-    if (landmarkData != null) {
-      _data.fields.add(MapEntry('landmarkData', landmarkData));
-    }
     final _options = _setStreamType<BaseApiResponse<PracticeSession>>(
       Options(
         method: 'POST',

@@ -383,10 +383,10 @@ abstract class NetworkDataSource {
   @POST('api/practice-sessions/{sessionId}/submit-pose')
   Future<BaseApiResponse<PracticeSession>> submitPoseInSession({
     @Path('sessionId') required String sessionId,
-    @Part(name: 'poseCode') required String poseCode,
+    @Query('poseCode') required String poseCode,
     @Part(name: 'image') required File imageFile,
-    @Part(name: 'timeSpentSeconds') int? timeSpentSeconds,
-    @Part(name: 'landmarkData') String? landmarkData,
+    @Query('timeSpentSeconds') int? timeSpentSeconds,
+    @Query('landmarkData') String? landmarkData,
   });
 
   @POST('api/practice-sessions/{sessionId}/skip')

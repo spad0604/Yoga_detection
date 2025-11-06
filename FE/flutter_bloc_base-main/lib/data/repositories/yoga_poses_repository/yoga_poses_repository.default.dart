@@ -110,35 +110,33 @@ class YogaPosesRepositoryImpl implements YogaPosesRepository {
         );
       }
 
-      // Build request JSON as backend expects inside a multipart field named 'request'
-      final Map<String, dynamic> requestMap = {
-        'poseCode': poseCode,
+      // Build landmarkData JSON as backend expects
+      final Map<String, dynamic> landmarkData = {
         'landmarks': model.landmarks.map((e) => e.toJson()).toList(),
-        'timestamp': model.timestamp,
       };
 
-      final String requestJson = jsonEncode(requestMap);
+      final String landmarkDataJson = jsonEncode(landmarkData);
 
-      // Create a multipart part for the JSON request with explicit content-type
-      final requestPart = MultipartFile.fromString(
-        requestJson,
-        filename: 'request.json',
+      // Create a multipart part for the landmarkData JSON with explicit content-type
+      final landmarkDataPart = MultipartFile.fromString(
+        landmarkDataJson,
+        filename: 'landmarkData.json',
         contentType: MediaType('application', 'json'),
       );
 
-      // Some server implementations expect poseCode as a top-level form field
-      // in addition to the JSON 'request' part — include both to satisfy server.
+      // Backend expects: poseCode (RequestParam), image (RequestParam), landmarkData (RequestPart)
       final formData = FormData.fromMap({
-        'request': requestPart,
         'poseCode': poseCode,
         if (image != null) 'image': image,
+        'landmarkData': landmarkDataPart,
       });
 
       // Verbose logging to debug server 500
       print('📋 FormData contents:');
-      print('  request JSON length: ${requestJson.length} chars');
+      print('  poseCode: $poseCode');
+      print('  landmarkData JSON length: ${landmarkDataJson.length} chars');
       print(
-          '  request JSON preview: ${requestJson.substring(0, requestJson.length > 200 ? 200 : requestJson.length)}...');
+          '  landmarkData JSON preview: ${landmarkDataJson.substring(0, landmarkDataJson.length > 200 ? 200 : landmarkDataJson.length)}...');
       if (image != null) {
         print(
             '  image: filename="${image.filename}", contentType=${image.contentType}, length=${image.length}');

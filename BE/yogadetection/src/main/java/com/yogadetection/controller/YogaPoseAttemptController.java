@@ -34,7 +34,7 @@ public class YogaPoseAttemptController {
     public YogaPoseAttemptResponse createAttempt(
             @AuthenticationPrincipal User user,
             @RequestParam("poseCode") String poseCode,
-            @RequestParam(value = "image", required = false) MultipartFile imageFile,
+            @RequestPart(value = "image", required = false) MultipartFile imageFile,
             @RequestPart(value = "landmarkData", required = false) PoseLandmarkRequest landmarkData
     ) {
         YogaPoseAttempt attempt = attemptService.createAttempt(

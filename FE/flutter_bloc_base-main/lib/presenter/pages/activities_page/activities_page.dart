@@ -106,8 +106,10 @@ class _SocialFeedWidgetState extends State<SocialFeedWidget> {
 class PostCard extends StatefulWidget {
   final PostResponse post;
   final VoidCallback? onRefresh;
+  final bool isDetailView;
 
-  const PostCard({Key? key, required this.post, this.onRefresh}) : super(key: key);
+  const PostCard({Key? key, required this.post, this.onRefresh, this.isDetailView = false})
+      : super(key: key);
 
   @override
   State<PostCard> createState() => _PostCardState();
@@ -198,7 +200,7 @@ class _PostCardState extends State<PostCard> {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: () => _showPostDetail(context),
+          onTap: widget.isDetailView ? null : () => _showPostDetail(context),
           borderRadius: BorderRadius.circular(20),
           child: Padding(
             padding: const EdgeInsets.all(20),
@@ -261,25 +263,28 @@ class _PostCardState extends State<PostCard> {
                   if (images.length == 1)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 12),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Image.network(
-                          images[0],
-                          width: double.infinity,
-                          height: 200,
-                          fit: BoxFit.cover,
-                          loadingBuilder: (context, child, progress) {
-                            if (progress == null) return child;
-                            return Container(
+                      child: GestureDetector(
+                        onTap: () => _showImageViewer(context, images, 0),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.network(
+                            images[0],
+                            width: double.infinity,
+                            height: 200,
+                            fit: BoxFit.cover,
+                            loadingBuilder: (context, child, progress) {
+                              if (progress == null) return child;
+                              return Container(
+                                height: 200,
+                                color: AppColors.backgroundLight,
+                                child: const Center(child: CircularProgressIndicator()),
+                              );
+                            },
+                            errorBuilder: (context, error, stack) => Container(
                               height: 200,
                               color: AppColors.backgroundLight,
-                              child: const Center(child: CircularProgressIndicator()),
-                            );
-                          },
-                          errorBuilder: (context, error, stack) => Container(
-                            height: 200,
-                            color: AppColors.backgroundLight,
-                            child: const Center(child: Icon(Icons.broken_image)),
+                              child: const Center(child: Icon(Icons.broken_image)),
+                            ),
                           ),
                         ),
                       ),
@@ -291,27 +296,30 @@ class _PostCardState extends State<PostCard> {
                         scrollDirection: Axis.horizontal,
                         itemCount: images.length,
                         separatorBuilder: (_, __) => const SizedBox(width: 8),
-                        itemBuilder: (context, i) => ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Image.network(
-                            images[i],
-                            width: 160,
-                            height: 120,
-                            fit: BoxFit.cover,
-                            loadingBuilder: (context, child, progress) {
-                              if (progress == null) return child;
-                              return Container(
+                        itemBuilder: (context, i) => GestureDetector(
+                          onTap: () => _showImageViewer(context, images, i),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Image.network(
+                              images[i],
+                              width: 160,
+                              height: 120,
+                              fit: BoxFit.cover,
+                              loadingBuilder: (context, child, progress) {
+                                if (progress == null) return child;
+                                return Container(
+                                  width: 160,
+                                  height: 120,
+                                  color: AppColors.backgroundLight,
+                                  child: const Center(child: CircularProgressIndicator()),
+                                );
+                              },
+                              errorBuilder: (context, error, stack) => Container(
                                 width: 160,
                                 height: 120,
                                 color: AppColors.backgroundLight,
-                                child: const Center(child: CircularProgressIndicator()),
-                              );
-                            },
-                            errorBuilder: (context, error, stack) => Container(
-                              width: 160,
-                              height: 120,
-                              color: AppColors.backgroundLight,
-                              child: const Center(child: Icon(Icons.broken_image)),
+                                child: const Center(child: Icon(Icons.broken_image)),
+                              ),
                             ),
                           ),
                         ),
@@ -379,6 +387,52 @@ class _PostCardState extends State<PostCard> {
                 ),
               ],
             ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showImageViewer(BuildContext context, List<String> urls, int initialIndex) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => Scaffold(
+          backgroundColor: Colors.black,
+          body: Stack(
+            children: [
+              PageView.builder(
+                controller: PageController(initialPage: initialIndex),
+                itemCount: urls.length,
+                itemBuilder: (context, index) {
+                  return InteractiveViewer(
+                    minScale: 0.5,
+                    maxScale: 4.0,
+                    child: Center(
+                      child: Image.network(
+                        urls[index],
+                        fit: BoxFit.contain,
+                        loadingBuilder: (context, child, progress) {
+                          if (progress == null) return child;
+                          return const Center(child: CircularProgressIndicator());
+                        },
+                        errorBuilder: (context, error, stack) => const Center(
+                          child: Icon(Icons.broken_image, color: Colors.white, size: 64),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+              SafeArea(
+                child: Align(
+                  alignment: Alignment.topRight,
+                  child: IconButton(
+                    icon: const Icon(Icons.close, color: Colors.white, size: 30),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -494,7 +548,7 @@ class _PostDetailSheetState extends State<_PostDetailSheet> {
                   padding: const EdgeInsets.all(20),
                   children: [
                     // Original post (read-only mini card)
-                    PostCard(post: widget.post, onRefresh: widget.onRefresh),
+                    PostCard(post: widget.post, onRefresh: widget.onRefresh, isDetailView: true),
                     const SizedBox(height: 16),
                     // Comments section
                     Text(

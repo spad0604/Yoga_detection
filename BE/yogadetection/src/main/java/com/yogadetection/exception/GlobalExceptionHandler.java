@@ -2,10 +2,12 @@ package com.yogadetection.exception;
 
 import com.yogadetection.config.ErrorCode;
 import com.yogadetection.dto.response.ApiResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -25,6 +27,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Object>> handleGeneric(Exception ex) {
+        log.error("❌ Unhandled exception: {}", ex.getMessage(), ex);
         return ResponseEntity
                 .ok()
                 .body(ApiResponse.error(ErrorCode.INTERNAL_SERVER_ERROR));

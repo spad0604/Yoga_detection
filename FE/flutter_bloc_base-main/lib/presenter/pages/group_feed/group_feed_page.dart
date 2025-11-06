@@ -429,7 +429,7 @@ class _GroupFeedPageState extends State<GroupFeedPage> {
     );
   }
 
-  Widget _buildPostCard(BuildContext context, PostResponse post) {
+  Widget _buildPostCard(BuildContext context, PostResponse post, {bool isDetailView = false}) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
@@ -446,10 +446,12 @@ class _GroupFeedPageState extends State<GroupFeedPage> {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: () {
-            // Navigate to post detail page with comments
-            _showPostDetail(context, post);
-          },
+          onTap: isDetailView
+              ? null
+              : () {
+                  // Navigate to post detail page with comments
+                  _showPostDetail(context, post);
+                },
           borderRadius: BorderRadius.circular(20),
           child: Padding(
             padding: const EdgeInsets.all(20),
@@ -512,7 +514,8 @@ class _GroupFeedPageState extends State<GroupFeedPage> {
                                   children: [
                                     Icon(Icons.delete, color: Colors.red),
                                     SizedBox(width: 8),
-                                    Text(LocaleKeys.Delete.tr(), style: TextStyle(color: Colors.red)),
+                                    Text(LocaleKeys.Delete.tr(),
+                                        style: TextStyle(color: Colors.red)),
                                   ],
                                 ),
                               ),
@@ -643,25 +646,28 @@ class _GroupFeedPageState extends State<GroupFeedPage> {
       return [
         Padding(
           padding: const EdgeInsets.only(bottom: 12),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Image.network(
-              urls[0],
-              width: double.infinity,
-              height: 200,
-              fit: BoxFit.cover,
-              loadingBuilder: (context, child, progress) {
-                if (progress == null) return child;
-                return Container(
+          child: GestureDetector(
+            onTap: () => _showImageViewer(context, urls, 0),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.network(
+                urls[0],
+                width: double.infinity,
+                height: 200,
+                fit: BoxFit.cover,
+                loadingBuilder: (context, child, progress) {
+                  if (progress == null) return child;
+                  return Container(
+                    height: 200,
+                    color: AppColors.backgroundLight,
+                    child: const Center(child: CircularProgressIndicator()),
+                  );
+                },
+                errorBuilder: (context, error, stack) => Container(
                   height: 200,
                   color: AppColors.backgroundLight,
-                  child: const Center(child: CircularProgressIndicator()),
-                );
-              },
-              errorBuilder: (context, error, stack) => Container(
-                height: 200,
-                color: AppColors.backgroundLight,
-                child: const Center(child: Icon(Icons.broken_image)),
+                  child: const Center(child: Icon(Icons.broken_image)),
+                ),
               ),
             ),
           ),
@@ -677,33 +683,82 @@ class _GroupFeedPageState extends State<GroupFeedPage> {
           scrollDirection: Axis.horizontal,
           itemCount: urls.length,
           separatorBuilder: (_, __) => const SizedBox(width: 8),
-          itemBuilder: (context, i) => ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Image.network(
-              urls[i],
-              width: 160,
-              height: 120,
-              fit: BoxFit.cover,
-              loadingBuilder: (context, child, progress) {
-                if (progress == null) return child;
-                return Container(
+          itemBuilder: (context, i) => GestureDetector(
+            onTap: () => _showImageViewer(context, urls, i),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.network(
+                urls[i],
+                width: 160,
+                height: 120,
+                fit: BoxFit.cover,
+                loadingBuilder: (context, child, progress) {
+                  if (progress == null) return child;
+                  return Container(
+                    width: 160,
+                    height: 120,
+                    color: AppColors.backgroundLight,
+                    child: const Center(child: CircularProgressIndicator()),
+                  );
+                },
+                errorBuilder: (context, error, stack) => Container(
                   width: 160,
                   height: 120,
                   color: AppColors.backgroundLight,
-                  child: const Center(child: CircularProgressIndicator()),
-                );
-              },
-              errorBuilder: (context, error, stack) => Container(
-                width: 160,
-                height: 120,
-                color: AppColors.backgroundLight,
-                child: const Center(child: Icon(Icons.broken_image)),
+                  child: const Center(child: Icon(Icons.broken_image)),
+                ),
               ),
             ),
           ),
         ),
       ),
     ];
+  }
+
+  void _showImageViewer(BuildContext context, List<String> urls, int initialIndex) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => Scaffold(
+          backgroundColor: Colors.black,
+          body: Stack(
+            children: [
+              PageView.builder(
+                controller: PageController(initialPage: initialIndex),
+                itemCount: urls.length,
+                itemBuilder: (context, index) {
+                  return InteractiveViewer(
+                    minScale: 0.5,
+                    maxScale: 4.0,
+                    child: Center(
+                      child: Image.network(
+                        urls[index],
+                        fit: BoxFit.contain,
+                        loadingBuilder: (context, child, progress) {
+                          if (progress == null) return child;
+                          return const Center(child: CircularProgressIndicator());
+                        },
+                        errorBuilder: (context, error, stack) => const Center(
+                          child: Icon(Icons.broken_image, color: Colors.white, size: 64),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+              SafeArea(
+                child: Align(
+                  alignment: Alignment.topRight,
+                  child: IconButton(
+                    icon: const Icon(Icons.close, color: Colors.white, size: 30),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   String _formatTimeAgo(String? createdAt) {
@@ -739,7 +794,7 @@ class _GroupFeedPageState extends State<GroupFeedPage> {
     final userInfo = await UserPreferences.getUserInfo();
     final currentUserId = userInfo?.id;
     final isAdmin = await UserPreferences.isAdmin();
-    
+
     // Can delete if user is owner or admin
     return (currentUserId != null && post.authorId == currentUserId) || isAdmin;
   }
@@ -770,7 +825,7 @@ class _GroupFeedPageState extends State<GroupFeedPage> {
       try {
         final networkDataSource = provider.get<NetworkDataSource>();
         await networkDataSource.deleteGroupPost(widget.groupId, post.id);
-        
+
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -1119,17 +1174,20 @@ class _GroupPostDetailSheetState extends State<_GroupPostDetailSheet> {
     if (urls.length == 1) {
       return [
         const SizedBox(height: 12),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(12),
-          child: Image.network(
-            urls[0],
-            width: double.infinity,
-            height: 180,
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stack) => Container(
+        GestureDetector(
+          onTap: () => _showImageViewer(urls, 0),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Image.network(
+              urls[0],
+              width: double.infinity,
               height: 180,
-              color: AppColors.backgroundLight,
-              child: const Center(child: Icon(Icons.broken_image)),
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stack) => Container(
+                height: 180,
+                color: AppColors.backgroundLight,
+                child: const Center(child: Icon(Icons.broken_image)),
+              ),
             ),
           ),
         ),
@@ -1144,18 +1202,21 @@ class _GroupPostDetailSheetState extends State<_GroupPostDetailSheet> {
           scrollDirection: Axis.horizontal,
           itemCount: urls.length,
           separatorBuilder: (_, __) => const SizedBox(width: 8),
-          itemBuilder: (context, i) => ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Image.network(
-              urls[i],
-              width: 140,
-              height: 100,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stack) => Container(
+          itemBuilder: (context, i) => GestureDetector(
+            onTap: () => _showImageViewer(urls, i),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.network(
+                urls[i],
                 width: 140,
                 height: 100,
-                color: AppColors.backgroundLight,
-                child: const Center(child: Icon(Icons.broken_image)),
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stack) => Container(
+                  width: 140,
+                  height: 100,
+                  color: AppColors.backgroundLight,
+                  child: const Center(child: Icon(Icons.broken_image)),
+                ),
               ),
             ),
           ),
@@ -1225,6 +1286,52 @@ class _GroupPostDetailSheetState extends State<_GroupPostDetailSheet> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  void _showImageViewer(List<String> urls, int initialIndex) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => Scaffold(
+          backgroundColor: Colors.black,
+          body: Stack(
+            children: [
+              PageView.builder(
+                controller: PageController(initialPage: initialIndex),
+                itemCount: urls.length,
+                itemBuilder: (context, index) {
+                  return InteractiveViewer(
+                    minScale: 0.5,
+                    maxScale: 4.0,
+                    child: Center(
+                      child: Image.network(
+                        urls[index],
+                        fit: BoxFit.contain,
+                        loadingBuilder: (context, child, progress) {
+                          if (progress == null) return child;
+                          return const Center(child: CircularProgressIndicator());
+                        },
+                        errorBuilder: (context, error, stack) => const Center(
+                          child: Icon(Icons.broken_image, color: Colors.white, size: 64),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+              SafeArea(
+                child: Align(
+                  alignment: Alignment.topRight,
+                  child: IconButton(
+                    icon: const Icon(Icons.close, color: Colors.white, size: 30),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

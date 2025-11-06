@@ -302,7 +302,7 @@ class _SocialFeedPageState extends State<SocialFeedPage> {
     );
   }
 
-  Widget _buildPostCard(BuildContext context, PostResponse post) {
+  Widget _buildPostCard(BuildContext context, PostResponse post, {bool isDetailView = false}) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration:
@@ -315,7 +315,7 @@ class _SocialFeedPageState extends State<SocialFeedPage> {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: () => _showPostDetail(context, post),
+          onTap: isDetailView ? null : () => _showPostDetail(context, post),
           borderRadius: BorderRadius.circular(20),
           child: Padding(
             padding: const EdgeInsets.all(20),
@@ -371,7 +371,7 @@ class _SocialFeedPageState extends State<SocialFeedPage> {
                 Text(post.content!,
                     style: TextStyle(fontSize: 15, color: AppColors.textPrimary, height: 1.5)),
               const SizedBox(height: 12),
-              ..._buildPostImages(post),
+              ..._buildPostImages(post, isDetailView: isDetailView),
               const SizedBox(height: 12),
               Row(children: [
                 InkWell(
@@ -418,7 +418,7 @@ class _SocialFeedPageState extends State<SocialFeedPage> {
     );
   }
 
-  List<Widget> _buildPostImages(PostResponse post) {
+  List<Widget> _buildPostImages(PostResponse post, {bool isDetailView = false}) {
     final List<String> urls = [];
     if (post.imageUrls != null && post.imageUrls!.trim().isNotEmpty) {
       try {
@@ -440,22 +440,25 @@ class _SocialFeedPageState extends State<SocialFeedPage> {
       return [
         Padding(
           padding: const EdgeInsets.only(bottom: 12),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Image.network(urls[0],
-                width: double.infinity,
-                height: 200,
-                fit: BoxFit.cover,
-                loadingBuilder: (context, child, progress) => progress == null
-                    ? child
-                    : Container(
-                        height: 200,
-                        color: AppColors.backgroundLight,
-                        child: const Center(child: CircularProgressIndicator())),
-                errorBuilder: (context, error, stack) => Container(
-                    height: 200,
-                    color: AppColors.backgroundLight,
-                    child: const Center(child: Icon(Icons.broken_image)))),
+          child: GestureDetector(
+            onTap: () => _showImageViewer(urls, 0),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.network(urls[0],
+                  width: double.infinity,
+                  height: 200,
+                  fit: BoxFit.cover,
+                  loadingBuilder: (context, child, progress) => progress == null
+                      ? child
+                      : Container(
+                          height: 200,
+                          color: AppColors.backgroundLight,
+                          child: const Center(child: CircularProgressIndicator())),
+                  errorBuilder: (context, error, stack) => Container(
+                      height: 200,
+                      color: AppColors.backgroundLight,
+                      child: const Center(child: Icon(Icons.broken_image)))),
+            ),
           ),
         ),
       ];
@@ -467,24 +470,27 @@ class _SocialFeedPageState extends State<SocialFeedPage> {
           scrollDirection: Axis.horizontal,
           itemCount: urls.length,
           separatorBuilder: (_, __) => const SizedBox(width: 8),
-          itemBuilder: (context, i) => ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Image.network(urls[i],
-                width: 160,
-                height: 120,
-                fit: BoxFit.cover,
-                loadingBuilder: (context, child, progress) => progress == null
-                    ? child
-                    : Container(
-                        width: 160,
-                        height: 120,
-                        color: AppColors.backgroundLight,
-                        child: const Center(child: CircularProgressIndicator())),
-                errorBuilder: (context, error, stack) => Container(
-                    width: 160,
-                    height: 120,
-                    color: AppColors.backgroundLight,
-                    child: const Center(child: Icon(Icons.broken_image)))),
+          itemBuilder: (context, i) => GestureDetector(
+            onTap: () => _showImageViewer(urls, i),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.network(urls[i],
+                  width: 160,
+                  height: 120,
+                  fit: BoxFit.cover,
+                  loadingBuilder: (context, child, progress) => progress == null
+                      ? child
+                      : Container(
+                          width: 160,
+                          height: 120,
+                          color: AppColors.backgroundLight,
+                          child: const Center(child: CircularProgressIndicator())),
+                  errorBuilder: (context, error, stack) => Container(
+                      width: 160,
+                      height: 120,
+                      color: AppColors.backgroundLight,
+                      child: const Center(child: Icon(Icons.broken_image)))),
+            ),
           ),
         ),
       ),
@@ -499,6 +505,41 @@ class _SocialFeedPageState extends State<SocialFeedPage> {
     } catch (e) {
       return 'Just now';
     }
+  }
+
+  void _showImageViewer(List<String> imageUrls, int initialIndex) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => Scaffold(
+          backgroundColor: Colors.black,
+          appBar: AppBar(
+            backgroundColor: Colors.black,
+            iconTheme: IconThemeData(color: Colors.white),
+            elevation: 0,
+          ),
+          body: PageView.builder(
+            itemCount: imageUrls.length,
+            controller: PageController(initialPage: initialIndex),
+            itemBuilder: (context, index) {
+              return InteractiveViewer(
+                child: Center(
+                  child: Image.network(
+                    imageUrls[index],
+                    fit: BoxFit.contain,
+                    loadingBuilder: (context, child, progress) => progress == null
+                        ? child
+                        : Center(child: CircularProgressIndicator(color: Colors.white)),
+                    errorBuilder: (context, error, stack) => Center(
+                      child: Icon(Icons.broken_image, color: Colors.white, size: 64),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    );
   }
 
   void _showPostDetail(BuildContext context, PostResponse post) {
@@ -537,7 +578,7 @@ class _SocialFeedPageState extends State<SocialFeedPage> {
                       controller: scrollController,
                       padding: const EdgeInsets.all(20),
                       children: [
-                        _buildPostCard(context, post),
+                        _buildPostCard(context, post, isDetailView: true),
                         const SizedBox(height: 16),
                         Text(LocaleKeys.Comments.tr(),
                             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
@@ -611,7 +652,7 @@ class _SocialFeedPageState extends State<SocialFeedPage> {
     final userInfo = await UserPreferences.getUserInfo();
     final currentUserId = userInfo?.id;
     final isAdmin = await UserPreferences.isAdmin();
-    
+
     // Can delete if user is owner or admin
     return (currentUserId != null && post.authorId == currentUserId) || isAdmin;
   }
@@ -642,7 +683,7 @@ class _SocialFeedPageState extends State<SocialFeedPage> {
       try {
         final networkDataSource = provider.get<NetworkDataSource>();
         await networkDataSource.deleteSocialPost(post.id);
-        
+
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(

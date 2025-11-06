@@ -453,8 +453,22 @@ public class PracticeSessionServiceImpl implements PracticeSessionService {
         
         if (startDate != null && endDate != null) {
             try {
-                OffsetDateTime start = OffsetDateTime.parse(startDate);
-                OffsetDateTime end = OffsetDateTime.parse(endDate);
+                // Support both formats: with timezone (2025-11-01T00:00:00.000Z) and without (2025-11-01T00:00:00.000)
+                OffsetDateTime start;
+                OffsetDateTime end;
+                
+                if (startDate.endsWith("Z") || startDate.contains("+") || startDate.contains("-")) {
+                    // Has timezone info
+                    start = OffsetDateTime.parse(startDate);
+                    end = OffsetDateTime.parse(endDate);
+                } else {
+                    // No timezone, treat as LocalDateTime and convert to system default zone
+                    java.time.LocalDateTime localStart = java.time.LocalDateTime.parse(startDate);
+                    java.time.LocalDateTime localEnd = java.time.LocalDateTime.parse(endDate);
+                    start = localStart.atZone(java.time.ZoneId.systemDefault()).toOffsetDateTime();
+                    end = localEnd.atZone(java.time.ZoneId.systemDefault()).toOffsetDateTime();
+                }
+                
                 sessions = sessionRepository.findByUserIdAndStartedAtBetweenOrderByStartedAtDesc(userId, start, end);
             } catch (Exception e) {
                 log.error("Failed to parse dates, returning all completed sessions", e);
