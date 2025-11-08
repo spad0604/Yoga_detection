@@ -53,7 +53,7 @@ class AppTheme extends ThemeExtension<AppTheme> {
           foregroundColor: colors.text,
           surfaceTintColor: colors.text,
         ),
-        tabBarTheme: TabBarTheme(
+        tabBarTheme: TabBarThemeData(
           labelColor: colors.text,
           unselectedLabelColor: colors.text.withValues(alpha: 0.4),
         ),
@@ -118,8 +118,7 @@ class AppTheme extends ThemeExtension<AppTheme> {
           ),
         ),
         inputDecorationTheme: InputDecorationTheme(
-          contentPadding:
-              const EdgeInsets.symmetric(vertical: 8, horizontal: 42),
+          contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 42),
           filled: true,
           fillColor: colors.backgroundDark,
           hintStyle: typographies.bodySmall.copyWith(
