@@ -1,3 +1,4 @@
 {
-    "cmake.sourceDirectory": "D:/Code lung tung/Yoga Detection/FE/flutter_bloc_base-main/linux"
+    "cmake.sourceDirectory": "D:/Code lung tung/Yoga Detection/FE/flutter_bloc_base-main/linux",
+    "idf.pythonInstallPath": "C:\\Espressif\\tools\\idf-python\\3.11.2\\python.exe"
 }

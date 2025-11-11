@@ -1,11 +1,19 @@
 package com.yogadetection.entity;
 
-import jakarta.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
+
 import com.yogadetection.enums.YogaPoseLevelEnum;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.GenericGenerator;
 
 @Data
 @Entity
@@ -30,4 +38,6 @@ public class YogaPoseDetails {
     private YogaPoseLevelEnum level;
     @Column(name = "description")
     private String description;
+    @Column(name = "tutorial_video_url")
+    private String tutorialVideoUrl;
 }

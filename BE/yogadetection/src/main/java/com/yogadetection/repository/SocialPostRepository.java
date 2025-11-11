@@ -11,6 +11,8 @@ import com.yogadetection.entity.SocialPost.Visibility;
 
 public interface SocialPostRepository extends JpaRepository<SocialPost, String> {
     Page<SocialPost> findByAuthorIdInOrVisibilityOrderByCreatedAtDesc(List<String> authorIds, Visibility visibility, Pageable pageable);
+    Page<SocialPost> findByAuthorIdInOrderByCreatedAtDesc(List<String> authorIds, Pageable pageable);
+    Page<SocialPost> findByVisibilityOrderByCreatedAtDesc(Visibility visibility, Pageable pageable);
     Page<SocialPost> findByAuthorIdOrderByCreatedAtDesc(String authorId, Pageable pageable);
 }
 

@@ -40,8 +40,8 @@ class SocialPostsRepositoryImpl implements SocialPostsRepository {
   }
 
   @override
-  Future<PageResponse<PostResponse>> getFeed({int page = 0, int size = 20}) async {
-    final res = await _api.getSocialFeed(page, size);
+  Future<PageResponse<PostResponse>> getFeed({int page = 0, int size = 20, String scope = 'PUBLIC'}) async {
+    final res = await _api.getSocialFeed(page, size, scope);
     if (res.data == null) throw Exception('Empty response');
     return res.data!;
   }

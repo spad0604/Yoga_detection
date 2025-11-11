@@ -1,13 +1,19 @@
 package com.yogadetection.entity;
 
-import jakarta.persistence.*;
+import java.time.OffsetDateTime;
+
+import org.hibernate.annotations.GenericGenerator;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.GenericGenerator;
-
-import java.time.OffsetDateTime;
 
 @Data
 @Table(name = "yoga_pose_attempt")
@@ -41,6 +47,9 @@ public class YogaPoseAttempt {
 
     @Column(name = "feedback", columnDefinition = "TEXT")
     private String feedback;
+
+    @Column(name = "tutorial_video_url")
+    private String tutorialVideoUrl;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private OffsetDateTime createdAt;

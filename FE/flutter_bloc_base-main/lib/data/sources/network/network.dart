@@ -318,6 +318,7 @@ abstract class NetworkDataSource {
   Future<BaseApiResponse<PageResponse<PostResponse>>> getSocialFeed(
     @Query('page') int page,
     @Query('size') int size,
+    @Query('scope') String scope,
   );
 
   @POST('api/social/posts/{postId}/likes')

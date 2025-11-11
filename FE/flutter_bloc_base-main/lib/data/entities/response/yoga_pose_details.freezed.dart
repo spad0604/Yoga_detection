@@ -34,6 +34,8 @@ mixin _$YogaPoseDetails {
   int? get totalCalories => throw _privateConstructorUsedError;
   @JsonKey(name: 'level')
   String? get level => throw _privateConstructorUsedError;
+  @JsonKey(readValue: _readVideoUrl)
+  String? get tutorialVideoUrl => throw _privateConstructorUsedError;
 
   /// Serializes this YogaPoseDetails to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -58,7 +60,8 @@ abstract class $YogaPoseDetailsCopyWith<$Res> {
       @JsonKey(name: 'minutes') int? totalMinutes,
       @JsonKey(name: 'imageUrl') String? imageUrl,
       @JsonKey(name: 'calos') int? totalCalories,
-      @JsonKey(name: 'level') String? level});
+      @JsonKey(name: 'level') String? level,
+      @JsonKey(readValue: _readVideoUrl) String? tutorialVideoUrl});
 }
 
 /// @nodoc
@@ -83,6 +86,7 @@ class _$YogaPoseDetailsCopyWithImpl<$Res, $Val extends YogaPoseDetails>
     Object? imageUrl = freezed,
     Object? totalCalories = freezed,
     Object? level = freezed,
+    Object? tutorialVideoUrl = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -113,6 +117,10 @@ class _$YogaPoseDetailsCopyWithImpl<$Res, $Val extends YogaPoseDetails>
           ? _value.level
           : level // ignore: cast_nullable_to_non_nullable
               as String?,
+      tutorialVideoUrl: freezed == tutorialVideoUrl
+          ? _value.tutorialVideoUrl
+          : tutorialVideoUrl // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -132,7 +140,8 @@ abstract class _$$YogaPoseDetailsImplCopyWith<$Res>
       @JsonKey(name: 'minutes') int? totalMinutes,
       @JsonKey(name: 'imageUrl') String? imageUrl,
       @JsonKey(name: 'calos') int? totalCalories,
-      @JsonKey(name: 'level') String? level});
+      @JsonKey(name: 'level') String? level,
+      @JsonKey(readValue: _readVideoUrl) String? tutorialVideoUrl});
 }
 
 /// @nodoc
@@ -155,6 +164,7 @@ class __$$YogaPoseDetailsImplCopyWithImpl<$Res>
     Object? imageUrl = freezed,
     Object? totalCalories = freezed,
     Object? level = freezed,
+    Object? tutorialVideoUrl = freezed,
   }) {
     return _then(_$YogaPoseDetailsImpl(
       id: null == id
@@ -185,6 +195,10 @@ class __$$YogaPoseDetailsImplCopyWithImpl<$Res>
           ? _value.level
           : level // ignore: cast_nullable_to_non_nullable
               as String?,
+      tutorialVideoUrl: freezed == tutorialVideoUrl
+          ? _value.tutorialVideoUrl
+          : tutorialVideoUrl // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -199,7 +213,8 @@ class _$YogaPoseDetailsImpl implements _YogaPoseDetails {
       @JsonKey(name: 'minutes') this.totalMinutes,
       @JsonKey(name: 'imageUrl') this.imageUrl,
       @JsonKey(name: 'calos') this.totalCalories,
-      @JsonKey(name: 'level') this.level});
+      @JsonKey(name: 'level') this.level,
+      @JsonKey(readValue: _readVideoUrl) this.tutorialVideoUrl});
 
   factory _$YogaPoseDetailsImpl.fromJson(Map<String, dynamic> json) =>
       _$$YogaPoseDetailsImplFromJson(json);
@@ -225,10 +240,13 @@ class _$YogaPoseDetailsImpl implements _YogaPoseDetails {
   @override
   @JsonKey(name: 'level')
   final String? level;
+  @override
+  @JsonKey(readValue: _readVideoUrl)
+  final String? tutorialVideoUrl;
 
   @override
   String toString() {
-    return 'YogaPoseDetails(id: $id, name: $name, description: $description, totalMinutes: $totalMinutes, imageUrl: $imageUrl, totalCalories: $totalCalories, level: $level)';
+    return 'YogaPoseDetails(id: $id, name: $name, description: $description, totalMinutes: $totalMinutes, imageUrl: $imageUrl, totalCalories: $totalCalories, level: $level, tutorialVideoUrl: $tutorialVideoUrl)';
   }
 
   @override
@@ -246,13 +264,15 @@ class _$YogaPoseDetailsImpl implements _YogaPoseDetails {
                 other.imageUrl == imageUrl) &&
             (identical(other.totalCalories, totalCalories) ||
                 other.totalCalories == totalCalories) &&
-            (identical(other.level, level) || other.level == level));
+            (identical(other.level, level) || other.level == level) &&
+            (identical(other.tutorialVideoUrl, tutorialVideoUrl) ||
+                other.tutorialVideoUrl == tutorialVideoUrl));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id, name, description,
-      totalMinutes, imageUrl, totalCalories, level);
+      totalMinutes, imageUrl, totalCalories, level, tutorialVideoUrl);
 
   /// Create a copy of YogaPoseDetails
   /// with the given fields replaced by the non-null parameter values.
@@ -273,13 +293,15 @@ class _$YogaPoseDetailsImpl implements _YogaPoseDetails {
 
 abstract class _YogaPoseDetails implements YogaPoseDetails {
   const factory _YogaPoseDetails(
-      {@JsonKey(readValue: _readId) required final String id,
-      @JsonKey(name: 'name') required final String name,
-      @JsonKey(name: 'description') final String? description,
-      @JsonKey(name: 'minutes') final int? totalMinutes,
-      @JsonKey(name: 'imageUrl') final String? imageUrl,
-      @JsonKey(name: 'calos') final int? totalCalories,
-      @JsonKey(name: 'level') final String? level}) = _$YogaPoseDetailsImpl;
+          {@JsonKey(readValue: _readId) required final String id,
+          @JsonKey(name: 'name') required final String name,
+          @JsonKey(name: 'description') final String? description,
+          @JsonKey(name: 'minutes') final int? totalMinutes,
+          @JsonKey(name: 'imageUrl') final String? imageUrl,
+          @JsonKey(name: 'calos') final int? totalCalories,
+          @JsonKey(name: 'level') final String? level,
+          @JsonKey(readValue: _readVideoUrl) final String? tutorialVideoUrl}) =
+      _$YogaPoseDetailsImpl;
 
   factory _YogaPoseDetails.fromJson(Map<String, dynamic> json) =
       _$YogaPoseDetailsImpl.fromJson;
@@ -305,6 +327,9 @@ abstract class _YogaPoseDetails implements YogaPoseDetails {
   @override
   @JsonKey(name: 'level')
   String? get level;
+  @override
+  @JsonKey(readValue: _readVideoUrl)
+  String? get tutorialVideoUrl;
 
   /// Create a copy of YogaPoseDetails
   /// with the given fields replaced by the non-null parameter values.

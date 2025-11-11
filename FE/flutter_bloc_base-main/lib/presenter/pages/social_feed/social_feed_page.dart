@@ -34,19 +34,162 @@ class SocialFeedPage extends StatefulWidget implements AutoRouteWrapper {
   State<SocialFeedPage> createState() => _SocialFeedPageState();
 }
 
-class _SocialFeedPageState extends State<SocialFeedPage> {
-  final ScrollController _scrollController = ScrollController();
+class _SocialFeedPageState extends State<SocialFeedPage> with SingleTickerProviderStateMixin {
+  late final TabController _tabController;
+  late final ScrollController _publicScrollController;
+  late final ScrollController _friendsScrollController;
+  final Map<String, List<PostResponse>> _cachedFeeds = {};
+  String _activeScope = socialFeedScopePublic;
 
   @override
   void initState() {
     super.initState();
     timeago.setLocaleMessages('vi', timeago.ViMessages());
+    _tabController = TabController(length: 2, vsync: this);
+    _publicScrollController = ScrollController();
+    _friendsScrollController = ScrollController();
+    _tabController.addListener(_onTabChanged);
   }
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    _tabController.removeListener(_onTabChanged);
+    _tabController.dispose();
+    _publicScrollController.dispose();
+    _friendsScrollController.dispose();
     super.dispose();
+  }
+
+  void _onTabChanged() {
+    if (_tabController.indexIsChanging) return;
+    final scope = _scopeForIndex(_tabController.index);
+    if (_activeScope == scope) {
+      return;
+    }
+    setState(() => _activeScope = scope);
+    context.read<SocialFeedBloc>().add(SocialFeedEvent.fetchFeed(scope: scope));
+  }
+
+  String _scopeForIndex(int index) {
+    return index == 0 ? socialFeedScopePublic : socialFeedScopeFriends;
+  }
+
+  int _indexForScope(String scope) {
+    return scope == socialFeedScopeFriends ? 1 : 0;
+  }
+
+  ScrollController _controllerForScope(String scope) {
+    return scope == socialFeedScopeFriends ? _friendsScrollController : _publicScrollController;
+  }
+
+  Widget _buildFeedTab(BuildContext context, String scope) {
+    final scrollController = _controllerForScope(scope);
+
+    return BlocBuilder<SocialFeedBloc, SocialFeedState>(
+      builder: (context, state) {
+        final cached = _cachedFeeds[scope] ?? const <PostResponse>[];
+        bool isLoading = false;
+        String? errorMessage;
+        List<PostResponse> feed = cached;
+        
+        // Extract state values using maybeWhen with explicit void return type
+        state.maybeWhen<void>(
+          orElse: () {},
+          loading: (String currentScope) {
+            if (currentScope == scope) isLoading = true;
+          },
+          loaded: (String currentScope, List<PostResponse> loadedFeed) {
+            if (currentScope == scope) {
+              feed = loadedFeed;
+            } else {
+              feed = cached;
+            }
+          },
+          error: (String currentScope, String message) {
+            if (currentScope == scope) errorMessage = message;
+          },
+        );
+
+        if (errorMessage != null && feed.isEmpty) {
+          return _buildErrorState(errorMessage!);
+        }
+
+        if (feed.isEmpty) {
+          if (isLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          return RefreshIndicator(
+            onRefresh: () async =>
+                context.read<SocialFeedBloc>().add(SocialFeedEvent.fetchFeed(scope: scope)),
+            child: ListView(
+              controller: scrollController,
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
+              children: [
+                _buildEmptyState(),
+              ],
+            ),
+          );
+        }
+
+        final listView = RefreshIndicator(
+          onRefresh: () async =>
+              context.read<SocialFeedBloc>().add(SocialFeedEvent.fetchFeed(scope: scope)),
+          child: ListView.builder(
+            controller: scrollController,
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
+            itemCount: feed.length,
+            itemBuilder: (context, index) => _buildPostCard(context, feed[index]),
+          ),
+        );
+
+        final overlays = <Widget>[listView];
+
+        if (errorMessage != null) {
+          overlays.add(
+            Positioned(
+              top: 16,
+              left: 16,
+              right: 16,
+              child: Material(
+                elevation: 2,
+                borderRadius: BorderRadius.circular(12),
+                color: Colors.red.withOpacity(0.85),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.error_outline, color: Colors.white),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          LocaleKeys.FailedToLoadFeed.tr(),
+                          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        }
+
+        if (isLoading) {
+          overlays.add(
+            const Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: LinearProgressIndicator(minHeight: 2),
+            ),
+          );
+        }
+
+        return overlays.length == 1 ? overlays.first : Stack(children: overlays);
+      },
+    );
   }
 
   Future<void> _showCreatePostDialog() async {
@@ -206,40 +349,57 @@ class _SocialFeedPageState extends State<SocialFeedPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: Text(LocaleKeys.SocialFeed.tr()),
-      ),
-      body: BlocBuilder<SocialFeedBloc, SocialFeedState>(builder: (context, state) {
-        return state.when(
-          initial: () => _buildEmptyState(),
-          loading: () => Center(
-              child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryPurple))),
-          loaded: (feed) => feed.isEmpty
-              ? _buildEmptyState()
-              : RefreshIndicator(
-                  onRefresh: () async =>
-                      context.read<SocialFeedBloc>().add(const SocialFeedEvent.fetchFeed()),
-                  color: AppColors.primaryPurple,
-                  child: ListView.builder(
-                    controller: _scrollController,
-                    padding: const EdgeInsets.all(16),
-                    itemCount: feed.length,
-                    itemBuilder: (ctx, idx) => _buildPostCard(context, feed[idx]),
-                  ),
-                ),
-          error: (msg) => _buildErrorState(msg),
+    return BlocListener<SocialFeedBloc, SocialFeedState>(
+      listener: (context, state) {
+        if (!mounted) return;
+        state.maybeWhen<void>(
+          orElse: () {},
+          initial: (String scope) {
+            setState(() {
+              _activeScope = scope;
+            });
+            final index = _indexForScope(scope);
+            if (_tabController.index != index) {
+              _tabController.animateTo(index);
+            }
+          },
+          loaded: (String scope, List<PostResponse> feed) {
+            setState(() {
+              _cachedFeeds[scope] = feed;
+            });
+          },
         );
-      }),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _showCreatePostDialog,
-        backgroundColor: AppColors.primaryPurple,
-        icon: const Icon(Icons.add),
-        label: Text(LocaleKeys.NewPost.tr()),
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.backgroundLight,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          title: Text(LocaleKeys.SocialFeed.tr()),
+          bottom: TabBar(
+            controller: _tabController,
+            indicatorColor: AppColors.primaryPurple,
+            labelColor: AppColors.primaryPurple,
+            unselectedLabelColor: AppColors.textSecondary,
+            tabs: [
+              Tab(text: LocaleKeys.Public.tr()),
+              Tab(text: LocaleKeys.Friends.tr()),
+            ],
+          ),
+        ),
+        body: TabBarView(
+          controller: _tabController,
+          children: [
+            _buildFeedTab(context, socialFeedScopePublic),
+            _buildFeedTab(context, socialFeedScopeFriends),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: _showCreatePostDialog,
+          backgroundColor: AppColors.primaryPurple,
+          icon: const Icon(Icons.add),
+          label: Text(LocaleKeys.NewPost.tr()),
+        ),
       ),
     );
   }

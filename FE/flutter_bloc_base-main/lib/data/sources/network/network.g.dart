@@ -1985,9 +1985,14 @@ class _NetworkDataSource implements NetworkDataSource {
   Future<BaseApiResponse<PageResponse<PostResponse>>> getSocialFeed(
     int page,
     int size,
+    String scope,
   ) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{r'page': page, r'size': size};
+    final queryParameters = <String, dynamic>{
+      r'page': page,
+      r'size': size,
+      r'scope': scope,
+    };
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options =

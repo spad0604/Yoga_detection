@@ -18,7 +18,7 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$SocialFeedEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(int page, int size) fetchFeed,
+    required TResult Function(int page, int size, String scope) fetchFeed,
     required TResult Function(
             String? content, List<String> imagePaths, String visibility)
         createPost,
@@ -30,7 +30,7 @@ mixin _$SocialFeedEvent {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(int page, int size)? fetchFeed,
+    TResult? Function(int page, int size, String scope)? fetchFeed,
     TResult? Function(
             String? content, List<String> imagePaths, String visibility)?
         createPost,
@@ -42,7 +42,7 @@ mixin _$SocialFeedEvent {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(int page, int size)? fetchFeed,
+    TResult Function(int page, int size, String scope)? fetchFeed,
     TResult Function(
             String? content, List<String> imagePaths, String visibility)?
         createPost,
@@ -113,7 +113,7 @@ abstract class _$$SocialFeedFetchFeedImplCopyWith<$Res> {
           $Res Function(_$SocialFeedFetchFeedImpl) then) =
       __$$SocialFeedFetchFeedImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({int page, int size});
+  $Res call({int page, int size, String scope});
 }
 
 /// @nodoc
@@ -131,6 +131,7 @@ class __$$SocialFeedFetchFeedImplCopyWithImpl<$Res>
   $Res call({
     Object? page = null,
     Object? size = null,
+    Object? scope = null,
   }) {
     return _then(_$SocialFeedFetchFeedImpl(
       page: null == page
@@ -141,6 +142,10 @@ class __$$SocialFeedFetchFeedImplCopyWithImpl<$Res>
           ? _value.size
           : size // ignore: cast_nullable_to_non_nullable
               as int,
+      scope: null == scope
+          ? _value.scope
+          : scope // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -148,7 +153,8 @@ class __$$SocialFeedFetchFeedImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$SocialFeedFetchFeedImpl implements SocialFeedFetchFeed {
-  const _$SocialFeedFetchFeedImpl({this.page = 0, this.size = 20});
+  const _$SocialFeedFetchFeedImpl(
+      {this.page = 0, this.size = 20, this.scope = socialFeedScopePublic});
 
   @override
   @JsonKey()
@@ -156,10 +162,13 @@ class _$SocialFeedFetchFeedImpl implements SocialFeedFetchFeed {
   @override
   @JsonKey()
   final int size;
+  @override
+  @JsonKey()
+  final String scope;
 
   @override
   String toString() {
-    return 'SocialFeedEvent.fetchFeed(page: $page, size: $size)';
+    return 'SocialFeedEvent.fetchFeed(page: $page, size: $size, scope: $scope)';
   }
 
   @override
@@ -168,11 +177,12 @@ class _$SocialFeedFetchFeedImpl implements SocialFeedFetchFeed {
         (other.runtimeType == runtimeType &&
             other is _$SocialFeedFetchFeedImpl &&
             (identical(other.page, page) || other.page == page) &&
-            (identical(other.size, size) || other.size == size));
+            (identical(other.size, size) || other.size == size) &&
+            (identical(other.scope, scope) || other.scope == scope));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, page, size);
+  int get hashCode => Object.hash(runtimeType, page, size, scope);
 
   /// Create a copy of SocialFeedEvent
   /// with the given fields replaced by the non-null parameter values.
@@ -186,7 +196,7 @@ class _$SocialFeedFetchFeedImpl implements SocialFeedFetchFeed {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(int page, int size) fetchFeed,
+    required TResult Function(int page, int size, String scope) fetchFeed,
     required TResult Function(
             String? content, List<String> imagePaths, String visibility)
         createPost,
@@ -195,13 +205,13 @@ class _$SocialFeedFetchFeedImpl implements SocialFeedFetchFeed {
     required TResult Function(String postId, String content) addComment,
     required TResult Function(String postId, int page, int size) fetchComments,
   }) {
-    return fetchFeed(page, size);
+    return fetchFeed(page, size, scope);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(int page, int size)? fetchFeed,
+    TResult? Function(int page, int size, String scope)? fetchFeed,
     TResult? Function(
             String? content, List<String> imagePaths, String visibility)?
         createPost,
@@ -210,13 +220,13 @@ class _$SocialFeedFetchFeedImpl implements SocialFeedFetchFeed {
     TResult? Function(String postId, String content)? addComment,
     TResult? Function(String postId, int page, int size)? fetchComments,
   }) {
-    return fetchFeed?.call(page, size);
+    return fetchFeed?.call(page, size, scope);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(int page, int size)? fetchFeed,
+    TResult Function(int page, int size, String scope)? fetchFeed,
     TResult Function(
             String? content, List<String> imagePaths, String visibility)?
         createPost,
@@ -227,7 +237,7 @@ class _$SocialFeedFetchFeedImpl implements SocialFeedFetchFeed {
     required TResult orElse(),
   }) {
     if (fetchFeed != null) {
-      return fetchFeed(page, size);
+      return fetchFeed(page, size, scope);
     }
     return orElse();
   }
@@ -277,11 +287,14 @@ class _$SocialFeedFetchFeedImpl implements SocialFeedFetchFeed {
 }
 
 abstract class SocialFeedFetchFeed implements SocialFeedEvent {
-  const factory SocialFeedFetchFeed({final int page, final int size}) =
-      _$SocialFeedFetchFeedImpl;
+  const factory SocialFeedFetchFeed(
+      {final int page,
+      final int size,
+      final String scope}) = _$SocialFeedFetchFeedImpl;
 
   int get page;
   int get size;
+  String get scope;
 
   /// Create a copy of SocialFeedEvent
   /// with the given fields replaced by the non-null parameter values.
@@ -391,7 +404,7 @@ class _$SocialFeedCreatePostImpl implements SocialFeedCreatePost {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(int page, int size) fetchFeed,
+    required TResult Function(int page, int size, String scope) fetchFeed,
     required TResult Function(
             String? content, List<String> imagePaths, String visibility)
         createPost,
@@ -406,7 +419,7 @@ class _$SocialFeedCreatePostImpl implements SocialFeedCreatePost {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(int page, int size)? fetchFeed,
+    TResult? Function(int page, int size, String scope)? fetchFeed,
     TResult? Function(
             String? content, List<String> imagePaths, String visibility)?
         createPost,
@@ -421,7 +434,7 @@ class _$SocialFeedCreatePostImpl implements SocialFeedCreatePost {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(int page, int size)? fetchFeed,
+    TResult Function(int page, int size, String scope)? fetchFeed,
     TResult Function(
             String? content, List<String> imagePaths, String visibility)?
         createPost,
@@ -567,7 +580,7 @@ class _$SocialFeedLikePostImpl implements SocialFeedLikePost {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(int page, int size) fetchFeed,
+    required TResult Function(int page, int size, String scope) fetchFeed,
     required TResult Function(
             String? content, List<String> imagePaths, String visibility)
         createPost,
@@ -582,7 +595,7 @@ class _$SocialFeedLikePostImpl implements SocialFeedLikePost {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(int page, int size)? fetchFeed,
+    TResult? Function(int page, int size, String scope)? fetchFeed,
     TResult? Function(
             String? content, List<String> imagePaths, String visibility)?
         createPost,
@@ -597,7 +610,7 @@ class _$SocialFeedLikePostImpl implements SocialFeedLikePost {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(int page, int size)? fetchFeed,
+    TResult Function(int page, int size, String scope)? fetchFeed,
     TResult Function(
             String? content, List<String> imagePaths, String visibility)?
         createPost,
@@ -740,7 +753,7 @@ class _$SocialFeedUnlikePostImpl implements SocialFeedUnlikePost {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(int page, int size) fetchFeed,
+    required TResult Function(int page, int size, String scope) fetchFeed,
     required TResult Function(
             String? content, List<String> imagePaths, String visibility)
         createPost,
@@ -755,7 +768,7 @@ class _$SocialFeedUnlikePostImpl implements SocialFeedUnlikePost {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(int page, int size)? fetchFeed,
+    TResult? Function(int page, int size, String scope)? fetchFeed,
     TResult? Function(
             String? content, List<String> imagePaths, String visibility)?
         createPost,
@@ -770,7 +783,7 @@ class _$SocialFeedUnlikePostImpl implements SocialFeedUnlikePost {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(int page, int size)? fetchFeed,
+    TResult Function(int page, int size, String scope)? fetchFeed,
     TResult Function(
             String? content, List<String> imagePaths, String visibility)?
         createPost,
@@ -922,7 +935,7 @@ class _$SocialFeedAddCommentImpl implements SocialFeedAddComment {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(int page, int size) fetchFeed,
+    required TResult Function(int page, int size, String scope) fetchFeed,
     required TResult Function(
             String? content, List<String> imagePaths, String visibility)
         createPost,
@@ -937,7 +950,7 @@ class _$SocialFeedAddCommentImpl implements SocialFeedAddComment {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(int page, int size)? fetchFeed,
+    TResult? Function(int page, int size, String scope)? fetchFeed,
     TResult? Function(
             String? content, List<String> imagePaths, String visibility)?
         createPost,
@@ -952,7 +965,7 @@ class _$SocialFeedAddCommentImpl implements SocialFeedAddComment {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(int page, int size)? fetchFeed,
+    TResult Function(int page, int size, String scope)? fetchFeed,
     TResult Function(
             String? content, List<String> imagePaths, String visibility)?
         createPost,
@@ -1117,7 +1130,7 @@ class _$SocialFeedFetchCommentsImpl implements SocialFeedFetchComments {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(int page, int size) fetchFeed,
+    required TResult Function(int page, int size, String scope) fetchFeed,
     required TResult Function(
             String? content, List<String> imagePaths, String visibility)
         createPost,
@@ -1132,7 +1145,7 @@ class _$SocialFeedFetchCommentsImpl implements SocialFeedFetchComments {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(int page, int size)? fetchFeed,
+    TResult? Function(int page, int size, String scope)? fetchFeed,
     TResult? Function(
             String? content, List<String> imagePaths, String visibility)?
         createPost,
@@ -1147,7 +1160,7 @@ class _$SocialFeedFetchCommentsImpl implements SocialFeedFetchComments {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(int page, int size)? fetchFeed,
+    TResult Function(int page, int size, String scope)? fetchFeed,
     TResult Function(
             String? content, List<String> imagePaths, String visibility)?
         createPost,

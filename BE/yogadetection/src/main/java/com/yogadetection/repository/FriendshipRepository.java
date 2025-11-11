@@ -18,6 +18,9 @@ public interface FriendshipRepository extends JpaRepository<Friendship, String> 
     
     @Query("SELECT f FROM Friendship f WHERE (f.userId = :userId OR f.friendId = :userId) AND f.status = :status")
     Page<Friendship> findByUserIdAndStatus(@Param("userId") String userId, @Param("status") FriendshipStatus status, Pageable pageable);
+
+    @Query("SELECT f FROM Friendship f WHERE (f.userId = :userId OR f.friendId = :userId) AND f.status = :status")
+    List<Friendship> findAllByUserIdAndStatus(@Param("userId") String userId, @Param("status") FriendshipStatus status);
     
     @Query("SELECT f FROM Friendship f WHERE f.friendId = :userId AND f.status = 'PENDING'")
     Page<Friendship> findPendingRequests(@Param("userId") String userId, Pageable pageable);

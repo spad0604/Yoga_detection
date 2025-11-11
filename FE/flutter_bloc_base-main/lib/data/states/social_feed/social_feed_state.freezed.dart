@@ -16,28 +16,29 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$SocialFeedState {
+  String get scope => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() initial,
-    required TResult Function() loading,
-    required TResult Function(List<PostResponse> feed) loaded,
-    required TResult Function(String message) error,
+    required TResult Function(String scope) initial,
+    required TResult Function(String scope) loading,
+    required TResult Function(String scope, List<PostResponse> feed) loaded,
+    required TResult Function(String scope, String message) error,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? initial,
-    TResult? Function()? loading,
-    TResult? Function(List<PostResponse> feed)? loaded,
-    TResult? Function(String message)? error,
+    TResult? Function(String scope)? initial,
+    TResult? Function(String scope)? loading,
+    TResult? Function(String scope, List<PostResponse> feed)? loaded,
+    TResult? Function(String scope, String message)? error,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initial,
-    TResult Function()? loading,
-    TResult Function(List<PostResponse> feed)? loaded,
-    TResult Function(String message)? error,
+    TResult Function(String scope)? initial,
+    TResult Function(String scope)? loading,
+    TResult Function(String scope, List<PostResponse> feed)? loaded,
+    TResult Function(String scope, String message)? error,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -66,6 +67,12 @@ mixin _$SocialFeedState {
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
+
+  /// Create a copy of SocialFeedState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $SocialFeedStateCopyWith<SocialFeedState> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -73,6 +80,8 @@ abstract class $SocialFeedStateCopyWith<$Res> {
   factory $SocialFeedStateCopyWith(
           SocialFeedState value, $Res Function(SocialFeedState) then) =
       _$SocialFeedStateCopyWithImpl<$Res, SocialFeedState>;
+  @useResult
+  $Res call({String scope});
 }
 
 /// @nodoc
@@ -87,13 +96,29 @@ class _$SocialFeedStateCopyWithImpl<$Res, $Val extends SocialFeedState>
 
   /// Create a copy of SocialFeedState
   /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? scope = null,
+  }) {
+    return _then(_value.copyWith(
+      scope: null == scope
+          ? _value.scope
+          : scope // ignore: cast_nullable_to_non_nullable
+              as String,
+    ) as $Val);
+  }
 }
 
 /// @nodoc
-abstract class _$$InitialImplCopyWith<$Res> {
+abstract class _$$InitialImplCopyWith<$Res>
+    implements $SocialFeedStateCopyWith<$Res> {
   factory _$$InitialImplCopyWith(
           _$InitialImpl value, $Res Function(_$InitialImpl) then) =
       __$$InitialImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String scope});
 }
 
 /// @nodoc
@@ -106,60 +131,86 @@ class __$$InitialImplCopyWithImpl<$Res>
 
   /// Create a copy of SocialFeedState
   /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? scope = null,
+  }) {
+    return _then(_$InitialImpl(
+      scope: null == scope
+          ? _value.scope
+          : scope // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
 }
 
 /// @nodoc
 
 class _$InitialImpl implements _Initial {
-  const _$InitialImpl();
+  const _$InitialImpl({this.scope = socialFeedScopePublic});
+
+  @override
+  @JsonKey()
+  final String scope;
 
   @override
   String toString() {
-    return 'SocialFeedState.initial()';
+    return 'SocialFeedState.initial(scope: $scope)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$InitialImpl);
+        (other.runtimeType == runtimeType &&
+            other is _$InitialImpl &&
+            (identical(other.scope, scope) || other.scope == scope));
   }
 
   @override
-  int get hashCode => runtimeType.hashCode;
+  int get hashCode => Object.hash(runtimeType, scope);
+
+  /// Create a copy of SocialFeedState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$InitialImplCopyWith<_$InitialImpl> get copyWith =>
+      __$$InitialImplCopyWithImpl<_$InitialImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() initial,
-    required TResult Function() loading,
-    required TResult Function(List<PostResponse> feed) loaded,
-    required TResult Function(String message) error,
+    required TResult Function(String scope) initial,
+    required TResult Function(String scope) loading,
+    required TResult Function(String scope, List<PostResponse> feed) loaded,
+    required TResult Function(String scope, String message) error,
   }) {
-    return initial();
+    return initial(scope);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? initial,
-    TResult? Function()? loading,
-    TResult? Function(List<PostResponse> feed)? loaded,
-    TResult? Function(String message)? error,
+    TResult? Function(String scope)? initial,
+    TResult? Function(String scope)? loading,
+    TResult? Function(String scope, List<PostResponse> feed)? loaded,
+    TResult? Function(String scope, String message)? error,
   }) {
-    return initial?.call();
+    return initial?.call(scope);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initial,
-    TResult Function()? loading,
-    TResult Function(List<PostResponse> feed)? loaded,
-    TResult Function(String message)? error,
+    TResult Function(String scope)? initial,
+    TResult Function(String scope)? loading,
+    TResult Function(String scope, List<PostResponse> feed)? loaded,
+    TResult Function(String scope, String message)? error,
     required TResult orElse(),
   }) {
     if (initial != null) {
-      return initial();
+      return initial(scope);
     }
     return orElse();
   }
@@ -203,14 +254,28 @@ class _$InitialImpl implements _Initial {
 }
 
 abstract class _Initial implements SocialFeedState {
-  const factory _Initial() = _$InitialImpl;
+  const factory _Initial({final String scope}) = _$InitialImpl;
+
+  @override
+  String get scope;
+
+  /// Create a copy of SocialFeedState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$InitialImplCopyWith<_$InitialImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$LoadingImplCopyWith<$Res> {
+abstract class _$$LoadingImplCopyWith<$Res>
+    implements $SocialFeedStateCopyWith<$Res> {
   factory _$$LoadingImplCopyWith(
           _$LoadingImpl value, $Res Function(_$LoadingImpl) then) =
       __$$LoadingImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String scope});
 }
 
 /// @nodoc
@@ -223,60 +288,85 @@ class __$$LoadingImplCopyWithImpl<$Res>
 
   /// Create a copy of SocialFeedState
   /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? scope = null,
+  }) {
+    return _then(_$LoadingImpl(
+      scope: null == scope
+          ? _value.scope
+          : scope // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
 }
 
 /// @nodoc
 
 class _$LoadingImpl implements _Loading {
-  const _$LoadingImpl();
+  const _$LoadingImpl({required this.scope});
+
+  @override
+  final String scope;
 
   @override
   String toString() {
-    return 'SocialFeedState.loading()';
+    return 'SocialFeedState.loading(scope: $scope)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$LoadingImpl);
+        (other.runtimeType == runtimeType &&
+            other is _$LoadingImpl &&
+            (identical(other.scope, scope) || other.scope == scope));
   }
 
   @override
-  int get hashCode => runtimeType.hashCode;
+  int get hashCode => Object.hash(runtimeType, scope);
+
+  /// Create a copy of SocialFeedState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$LoadingImplCopyWith<_$LoadingImpl> get copyWith =>
+      __$$LoadingImplCopyWithImpl<_$LoadingImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() initial,
-    required TResult Function() loading,
-    required TResult Function(List<PostResponse> feed) loaded,
-    required TResult Function(String message) error,
+    required TResult Function(String scope) initial,
+    required TResult Function(String scope) loading,
+    required TResult Function(String scope, List<PostResponse> feed) loaded,
+    required TResult Function(String scope, String message) error,
   }) {
-    return loading();
+    return loading(scope);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? initial,
-    TResult? Function()? loading,
-    TResult? Function(List<PostResponse> feed)? loaded,
-    TResult? Function(String message)? error,
+    TResult? Function(String scope)? initial,
+    TResult? Function(String scope)? loading,
+    TResult? Function(String scope, List<PostResponse> feed)? loaded,
+    TResult? Function(String scope, String message)? error,
   }) {
-    return loading?.call();
+    return loading?.call(scope);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initial,
-    TResult Function()? loading,
-    TResult Function(List<PostResponse> feed)? loaded,
-    TResult Function(String message)? error,
+    TResult Function(String scope)? initial,
+    TResult Function(String scope)? loading,
+    TResult Function(String scope, List<PostResponse> feed)? loaded,
+    TResult Function(String scope, String message)? error,
     required TResult orElse(),
   }) {
     if (loading != null) {
-      return loading();
+      return loading(scope);
     }
     return orElse();
   }
@@ -320,16 +410,28 @@ class _$LoadingImpl implements _Loading {
 }
 
 abstract class _Loading implements SocialFeedState {
-  const factory _Loading() = _$LoadingImpl;
+  const factory _Loading({required final String scope}) = _$LoadingImpl;
+
+  @override
+  String get scope;
+
+  /// Create a copy of SocialFeedState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$LoadingImplCopyWith<_$LoadingImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$LoadedImplCopyWith<$Res> {
+abstract class _$$LoadedImplCopyWith<$Res>
+    implements $SocialFeedStateCopyWith<$Res> {
   factory _$$LoadedImplCopyWith(
           _$LoadedImpl value, $Res Function(_$LoadedImpl) then) =
       __$$LoadedImplCopyWithImpl<$Res>;
+  @override
   @useResult
-  $Res call({List<PostResponse> feed});
+  $Res call({String scope, List<PostResponse> feed});
 }
 
 /// @nodoc
@@ -345,9 +447,14 @@ class __$$LoadedImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? scope = null,
     Object? feed = null,
   }) {
     return _then(_$LoadedImpl(
+      scope: null == scope
+          ? _value.scope
+          : scope // ignore: cast_nullable_to_non_nullable
+              as String,
       feed: null == feed
           ? _value._feed
           : feed // ignore: cast_nullable_to_non_nullable
@@ -359,8 +466,12 @@ class __$$LoadedImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$LoadedImpl implements _Loaded {
-  const _$LoadedImpl({required final List<PostResponse> feed}) : _feed = feed;
+  const _$LoadedImpl(
+      {required this.scope, required final List<PostResponse> feed})
+      : _feed = feed;
 
+  @override
+  final String scope;
   final List<PostResponse> _feed;
   @override
   List<PostResponse> get feed {
@@ -371,7 +482,7 @@ class _$LoadedImpl implements _Loaded {
 
   @override
   String toString() {
-    return 'SocialFeedState.loaded(feed: $feed)';
+    return 'SocialFeedState.loaded(scope: $scope, feed: $feed)';
   }
 
   @override
@@ -379,12 +490,13 @@ class _$LoadedImpl implements _Loaded {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$LoadedImpl &&
+            (identical(other.scope, scope) || other.scope == scope) &&
             const DeepCollectionEquality().equals(other._feed, _feed));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(_feed));
+  int get hashCode => Object.hash(
+      runtimeType, scope, const DeepCollectionEquality().hash(_feed));
 
   /// Create a copy of SocialFeedState
   /// with the given fields replaced by the non-null parameter values.
@@ -397,36 +509,36 @@ class _$LoadedImpl implements _Loaded {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() initial,
-    required TResult Function() loading,
-    required TResult Function(List<PostResponse> feed) loaded,
-    required TResult Function(String message) error,
+    required TResult Function(String scope) initial,
+    required TResult Function(String scope) loading,
+    required TResult Function(String scope, List<PostResponse> feed) loaded,
+    required TResult Function(String scope, String message) error,
   }) {
-    return loaded(feed);
+    return loaded(scope, feed);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? initial,
-    TResult? Function()? loading,
-    TResult? Function(List<PostResponse> feed)? loaded,
-    TResult? Function(String message)? error,
+    TResult? Function(String scope)? initial,
+    TResult? Function(String scope)? loading,
+    TResult? Function(String scope, List<PostResponse> feed)? loaded,
+    TResult? Function(String scope, String message)? error,
   }) {
-    return loaded?.call(feed);
+    return loaded?.call(scope, feed);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initial,
-    TResult Function()? loading,
-    TResult Function(List<PostResponse> feed)? loaded,
-    TResult Function(String message)? error,
+    TResult Function(String scope)? initial,
+    TResult Function(String scope)? loading,
+    TResult Function(String scope, List<PostResponse> feed)? loaded,
+    TResult Function(String scope, String message)? error,
     required TResult orElse(),
   }) {
     if (loaded != null) {
-      return loaded(feed);
+      return loaded(scope, feed);
     }
     return orElse();
   }
@@ -470,25 +582,31 @@ class _$LoadedImpl implements _Loaded {
 }
 
 abstract class _Loaded implements SocialFeedState {
-  const factory _Loaded({required final List<PostResponse> feed}) =
-      _$LoadedImpl;
+  const factory _Loaded(
+      {required final String scope,
+      required final List<PostResponse> feed}) = _$LoadedImpl;
 
+  @override
+  String get scope;
   List<PostResponse> get feed;
 
   /// Create a copy of SocialFeedState
   /// with the given fields replaced by the non-null parameter values.
+  @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$LoadedImplCopyWith<_$LoadedImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$ErrorImplCopyWith<$Res> {
+abstract class _$$ErrorImplCopyWith<$Res>
+    implements $SocialFeedStateCopyWith<$Res> {
   factory _$$ErrorImplCopyWith(
           _$ErrorImpl value, $Res Function(_$ErrorImpl) then) =
       __$$ErrorImplCopyWithImpl<$Res>;
+  @override
   @useResult
-  $Res call({String message});
+  $Res call({String scope, String message});
 }
 
 /// @nodoc
@@ -504,10 +622,15 @@ class __$$ErrorImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? scope = null,
     Object? message = null,
   }) {
     return _then(_$ErrorImpl(
-      null == message
+      scope: null == scope
+          ? _value.scope
+          : scope // ignore: cast_nullable_to_non_nullable
+              as String,
+      message: null == message
           ? _value.message
           : message // ignore: cast_nullable_to_non_nullable
               as String,
@@ -518,14 +641,16 @@ class __$$ErrorImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$ErrorImpl implements _Error {
-  const _$ErrorImpl(this.message);
+  const _$ErrorImpl({required this.scope, required this.message});
 
+  @override
+  final String scope;
   @override
   final String message;
 
   @override
   String toString() {
-    return 'SocialFeedState.error(message: $message)';
+    return 'SocialFeedState.error(scope: $scope, message: $message)';
   }
 
   @override
@@ -533,11 +658,12 @@ class _$ErrorImpl implements _Error {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$ErrorImpl &&
+            (identical(other.scope, scope) || other.scope == scope) &&
             (identical(other.message, message) || other.message == message));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, message);
+  int get hashCode => Object.hash(runtimeType, scope, message);
 
   /// Create a copy of SocialFeedState
   /// with the given fields replaced by the non-null parameter values.
@@ -550,36 +676,36 @@ class _$ErrorImpl implements _Error {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() initial,
-    required TResult Function() loading,
-    required TResult Function(List<PostResponse> feed) loaded,
-    required TResult Function(String message) error,
+    required TResult Function(String scope) initial,
+    required TResult Function(String scope) loading,
+    required TResult Function(String scope, List<PostResponse> feed) loaded,
+    required TResult Function(String scope, String message) error,
   }) {
-    return error(message);
+    return error(scope, message);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? initial,
-    TResult? Function()? loading,
-    TResult? Function(List<PostResponse> feed)? loaded,
-    TResult? Function(String message)? error,
+    TResult? Function(String scope)? initial,
+    TResult? Function(String scope)? loading,
+    TResult? Function(String scope, List<PostResponse> feed)? loaded,
+    TResult? Function(String scope, String message)? error,
   }) {
-    return error?.call(message);
+    return error?.call(scope, message);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initial,
-    TResult Function()? loading,
-    TResult Function(List<PostResponse> feed)? loaded,
-    TResult Function(String message)? error,
+    TResult Function(String scope)? initial,
+    TResult Function(String scope)? loading,
+    TResult Function(String scope, List<PostResponse> feed)? loaded,
+    TResult Function(String scope, String message)? error,
     required TResult orElse(),
   }) {
     if (error != null) {
-      return error(message);
+      return error(scope, message);
     }
     return orElse();
   }
@@ -623,12 +749,17 @@ class _$ErrorImpl implements _Error {
 }
 
 abstract class _Error implements SocialFeedState {
-  const factory _Error(final String message) = _$ErrorImpl;
+  const factory _Error(
+      {required final String scope,
+      required final String message}) = _$ErrorImpl;
 
+  @override
+  String get scope;
   String get message;
 
   /// Create a copy of SocialFeedState
   /// with the given fields replaced by the non-null parameter values.
+  @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ErrorImplCopyWith<_$ErrorImpl> get copyWith =>
       throw _privateConstructorUsedError;

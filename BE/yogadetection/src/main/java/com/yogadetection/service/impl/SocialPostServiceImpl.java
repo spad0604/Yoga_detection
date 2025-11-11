@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import com.yogadetection.dto.request.NotificationRequest;
-import com.yogadetection.service.NotificationService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yogadetection.dto.request.CreateCommentRequest;
 import com.yogadetection.dto.request.CreatePostRequest;
+import com.yogadetection.dto.request.NotificationRequest;
 import com.yogadetection.dto.response.CommentResponse;
 import com.yogadetection.dto.response.PagedResponse;
 import com.yogadetection.dto.response.PostResponse;
@@ -33,6 +32,7 @@ import com.yogadetection.repository.SocialPostLikeRepository;
 import com.yogadetection.repository.SocialPostRepository;
 import com.yogadetection.repository.UserRepository;
 import com.yogadetection.service.ImageService;
+import com.yogadetection.service.NotificationService;
 import com.yogadetection.service.SocialPostService;
 
 import lombok.RequiredArgsConstructor;
@@ -87,17 +87,27 @@ public class SocialPostServiceImpl implements SocialPostService {
     }
 
     @Override
-    public PagedResponse<PostResponse> getFeed(String userId, int page, int size) {
+    public PagedResponse<PostResponse> getFeed(String userId, int page, int size, String scope) {
         Pageable pageable = PageRequest.of(Math.max(0, page), Math.max(1, size));
+        FeedScope feedScope = FeedScope.from(scope);
 
-        // Collect my id + friends for FRIENDS feed
-        Page<Friendship> friendships = friendshipRepository.findByUserIdAndStatus(userId, Friendship.FriendshipStatus.ACCEPTED, PageRequest.of(0, 100));
-        List<String> authorIds = friendships.getContent().stream()
-                .map(f -> f.getUserId().equals(userId) ? f.getFriendId() : f.getUserId())
-                .collect(Collectors.toList());
-        authorIds.add(userId);
+        Page<SocialPost> posts = Page.empty(pageable);
+        switch (feedScope) {
+            case PUBLIC -> posts = postRepository.findByVisibilityOrderByCreatedAtDesc(Visibility.PUBLIC, pageable);
+            case FRIENDS -> {
+                List<String> authorIds = collectFriendAuthorIds(userId, false);
+                if (authorIds.isEmpty()) {
+                    posts = Page.empty(pageable);
+                } else {
+                    posts = postRepository.findByAuthorIdInOrderByCreatedAtDesc(authorIds, pageable);
+                }
+            }
+            case ALL -> {
+                List<String> authorIds = collectFriendAuthorIds(userId, true);
+                posts = postRepository.findByAuthorIdInOrVisibilityOrderByCreatedAtDesc(authorIds, Visibility.PUBLIC, pageable);
+            }
+        }
 
-        Page<SocialPost> posts = postRepository.findByAuthorIdInOrVisibilityOrderByCreatedAtDesc(authorIds, Visibility.PUBLIC, pageable);
         List<PostResponse> items = posts.getContent().stream()
                 .map(p -> mapToPostResponse(p, userId))
                 .collect(Collectors.toList());
@@ -110,6 +120,37 @@ public class SocialPostServiceImpl implements SocialPostService {
                 .hasNext(posts.hasNext())
                 .hasPrevious(posts.hasPrevious())
                 .build();
+    }
+
+    private List<String> collectFriendAuthorIds(String userId, boolean includeSelf) {
+        List<Friendship> friendships = friendshipRepository.findAllByUserIdAndStatus(
+                userId,
+                Friendship.FriendshipStatus.ACCEPTED
+        );
+        List<String> authorIds = friendships.stream()
+                .map(f -> f.getUserId().equals(userId) ? f.getFriendId() : f.getUserId())
+                .collect(Collectors.toCollection(java.util.ArrayList::new));
+        if (includeSelf) {
+            authorIds.add(userId);
+        }
+        return authorIds;
+    }
+
+    private enum FeedScope {
+        PUBLIC,
+        FRIENDS,
+        ALL;
+
+        static FeedScope from(String value) {
+            if (value == null || value.isBlank()) {
+                return PUBLIC;
+            }
+            try {
+                return FeedScope.valueOf(value.toUpperCase());
+            } catch (IllegalArgumentException ex) {
+                return PUBLIC;
+            }
+        }
     }
 
     @Override

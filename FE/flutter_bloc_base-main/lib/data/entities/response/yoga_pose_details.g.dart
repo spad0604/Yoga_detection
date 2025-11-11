@@ -16,6 +16,7 @@ _$YogaPoseDetailsImpl _$$YogaPoseDetailsImplFromJson(
       imageUrl: json['imageUrl'] as String?,
       totalCalories: (json['calos'] as num?)?.toInt(),
       level: json['level'] as String?,
+      tutorialVideoUrl: _readVideoUrl(json, 'tutorial_video_url') as String?,
     );
 
 Map<String, dynamic> _$$YogaPoseDetailsImplToJson(
@@ -28,4 +29,5 @@ Map<String, dynamic> _$$YogaPoseDetailsImplToJson(
       'imageUrl': instance.imageUrl,
       'calos': instance.totalCalories,
       'level': instance.level,
+      'tutorial_video_url': instance.tutorialVideoUrl,
     };

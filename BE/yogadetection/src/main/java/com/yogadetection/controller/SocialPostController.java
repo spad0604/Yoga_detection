@@ -4,7 +4,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +17,6 @@ import com.yogadetection.dto.response.ApiResponse;
 import com.yogadetection.dto.response.CommentResponse;
 import com.yogadetection.dto.response.PagedResponse;
 import com.yogadetection.dto.response.PostResponse;
-import com.yogadetection.service.JwtService;
 import com.yogadetection.service.SocialPostService;
 import com.yogadetection.utils.AuthHeaderUtil;
 
@@ -30,7 +28,6 @@ import lombok.RequiredArgsConstructor;
 public class SocialPostController {
 
     private final SocialPostService postService;
-    private final JwtService jwtService;
     private final AuthHeaderUtil authHeaderUtil;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -51,9 +48,10 @@ public class SocialPostController {
     public ApiResponse<PagedResponse<PostResponse>> getFeed(
             @RequestHeader("Authorization") String authHeader,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size) {
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(value = "scope", required = false, defaultValue = "PUBLIC") String scope) {
         String userId = authHeaderUtil.extractUserId(authHeader);
-        PagedResponse<PostResponse> response = postService.getFeed(userId, page, size);
+        PagedResponse<PostResponse> response = postService.getFeed(userId, page, size, scope);
         return ApiResponse.success(response);
     }
 

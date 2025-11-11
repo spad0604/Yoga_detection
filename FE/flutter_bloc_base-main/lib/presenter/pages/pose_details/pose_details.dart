@@ -15,6 +15,8 @@ import 'package:flutter_starter/services/oauth_token_manager/oauth_token_manager
 import 'package:flutter_starter/presenter/pages/camera_detection/camera_detection.dart';
 import 'package:flutter_starter/data/states/camera_detection/camera_detection_bloc.dart';
 import 'package:flutter_starter/presenter/languages/translation_keys.g.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_starter/presenter/widgets/youtube_video_card.dart';
 
 part 'information_details_items.dart';
 
@@ -50,6 +52,14 @@ class _PoseDetailsPageState extends State<PoseDetailsPage> {
 
   @override
   void initState() {
+    super.initState();
+    
+    // Lock orientation to portrait
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    
     _bloc.add(PoseDetailsGetDetails(widget.item.id));
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!_detailsShowcaseStarted) {
@@ -79,6 +89,16 @@ class _PoseDetailsPageState extends State<PoseDetailsPage> {
     });
 
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    // Ensure orientation is reset to portrait when leaving this page
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    super.dispose();
   }
 
   @override
@@ -185,6 +205,16 @@ class _PoseDetailsPageState extends State<PoseDetailsPage> {
                           'Improves flexibility, balance, and strength. Helps reduce stress and anxiety while promoting better posture and body awareness.',
                     ),
                     const SizedBox(height: 24),
+
+                    // Tutorial Video (YouTube) Section
+                    if (_bloc.state.yogaPoseDetails?.tutorialVideoUrlCompat != null &&
+                        _bloc.state.yogaPoseDetails!.tutorialVideoUrlCompat!.isNotEmpty)
+                      YouTubeVideoCard(
+                        videoUrl: _bloc.state.yogaPoseDetails!.tutorialVideoUrlCompat!,
+                      ),
+                    if (_bloc.state.yogaPoseDetails?.tutorialVideoUrlCompat != null &&
+                        _bloc.state.yogaPoseDetails!.tutorialVideoUrlCompat!.isNotEmpty)
+                      const SizedBox(height: 24),
 
                     // Start Button
                     Showcase(
@@ -383,5 +413,18 @@ class _PoseDetailsPageState extends State<PoseDetailsPage> {
         ],
       ),
     );
+  }
+}
+
+extension _YogaPoseDetailsCompat on YogaPoseDetails {
+  String? get tutorialVideoUrlCompat {
+    try {
+      // Access via dynamic to avoid analyzer errors before codegen runs
+      final dynamic self = this;
+      final value = self.tutorialVideoUrl as String?;
+      return value;
+    } catch (_) {
+      return null;
+    }
   }
 }

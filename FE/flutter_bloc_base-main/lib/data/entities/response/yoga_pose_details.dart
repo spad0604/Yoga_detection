@@ -8,6 +8,11 @@ Object? _readId(Map<dynamic, dynamic> json, String key) {
   return v?.toString(); // in case server returns numeric ids
 }
 
+// Prefer 'tutorialVideoUrl', fallback to 'videoUrl' or 'youtubeUrl'.
+Object? _readVideoUrl(Map<dynamic, dynamic> json, String key) {
+  return json['tutorialVideoUrl'] ?? json['videoUrl'] ?? json['youtubeUrl'];
+}
+
 @freezed
 class YogaPoseDetails with _$YogaPoseDetails {
   const factory YogaPoseDetails({
@@ -18,6 +23,7 @@ class YogaPoseDetails with _$YogaPoseDetails {
     @JsonKey(name: 'imageUrl') String? imageUrl,
     @JsonKey(name: 'calos') int? totalCalories,
     @JsonKey(name: 'level') String? level,
+    @JsonKey(readValue: _readVideoUrl) String? tutorialVideoUrl,
   }) = _YogaPoseDetails;
 
   factory YogaPoseDetails.fromJson(Map<String, dynamic> json) => _$YogaPoseDetailsFromJson(json);

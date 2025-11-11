@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:flutter_starter/data/entities/response/post_response.dart';
 import 'package:flutter_starter/data/repositories/social_posts_repository/social_posts_repository.dart';
 import 'package:flutter_starter/data/states/social_feed/social_feed_event.dart';
 import 'package:flutter_starter/data/states/social_feed/social_feed_state.dart';
@@ -19,60 +18,62 @@ class SocialFeedBloc extends Bloc<SocialFeedEvent, SocialFeedState> {
         ));
   }
 
-  Future<void> _onFetchFeed(dynamic e, Emitter<SocialFeedState> emit) async {
-    emit(const SocialFeedState.loading());
+  String _currentScope = socialFeedScopePublic;
+  String get currentScope => _currentScope;
+
+  Future<void> _onFetchFeed(SocialFeedFetchFeed e, Emitter<SocialFeedState> emit) async {
+    _currentScope = e.scope;
+    emit(SocialFeedState.loading(scope: e.scope));
     try {
-      final page = await _repository.getFeed(page: e.page, size: e.size);
-      emit(SocialFeedState.loaded(feed: page.items));
+      final page = await _repository.getFeed(page: e.page, size: e.size, scope: e.scope);
+      emit(SocialFeedState.loaded(scope: e.scope, feed: page.items));
     } catch (err) {
-      emit(SocialFeedState.error(err.toString()));
+      emit(SocialFeedState.error(scope: e.scope, message: err.toString()));
     }
   }
 
-  Future<void> _onCreatePost(dynamic e, Emitter<SocialFeedState> emit) async {
+  Future<void> _onCreatePost(SocialFeedCreatePost e, Emitter<SocialFeedState> emit) async {
     try {
-      final post = await _repository.createPost(content: e.content, imagePaths: e.imagePaths, visibility: e.visibility);
-      final feed = state.maybeWhen(loaded: (feed) => feed, orElse: () => <PostResponse>[]);
-      emit(SocialFeedState.loaded(feed: [post, ...feed]));
+      await _repository.createPost(content: e.content, imagePaths: e.imagePaths, visibility: e.visibility);
+      add(SocialFeedEvent.fetchFeed(scope: _currentScope));
     } catch (err) {
-      emit(SocialFeedState.error(err.toString()));
+      emit(SocialFeedState.error(scope: _currentScope, message: err.toString()));
     }
   }
 
-  Future<void> _onLikePost(dynamic e, Emitter<SocialFeedState> emit) async {
+  Future<void> _onLikePost(SocialFeedLikePost e, Emitter<SocialFeedState> emit) async {
     try {
       await _repository.like(postId: e.postId);
-      add(const SocialFeedEvent.fetchFeed());
+      add(SocialFeedEvent.fetchFeed(scope: _currentScope));
     } catch (err) {
-      emit(SocialFeedState.error(err.toString()));
+      emit(SocialFeedState.error(scope: _currentScope, message: err.toString()));
     }
   }
 
-  Future<void> _onUnlikePost(dynamic e, Emitter<SocialFeedState> emit) async {
+  Future<void> _onUnlikePost(SocialFeedUnlikePost e, Emitter<SocialFeedState> emit) async {
     try {
       await _repository.unlike(postId: e.postId);
-      add(const SocialFeedEvent.fetchFeed());
+      add(SocialFeedEvent.fetchFeed(scope: _currentScope));
     } catch (err) {
-      emit(SocialFeedState.error(err.toString()));
+      emit(SocialFeedState.error(scope: _currentScope, message: err.toString()));
     }
   }
 
-  Future<void> _onAddComment(dynamic e, Emitter<SocialFeedState> emit) async {
+  Future<void> _onAddComment(SocialFeedAddComment e, Emitter<SocialFeedState> emit) async {
     try {
       await _repository.comment(postId: e.postId, content: e.content);
-      add(const SocialFeedEvent.fetchFeed());
+      add(SocialFeedEvent.fetchFeed(scope: _currentScope));
     } catch (err) {
-      emit(SocialFeedState.error(err.toString()));
+      emit(SocialFeedState.error(scope: _currentScope, message: err.toString()));
     }
   }
 
-  Future<void> _onFetchComments(dynamic e, Emitter<SocialFeedState> emit) async {
+  Future<void> _onFetchComments(SocialFeedFetchComments e, Emitter<SocialFeedState> emit) async {
     try {
       await _repository.getComments(postId: e.postId, page: e.page, size: e.size);
     } catch (err) {
-      emit(SocialFeedState.error(err.toString()));
+      emit(SocialFeedState.error(scope: _currentScope, message: err.toString()));
     }
   }
 }
-
 
