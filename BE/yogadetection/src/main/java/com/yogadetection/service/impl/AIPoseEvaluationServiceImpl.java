@@ -6,6 +6,7 @@ import com.yogadetection.dto.request.Landmark;
 import com.yogadetection.dto.request.PoseLandmarkRequest;
 import com.yogadetection.repository.YogaPoseDetailsRepository;
 import com.yogadetection.service.AIPoseEvaluationService;
+import com.yogadetection.service.PoseModelService.PoseModelAnalysis;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
@@ -19,6 +20,7 @@ import org.springframework.util.MimeTypeUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.ArrayList;
 
 /**
  * ENHANCED VERSION - AI Pose Evaluation Service with Angle Calculation
@@ -44,26 +46,37 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
 
     @Override
     public EvaluationResult evaluatePose(String imageUrl, PoseLandmarkRequest landmarkData, String poseCode, String poseName, String poseDescription) {
+        return evaluatePose(imageUrl, landmarkData, poseCode, poseName, poseDescription, null);
+    }
+
+    @Override
+    public EvaluationResult evaluatePose(
+            String imageUrl,
+            PoseLandmarkRequest landmarkData,
+            String poseCode,
+            String poseName,
+            String poseDescription,
+            PoseModelAnalysis analysis
+    ) {
         try {
-            // Sử dụng thông tin từ routine_pose thay vì query yoga_pose_details
             String actualPoseName = poseName != null ? poseName : "Unknown Pose";
             String actualDescription = poseDescription != null ? poseDescription : "";
 
-            String prompt = buildEvaluationPrompt(actualPoseName, actualDescription, landmarkData);
-            EvaluationResult result = callOpenAIVision(imageUrl, prompt);
+            String prompt = buildEvaluationPrompt(actualPoseName, actualDescription, landmarkData, analysis);
+            EvaluationResult result = callOpenAIVision(imageUrl, prompt, actualPoseName, analysis);
 
             log.info("✅ AI evaluation completed for pose {} ({}) → score={} | feedback length={}",
-                    poseCode, actualPoseName, result.getScore(), result.getFeedback().length());
+                    poseCode, actualPoseName, result.getScore(), result.getFeedback() != null ? result.getFeedback().length() : 0);
 
             return result;
 
         } catch (Exception e) {
             log.error("❌ Failed to evaluate pose with AI: {}", e.getMessage(), e);
-            return new EvaluationResult(0.0, "Lỗi khi đánh giá tư thế. Vui lòng thử lại sau.");
+            return new EvaluationResult(0.0, PoseFeedbackTemplate.buildFallbackFeedback(poseName, analysis));
         }
     }
 
-    private String buildEvaluationPrompt(String poseName, String poseDescription, PoseLandmarkRequest landmarkData) {
+    private String buildEvaluationPrompt(String poseName, String poseDescription, PoseLandmarkRequest landmarkData, PoseModelAnalysis analysis) {
         StringBuilder prompt = new StringBuilder();
 
         // Header
@@ -73,6 +86,18 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
         prompt.append("• Tên tư thế: ").append(poseName).append("\n");
         prompt.append("• Mô tả chi tiết: ").append(poseDescription).append("\n\n");
 
+        if (analysis != null && analysis.getPredictedPose() != null) {
+            prompt.append("🤖 KẾT QUẢ MODEL PHÂN LOẠI (Yoga-82):\n");
+            prompt.append("• Pose gần nhất: ").append(analysis.getPredictedPose())
+                .append(String.format(" (%.0f%%)\n", analysis.getConfidence() * 100.0));
+            if (analysis.getMostOff() != null) {
+            var m = analysis.getMostOff();
+            prompt.append(String.format("• Sai lệch lớn nhất: %s | lệch %.1f° (chuẩn %.1f°, hiện tại %.1f°)\n",
+                m.getMetric(), Math.abs(m.getDiff()), m.getReference(), m.getActual()));
+            }
+            prompt.append("\n");
+        }
+
         // Context về ảnh đã được crop
         prompt.append("📸 THÔNG TIN VỀ ẢNH:\n");
         prompt.append("• Ảnh đã được xử lý và FOCUS VÀO NGƯỜI TẬP YOGA\n");
@@ -81,10 +106,11 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
 
         // Landmark data + GÓC KHỚP (QUAN TRỌNG NHẤT!)
         if (landmarkData != null && landmarkData.getLandmarks() != null && !landmarkData.getLandmarks().isEmpty()) {
+            List<Landmark> normalizedLandmarks = normalizeLandmarkTypes(landmarkData.getLandmarks());
             // 1. Tính góc các khớp
             try {
                 LandmarkAngleCalculator.BodyAngles angles = 
-                    angleCalculator.calculateBodyAngles(landmarkData.getLandmarks());
+                    angleCalculator.calculateBodyAngles(normalizedLandmarks);
                 
                 prompt.append("📐 GÓC CÁC KHỚP THỰC TẾ (QUAN TRỌNG NHẤT!):\n");
                 prompt.append(angles.toString()).append("\n");
@@ -102,7 +128,7 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
             
             // 2. Landmark data chi tiết
             prompt.append("🎯 DỮ LIỆU KHỚP XƯƠNG (33 ĐIỂM LANDMARK):\n");
-            prompt.append(formatLandmarks(landmarkData.getLandmarks())).append("\n\n");
+            prompt.append(formatLandmarks(normalizedLandmarks)).append("\n\n");
         } else {
             prompt.append("⚠️ Không có dữ liệu landmark. Đánh giá dựa hoàn toàn trên ảnh.\n\n");
         }
@@ -156,11 +182,25 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
                 .collect(Collectors.joining("\n"));
     }
 
-    private EvaluationResult callOpenAIVision(String imageUrl, String prompt) {
+    private List<Landmark> normalizeLandmarkTypes(List<Landmark> landmarks) {
+        List<Landmark> out = new ArrayList<>(landmarks.size());
+        for (Landmark lm : landmarks) {
+            if (lm == null) continue;
+            out.add(Landmark.builder()
+                    .type(LandmarkTypeNormalizer.normalize(lm.getType()))
+                    .x(lm.getX())
+                    .y(lm.getY())
+                    .z(lm.getZ())
+                    .build());
+        }
+        return out;
+    }
+
+    private EvaluationResult callOpenAIVision(String imageUrl, String prompt, String expectedPoseName, PoseModelAnalysis analysis) {
         try {
             if (apiKey == null || apiKey.isEmpty()) {
-                log.warn("⚠️ OpenAI API key not configured → dùng kết quả giả lập");
-                return new EvaluationResult(70.0, "Chưa cấu hình API key. Dùng kết quả mô phỏng.");
+                log.warn("⚠️ OpenAI API key not configured → dùng template fallback");
+                return new EvaluationResult(0.0, PoseFeedbackTemplate.buildFallbackFeedback(expectedPoseName, analysis));
             }
 
             log.info("📤 Sending image to OpenAI Vision: {}", imageUrl);
@@ -177,15 +217,15 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
 
             log.info("📥 Raw OpenAI response: {}", response.replaceAll("[\\r\\n]+", " ").trim());
 
-            return parseAIResponse(response);
+            return parseAIResponse(response, expectedPoseName, analysis);
 
         } catch (Exception e) {
             log.error("❌ Error calling OpenAI API: {}", e.getMessage(), e);
-            return new EvaluationResult(0.0, "Không thể kết nối tới OpenAI API.");
+            return new EvaluationResult(0.0, PoseFeedbackTemplate.buildFallbackFeedback(expectedPoseName, analysis));
         }
     }
 
-    private EvaluationResult parseAIResponse(String response) {
+    private EvaluationResult parseAIResponse(String response, String expectedPoseName, PoseModelAnalysis analysis) {
         try {
             String json = sanitizeAIResponse(response);
             JsonNode node = objectMapper.readTree(json);
@@ -199,7 +239,7 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
 
         } catch (Exception e) {
             log.warn("⚠️ Non-JSON AI response → fallback. Reason: {}", e.getMessage());
-            return new EvaluationResult(0.0, "AI trả về dữ liệu không đúng định dạng JSON.");
+            return new EvaluationResult(0.0, PoseFeedbackTemplate.buildFallbackFeedback(expectedPoseName, analysis));
         }
     }
 

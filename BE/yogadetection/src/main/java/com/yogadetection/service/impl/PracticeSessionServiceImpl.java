@@ -453,19 +453,23 @@ public class PracticeSessionServiceImpl implements PracticeSessionService {
         
         if (startDate != null && endDate != null) {
             try {
-                // Support both formats: with timezone (2025-11-01T00:00:00.000Z) and without (2025-11-01T00:00:00.000)
+                // Support both formats:
+                // - With timezone: 2025-11-01T00:00:00.000Z or 2025-11-01T00:00:00+07:00
+                // - Without timezone: 2025-11-01T00:00:00.000
                 OffsetDateTime start;
                 OffsetDateTime end;
-                
-                if (startDate.endsWith("Z") || startDate.contains("+") || startDate.contains("-")) {
-                    // Has timezone info
+
+                try {
                     start = OffsetDateTime.parse(startDate);
-                    end = OffsetDateTime.parse(endDate);
-                } else {
-                    // No timezone, treat as LocalDateTime and convert to system default zone
+                } catch (java.time.format.DateTimeParseException ex) {
                     java.time.LocalDateTime localStart = java.time.LocalDateTime.parse(startDate);
-                    java.time.LocalDateTime localEnd = java.time.LocalDateTime.parse(endDate);
                     start = localStart.atZone(java.time.ZoneId.systemDefault()).toOffsetDateTime();
+                }
+
+                try {
+                    end = OffsetDateTime.parse(endDate);
+                } catch (java.time.format.DateTimeParseException ex) {
+                    java.time.LocalDateTime localEnd = java.time.LocalDateTime.parse(endDate);
                     end = localEnd.atZone(java.time.ZoneId.systemDefault()).toOffsetDateTime();
                 }
                 

@@ -791,13 +791,13 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
     _cameraController?.dispose();
     _poseDetector?.close();
     _flutterTts?.stop();
-    
+
     // Reset orientation to portrait when leaving camera page
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    
+
     super.dispose();
   }
 

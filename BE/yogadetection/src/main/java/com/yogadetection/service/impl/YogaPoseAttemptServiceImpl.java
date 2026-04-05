@@ -1,8 +1,12 @@
 package com.yogadetection.service.impl;
 
 import java.time.OffsetDateTime;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.imageio.ImageIO;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,8 +30,10 @@ import com.yogadetection.service.AIPoseEvaluationService;
 import com.yogadetection.service.FcmService;
 import com.yogadetection.service.ImageService;
 import com.yogadetection.service.NotificationService;
+import com.yogadetection.service.PoseModelService;
 import com.yogadetection.service.SocketIOService;
 import com.yogadetection.service.YogaPoseAttemptService;
+import com.yogadetection.service.PoseModelService.PoseModelAnalysis;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +49,7 @@ public class YogaPoseAttemptServiceImpl implements YogaPoseAttemptService {
     private final ImageService imageService;
     private final ObjectMapper objectMapper;
     private final AIPoseEvaluationService aiEvaluationService;
+    private final PoseModelService poseModelService;
     private final FcmService fcmService;
     private final SocketIOService socketIOService;
     private final NotificationService notificationService;
@@ -64,25 +71,67 @@ public class YogaPoseAttemptServiceImpl implements YogaPoseAttemptService {
         
         // Upload ảnh lên Cloudinary
         String imageUrl = null;
+        Integer imageWidth = null;
+        Integer imageHeight = null;
         if (imageFile != null && !imageFile.isEmpty()) {
+            try {
+                BufferedImage img = ImageIO.read(new ByteArrayInputStream(imageFile.getBytes()));
+                if (img != null) {
+                    imageWidth = img.getWidth();
+                    imageHeight = img.getHeight();
+                }
+            } catch (Exception e) {
+                log.debug("Could not read image dimensions: {}", e.getMessage());
+            }
             imageUrl = imageService.uploadImage(imageFile, userId);
+        }
+
+        // 1) Run pose classification model (Yoga-82) first
+        PoseModelAnalysis analysis = null;
+        try {
+            if (landmarkData != null && landmarkData.getLandmarks() != null && !landmarkData.getLandmarks().isEmpty()) {
+                var normalized = PoseLandmarkNormalizer.normalize(landmarkData.getLandmarks(), imageWidth, imageHeight);
+                analysis = poseModelService.analyze(normalized).orElse(null);
+            }
+        } catch (Exception e) {
+            log.warn("Pose model analysis failed (ignored): {}", e.getMessage());
         }
         
         AIPoseEvaluationService.EvaluationResult evaluation = null;
-        if (imageUrl != null) {
-            log.info("Calling AI evaluation for pose {} with image: {}", poseCode, imageUrl);
-            // Sử dụng thông tin từ poseDetails
-            evaluation = aiEvaluationService.evaluatePose(
-                imageUrl, 
-                landmarkData, 
-                poseCode,
-                poseDetails.getName(),
-                poseDetails.getDescription()
+
+        // 2) Check if user is doing the expected pose; if not, return deterministic "wrong pose" feedback
+        boolean wrongPose = false;
+        if (analysis != null && analysis.getConfidence() >= 0.65) {
+            boolean likelySame = PoseNameMatcher.isLikelySamePose(poseDetails.getName(), analysis.getPredictedPose());
+            wrongPose = !likelySame;
+        }
+
+        if (wrongPose) {
+            evaluation = new AIPoseEvaluationService.EvaluationResult(
+                    0.0,
+                    PoseFeedbackTemplate.buildWrongPoseFeedback(poseDetails.getName(), analysis)
             );
-            log.info("AI evaluation completed for pose {}: score={}, feedback length={}", 
-                    poseCode, evaluation.getScore(), evaluation.getFeedback().length());
+        } else if (imageUrl != null) {
+            log.info("Calling AI evaluation for pose {} with image: {}", poseCode, imageUrl);
+            evaluation = aiEvaluationService.evaluatePose(
+                    imageUrl,
+                    landmarkData,
+                    poseCode,
+                    poseDetails.getName(),
+                    poseDetails.getDescription(),
+                    analysis
+            );
+            log.info("AI evaluation completed for pose {}: score={}, feedback length={}",
+                    poseCode,
+                    evaluation.getScore(),
+                    evaluation.getFeedback() != null ? evaluation.getFeedback().length() : 0);
+        } else if (analysis != null) {
+            evaluation = new AIPoseEvaluationService.EvaluationResult(
+                    0.0,
+                    PoseFeedbackTemplate.buildFallbackFeedback(poseDetails.getName(), analysis)
+            );
         } else {
-            log.warn("No image provided for pose attempt, AI evaluation skipped");
+            log.warn("No image provided and no model analysis available; AI evaluation skipped");
         }
         
         // Convert landmarks to JSON string

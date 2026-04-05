@@ -1,0 +1,60 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build_runner: watch",
+      "type": "dart",
+      "command": "dart",
+      "args": ["run", "build_runner", "watch", "--delete-conflicting-outputs"],
+      "problemMatcher": ["$dart-build_runner"],
+      "group": "build",
+      "isBackground": true,
+      "runOptions": {
+        "runOn": "folderOpen",
+        "instanceLimit": 1,
+        "reevaluateOnRerun": true
+      }
+    },
+    {
+      "label": "easy_localization: generate keys",
+      "type": "dart",
+      "command": "dart",
+      "args": [
+        "run",
+        "easy_localization:generate",
+        "-f",
+        "keys",
+        "-S",
+        "lib/presenter/languages/translations",
+        "-O",
+        "lib/presenter/languages",
+        "-o",
+        "translation_keys.g.dart"
+      ],
+      "group": "build"
+    },
+    {
+      "label": "flutter_flavorizr",
+      "type": "shell",
+      "command": "flutter pub run flutter_flavorizr",
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      "label": "mason: bloc_page",
+      "type": "shell",
+      "command": "mason make bloc_page --name '${input:page_name}'",
+      "problemMatcher": [],
+      "group": "build"
+    }
+  ],
+  "inputs": [
+    {
+      "id": "page_name",
+      "description": "Enter page name",
+      "type": "promptString"
+    }
+  ]
+}

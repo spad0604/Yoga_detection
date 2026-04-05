@@ -53,13 +53,13 @@ class _PoseDetailsPageState extends State<PoseDetailsPage> {
   @override
   void initState() {
     super.initState();
-    
+
     // Lock orientation to portrait
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    
+
     _bloc.add(PoseDetailsGetDetails(widget.item.id));
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!_detailsShowcaseStarted) {

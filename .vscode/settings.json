@@ -1,4 +1,42 @@
 {
-    "cmake.sourceDirectory": "D:/Code lung tung/Yoga Detection/FE/flutter_bloc_base-main/linux",
-    "idf.pythonInstallPath": "C:\\Espressif\\tools\\idf-python\\3.11.2\\python.exe"
+  "editor.formatOnSave": true,
+  "dart.previewFlutterUiGuides": true,
+  "dart.previewFlutterUiGuidesCustomTracking": true,
+  "dart.lineLength": 100,
+  "dart.flutterSdkPath": ".fvm/versions/3.27.3",
+  "[dart]": {
+    "editor.rulers": [
+      100
+    ],
+    "editor.selectionHighlight": false,
+    "editor.suggest.snippetsPreventQuickSuggestions": false,
+    "editor.suggestSelection": "first",
+    "editor.tabCompletion": "onlySnippets",
+    "editor.wordBasedSuggestions": "off",
+    "files.insertFinalNewline": true
+  },
+  "triggerTaskOnSave.on": true,
+  "triggerTaskOnSave.showStatusBarToggle": true,
+  "triggerTaskOnSave.tasks": {
+    "easy_localization: generate keys": [
+      "**/translations/*"
+    ]
+  },
+  "search.exclude": {
+    "**/.fvm": true,
+    "**/build": true
+  },
+  "files.watcherExclude": {
+    "**/.fvm": true,
+    "**/build": true
+  },
+  "files.exclude": {
+    "**/.gitkeep": true,
+    "**/*.g.dart": true,
+    "**/*.gr.dart": true,
+    "**/*.gen.dart": true,
+    "**/*.freezed.dart": true,
+    "**/*.config.dart": true
+  },
+  "idf.pythonInstallPath": "C:\\Espressif\\tools\\idf-python\\3.11.2\\python.exe"
 }

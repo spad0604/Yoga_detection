@@ -35,8 +35,8 @@ public class UserServiceImpl implements UserService {
                 .email(user.getEmail())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
-                .dob(user.getBirthDate().toString())
-                .registerDate(user.getRegisterDate().toString())
+                .dob(user.getBirthDate() != null ? user.getBirthDate().toString() : null)
+                .registerDate(user.getRegisterDate() != null ? user.getRegisterDate().toString() : null)
                 .avatarUrl(user.getAvatarUrl())
                 .build();
     }

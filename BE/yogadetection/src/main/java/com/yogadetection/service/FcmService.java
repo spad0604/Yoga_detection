@@ -2,6 +2,7 @@ package com.yogadetection.service;
 
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
+import com.google.firebase.messaging.MessagingErrorCode;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
 import lombok.extern.slf4j.Slf4j;
@@ -47,11 +48,15 @@ public class FcmService {
             return true;
             
         } catch (FirebaseMessagingException e) {
-            if ("INVALID_ARGUMENT".equals(e.getMessagingErrorCode().name())) {
+            MessagingErrorCode messagingErrorCode = e.getMessagingErrorCode();
+            String messagingErrorName = messagingErrorCode != null ? messagingErrorCode.name() : null;
+            String errorCodeName = e.getErrorCode() != null ? e.getErrorCode().name() : null;
+
+            if ("INVALID_ARGUMENT".equals(messagingErrorName) || "INVALID_ARGUMENT".equals(errorCodeName)) {
                 log.warn("⚠️ Invalid FCM token detected - User needs to re-register device. Error: {}", e.getMessage());
             } else {
-                log.error("❌ Failed to send FCM notification: {} - Error code: {}", 
-                        e.getMessage(), e.getMessagingErrorCode());
+                log.error("❌ Failed to send FCM notification: {} - messagingErrorCode={} errorCode={}",
+                        e.getMessage(), messagingErrorName, errorCodeName);
             }
             return false;
         } catch (Exception e) {
@@ -96,11 +101,15 @@ public class FcmService {
             return true;
             
         } catch (FirebaseMessagingException e) {
-            if ("INVALID_ARGUMENT".equals(e.getMessagingErrorCode().name())) {
+            MessagingErrorCode messagingErrorCode = e.getMessagingErrorCode();
+            String messagingErrorName = messagingErrorCode != null ? messagingErrorCode.name() : null;
+            String errorCodeName = e.getErrorCode() != null ? e.getErrorCode().name() : null;
+
+            if ("INVALID_ARGUMENT".equals(messagingErrorName) || "INVALID_ARGUMENT".equals(errorCodeName)) {
                 log.warn("⚠️ Invalid FCM token detected - User needs to re-register device. Error: {}", e.getMessage());
             } else {
-                log.error("❌ Failed to send FCM notification with data: {} - Error code: {}", 
-                        e.getMessage(), e.getMessagingErrorCode());
+                log.error("❌ Failed to send FCM notification with data: {} - messagingErrorCode={} errorCode={}",
+                        e.getMessage(), messagingErrorName, errorCodeName);
             }
             return false;
         } catch (Exception e) {

@@ -1,6 +1,7 @@
 package com.yogadetection.service;
 
 import com.yogadetection.dto.request.PoseLandmarkRequest;
+import com.yogadetection.service.PoseModelService.PoseModelAnalysis;
 
 public interface AIPoseEvaluationService {
     
@@ -14,6 +15,21 @@ public interface AIPoseEvaluationService {
      * @return Object chứa score và feedback
      */
     EvaluationResult evaluatePose(String imageUrl, PoseLandmarkRequest landmarkData, String poseCode, String poseName, String poseDescription);
+
+    /**
+     * Đánh giá tư thế yoga bằng AI, có kèm kết quả từ model phân loại (Yoga-82).
+     * @param analysis Kết quả model: pose gần nhất, confidence, sai lệch lớn nhất...
+     */
+    default EvaluationResult evaluatePose(
+            String imageUrl,
+            PoseLandmarkRequest landmarkData,
+            String poseCode,
+            String poseName,
+            String poseDescription,
+            PoseModelAnalysis analysis
+    ) {
+        return evaluatePose(imageUrl, landmarkData, poseCode, poseName, poseDescription);
+    }
     
     /**
      * Result class cho kết quả đánh giá

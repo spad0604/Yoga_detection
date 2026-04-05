@@ -1,0 +1,13 @@
+# Python
+**/.venv/
+**/venv/
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Jupyter
+Python/.ipynb_checkpoints/
+
+# Generated cache
+Python/pose_angle_reference.json
