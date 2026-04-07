@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,6 +43,9 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 public class YogaPoseAttemptServiceImpl implements YogaPoseAttemptService {
+
+    @Value("${pose.model.wrong-pose-min-confidence:0.30}")
+    private double wrongPoseMinConfidence;
     
     private final YogaPoseAttemptRepository attemptRepository;
     private final YogaPoseDetailsRepository poseDetailsRepository;
@@ -101,9 +105,18 @@ public class YogaPoseAttemptServiceImpl implements YogaPoseAttemptService {
 
         // 2) Check if user is doing the expected pose; if not, return deterministic "wrong pose" feedback
         boolean wrongPose = false;
-        if (analysis != null && analysis.getConfidence() >= 0.65) {
+        if (analysis != null && analysis.getConfidence() >= wrongPoseMinConfidence) {
             boolean likelySame = PoseNameMatcher.isLikelySamePose(poseDetails.getName(), analysis.getPredictedPose());
             wrongPose = !likelySame;
+            if (wrongPose) {
+                log.info(
+                        "Wrong pose detected: expected='{}', predicted='{}', confidence={} (threshold={})",
+                        poseDetails.getName(),
+                        analysis.getPredictedPose(),
+                        analysis.getConfidence(),
+                        wrongPoseMinConfidence
+                );
+            }
         }
 
         if (wrongPose) {

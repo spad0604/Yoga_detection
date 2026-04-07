@@ -1,6 +1,7 @@
 # Python
 **/.venv/
 **/venv/
+scripts/.venv_pose_test/
 **/__pycache__/
 *.pyc
 *.pyo
