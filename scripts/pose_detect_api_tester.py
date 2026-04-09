@@ -40,11 +40,11 @@ except ImportError as exc:
     sys.exit(1)
 
 
-ACCESS_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJ0eXBlIjoiYWNjZXNzIiwidXNlcm5hbWUiOiJnaWFwYmFjdmFuQGdtYWlsLmNvbSIsImp0aSI6ImMxZjAzNDEyLTZhZmEtNDcwNS05M2FlLWQ4YzhmZjk5NTg2ZSIsInN1YiI6ImdpYXBiYWN2YW5AZ21haWwuY29tIiwiaWF0IjoxNzc1NTcwMTcyLCJleHAiOjE3NzU2NTY1NzJ9.Gj1hhzXZwu7IbpUsQmVYJYkr7kBeYgUcDiHNQgm_IBA"
+ACCESS_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJ0eXBlIjoiYWNjZXNzIiwidXNlcm5hbWUiOiJnaWFwNmF2YW5AZ21haWwuY29tIiwianRpIjoiZDkxZGQ5ZTgtMjZhMy00NjdjLTkyYTMtNDRhNTBhMjY3OGE1Iiwic3ViIjoiZ2lhcDZhdmFuQGdtYWlsLmNvbSIsImlhdCI6MTc3NTcyNjY0NywiZXhwIjoxNzc1ODEzMDQ3fQ.GYYBare5J6MW9pymb2y9Oz6kWmQsOyO3-z9i994WSMk"
 
 # ==== Quick config: edit these values at the top ====
 BASE_URL = "http://127.0.0.1:9090"
-POSE_CODE = "06d9a6c8-fc25-4991-a1f5-191e9ecc4d59"
+POSE_CODE = "f6537c14-96d5-4e43-afba-4a56e5fa2cde"
 IMAGE_PATH = "D:/Code lung tung/Yoga Detection/scripts/image.png"
 
 

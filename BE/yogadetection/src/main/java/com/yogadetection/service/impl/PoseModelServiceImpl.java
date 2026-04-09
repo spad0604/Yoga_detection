@@ -1,5 +1,6 @@
 package com.yogadetection.service.impl;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yogadetection.dto.request.Landmark;
@@ -15,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -77,9 +79,21 @@ public class PoseModelServiceImpl implements PoseModelService {
                 }
             }
 
+            Map<String, Double> actualAngles = null;
+            JsonNode actualAnglesNode = node.path("actualAngles");
+            if (actualAnglesNode != null && actualAnglesNode.isObject()) {
+                actualAngles = objectMapper.convertValue(actualAnglesNode, new TypeReference<Map<String, Double>>() {});
+            }
+
+            Map<String, Double> referenceAngles = null;
+            JsonNode referenceAnglesNode = node.path("referenceAngles");
+            if (referenceAnglesNode != null && referenceAnglesNode.isObject()) {
+                referenceAngles = objectMapper.convertValue(referenceAnglesNode, new TypeReference<Map<String, Double>>() {});
+            }
+
             if (predictedPose == null || predictedPose.isBlank()) return Optional.empty();
 
-            return Optional.of(new PoseModelAnalysis(predictedPose, confidence, topK, mostOff));
+            return Optional.of(new PoseModelAnalysis(predictedPose, confidence, topK, mostOff, actualAngles, referenceAngles));
 
         } catch (Exception e) {
             log.warn("⚠️ Pose model service unavailable: {}", e.getMessage());

@@ -16,9 +16,11 @@ import org.springframework.ai.model.Media;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MimeType;
 import org.springframework.util.MimeTypeUtils;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.ArrayList;
 
@@ -43,6 +45,14 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
 
     @Value("${spring.ai.anthropic.api-key:${ANTHROPIC_AUTH_TOKEN:}}")
     private String apiKey;
+
+    /**
+     * If the input imageUrl is a Cloudinary URL, we can request a smaller/compressed variant
+     * to reduce payload size and avoid transient upstream 502s.
+     * Example value: f_jpg,q_auto,w_768
+     */
+    @Value("${ai.vision.cloudinary-transform:f_jpg,q_auto,w_768}")
+    private String cloudinaryTransform;
 
     @Override
     public EvaluationResult evaluatePose(String imageUrl, PoseLandmarkRequest landmarkData, String poseCode, String poseName, String poseDescription) {
@@ -107,23 +117,47 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
         // Landmark data + GÓC KHỚP (QUAN TRỌNG NHẤT!)
         if (landmarkData != null && landmarkData.getLandmarks() != null && !landmarkData.getLandmarks().isEmpty()) {
             List<Landmark> normalizedLandmarks = normalizeLandmarkTypes(landmarkData.getLandmarks());
-            // 1. Tính góc các khớp
-            try {
-                LandmarkAngleCalculator.BodyAngles angles = 
-                    angleCalculator.calculateBodyAngles(normalizedLandmarks);
-                
-                prompt.append("📐 GÓC CÁC KHỚP THỰC TẾ (QUAN TRỌNG NHẤT!):\n");
-                prompt.append(angles.toString()).append("\n");
-                
+
+            boolean hasModelAngles = analysis != null
+                    && analysis.getActualAngles() != null
+                    && !analysis.getActualAngles().isEmpty();
+
+            // 1. Góc khớp (ưu tiên từ pose-model nội bộ nếu có)
+            if (hasModelAngles) {
+                prompt.append("📐 GÓC CÁC KHỚP (TỪ MODEL NỘI BỘ TỰ TRAIN — THAM KHẢO):\n");
+                prompt.append("⚠️ Lưu ý: Đây là kết quả góc do model nội bộ tự training suy ra (có thể không đúng dáng hiện tại hoặc có sai số nếu landmark lỗi). Dùng để tham khảo.\n");
+                prompt.append(formatModelAngles(analysis.getActualAngles())).append("\n");
+
+                if (analysis.getReferenceAngles() != null && !analysis.getReferenceAngles().isEmpty()) {
+                    prompt.append("📏 GÓC CHUẨN THAM CHIẾU (THEO POSE MODEL DỰ ĐOÁN: ")
+                            .append(analysis.getPredictedPose() != null ? analysis.getPredictedPose() : "unknown")
+                            .append("):\n");
+                    prompt.append(formatModelAngles(analysis.getReferenceAngles())).append("\n");
+                }
+
                 prompt.append("⚠️ HƯỚNG DẪN SỬ DỤNG GÓC KHỚP:\n");
-                prompt.append("• Đây là góc THỰC TẾ của học viên\n");
-                prompt.append("• Hãy SO SÁNH với góc chuẩn của tư thế ").append(poseName).append("\n");
-                prompt.append("• Sai lệch 5-10° = tốt | 10-20° = cần cải thiện | >20° = sai nghiêm trọng\n");
-                prompt.append("• ƯU TIÊN ĐÁNH GIÁ DỰA VÀO GÓC KHỚP hơn là chỉ nhìn hình ảnh!\n\n");
-                
-                log.info("✅ Góc khớp: {}", angles.toShortString());
-            } catch (Exception e) {
-                log.warn("⚠️ Không thể tính góc khớp: {}", e.getMessage());
+                prompt.append("• Góc trên là dữ liệu tham khảo từ model; hãy kết hợp quan sát ảnh + landmark\n");
+                prompt.append("• Mục tiêu vẫn là tư thế ").append(poseName).append("\n");
+                prompt.append("• Nếu có góc chuẩn tham chiếu, hãy so sánh chênh lệch để chỉ ra điểm sai\n\n");
+            } else {
+                // Fallback: tính góc bằng calculator trong BE
+                try {
+                    LandmarkAngleCalculator.BodyAngles angles =
+                            angleCalculator.calculateBodyAngles(normalizedLandmarks);
+
+                    prompt.append("📐 GÓC CÁC KHỚP THỰC TẾ (QUAN TRỌNG NHẤT!):\n");
+                    prompt.append(angles.toString()).append("\n");
+
+                    prompt.append("⚠️ HƯỚNG DẪN SỬ DỤNG GÓC KHỚP:\n");
+                    prompt.append("• Đây là góc THỰC TẾ của học viên\n");
+                    prompt.append("• Hãy SO SÁNH với góc chuẩn của tư thế ").append(poseName).append("\n");
+                    prompt.append("• Sai lệch 5-10° = tốt | 10-20° = cần cải thiện | >20° = sai nghiêm trọng\n");
+                    prompt.append("• ƯU TIÊN ĐÁNH GIÁ DỰA VÀO GÓC KHỚP hơn là chỉ nhìn hình ảnh!\n\n");
+
+                    log.info("✅ Góc khớp: {}", angles.toShortString());
+                } catch (Exception e) {
+                    log.warn("⚠️ Không thể tính góc khớp: {}", e.getMessage());
+                }
             }
             
             // 2. Landmark data chi tiết
@@ -196,6 +230,47 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
         return out;
     }
 
+    private String formatModelAngles(Map<String, Double> angles) {
+        if (angles == null || angles.isEmpty()) return "(no angles)";
+
+        Double leftElbow = angles.get("left_elbow");
+        Double rightElbow = angles.get("right_elbow");
+        Double leftShoulder = angles.get("left_shoulder");
+        Double rightShoulder = angles.get("right_shoulder");
+        Double leftHip = angles.get("left_hip");
+        Double rightHip = angles.get("right_hip");
+        Double leftKnee = angles.get("left_knee");
+        Double rightKnee = angles.get("right_knee");
+        Double leftAnkle = angles.get("left_ankle");
+        Double rightAnkle = angles.get("right_ankle");
+        Double spine = angles.get("spine");
+
+        return String.format("""
+                ┌─ TAY & VAI ──────────────────────┐
+                │ Khuỷu trái: %6s │ Khuỷu phải: %6s │
+                │ Vai trái:   %6s │ Vai phải:   %6s │
+                ├─ CHÂN & HÔNG ────────────────────┤
+                │ Hông trái:  %6s │ Hông phải:  %6s │
+                │ Gối trái:   %6s │ Gối phải:   %6s │
+                │ Cổ chân trái:%5s │ Cổ chân phải:%5s │
+                ├─ THÂN & LƯNG ────────────────────┤
+                │ Độ thẳng lưng:     %6s         │
+                └───────────────────────────────────┘
+                """,
+                fmtDeg(leftElbow), fmtDeg(rightElbow),
+                fmtDeg(leftShoulder), fmtDeg(rightShoulder),
+                fmtDeg(leftHip), fmtDeg(rightHip),
+                fmtDeg(leftKnee), fmtDeg(rightKnee),
+                fmtDeg(leftAnkle), fmtDeg(rightAnkle),
+                fmtDeg(spine)
+        );
+    }
+
+    private String fmtDeg(Double value) {
+        if (value == null) return "N/A";
+        return String.format("%.1f°", value);
+    }
+
     private EvaluationResult callAnthropicVision(String imageUrl, String prompt, String expectedPoseName, PoseModelAnalysis analysis) {
         try {
             if (apiKey == null || apiKey.isEmpty()) {
@@ -203,11 +278,14 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
                 return new EvaluationResult(0.0, PoseFeedbackTemplate.buildFallbackFeedback(expectedPoseName, analysis));
             }
 
-            log.info("📤 Sending image to Anthropic Vision: {}", imageUrl);
+            String aiImageUrl = toAiImageUrl(imageUrl);
+            MimeType mimeType = guessMimeType(aiImageUrl);
+
+            log.info("📤 Sending image to Anthropic Vision: {}", aiImageUrl);
 
             UserMessage userMessage = new UserMessage(
                     prompt,
-                    List.of(new Media(MimeTypeUtils.IMAGE_JPEG, new UrlResource(imageUrl)))
+                    List.of(new Media(mimeType, new UrlResource(aiImageUrl)))
             );
 
             Prompt chatPrompt = new Prompt(userMessage);
@@ -223,6 +301,99 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
             log.error("❌ Error calling Anthropic API: {}", e.getMessage(), e);
             return new EvaluationResult(0.0, PoseFeedbackTemplate.buildFallbackFeedback(expectedPoseName, analysis));
         }
+    }
+
+    private String toAiImageUrl(String imageUrl) {
+        if (imageUrl == null || imageUrl.isBlank()) {
+            return imageUrl;
+        }
+
+        String transform = sanitizeCloudinaryTransform((cloudinaryTransform == null) ? "" : cloudinaryTransform.trim());
+        if (transform.isEmpty()) {
+            return imageUrl;
+        }
+
+        // Cloudinary pattern: https://res.cloudinary.com/<cloud>/image/upload/<maybe_version>/<path>
+        final String marker = "/image/upload/";
+        int idx = imageUrl.indexOf(marker);
+        if (idx < 0) {
+            return imageUrl;
+        }
+
+        int insertPos = idx + marker.length();
+        String rest = imageUrl.substring(insertPos);
+        int nextSlash = rest.indexOf('/');
+        String firstSeg = nextSlash >= 0 ? rest.substring(0, nextSlash) : rest;
+
+        // If it already looks like it has a transform segment, don't double-insert.
+        String firstSegLower = firstSeg.toLowerCase();
+        boolean alreadyTransformed = firstSegLower.startsWith("f_")
+                || firstSegLower.startsWith("q_")
+                || firstSegLower.startsWith("w_")
+                || firstSegLower.startsWith("h_")
+                || firstSegLower.contains(",");
+
+        if (alreadyTransformed) {
+            return imageUrl;
+        }
+
+        return imageUrl.substring(0, insertPos) + transform + "/" + rest;
+    }
+
+    /**
+     * Ensure we never apply visual-enhancement transforms (contrast/brightness/etc.)
+     * that could change the appearance of the user's original image.
+     *
+     * We only allow safe transforms for transport/perf (format/quality/resize).
+     */
+    private String sanitizeCloudinaryTransform(String transform) {
+        if (transform == null) return "";
+        String t = transform.trim();
+        if (t.isEmpty()) return "";
+
+        String lower = t.toLowerCase();
+        boolean hasVisualEffect = lower.contains("e_")
+                || lower.contains("contrast")
+                || lower.contains("brightness")
+                || lower.contains("saturation")
+                || lower.contains("gamma")
+                || lower.contains("exposure")
+                || lower.contains("vibrance")
+                || lower.contains("improve")
+                || lower.contains("enhance")
+                || lower.contains("sharpen")
+                || lower.contains("unsharp");
+
+        if (hasVisualEffect) {
+            log.warn("⚠️ Cloudinary transform contains visual effects; ignoring it to keep original image unchanged: {}", t);
+            return "";
+        }
+
+        return t;
+    }
+
+    private MimeType guessMimeType(String imageUrl) {
+        // If we request f_jpg from Cloudinary, we can safely send as JPEG.
+        if (imageUrl != null && imageUrl.contains("f_jpg")) {
+            return MimeTypeUtils.IMAGE_JPEG;
+        }
+
+        String lower = (imageUrl == null) ? "" : imageUrl.toLowerCase();
+        if (lower.contains(".png")) {
+            return MimeTypeUtils.IMAGE_PNG;
+        }
+        if (lower.contains(".gif")) {
+            return MimeTypeUtils.IMAGE_GIF;
+        }
+        if (lower.contains(".webp")) {
+            return new MimeType("image", "webp");
+        }
+        if (lower.contains(".jpeg") || lower.contains(".jpg")) {
+            return MimeTypeUtils.IMAGE_JPEG;
+        }
+
+        // Default: most vision endpoints accept jpeg.
+        return MimeTypeUtils.IMAGE_JPEG;
     }
 
     private EvaluationResult parseAIResponse(String response, String expectedPoseName, PoseModelAnalysis analysis) {

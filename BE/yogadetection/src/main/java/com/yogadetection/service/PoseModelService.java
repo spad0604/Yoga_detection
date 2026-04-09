@@ -2,6 +2,7 @@ package com.yogadetection.service;
 
 import com.yogadetection.dto.request.Landmark;
 
+import java.util.Map;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,12 +19,23 @@ public interface PoseModelService {
         private final double confidence;
         private final List<TopK> topK;
         private final MostOff mostOff;
+        private final Map<String, Double> actualAngles;
+        private final Map<String, Double> referenceAngles;
 
-        public PoseModelAnalysis(String predictedPose, double confidence, List<TopK> topK, MostOff mostOff) {
+        public PoseModelAnalysis(
+                String predictedPose,
+                double confidence,
+                List<TopK> topK,
+                MostOff mostOff,
+                Map<String, Double> actualAngles,
+                Map<String, Double> referenceAngles
+        ) {
             this.predictedPose = predictedPose;
             this.confidence = confidence;
             this.topK = topK;
             this.mostOff = mostOff;
+            this.actualAngles = actualAngles;
+            this.referenceAngles = referenceAngles;
         }
 
         public String getPredictedPose() {
@@ -40,6 +52,14 @@ public interface PoseModelService {
 
         public MostOff getMostOff() {
             return mostOff;
+        }
+
+        public Map<String, Double> getActualAngles() {
+            return actualAngles;
+        }
+
+        public Map<String, Double> getReferenceAngles() {
+            return referenceAngles;
         }
 
         public static class TopK {

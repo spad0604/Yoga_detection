@@ -98,7 +98,7 @@ public class YogaPoseAttemptServiceImpl implements YogaPoseAttemptService {
                 analysis = poseModelService.analyze(normalized).orElse(null);
             }
         } catch (Exception e) {
-            log.warn("Pose model analysis failed (ignored): {}", e.getMessage());
+            log.warn("Pose model analysis failed (ignored). Will continue to call LLM if image is available. Reason: {}", e.getMessage());
         }
         
         AIPoseEvaluationService.EvaluationResult evaluation = null;
@@ -119,12 +119,9 @@ public class YogaPoseAttemptServiceImpl implements YogaPoseAttemptService {
             }
         }
 
-        if (wrongPose) {
-            evaluation = new AIPoseEvaluationService.EvaluationResult(
-                    0.0,
-                    PoseFeedbackTemplate.buildWrongPoseFeedback(poseDetails.getName(), analysis)
-            );
-        } else if (imageUrl != null) {
+        // NOTE: Do NOT gate LLM call by pose-model result.
+        // The pose-model signals (pose + confidence + angles) are supplemental context for the LLM.
+        if (imageUrl != null) {
             log.info("Calling AI evaluation for pose {} with image: {}", poseCode, imageUrl);
             evaluation = aiEvaluationService.evaluatePose(
                     imageUrl,

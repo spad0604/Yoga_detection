@@ -115,6 +115,8 @@ class AnalyzeResponse(BaseModel):
     confidence: float
     topK: List[TopKItem]
     mostOff: Optional[MostOffItem] = None
+    actualAngles: Dict[str, float] = Field(default_factory=dict)
+    referenceAngles: Optional[Dict[str, float]] = None
 
 
 @dataclass
@@ -376,4 +378,6 @@ def analyze(req: AnalyzeRequest) -> AnalyzeResponse:
         confidence=conf,
         topK=top_items,
         mostOff=most_off,
+        actualAngles=actual_angles,
+        referenceAngles=ref,
     )
