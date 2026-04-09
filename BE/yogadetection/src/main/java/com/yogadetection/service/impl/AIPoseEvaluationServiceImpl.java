@@ -41,7 +41,7 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
     private final ChatClient chatClient;
     private final LandmarkAngleCalculator angleCalculator;
 
-    @Value("${spring.ai.openai.api-key:}")
+    @Value("${spring.ai.anthropic.api-key:${ANTHROPIC_AUTH_TOKEN:}}")
     private String apiKey;
 
     @Override
@@ -63,7 +63,7 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
             String actualDescription = poseDescription != null ? poseDescription : "";
 
             String prompt = buildEvaluationPrompt(actualPoseName, actualDescription, landmarkData, analysis);
-            EvaluationResult result = callOpenAIVision(imageUrl, prompt, actualPoseName, analysis);
+            EvaluationResult result = callAnthropicVision(imageUrl, prompt, actualPoseName, analysis);
 
             log.info("✅ AI evaluation completed for pose {} ({}) → score={} | feedback length={}",
                     poseCode, actualPoseName, result.getScore(), result.getFeedback() != null ? result.getFeedback().length() : 0);
@@ -196,14 +196,14 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
         return out;
     }
 
-    private EvaluationResult callOpenAIVision(String imageUrl, String prompt, String expectedPoseName, PoseModelAnalysis analysis) {
+    private EvaluationResult callAnthropicVision(String imageUrl, String prompt, String expectedPoseName, PoseModelAnalysis analysis) {
         try {
             if (apiKey == null || apiKey.isEmpty()) {
-                log.warn("⚠️ OpenAI API key not configured → dùng template fallback");
+                log.warn("⚠️ Anthropic API key not configured → dùng template fallback");
                 return new EvaluationResult(0.0, PoseFeedbackTemplate.buildFallbackFeedback(expectedPoseName, analysis));
             }
 
-            log.info("📤 Sending image to OpenAI Vision: {}", imageUrl);
+            log.info("📤 Sending image to Anthropic Vision: {}", imageUrl);
 
             UserMessage userMessage = new UserMessage(
                     prompt,
@@ -215,12 +215,12 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
                     .call()
                     .content();
 
-            log.info("📥 Raw OpenAI response: {}", response.replaceAll("[\\r\\n]+", " ").trim());
+            log.info("📥 Raw Anthropic response: {}", response.replaceAll("[\\r\\n]+", " ").trim());
 
             return parseAIResponse(response, expectedPoseName, analysis);
 
         } catch (Exception e) {
-            log.error("❌ Error calling OpenAI API: {}", e.getMessage(), e);
+            log.error("❌ Error calling Anthropic API: {}", e.getMessage(), e);
             return new EvaluationResult(0.0, PoseFeedbackTemplate.buildFallbackFeedback(expectedPoseName, analysis));
         }
     }

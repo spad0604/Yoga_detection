@@ -61,11 +61,11 @@
 			<version>2.8.13</version>
 		</dependency>
 		
-		<!-- Spring AI OpenAI -->
-		<!-- https://mvnrepository.com/artifact/org.springframework.ai/spring-ai-openai-spring-boot-starter -->
+		<!-- Spring AI Anthropic -->
+		<!-- https://mvnrepository.com/artifact/org.springframework.ai/spring-ai-anthropic-spring-boot-starter -->
 		<dependency>
 			<groupId>org.springframework.ai</groupId>
-			<artifactId>spring-ai-openai-spring-boot-starter</artifactId>
+			<artifactId>spring-ai-anthropic-spring-boot-starter</artifactId>
 			<version>1.0.0-M6</version>
 		</dependency>
 		

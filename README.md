@@ -37,7 +37,7 @@ Dự án gồm 2 phần chính:
 1. **FE** lấy ảnh (camera) và/hoặc **landmark 33 điểm** (ML Kit pose detection).
 2. **FE** gọi **REST API** lên **BE** kèm ảnh + metadata (poseCode/poseName/landmark).
 3. **BE** upload ảnh lên **Cloudinary** → lấy `imageUrl`.
-4. **BE** gọi module **AI Pose Evaluation** (Spring AI/OpenAI Vision) để trả về JSON `{score, feedback}`.
+4. **BE** gọi module **AI Pose Evaluation** (Spring AI/Anthropic Vision) để trả về JSON `{score, feedback}`.
 5. **BE** lưu kết quả (attempt/session) vào **PostgreSQL**.
 6. **BE** gửi kết quả về client:
    - **Realtime** qua **Socket.IO** (event `pose_result`) và/hoặc **WebSocket**
@@ -66,7 +66,7 @@ Thư mục chính: `BE/yogadetection/src/main/java/com/yogadetection/`
 Vai trò:
 - Nhận `imageUrl` + `landmarkData` + `poseName/poseDescription`
 - Tạo prompt theo tiêu chí chấm điểm (0–100) + hướng dẫn output JSON
-- Gọi **OpenAI Vision** qua **Spring AI ChatClient**
+- Gọi **Anthropic Vision** qua **Spring AI ChatClient**
 - Parse JSON và trả `EvaluationResult(score, feedback)`
 
 **Chế độ demo/mocking (dành cho trình diễn khi không có API key):**
@@ -92,7 +92,7 @@ Vai trò:
   - `server.port=9090`
   - Kết nối DB Postgres (url/user/pass)
   - Cloudinary credentials (upload ảnh)
-  - Spring AI OpenAI (`spring.ai.openai.api-key`, model…)
+  - Spring AI Anthropic (`spring.ai.anthropic.api-key`, model…)
 
 **Lưu ý bảo mật**: Không nên commit secrets (DB password, API keys, mail password, Firebase service account…). Nên chuyển sang biến môi trường hoặc secret manager khi deploy.
 
