@@ -12,12 +12,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.prompt.Prompt;
-import org.springframework.ai.model.Media;
+import org.springframework.ai.content.Media;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MimeType;
 import org.springframework.util.MimeTypeUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -46,6 +48,9 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
     @Value("${spring.ai.anthropic.api-key:${ANTHROPIC_AUTH_TOKEN:}}")
     private String apiKey;
 
+    @Value("${spring.ai.anthropic.base-url}")
+    private String anthropicBaseUrl;
+
     /**
      * If the input imageUrl is a Cloudinary URL, we can request a smaller/compressed variant
      * to reduce payload size and avoid transient upstream 502s.
@@ -61,6 +66,18 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
 
     @Override
     public EvaluationResult evaluatePose(
+            MultipartFile imageFile,
+            PoseLandmarkRequest landmarkData,
+            String poseCode,
+            String poseName,
+            String poseDescription,
+            PoseModelAnalysis analysis
+    ) {
+        return evaluatePoseInternal(null, imageFile, landmarkData, poseCode, poseName, poseDescription, analysis);
+    }
+
+    @Override
+    public EvaluationResult evaluatePose(
             String imageUrl,
             PoseLandmarkRequest landmarkData,
             String poseCode,
@@ -68,12 +85,24 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
             String poseDescription,
             PoseModelAnalysis analysis
     ) {
+            return evaluatePoseInternal(imageUrl, null, landmarkData, poseCode, poseName, poseDescription, analysis);
+            }
+
+            private EvaluationResult evaluatePoseInternal(
+                String imageUrl,
+                MultipartFile imageFile,
+                PoseLandmarkRequest landmarkData,
+                String poseCode,
+                String poseName,
+                String poseDescription,
+                PoseModelAnalysis analysis
+            ) {
         try {
             String actualPoseName = poseName != null ? poseName : "Unknown Pose";
             String actualDescription = poseDescription != null ? poseDescription : "";
 
             String prompt = buildEvaluationPrompt(actualPoseName, actualDescription, landmarkData, analysis);
-            EvaluationResult result = callAnthropicVision(imageUrl, prompt, actualPoseName, analysis);
+                EvaluationResult result = callAnthropicVision(imageUrl, imageFile, prompt, actualPoseName, analysis);
 
             log.info("✅ AI evaluation completed for pose {} ({}) → score={} | feedback length={}",
                     poseCode, actualPoseName, result.getScore(), result.getFeedback() != null ? result.getFeedback().length() : 0);
@@ -110,8 +139,8 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
 
         // Context về ảnh đã được crop
         prompt.append("📸 THÔNG TIN VỀ ẢNH:\n");
-        prompt.append("• Ảnh đã được xử lý và FOCUS VÀO NGƯỜI TẬP YOGA\n");
-        prompt.append("• Có thể có nhiễu nền nhẹ hoặc ánh sáng không hoàn hảo\n");
+        prompt.append("• Đây là ảnh người dùng upload trực tiếp\n");
+        prompt.append("• Có thể có nhiễu nền hoặc ánh sáng không hoàn hảo\n");
         prompt.append("• Ưu tiên đánh giá TƯ THẾ, bỏ qua chi tiết nền\n\n");
 
         // Landmark data + GÓC KHỚP (QUAN TRỌNG NHẤT!)
@@ -271,27 +300,60 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
         return String.format("%.1f°", value);
     }
 
-    private EvaluationResult callAnthropicVision(String imageUrl, String prompt, String expectedPoseName, PoseModelAnalysis analysis) {
+    private EvaluationResult callAnthropicVision(
+            String imageUrl,
+            MultipartFile imageFile,
+            String prompt,
+            String expectedPoseName,
+            PoseModelAnalysis analysis
+    ) {
         try {
             if (apiKey == null || apiKey.isEmpty()) {
                 log.warn("⚠️ Anthropic API key not configured → dùng template fallback");
                 return new EvaluationResult(0.0, PoseFeedbackTemplate.buildFallbackFeedback(expectedPoseName, analysis));
             }
 
-            String aiImageUrl = toAiImageUrl(imageUrl);
-            MimeType mimeType = guessMimeType(aiImageUrl);
+            Media media;
+            String mediaSourceLog;
 
-            log.info("📤 Sending image to Anthropic Vision: {}", aiImageUrl);
+            if (imageFile != null && !imageFile.isEmpty()) {
+                byte[] imageBytes = imageFile.getBytes();
+                MimeType mimeType = guessMimeType(imageFile.getContentType(), imageFile.getOriginalFilename());
+                ByteArrayResource imageResource = new ByteArrayResource(imageBytes) {
+                    @Override
+                    public String getFilename() {
+                        return imageFile.getOriginalFilename();
+                    }
+                };
+                media = new Media(mimeType, imageResource);
+                mediaSourceLog = "multipart-upload:" + (imageFile.getOriginalFilename() != null ? imageFile.getOriginalFilename() : "unknown");
+            } else if (imageUrl != null && !imageUrl.isBlank()) {
+                String aiImageUrl = toAiImageUrl(imageUrl);
+                MimeType mimeType = guessMimeType(aiImageUrl);
+                media = new Media(mimeType, new UrlResource(aiImageUrl));
+                mediaSourceLog = aiImageUrl;
+            } else {
+                log.warn("⚠️ No image provided for Anthropic Vision call → dùng template fallback");
+                return new EvaluationResult(0.0, PoseFeedbackTemplate.buildFallbackFeedback(expectedPoseName, analysis));
+            }
 
-            UserMessage userMessage = new UserMessage(
-                    prompt,
-                    List.of(new Media(mimeType, new UrlResource(aiImageUrl)))
-            );
+            log.info("🌐 Anthropic base URL: {}", anthropicBaseUrl);
+            log.info("📤 Sending image to Anthropic Vision: {}", mediaSourceLog);
+
+                UserMessage userMessage = UserMessage.builder()
+                    .text(prompt)
+                    .media(media)
+                    .build();
 
             Prompt chatPrompt = new Prompt(userMessage);
             String response = chatClient.prompt(chatPrompt)
                     .call()
                     .content();
+
+            if (response == null || response.isBlank()) {
+                log.warn("⚠️ Anthropic returned empty response (null/blank) → dùng template fallback");
+                return new EvaluationResult(0.0, PoseFeedbackTemplate.buildFallbackFeedback(expectedPoseName, analysis));
+            }
 
             log.info("📥 Raw Anthropic response: {}", response.replaceAll("[\\r\\n]+", " ").trim());
 
@@ -301,6 +363,24 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
             log.error("❌ Error calling Anthropic API: {}", e.getMessage(), e);
             return new EvaluationResult(0.0, PoseFeedbackTemplate.buildFallbackFeedback(expectedPoseName, analysis));
         }
+    }
+
+    private MimeType guessMimeType(String contentType, String fileName) {
+        if (contentType != null) {
+            String lower = contentType.toLowerCase();
+            if (lower.contains("png")) return MimeTypeUtils.IMAGE_PNG;
+            if (lower.contains("gif")) return MimeTypeUtils.IMAGE_GIF;
+            if (lower.contains("webp")) return new MimeType("image", "webp");
+            if (lower.contains("jpeg") || lower.contains("jpg")) return MimeTypeUtils.IMAGE_JPEG;
+        }
+
+        String lowerName = fileName == null ? "" : fileName.toLowerCase();
+        if (lowerName.endsWith(".png")) return MimeTypeUtils.IMAGE_PNG;
+        if (lowerName.endsWith(".gif")) return MimeTypeUtils.IMAGE_GIF;
+        if (lowerName.endsWith(".webp")) return new MimeType("image", "webp");
+        if (lowerName.endsWith(".jpeg") || lowerName.endsWith(".jpg")) return MimeTypeUtils.IMAGE_JPEG;
+
+        return MimeTypeUtils.IMAGE_JPEG;
     }
 
     private String toAiImageUrl(String imageUrl) {

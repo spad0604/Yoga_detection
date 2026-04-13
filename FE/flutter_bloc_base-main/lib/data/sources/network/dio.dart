@@ -21,8 +21,8 @@ class NetworkDio extends DioForNative implements Interceptor {
     final BaseOptions options = BaseOptions(
       baseUrl: baseUrl,
       contentType: 'application/json; charset=utf-8',
-      connectTimeout: const Duration(seconds: 60),
-      receiveTimeout: const Duration(seconds: 60),
+      connectTimeout: const Duration(seconds: 300),
+      receiveTimeout: const Duration(seconds: 300),
       sendTimeout: const Duration(minutes: 5),
     );
 
