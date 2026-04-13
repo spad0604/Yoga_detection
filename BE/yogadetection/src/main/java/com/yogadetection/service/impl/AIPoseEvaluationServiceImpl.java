@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * ENHANCED VERSION - AI Pose Evaluation Service with Angle Calculation
@@ -39,6 +41,8 @@ import java.util.ArrayList;
 @Service
 @RequiredArgsConstructor
 public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
+
+    private static final Pattern SCORE_PATTERN = Pattern.compile("\\\"score\\\"\\s*:\\s*(-?\\d+(?:\\.\\d+)?)");
 
     private final YogaPoseDetailsRepository poseDetailsRepository;
     private final ObjectMapper objectMapper;
@@ -489,9 +493,95 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
             return new EvaluationResult(score, feedback);
 
         } catch (Exception e) {
+            String json = sanitizeAIResponse(response);
+            EvaluationResult recovered = tryRecoverFromTruncatedJson(json);
+            if (recovered != null) {
+                log.warn("⚠️ AI JSON bị cắt, đã recover partial response. Reason: {}", e.getMessage());
+                return recovered;
+            }
+
             log.warn("⚠️ Non-JSON AI response → fallback. Reason: {}", e.getMessage());
             return new EvaluationResult(0.0, PoseFeedbackTemplate.buildFallbackFeedback(expectedPoseName, analysis));
         }
+    }
+
+    private EvaluationResult tryRecoverFromTruncatedJson(String raw) {
+        if (raw == null || raw.isBlank()) return null;
+
+        Double score = extractScore(raw);
+        String feedback = extractFeedback(raw);
+
+        if (score == null && (feedback == null || feedback.isBlank())) {
+            return null;
+        }
+
+        double safeScore = score != null ? score : 0.0;
+        if (safeScore < 0 || safeScore > 100) safeScore = 0.0;
+
+        String safeFeedback = (feedback == null || feedback.isBlank())
+                ? "Đã nhận phản hồi nhưng nội dung không đầy đủ."
+                : feedback;
+
+        return new EvaluationResult(safeScore, safeFeedback);
+    }
+
+    private Double extractScore(String raw) {
+        Matcher matcher = SCORE_PATTERN.matcher(raw);
+        if (!matcher.find()) return null;
+
+        try {
+            return Double.parseDouble(matcher.group(1));
+        } catch (NumberFormatException ex) {
+            return null;
+        }
+    }
+
+    private String extractFeedback(String raw) {
+        int feedbackKey = raw.indexOf("\"feedback\"");
+        if (feedbackKey < 0) return null;
+
+        int colon = raw.indexOf(':', feedbackKey);
+        if (colon < 0) return null;
+
+        int openingQuote = raw.indexOf('"', colon + 1);
+        if (openingQuote < 0) return null;
+
+        return extractPossiblyUnterminatedJsonString(raw, openingQuote + 1).trim();
+    }
+
+    private String extractPossiblyUnterminatedJsonString(String input, int start) {
+        StringBuilder out = new StringBuilder();
+        boolean escaped = false;
+
+        for (int i = start; i < input.length(); i++) {
+            char c = input.charAt(i);
+
+            if (escaped) {
+                switch (c) {
+                    case 'n' -> out.append('\n');
+                    case 'r' -> out.append('\r');
+                    case 't' -> out.append('\t');
+                    case '"' -> out.append('"');
+                    case '\\' -> out.append('\\');
+                    default -> out.append(c);
+                }
+                escaped = false;
+                continue;
+            }
+
+            if (c == '\\') {
+                escaped = true;
+                continue;
+            }
+
+            if (c == '"') {
+                break;
+            }
+
+            out.append(c);
+        }
+
+        return out.toString();
     }
 
     private String sanitizeAIResponse(String response) {
