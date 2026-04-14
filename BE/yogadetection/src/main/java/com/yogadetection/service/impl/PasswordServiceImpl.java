@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 
 @Service
@@ -80,12 +81,13 @@ public class PasswordServiceImpl implements PasswordService {
     }
 
     public ApiResponse<String> resetPassword(String token, ResetPasswordRequest request) {
-        if (!request.getNewPassword().matches(request.getConfirmNewPassword())) {
+        if (!Objects.equals(request.getNewPassword(), request.getConfirmNewPassword())) {
             return  new ApiResponse<>(ErrorCode.PASSWORDS_DO_NOT_MATCH);
         }
         String email =  jwtService.extractUsername(token);
         User user = userRepository.findByEmail(email.toLowerCase()).orElseThrow(() -> new UserNotFoundException());
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
         return new ApiResponse<>();
     }
 
