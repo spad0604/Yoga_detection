@@ -67,6 +67,7 @@ class UserRepositoryImpl implements UserRepository {
     String? firstName,
     String? lastName,
     DateTime? dob,
+    String? phone,
     String? avatarFilePath,
   }) async {
     try {
@@ -74,6 +75,7 @@ class UserRepositoryImpl implements UserRepository {
       if (firstName != null) map['firstName'] = firstName;
       if (lastName != null) map['lastName'] = lastName;
       if (dob != null) map['dob'] = dob.toIso8601String().split('T').first;
+      if (phone != null) map['phone'] = phone;
       if (avatarFilePath != null && avatarFilePath.isNotEmpty) {
         final filename = avatarFilePath.split(RegExp(r'[\\\/]')).last;
         map['avatar'] = await MultipartFile.fromFile(avatarFilePath, filename: filename);

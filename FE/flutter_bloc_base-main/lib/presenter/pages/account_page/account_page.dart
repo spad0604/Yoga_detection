@@ -173,7 +173,9 @@ class _AccountPagePageState extends State<AccountPagePage> {
                     icon: Icons.phone_outlined,
                     iconColor: Colors.green,
                     title: LocaleKeys.PhoneNumber.tr(),
-                    value: '0975265932',
+                    value: (state.information?.phone ?? '').isNotEmpty
+                        ? state.information!.phone!
+                        : '-',
                   ),
                   const SizedBox(height: 16),
                   _buildInfoCard(
@@ -181,7 +183,9 @@ class _AccountPagePageState extends State<AccountPagePage> {
                     icon: Icons.cake_outlined,
                     iconColor: Colors.orange,
                     title: LocaleKeys.Birthday.tr(),
-                    value: '01/01/2000',
+                    value: state.information?.dob != null
+                        ? '${state.information!.dob!.day.toString().padLeft(2, '0')}/${state.information!.dob!.month.toString().padLeft(2, '0')}/${state.information!.dob!.year}'
+                        : '-',
                   ),
                 ],
               ),
@@ -198,6 +202,7 @@ class _AccountPagePageState extends State<AccountPagePage> {
     String firstName = current?.firstName ?? '';
     String lastName = current?.lastName ?? '';
     DateTime? dob = current?.dob;
+    String phone = current?.phone ?? '';
     String? avatarPath;
 
     await showModalBottomSheet(
@@ -246,6 +251,13 @@ class _AccountPagePageState extends State<AccountPagePage> {
                       ),
                     ),
                   ],
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  decoration: InputDecoration(labelText: LocaleKeys.PhoneNumber.tr()),
+                  controller: TextEditingController(text: phone),
+                  keyboardType: TextInputType.phone,
+                  onChanged: (v) => phone = v,
                 ),
                 const SizedBox(height: 12),
                 Row(
@@ -298,6 +310,7 @@ class _AccountPagePageState extends State<AccountPagePage> {
                         firstName: firstName.isEmpty ? null : firstName,
                         lastName: lastName.isEmpty ? null : lastName,
                         dob: dob,
+                        phone: phone.isEmpty ? null : phone,
                         avatarFilePath: avatarPath,
                       ));
                     },

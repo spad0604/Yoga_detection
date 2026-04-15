@@ -33,6 +33,7 @@ public class UserServiceImpl implements UserService {
         return UserInfoResponse.builder()
                 .id(user.getId())
                 .email(user.getEmail())
+                .phone(user.getPhone())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .dob(user.getBirthDate() != null ? user.getBirthDate().toString() : null)
@@ -72,7 +73,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserInfoResponse updateProfile(String token, String firstName, String lastName, String dob, MultipartFile avatar) {
+    public UserInfoResponse updateProfile(String token, String firstName, String lastName, String dob, String phone, MultipartFile avatar) {
         String email = jwtService.extractUsername(token);
         User user = userRepository.findByEmail(email.toLowerCase()).orElseThrow(UserNotFoundException::new);
 
@@ -87,6 +88,10 @@ public class UserServiceImpl implements UserService {
                 user.setBirthDate(java.time.LocalDate.parse(dob));
             } catch (Exception ignored) { }
         }
+        if (phone != null) {
+            final String trimmed = phone.trim();
+            user.setPhone(trimmed.isEmpty() ? null : trimmed);
+        }
         if (avatar != null && !avatar.isEmpty()) {
             String imageUrl = imageService.uploadImage(avatar, user.getId());
             user.setAvatarUrl(imageUrl);
@@ -96,6 +101,7 @@ public class UserServiceImpl implements UserService {
         return UserInfoResponse.builder()
                 .id(user.getId())
                 .email(user.getEmail())
+                .phone(user.getPhone())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .dob(user.getBirthDate() != null ? user.getBirthDate().toString() : null)

@@ -15,6 +15,7 @@ class UpdateProfileUc extends UseCase<GetInformation, UpdateProfileParams> {
       firstName: params.firstName,
       lastName: params.lastName,
       dob: params.dob,
+      phone: params.phone,
       avatarFilePath: params.avatarFilePath,
     );
   }
@@ -24,9 +25,8 @@ class UpdateProfileParams {
   final String? firstName;
   final String? lastName;
   final DateTime? dob;
+  final String? phone;
   final String? avatarFilePath;
 
-  UpdateProfileParams({this.firstName, this.lastName, this.dob, this.avatarFilePath});
+  UpdateProfileParams({this.firstName, this.lastName, this.dob, this.phone, this.avatarFilePath});
 }
-
-

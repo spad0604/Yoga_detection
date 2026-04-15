@@ -13,7 +13,8 @@ class AccountPageBloc extends Bloc<AccountPageEvent, AccountPageState> {
   final GetInformationUc _getInformationUc;
   final UpdateProfileUc _updateProfileUc;
 
-  AccountPageBloc({required GetInformationUc getInformationUc, required UpdateProfileUc updateProfileUc})
+  AccountPageBloc(
+      {required GetInformationUc getInformationUc, required UpdateProfileUc updateProfileUc})
       : _getInformationUc = getInformationUc,
         _updateProfileUc = updateProfileUc,
         super(const AccountPageState()) {
@@ -39,6 +40,7 @@ class AccountPageBloc extends Bloc<AccountPageEvent, AccountPageState> {
           firstName: event.firstName,
           lastName: event.lastName,
           dob: event.dob,
+          phone: event.phone,
           avatarFilePath: event.avatarFilePath,
         ));
         emit(state.copyWith(status: AccountPageStatus.success, information: updated));

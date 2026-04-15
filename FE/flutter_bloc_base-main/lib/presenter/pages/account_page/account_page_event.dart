@@ -13,6 +13,7 @@ class AccountPageEvent with _$AccountPageEvent {
     String? firstName,
     String? lastName,
     DateTime? dob,
+    String? phone,
     String? avatarFilePath,
   }) = AccountPageUpdateProfile;
 }

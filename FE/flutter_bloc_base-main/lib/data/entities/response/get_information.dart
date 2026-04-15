@@ -17,10 +17,11 @@ class GetInformation with _$GetInformation {
   const factory GetInformation({
     @JsonKey(name: "firstName") required String firstName,
     @JsonKey(name: "lastName") required String lastName,
-    @JsonKey(name: "dob") required DateTime dob,
+    @JsonKey(name: "dob") DateTime? dob,
     @JsonKey(name: "id") required String id,
     @JsonKey(name: "email") required String email,
-    @JsonKey(name: "registerDate") required DateTime registerDate,
+    @JsonKey(name: "phone") String? phone,
+    @JsonKey(name: "registerDate") DateTime? registerDate,
     @JsonKey(name: "avatarUrl") String? avatarUrl,
     @JsonKey(name: "role") String? role,
   }) = _GetInformation;

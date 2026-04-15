@@ -14,5 +14,5 @@ public interface UserService {
     ApiResponse <String> changeInformation(ChangeInformationRequest request);
     ApiResponse <String> deleteUser(String token);
     String getUserId(String token);
-    UserInfoResponse updateProfile(String token, String firstName, String lastName, String dob, MultipartFile avatar);
+    UserInfoResponse updateProfile(String token, String firstName, String lastName, String dob, String phone, MultipartFile avatar);
 }

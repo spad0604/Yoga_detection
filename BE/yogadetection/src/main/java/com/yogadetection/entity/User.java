@@ -52,6 +52,9 @@ public class User implements UserDetails {
     @Column(name = "fcmToken", nullable = true, updatable = true)
     private String fcmToken;
 
+    @Column(name = "phone")
+    private String phone;
+
     @Column(name = "avatar_url")
     private String avatarUrl;
 

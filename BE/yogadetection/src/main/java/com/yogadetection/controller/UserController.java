@@ -38,8 +38,9 @@ public class UserController {
             @RequestPart(value = "firstName", required = false) String firstName,
             @RequestPart(value = "lastName", required = false) String lastName,
             @RequestPart(value = "dob", required = false) String dob,
+            @RequestPart(value = "phone", required = false) String phone,
             @RequestPart(value = "avatar", required = false) MultipartFile avatar
     ) {
-        return userService.updateProfile(token, firstName, lastName, dob, avatar);
+        return userService.updateProfile(token, firstName, lastName, dob, phone, avatar);
     }
 }

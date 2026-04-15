@@ -12,3 +12,6 @@ Python/.ipynb_checkpoints/
 
 # Generated cache
 Python/pose_angle_reference.json
+
+# Local DB config (do not commit)
+Python/.db_url

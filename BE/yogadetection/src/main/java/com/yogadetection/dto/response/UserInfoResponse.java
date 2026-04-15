@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 public class UserInfoResponse {
     private String id;
     private String email;
+    private String phone;
     private String firstName;
     private String lastName;
     private String dob;

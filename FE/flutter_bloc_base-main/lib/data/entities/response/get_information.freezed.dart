@@ -25,13 +25,15 @@ mixin _$GetInformation {
   @JsonKey(name: "lastName")
   String get lastName => throw _privateConstructorUsedError;
   @JsonKey(name: "dob")
-  DateTime get dob => throw _privateConstructorUsedError;
+  DateTime? get dob => throw _privateConstructorUsedError;
   @JsonKey(name: "id")
   String get id => throw _privateConstructorUsedError;
   @JsonKey(name: "email")
   String get email => throw _privateConstructorUsedError;
+  @JsonKey(name: "phone")
+  String? get phone => throw _privateConstructorUsedError;
   @JsonKey(name: "registerDate")
-  DateTime get registerDate => throw _privateConstructorUsedError;
+  DateTime? get registerDate => throw _privateConstructorUsedError;
   @JsonKey(name: "avatarUrl")
   String? get avatarUrl => throw _privateConstructorUsedError;
   @JsonKey(name: "role")
@@ -56,10 +58,11 @@ abstract class $GetInformationCopyWith<$Res> {
   $Res call(
       {@JsonKey(name: "firstName") String firstName,
       @JsonKey(name: "lastName") String lastName,
-      @JsonKey(name: "dob") DateTime dob,
+      @JsonKey(name: "dob") DateTime? dob,
       @JsonKey(name: "id") String id,
       @JsonKey(name: "email") String email,
-      @JsonKey(name: "registerDate") DateTime registerDate,
+      @JsonKey(name: "phone") String? phone,
+      @JsonKey(name: "registerDate") DateTime? registerDate,
       @JsonKey(name: "avatarUrl") String? avatarUrl,
       @JsonKey(name: "role") String? role});
 }
@@ -81,10 +84,11 @@ class _$GetInformationCopyWithImpl<$Res, $Val extends GetInformation>
   $Res call({
     Object? firstName = null,
     Object? lastName = null,
-    Object? dob = null,
+    Object? dob = freezed,
     Object? id = null,
     Object? email = null,
-    Object? registerDate = null,
+    Object? phone = freezed,
+    Object? registerDate = freezed,
     Object? avatarUrl = freezed,
     Object? role = freezed,
   }) {
@@ -97,10 +101,10 @@ class _$GetInformationCopyWithImpl<$Res, $Val extends GetInformation>
           ? _value.lastName
           : lastName // ignore: cast_nullable_to_non_nullable
               as String,
-      dob: null == dob
+      dob: freezed == dob
           ? _value.dob
           : dob // ignore: cast_nullable_to_non_nullable
-              as DateTime,
+              as DateTime?,
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -109,10 +113,14 @@ class _$GetInformationCopyWithImpl<$Res, $Val extends GetInformation>
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
               as String,
-      registerDate: null == registerDate
+      phone: freezed == phone
+          ? _value.phone
+          : phone // ignore: cast_nullable_to_non_nullable
+              as String?,
+      registerDate: freezed == registerDate
           ? _value.registerDate
           : registerDate // ignore: cast_nullable_to_non_nullable
-              as DateTime,
+              as DateTime?,
       avatarUrl: freezed == avatarUrl
           ? _value.avatarUrl
           : avatarUrl // ignore: cast_nullable_to_non_nullable
@@ -136,10 +144,11 @@ abstract class _$$GetInformationImplCopyWith<$Res>
   $Res call(
       {@JsonKey(name: "firstName") String firstName,
       @JsonKey(name: "lastName") String lastName,
-      @JsonKey(name: "dob") DateTime dob,
+      @JsonKey(name: "dob") DateTime? dob,
       @JsonKey(name: "id") String id,
       @JsonKey(name: "email") String email,
-      @JsonKey(name: "registerDate") DateTime registerDate,
+      @JsonKey(name: "phone") String? phone,
+      @JsonKey(name: "registerDate") DateTime? registerDate,
       @JsonKey(name: "avatarUrl") String? avatarUrl,
       @JsonKey(name: "role") String? role});
 }
@@ -159,10 +168,11 @@ class __$$GetInformationImplCopyWithImpl<$Res>
   $Res call({
     Object? firstName = null,
     Object? lastName = null,
-    Object? dob = null,
+    Object? dob = freezed,
     Object? id = null,
     Object? email = null,
-    Object? registerDate = null,
+    Object? phone = freezed,
+    Object? registerDate = freezed,
     Object? avatarUrl = freezed,
     Object? role = freezed,
   }) {
@@ -175,10 +185,10 @@ class __$$GetInformationImplCopyWithImpl<$Res>
           ? _value.lastName
           : lastName // ignore: cast_nullable_to_non_nullable
               as String,
-      dob: null == dob
+      dob: freezed == dob
           ? _value.dob
           : dob // ignore: cast_nullable_to_non_nullable
-              as DateTime,
+              as DateTime?,
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -187,10 +197,14 @@ class __$$GetInformationImplCopyWithImpl<$Res>
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
               as String,
-      registerDate: null == registerDate
+      phone: freezed == phone
+          ? _value.phone
+          : phone // ignore: cast_nullable_to_non_nullable
+              as String?,
+      registerDate: freezed == registerDate
           ? _value.registerDate
           : registerDate // ignore: cast_nullable_to_non_nullable
-              as DateTime,
+              as DateTime?,
       avatarUrl: freezed == avatarUrl
           ? _value.avatarUrl
           : avatarUrl // ignore: cast_nullable_to_non_nullable
@@ -209,10 +223,11 @@ class _$GetInformationImpl implements _GetInformation {
   const _$GetInformationImpl(
       {@JsonKey(name: "firstName") required this.firstName,
       @JsonKey(name: "lastName") required this.lastName,
-      @JsonKey(name: "dob") required this.dob,
+      @JsonKey(name: "dob") this.dob,
       @JsonKey(name: "id") required this.id,
       @JsonKey(name: "email") required this.email,
-      @JsonKey(name: "registerDate") required this.registerDate,
+      @JsonKey(name: "phone") this.phone,
+      @JsonKey(name: "registerDate") this.registerDate,
       @JsonKey(name: "avatarUrl") this.avatarUrl,
       @JsonKey(name: "role") this.role});
 
@@ -227,7 +242,7 @@ class _$GetInformationImpl implements _GetInformation {
   final String lastName;
   @override
   @JsonKey(name: "dob")
-  final DateTime dob;
+  final DateTime? dob;
   @override
   @JsonKey(name: "id")
   final String id;
@@ -235,8 +250,11 @@ class _$GetInformationImpl implements _GetInformation {
   @JsonKey(name: "email")
   final String email;
   @override
+  @JsonKey(name: "phone")
+  final String? phone;
+  @override
   @JsonKey(name: "registerDate")
-  final DateTime registerDate;
+  final DateTime? registerDate;
   @override
   @JsonKey(name: "avatarUrl")
   final String? avatarUrl;
@@ -246,7 +264,7 @@ class _$GetInformationImpl implements _GetInformation {
 
   @override
   String toString() {
-    return 'GetInformation(firstName: $firstName, lastName: $lastName, dob: $dob, id: $id, email: $email, registerDate: $registerDate, avatarUrl: $avatarUrl, role: $role)';
+    return 'GetInformation(firstName: $firstName, lastName: $lastName, dob: $dob, id: $id, email: $email, phone: $phone, registerDate: $registerDate, avatarUrl: $avatarUrl, role: $role)';
   }
 
   @override
@@ -261,6 +279,7 @@ class _$GetInformationImpl implements _GetInformation {
             (identical(other.dob, dob) || other.dob == dob) &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.email, email) || other.email == email) &&
+            (identical(other.phone, phone) || other.phone == phone) &&
             (identical(other.registerDate, registerDate) ||
                 other.registerDate == registerDate) &&
             (identical(other.avatarUrl, avatarUrl) ||
@@ -271,7 +290,7 @@ class _$GetInformationImpl implements _GetInformation {
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, firstName, lastName, dob, id,
-      email, registerDate, avatarUrl, role);
+      email, phone, registerDate, avatarUrl, role);
 
   /// Create a copy of GetInformation
   /// with the given fields replaced by the non-null parameter values.
@@ -294,10 +313,11 @@ abstract class _GetInformation implements GetInformation {
   const factory _GetInformation(
       {@JsonKey(name: "firstName") required final String firstName,
       @JsonKey(name: "lastName") required final String lastName,
-      @JsonKey(name: "dob") required final DateTime dob,
+      @JsonKey(name: "dob") final DateTime? dob,
       @JsonKey(name: "id") required final String id,
       @JsonKey(name: "email") required final String email,
-      @JsonKey(name: "registerDate") required final DateTime registerDate,
+      @JsonKey(name: "phone") final String? phone,
+      @JsonKey(name: "registerDate") final DateTime? registerDate,
       @JsonKey(name: "avatarUrl") final String? avatarUrl,
       @JsonKey(name: "role") final String? role}) = _$GetInformationImpl;
 
@@ -312,7 +332,7 @@ abstract class _GetInformation implements GetInformation {
   String get lastName;
   @override
   @JsonKey(name: "dob")
-  DateTime get dob;
+  DateTime? get dob;
   @override
   @JsonKey(name: "id")
   String get id;
@@ -320,8 +340,11 @@ abstract class _GetInformation implements GetInformation {
   @JsonKey(name: "email")
   String get email;
   @override
+  @JsonKey(name: "phone")
+  String? get phone;
+  @override
   @JsonKey(name: "registerDate")
-  DateTime get registerDate;
+  DateTime? get registerDate;
   @override
   @JsonKey(name: "avatarUrl")
   String? get avatarUrl;

@@ -7,8 +7,18 @@
       "label": "build_runner: watch",
       "type": "dart",
       "command": "dart",
-      "args": ["run", "build_runner", "watch", "--delete-conflicting-outputs"],
-      "problemMatcher": ["$dart-build_runner"],
+      "options": {
+        "cwd": "${workspaceFolder}/FE/flutter_bloc_base-main"
+      },
+      "args": [
+        "run",
+        "build_runner",
+        "watch",
+        "--delete-conflicting-outputs"
+      ],
+      "problemMatcher": [
+        "$dart-build_runner"
+      ],
       "group": "build",
       "isBackground": true,
       "runOptions": {
@@ -21,6 +31,9 @@
       "label": "easy_localization: generate keys",
       "type": "dart",
       "command": "dart",
+      "options": {
+        "cwd": "${workspaceFolder}/FE/flutter_bloc_base-main"
+      },
       "args": [
         "run",
         "easy_localization:generate",
@@ -39,6 +52,9 @@
       "label": "flutter_flavorizr",
       "type": "shell",
       "command": "flutter pub run flutter_flavorizr",
+      "options": {
+        "cwd": "${workspaceFolder}/FE/flutter_bloc_base-main"
+      },
       "problemMatcher": [],
       "group": "build"
     },
@@ -46,6 +62,9 @@
       "label": "mason: bloc_page",
       "type": "shell",
       "command": "mason make bloc_page --name '${input:page_name}'",
+      "options": {
+        "cwd": "${workspaceFolder}/FE/flutter_bloc_base-main"
+      },
       "problemMatcher": [],
       "group": "build"
     }

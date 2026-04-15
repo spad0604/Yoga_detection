@@ -31,3 +31,9 @@ ALTER TABLE notifications ALTER COLUMN is_read SET NOT NULL;
 
 -- Set default value for future inserts
 ALTER TABLE notifications ALTER COLUMN is_read SET DEFAULT FALSE;
+
+-- ==================================================
+-- FIX 3: User table - add phone column
+-- ==================================================
+
+ALTER TABLE "user" ADD COLUMN IF NOT EXISTS phone VARCHAR(32);

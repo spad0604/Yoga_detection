@@ -13,6 +13,7 @@ abstract class UserRepository {
     String? firstName,
     String? lastName,
     DateTime? dob,
+    String? phone,
     String? avatarFilePath,
   });
 }

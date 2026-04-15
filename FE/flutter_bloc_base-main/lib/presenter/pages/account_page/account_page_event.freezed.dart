@@ -21,7 +21,7 @@ mixin _$AccountPageEvent {
     required TResult Function(BaseException<dynamic>? error) errorOccurred,
     required TResult Function() getInformation,
     required TResult Function(String? firstName, String? lastName,
-            DateTime? dob, String? avatarFilePath)
+            DateTime? dob, String? phone, String? avatarFilePath)
         updateProfile,
   }) =>
       throw _privateConstructorUsedError;
@@ -30,7 +30,7 @@ mixin _$AccountPageEvent {
     TResult? Function(BaseException<dynamic>? error)? errorOccurred,
     TResult? Function()? getInformation,
     TResult? Function(String? firstName, String? lastName, DateTime? dob,
-            String? avatarFilePath)?
+            String? phone, String? avatarFilePath)?
         updateProfile,
   }) =>
       throw _privateConstructorUsedError;
@@ -39,7 +39,7 @@ mixin _$AccountPageEvent {
     TResult Function(BaseException<dynamic>? error)? errorOccurred,
     TResult Function()? getInformation,
     TResult Function(String? firstName, String? lastName, DateTime? dob,
-            String? avatarFilePath)?
+            String? phone, String? avatarFilePath)?
         updateProfile,
     required TResult orElse(),
   }) =>
@@ -163,7 +163,7 @@ class _$AccountPageErrorOccurredImpl implements AccountPageErrorOccurred {
     required TResult Function(BaseException<dynamic>? error) errorOccurred,
     required TResult Function() getInformation,
     required TResult Function(String? firstName, String? lastName,
-            DateTime? dob, String? avatarFilePath)
+            DateTime? dob, String? phone, String? avatarFilePath)
         updateProfile,
   }) {
     return errorOccurred(error);
@@ -175,7 +175,7 @@ class _$AccountPageErrorOccurredImpl implements AccountPageErrorOccurred {
     TResult? Function(BaseException<dynamic>? error)? errorOccurred,
     TResult? Function()? getInformation,
     TResult? Function(String? firstName, String? lastName, DateTime? dob,
-            String? avatarFilePath)?
+            String? phone, String? avatarFilePath)?
         updateProfile,
   }) {
     return errorOccurred?.call(error);
@@ -187,7 +187,7 @@ class _$AccountPageErrorOccurredImpl implements AccountPageErrorOccurred {
     TResult Function(BaseException<dynamic>? error)? errorOccurred,
     TResult Function()? getInformation,
     TResult Function(String? firstName, String? lastName, DateTime? dob,
-            String? avatarFilePath)?
+            String? phone, String? avatarFilePath)?
         updateProfile,
     required TResult orElse(),
   }) {
@@ -293,7 +293,7 @@ class _$AccountPageGetInformationImpl implements AccountPageGetInformation {
     required TResult Function(BaseException<dynamic>? error) errorOccurred,
     required TResult Function() getInformation,
     required TResult Function(String? firstName, String? lastName,
-            DateTime? dob, String? avatarFilePath)
+            DateTime? dob, String? phone, String? avatarFilePath)
         updateProfile,
   }) {
     return getInformation();
@@ -305,7 +305,7 @@ class _$AccountPageGetInformationImpl implements AccountPageGetInformation {
     TResult? Function(BaseException<dynamic>? error)? errorOccurred,
     TResult? Function()? getInformation,
     TResult? Function(String? firstName, String? lastName, DateTime? dob,
-            String? avatarFilePath)?
+            String? phone, String? avatarFilePath)?
         updateProfile,
   }) {
     return getInformation?.call();
@@ -317,7 +317,7 @@ class _$AccountPageGetInformationImpl implements AccountPageGetInformation {
     TResult Function(BaseException<dynamic>? error)? errorOccurred,
     TResult Function()? getInformation,
     TResult Function(String? firstName, String? lastName, DateTime? dob,
-            String? avatarFilePath)?
+            String? phone, String? avatarFilePath)?
         updateProfile,
     required TResult orElse(),
   }) {
@@ -377,6 +377,7 @@ abstract class _$$AccountPageUpdateProfileImplCopyWith<$Res> {
       {String? firstName,
       String? lastName,
       DateTime? dob,
+      String? phone,
       String? avatarFilePath});
 }
 
@@ -397,6 +398,7 @@ class __$$AccountPageUpdateProfileImplCopyWithImpl<$Res>
     Object? firstName = freezed,
     Object? lastName = freezed,
     Object? dob = freezed,
+    Object? phone = freezed,
     Object? avatarFilePath = freezed,
   }) {
     return _then(_$AccountPageUpdateProfileImpl(
@@ -412,6 +414,10 @@ class __$$AccountPageUpdateProfileImplCopyWithImpl<$Res>
           ? _value.dob
           : dob // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+      phone: freezed == phone
+          ? _value.phone
+          : phone // ignore: cast_nullable_to_non_nullable
+              as String?,
       avatarFilePath: freezed == avatarFilePath
           ? _value.avatarFilePath
           : avatarFilePath // ignore: cast_nullable_to_non_nullable
@@ -424,7 +430,11 @@ class __$$AccountPageUpdateProfileImplCopyWithImpl<$Res>
 
 class _$AccountPageUpdateProfileImpl implements AccountPageUpdateProfile {
   const _$AccountPageUpdateProfileImpl(
-      {this.firstName, this.lastName, this.dob, this.avatarFilePath});
+      {this.firstName,
+      this.lastName,
+      this.dob,
+      this.phone,
+      this.avatarFilePath});
 
   @override
   final String? firstName;
@@ -433,11 +443,13 @@ class _$AccountPageUpdateProfileImpl implements AccountPageUpdateProfile {
   @override
   final DateTime? dob;
   @override
+  final String? phone;
+  @override
   final String? avatarFilePath;
 
   @override
   String toString() {
-    return 'AccountPageEvent.updateProfile(firstName: $firstName, lastName: $lastName, dob: $dob, avatarFilePath: $avatarFilePath)';
+    return 'AccountPageEvent.updateProfile(firstName: $firstName, lastName: $lastName, dob: $dob, phone: $phone, avatarFilePath: $avatarFilePath)';
   }
 
   @override
@@ -450,13 +462,14 @@ class _$AccountPageUpdateProfileImpl implements AccountPageUpdateProfile {
             (identical(other.lastName, lastName) ||
                 other.lastName == lastName) &&
             (identical(other.dob, dob) || other.dob == dob) &&
+            (identical(other.phone, phone) || other.phone == phone) &&
             (identical(other.avatarFilePath, avatarFilePath) ||
                 other.avatarFilePath == avatarFilePath));
   }
 
   @override
   int get hashCode =>
-      Object.hash(runtimeType, firstName, lastName, dob, avatarFilePath);
+      Object.hash(runtimeType, firstName, lastName, dob, phone, avatarFilePath);
 
   /// Create a copy of AccountPageEvent
   /// with the given fields replaced by the non-null parameter values.
@@ -473,10 +486,10 @@ class _$AccountPageUpdateProfileImpl implements AccountPageUpdateProfile {
     required TResult Function(BaseException<dynamic>? error) errorOccurred,
     required TResult Function() getInformation,
     required TResult Function(String? firstName, String? lastName,
-            DateTime? dob, String? avatarFilePath)
+            DateTime? dob, String? phone, String? avatarFilePath)
         updateProfile,
   }) {
-    return updateProfile(firstName, lastName, dob, avatarFilePath);
+    return updateProfile(firstName, lastName, dob, phone, avatarFilePath);
   }
 
   @override
@@ -485,10 +498,10 @@ class _$AccountPageUpdateProfileImpl implements AccountPageUpdateProfile {
     TResult? Function(BaseException<dynamic>? error)? errorOccurred,
     TResult? Function()? getInformation,
     TResult? Function(String? firstName, String? lastName, DateTime? dob,
-            String? avatarFilePath)?
+            String? phone, String? avatarFilePath)?
         updateProfile,
   }) {
-    return updateProfile?.call(firstName, lastName, dob, avatarFilePath);
+    return updateProfile?.call(firstName, lastName, dob, phone, avatarFilePath);
   }
 
   @override
@@ -497,12 +510,12 @@ class _$AccountPageUpdateProfileImpl implements AccountPageUpdateProfile {
     TResult Function(BaseException<dynamic>? error)? errorOccurred,
     TResult Function()? getInformation,
     TResult Function(String? firstName, String? lastName, DateTime? dob,
-            String? avatarFilePath)?
+            String? phone, String? avatarFilePath)?
         updateProfile,
     required TResult orElse(),
   }) {
     if (updateProfile != null) {
-      return updateProfile(firstName, lastName, dob, avatarFilePath);
+      return updateProfile(firstName, lastName, dob, phone, avatarFilePath);
     }
     return orElse();
   }
@@ -547,11 +560,13 @@ abstract class AccountPageUpdateProfile implements AccountPageEvent {
       {final String? firstName,
       final String? lastName,
       final DateTime? dob,
+      final String? phone,
       final String? avatarFilePath}) = _$AccountPageUpdateProfileImpl;
 
   String? get firstName;
   String? get lastName;
   DateTime? get dob;
+  String? get phone;
   String? get avatarFilePath;
 
   /// Create a copy of AccountPageEvent

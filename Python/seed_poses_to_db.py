@@ -14,6 +14,7 @@ import psycopg
 
 APP_DIR = Path(__file__).resolve().parent
 CSV_PATH = APP_DIR / "yoga_keypoints.csv"
+DB_URL_FILE = APP_DIR / ".db_url"
 
 
 def _clean_label_to_name(label: str) -> str:
@@ -75,10 +76,23 @@ def _iter_pose_rows(
 
 def _get_db_url() -> str:
     url = os.getenv("DATABASE_URL") or os.getenv("SUPABASE_DB_URL")
+    if not url and DB_URL_FILE.exists():
+        for line in DB_URL_FILE.read_text(encoding="utf-8").splitlines():
+            s = line.strip()
+            if not s or s.startswith("#"):
+                continue
+            url = s.strip('"').strip("'")
+            break
     if not url:
         raise SystemExit(
-            "Missing DATABASE_URL (or SUPABASE_DB_URL). Example:\n"
-            "  setx DATABASE_URL \"postgresql://USER:PASSWORD@HOST:5432/postgres\"\n"
+            "Missing DATABASE_URL (or SUPABASE_DB_URL).\n\n"
+            "Windows PowerShell (current terminal only):\n"
+            "  $env:DATABASE_URL = 'postgresql://USER:PASSWORD@HOST:5432/postgres?sslmode=require'\n\n"
+            "Windows CMD (current terminal only):\n"
+            "  set DATABASE_URL=postgresql://USER:PASSWORD@HOST:5432/postgres?sslmode=require\n\n"
+            "Or create a local file Python/.db_url containing the full connection string.\n\n"
+            "Note: If your password contains special characters (e.g. '@'), URL-encode it.\n"
+            "Example: 'Giap123@123' -> 'Giap123%40123'\n"
         )
     return url
 

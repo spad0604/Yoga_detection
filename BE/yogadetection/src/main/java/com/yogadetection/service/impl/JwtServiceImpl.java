@@ -20,7 +20,8 @@ public class JwtServiceImpl implements JwtService {
 //    private static final String SECRET_KEY = System.getenv("JWT_SECRET");
     private static final String SECRET_KEY = "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970";
     private static final long EXPIRATION_TIME = 86400000; 
-    private static final long REFRESH_EXPIRATION_TIME = 604800000; 
+    // Refresh token is designed to be non-expiring (infinite) per product requirement.
+    // Old refresh tokens may still contain exp; validation remains compatible.
 
     @Override
     public String generateToken(User user) {
@@ -36,7 +37,7 @@ public class JwtServiceImpl implements JwtService {
         Map<String, Object> extraClaims = new HashMap<>();
         extraClaims.put("username", user.getUsername());
         extraClaims.put("type", "refresh");
-        String token = generateToken(extraClaims, user, REFRESH_EXPIRATION_TIME);
+        String token = generateToken(extraClaims, user, null);
         return token;
     }
 
@@ -51,14 +52,19 @@ public class JwtServiceImpl implements JwtService {
         return token;
     }
 
-    private String generateToken(Map<String, Object> extraClaims, User user, long expirationTime) {
-        return Jwts
+    private String generateToken(Map<String, Object> extraClaims, User user, Long expirationTimeMillis) {
+        io.jsonwebtoken.JwtBuilder builder = Jwts
                 .builder()
                 .setClaims(extraClaims)
                 .setId(user.getId())
                 .setSubject(user.getUsername())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
+                .setIssuedAt(new Date(System.currentTimeMillis()));
+
+        if (expirationTimeMillis != null) {
+            builder.setExpiration(new Date(System.currentTimeMillis() + expirationTimeMillis));
+        }
+
+        return builder
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -78,7 +84,20 @@ public class JwtServiceImpl implements JwtService {
     @Override
     public boolean isTokenValid(String token, User user) {
         final String username = extractUsername(token);
-        return (username.equals(user.getUsername())) && !isTokenExpired(token);
+        if (!username.equals(user.getUsername())) {
+            return false;
+        }
+
+        // Refresh tokens may be non-expiring (no exp claim).
+        final Claims claims = extractAllClaims(cleanToken(token));
+        final Object type = claims.get("type");
+
+        if (type != null && "refresh".equalsIgnoreCase(type.toString())) {
+            return !isTokenExpiredIfPresent(claims);
+        }
+
+        // Access tokens must be time-bound.
+        return !isTokenExpired(token);
     }
 
     private Date extractExpiration(String token) {
@@ -86,7 +105,20 @@ public class JwtServiceImpl implements JwtService {
     }
 
     private boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
+        final Date exp = extractExpiration(token);
+        // If exp is missing, treat as non-expiring.
+        if (exp == null) {
+            return false;
+        }
+        return exp.before(new Date());
+    }
+
+    private boolean isTokenExpiredIfPresent(Claims claims) {
+        final Date exp = claims.getExpiration();
+        if (exp == null) {
+            return false;
+        }
+        return exp.before(new Date());
     }
 
     private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
