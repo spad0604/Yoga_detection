@@ -40,14 +40,21 @@ class _SplashPageState extends State<SplashPage> {
     });
   }
 
-  void _onSuccess(BuildContext context, SplashState state) {
+  void _onSuccess(BuildContext context, SplashState state) async {
     if (state.account != null) {
       try {
-        context.read<AuthBloc>().add(AuthLoggedIn(state.account!));
-      } catch (_) {}
+        final authBloc = context.read<AuthBloc>();
+        authBloc.add(AuthLoggedIn(state.account!));
+
+        // Wait for AuthBloc state update before navigating to guarded routes.
+        await authBloc.stream.firstWhere((s) => s.loggedIn).timeout(const Duration(seconds: 2));
+      } catch (_) {
+        // If waiting fails, routing guard will handle it.
+      }
     }
 
-    context.router.pushAll([HomeRoute()]);
+    if (!context.mounted) return;
+    context.router.replaceAll([HomeRoute()]);
   }
 
   void _onError(BuildContext context, SplashState state) {
