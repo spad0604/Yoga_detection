@@ -25,8 +25,6 @@ import 'package:flutter_starter/data/entities/response/yoga_pose_details.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_starter/presenter/languages/translation_keys.g.dart';
-import 'package:flutter_starter/core/utils/image_crop_helper.dart';
-import 'package:flutter_starter/core/utils/image_quality_enhancer.dart';
 import 'package:flutter_starter/presenter/pages/pose_guide/pose_capture_guide_dialog.dart';
 
 // ignore: depend_on_referenced_packages
@@ -347,19 +345,6 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
       final imagePath = '${dir.path}${Platform.pathSeparator}pose_image_$timestamp.jpg';
       await File(imagePath).writeAsBytes(imageBytes);
 
-      // 🆕 ENHANCE IMAGE QUALITY FIRST!
-      debugPrint('✨ Enhancing image quality (resize, sharpen, adjust colors)...');
-      final enhancedImagePath = await _enhanceImageQuality(imagePath);
-      debugPrint('✅ Image enhanced: $enhancedImagePath');
-
-      // Crop image to focus on person
-      debugPrint('🔲 Cropping image to focus on person...');
-      final croppedImagePath = await ImageCropHelper.cropImageToPerson(
-        originalImagePath: enhancedImagePath, // Use enhanced image instead of original
-        poses: poses,
-        paddingFactor: 0.15, // 15% padding
-      );
-
       // Create model with landmarks
       final landmarks = landmarksJson.isNotEmpty
           ? (landmarksJson.first['landmarks'] as List)
@@ -378,84 +363,57 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
         timestamp: DateTime.now().toIso8601String(),
       );
 
-      // Upload via HTTP in background (do not wait for API response)
+      // Upload via HTTP (wait for API response and then show result)
       debugPrint('\n${'=' * 60}');
       debugPrint('📤 UPLOADING POSE VIA HTTP');
       debugPrint('${'=' * 60}');
       debugPrint('Pose ID: $poseId');
       debugPrint('Original image path: $imagePath');
-      debugPrint('Cropped image path: $croppedImagePath');
       debugPrint('Landmarks count: ${landmarks.length}');
-      debugPrint('Sending request in background...');
+      debugPrint('Waiting for API response...');
       debugPrint('${'=' * 60}\n');
 
       final useCase = provider<PostYogaPoseUC>();
-      unawaited(_sendPoseInBackground(
-        useCase: useCase,
-        model: model,
+      // Show waiting page while calling API
+      if (mounted) {
+        context.router.push(const WaitingResultRoute());
+      }
+
+      final result = await useCase(PostYogaPoseParams(
         imagePath: imagePath,
-        croppedImagePath: croppedImagePath,
-      ));
-
-      await _showUploadSentMessageAndBack();
-    } catch (e) {
-      debugPrint('❌ Failed to upload pose via HTTP: $e');
-      _showError('Failed to upload pose: $e');
-    }
-  }
-
-  Future<void> _sendPoseInBackground({
-    required PostYogaPoseUC useCase,
-    required PostYogaPoseModel model,
-    required String imagePath,
-    required String croppedImagePath,
-  }) async {
-    try {
-      await useCase(PostYogaPoseParams(
-        imagePath: croppedImagePath,
         model: model,
       ));
-      debugPrint('✅ Pose uploaded successfully in background.');
-    } catch (e) {
-      debugPrint('❌ Background upload failed: $e');
-    } finally {
-      // Clean up temporary files after upload attempt.
+
+      debugPrint('✅ Pose uploaded successfully. Got immediate result from API');
+
+      // Navigate to pretty result screen
+      if (mounted) {
+        // Try to pass poseName from args if available
+        String? poseName;
+        try {
+          final route = ModalRoute.of(context);
+          if (route != null && route.settings.arguments is Map) {
+            final args = route.settings.arguments as Map;
+            if (args['item'] != null && args['item'].name != null) {
+              poseName = args['item'].name as String?;
+            } else if (args['poseName'] is String) {
+              poseName = args['poseName'] as String;
+            }
+          }
+        } catch (_) {}
+
+        context.router.replace(PoseResultRoute(result: result, poseName: poseName));
+      }
+
+      // Clean up temp file
       try {
-        if (await File(imagePath).exists()) {
-          await File(imagePath).delete();
-        }
+        await File(imagePath).delete();
       } catch (e) {
         debugPrint('Failed to delete temp image: $e');
       }
-
-      try {
-        if (croppedImagePath != imagePath && await File(croppedImagePath).exists()) {
-          await File(croppedImagePath).delete();
-        }
-      } catch (e) {
-        debugPrint('Failed to delete cropped image: $e');
-      }
-    }
-  }
-
-  Future<void> _showUploadSentMessageAndBack() async {
-    if (!mounted) return;
-
-    await _stopStream();
-    if (!mounted) return;
-
-    context.router.replace(const WaitingResultRoute());
-  }
-
-  /// 🆕 Enhance image quality before upload
-  Future<String> _enhanceImageQuality(String originalImagePath) async {
-    try {
-      final originalFile = File(originalImagePath);
-      final enhancedFile = await ImageQualityEnhancer.enhanceImage(originalFile);
-      return enhancedFile.path;
     } catch (e) {
-      debugPrint('⚠️ Failed to enhance image, using original: $e');
-      return originalImagePath; // Fallback to original if enhancement fails
+      debugPrint('❌ Failed to upload pose via HTTP: $e');
+      _showError('Failed to upload pose: $e');
     }
   }
 

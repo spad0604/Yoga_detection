@@ -18,8 +18,6 @@ import 'package:google_mlkit_pose_detection/google_mlkit_pose_detection.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_starter/presenter/languages/translation_keys.g.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:flutter_starter/core/utils/image_crop_helper.dart';
-import 'package:flutter_starter/core/utils/image_quality_enhancer.dart';
 import 'package:flutter_starter/presenter/pages/pose_guide/pose_capture_guide_dialog.dart';
 
 // ignore: depend_on_referenced_packages
@@ -234,18 +232,6 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
       }
     } catch (e) {
       debugPrint('Error initializing camera: $e');
-    }
-  }
-
-  /// 🆕 Enhance image quality before upload
-  Future<String> _enhanceImageQuality(String originalImagePath) async {
-    try {
-      final originalFile = File(originalImagePath);
-      final enhancedFile = await ImageQualityEnhancer.enhanceImage(originalFile);
-      return enhancedFile.path;
-    } catch (e) {
-      debugPrint('⚠️ Failed to enhance image, using original: $e');
-      return originalImagePath; // Fallback to original if enhancement fails
     }
   }
 
@@ -481,19 +467,6 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
         _detectedPoses = poses;
       });
 
-      // 🆕 ENHANCE IMAGE QUALITY FIRST!
-      debugPrint('✨ Enhancing image quality (resize, sharpen, adjust colors)...');
-      final enhancedImagePath = await _enhanceImageQuality(imageFile.path);
-      debugPrint('✅ Image enhanced: $enhancedImagePath');
-
-      // Crop image to focus on person before submitting
-      debugPrint('🔲 Cropping image to focus on person...');
-      final croppedImagePath = await ImageCropHelper.cropImageToPerson(
-        originalImagePath: enhancedImagePath, // Use enhanced image instead of original
-        poses: poses,
-        paddingFactor: 0.15, // 15% padding
-      );
-
       // Extract landmarks from detected pose
       String? landmarkData;
       if (poses.isNotEmpty) {
@@ -523,12 +496,11 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
 
       // Submit to backend with cropped image and landmark data using saved bloc instance
       debugPrint('📤 Submitting with original: ${imageFile.path}');
-      debugPrint('📤 Submitting with cropped: $croppedImagePath');
 
       bloc.add(
         PracticeSessionEvent.submitPose(
           poseCode: session.currentPoseCode!,
-          imagePath: croppedImagePath, // Use cropped image
+          imagePath: imageFile.path,
           timeSpentSeconds: _elapsedSeconds,
           landmarkData: landmarkData,
         ),
