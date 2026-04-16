@@ -43,6 +43,12 @@ import java.util.regex.Pattern;
 public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
 
     private static final Pattern SCORE_PATTERN = Pattern.compile("\\\"score\\\"\\s*:\\s*(-?\\d+(?:\\.\\d+)?)");
+            private static final Pattern SCORE_RANGE_TEXT_PATTERN = Pattern.compile(
+                "(?i)(?:score|scores|scoring|điểm)[^\\d]{0,24}(\\d+(?:\\.\\d+)?)\\s*(?:-|to|–|~)\\s*(\\d+(?:\\.\\d+)?)"
+            );
+            private static final Pattern SCORE_SINGLE_TEXT_PATTERN = Pattern.compile(
+                "(?i)(?:score|scores|scoring|điểm)[^\\d]{0,24}(\\d+(?:\\.\\d+)?)"
+            );
 
     private final YogaPoseDetailsRepository poseDetailsRepository;
     private final ObjectMapper objectMapper;
@@ -235,8 +241,11 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
         prompt.append("• KHÔNG thêm ```json``` hoặc markdown formatting\n");
         prompt.append("• CHỈ trả về JSON thuần túy\n");
         prompt.append("• Feedback phải CHI TIẾT, CỤ THỂ, DỄ HIỂU\n");
+        prompt.append("• BẮT BUỘC toàn bộ feedback viết bằng TIẾNG VIỆT tự nhiên\n");
+        prompt.append("• TUYỆT ĐỐI KHÔNG dùng tiếng Anh trong feedback\n");
         prompt.append("• Nếu không nhận diện được tư thế, trả về score=0\n\n");
         prompt.append("❗Không trả lời dưới dạng markdown, không thêm ```json``` hoặc văn bản ngoài JSON.\n");
+        prompt.append("❗Nếu bạn định trả lời tiếng Anh, hãy DỊCH SANG TIẾNG VIỆT trước khi trả kết quả.\n");
         prompt.append("Nếu không thể xác định tư thế trong hình ảnh, hãy trả về đúng JSON sau (nhớ chèn tên tư thế thực tế vào chỗ <pose_name>):\n");
         prompt.append("{\"score\": 0, \"feedback\": \"Bạn đang không thực hiện đúng dáng <pose_name> rồi! Hãy nghiêm túc hơn và thử lại nhé 😄\"}");
 
@@ -500,9 +509,28 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
                 return recovered;
             }
 
+            EvaluationResult recoveredFromText = tryRecoverFromNaturalLanguage(response);
+            if (recoveredFromText != null) {
+                log.warn("⚠️ Non-JSON AI response, recovered from plain text. Reason: {}", e.getMessage());
+                return recoveredFromText;
+            }
+
             log.warn("⚠️ Non-JSON AI response → fallback. Reason: {}", e.getMessage());
             return new EvaluationResult(0.0, PoseFeedbackTemplate.buildFallbackFeedback(expectedPoseName, analysis));
         }
+    }
+
+    private EvaluationResult tryRecoverFromNaturalLanguage(String raw) {
+        if (raw == null || raw.isBlank()) return null;
+
+        String feedback = raw.trim();
+        if (feedback.isBlank()) return null;
+
+        Double score = extractScore(raw);
+        double safeScore = score != null ? score : 0.0;
+        if (safeScore < 0 || safeScore > 100) safeScore = 0.0;
+
+        return new EvaluationResult(safeScore, feedback);
     }
 
     private EvaluationResult tryRecoverFromTruncatedJson(String raw) {
@@ -527,10 +555,32 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
 
     private Double extractScore(String raw) {
         Matcher matcher = SCORE_PATTERN.matcher(raw);
-        if (!matcher.find()) return null;
+        if (matcher.find()) {
+            try {
+                return Double.parseDouble(matcher.group(1));
+            } catch (NumberFormatException ex) {
+                // Continue to other score extraction patterns.
+            }
+        }
+
+        // Example: "This pose scores in the 30-49 range"
+        Matcher rangeMatcher = SCORE_RANGE_TEXT_PATTERN.matcher(raw);
+        if (rangeMatcher.find()) {
+            try {
+                double min = Double.parseDouble(rangeMatcher.group(1));
+                double max = Double.parseDouble(rangeMatcher.group(2));
+                return (min + max) / 2.0;
+            } catch (NumberFormatException ex) {
+                // Continue to next pattern.
+            }
+        }
+
+        // Example: "Score is 42"
+        Matcher singleMatcher = SCORE_SINGLE_TEXT_PATTERN.matcher(raw);
+        if (!singleMatcher.find()) return null;
 
         try {
-            return Double.parseDouble(matcher.group(1));
+            return Double.parseDouble(singleMatcher.group(1));
         } catch (NumberFormatException ex) {
             return null;
         }

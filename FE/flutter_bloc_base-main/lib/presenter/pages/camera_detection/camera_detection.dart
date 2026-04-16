@@ -378,7 +378,7 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
         timestamp: DateTime.now().toIso8601String(),
       );
 
-      // Upload via HTTP (wait for API response and then show result)
+      // Upload via HTTP in background (do not wait for API response)
       debugPrint('\n${'=' * 60}');
       debugPrint('📤 UPLOADING POSE VIA HTTP');
       debugPrint('${'=' * 60}');
@@ -386,51 +386,65 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
       debugPrint('Original image path: $imagePath');
       debugPrint('Cropped image path: $croppedImagePath');
       debugPrint('Landmarks count: ${landmarks.length}');
-      debugPrint('Waiting for API response...');
+      debugPrint('Sending request in background...');
       debugPrint('${'=' * 60}\n');
 
       final useCase = provider<PostYogaPoseUC>();
-      // Show waiting page while calling API
-      if (mounted) {
-        context.router.push(const WaitingResultRoute());
-      }
-
-      final result = await useCase(PostYogaPoseParams(
-        imagePath: croppedImagePath, // Use cropped image
+      unawaited(_sendPoseInBackground(
+        useCase: useCase,
         model: model,
+        imagePath: imagePath,
+        croppedImagePath: croppedImagePath,
       ));
 
-      debugPrint('✅ Pose uploaded successfully. Got immediate result from API');
-
-      // Navigate to pretty result screen
-      if (mounted) {
-        // Try to pass poseName from args if available
-        String? poseName;
-        try {
-          final route = ModalRoute.of(context);
-          if (route != null && route.settings.arguments is Map) {
-            final args = route.settings.arguments as Map;
-            if (args['item'] != null && args['item'].name != null) {
-              poseName = args['item'].name as String?;
-            } else if (args['poseName'] is String) {
-              poseName = args['poseName'] as String;
-            }
-          }
-        } catch (_) {}
-
-        context.router.replace(PoseResultRoute(result: result, poseName: poseName));
-      }
-
-      // Clean up temp file
-      try {
-        await File(imagePath).delete();
-      } catch (e) {
-        debugPrint('Failed to delete temp image: $e');
-      }
+      await _showUploadSentMessageAndBack();
     } catch (e) {
       debugPrint('❌ Failed to upload pose via HTTP: $e');
       _showError('Failed to upload pose: $e');
     }
+  }
+
+  Future<void> _sendPoseInBackground({
+    required PostYogaPoseUC useCase,
+    required PostYogaPoseModel model,
+    required String imagePath,
+    required String croppedImagePath,
+  }) async {
+    try {
+      await useCase(PostYogaPoseParams(
+        imagePath: croppedImagePath,
+        model: model,
+      ));
+      debugPrint('✅ Pose uploaded successfully in background.');
+    } catch (e) {
+      debugPrint('❌ Background upload failed: $e');
+    } finally {
+      // Clean up temporary files after upload attempt.
+      try {
+        if (await File(imagePath).exists()) {
+          await File(imagePath).delete();
+        }
+      } catch (e) {
+        debugPrint('Failed to delete temp image: $e');
+      }
+
+      try {
+        if (croppedImagePath != imagePath && await File(croppedImagePath).exists()) {
+          await File(croppedImagePath).delete();
+        }
+      } catch (e) {
+        debugPrint('Failed to delete cropped image: $e');
+      }
+    }
+  }
+
+  Future<void> _showUploadSentMessageAndBack() async {
+    if (!mounted) return;
+
+    await _stopStream();
+    if (!mounted) return;
+
+    context.router.replace(const WaitingResultRoute());
   }
 
   /// 🆕 Enhance image quality before upload

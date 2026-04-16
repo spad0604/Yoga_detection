@@ -40,7 +40,7 @@ except ImportError as exc:
     sys.exit(1)
 
 
-ACCESS_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJ0eXBlIjoiYWNjZXNzIiwidXNlcm5hbWUiOiJnaWFwYmFjdmFuQGdtYWlsLmNvbSIsImp0aSI6ImMxZjAzNDEyLTZhZmEtNDcwNS05M2FlLWQ4YzhmZjk5NTg2ZSIsInN1YiI6ImdpYXBiYWN2YW5AZ21haWwuY29tIiwiaWF0IjoxNzc2MDc5Nzg0LCJleHAiOjE3NzYxNjYxODR9.DSzcWLYvYjDxON4Ejz5zYDtPVYNx2DpMhIdnngkrCSM"
+ACCESS_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJ0eXBlIjoiYWNjZXNzIiwidXNlcm5hbWUiOiJnaWFwNmF2YW5AZ21haWwuY29tIiwianRpIjoiZDkxZGQ5ZTgtMjZhMy00NjdjLTkyYTMtNDRhNTBhMjY3OGE1Iiwic3ViIjoiZ2lhcDZhdmFuQGdtYWlsLmNvbSIsImlhdCI6MTc3NjMxMTExNywiZXhwIjoxNzc2Mzk3NTE3fQ.a6B4t-8aPgQjFlfFaCjrKcykgZAgX6MQCP6dDoOOdfY"
 
 # ==== Quick config: edit these values at the top ====
 BASE_URL = "http://127.0.0.1:9090"
