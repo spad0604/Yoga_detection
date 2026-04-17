@@ -499,8 +499,12 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
                 return recoveredFromText;
             }
 
-            log.warn("⚠️ Non-JSON AI response → fallback. Reason: {}", e.getMessage());
-            return new EvaluationResult(0.0, PoseFeedbackTemplate.buildFallbackFeedback(expectedPoseName, analysis));
+            log.warn("⚠️ Non-JSON AI response and cannot recover score. Returning raw text. Reason: {}", e.getMessage());
+            String raw = response != null ? response.trim() : "";
+            if (raw.isBlank()) {
+                raw = "Không có phản hồi từ LLM.";
+            }
+            return new EvaluationResult(0.0, raw);
         }
     }
 
