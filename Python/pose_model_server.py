@@ -358,7 +358,7 @@ app = FastAPI(title="Yoga Pose Model Service", version="1.0.0")
 
 @app.on_event("startup")
 def _startup() -> None:
-    global model, labels, reference_angles, model_path, feature_mode, scaler, angle_triplets
+    global model, labels, reference_angles, model_path, feature_mode, scaler, angle_triplets, expected_input_dim
 
     model_path = MODEL_PATH_KERAS if MODEL_PATH_KERAS.exists() else MODEL_PATH_H5
     if not model_path.exists():
@@ -366,10 +366,20 @@ def _startup() -> None:
 
     model = tf.keras.models.load_model(model_path)
 
+    # Resolve expected feature size from model input, e.g. 132 (legacy) or 146 (normalized pipeline).
+    raw_input_shape = getattr(model, "input_shape", None)
+    primary_input_shape = raw_input_shape[0] if isinstance(raw_input_shape, list) and raw_input_shape else raw_input_shape
+    expected_input_dim = None
+    try:
+        if primary_input_shape is not None and len(primary_input_shape) >= 2 and primary_input_shape[-1] is not None:
+            expected_input_dim = int(primary_input_shape[-1])
+    except Exception:
+        expected_input_dim = None
+
     scaler = None
     angle_triplets = DEFAULT_ANGLE_TRIPLETS
     labels = []
-    feature_mode = "legacy_raw132"
+    feature_mode = "legacy_raw132" if expected_input_dim == 132 else "normalized146" if expected_input_dim == 146 else "unknown"
 
     if PREPROCESS_PATH.exists():
         try:
@@ -385,16 +395,20 @@ def _startup() -> None:
             if loaded_triplets:
                 angle_triplets = [tuple(map(int, t)) for t in loaded_triplets]
 
-            feature_mode = "normalized146" if scaler is not None else "legacy_raw132"
-            log.info("Loaded preprocessing artifacts: %s (mode=%s)", PREPROCESS_PATH, feature_mode)
+            log.info("Loaded preprocessing artifacts: %s", PREPROCESS_PATH)
         except Exception as e:
             log.warning("Failed to load preprocessing artifacts (%s): %s", PREPROCESS_PATH, e)
 
+    # Fallback mapping if model input shape is not explicit.
+    if feature_mode == "unknown":
+        feature_mode = "normalized146" if scaler is not None else "legacy_raw132"
+
     log.info(
-        "Loaded model: path=%s input=%s output=%s mode=%s",
+        "Loaded model: path=%s input=%s output=%s expected_dim=%s mode=%s",
         model_path,
         getattr(model, "input_shape", None),
         getattr(model, "output_shape", None),
+        expected_input_dim,
         feature_mode,
     )
 
@@ -430,6 +444,7 @@ def health() -> Dict[str, Any]:
         "modelPath": str(model_path),
         "preprocessPath": str(PREPROCESS_PATH) if PREPROCESS_PATH.exists() else None,
         "featureMode": feature_mode,
+        "expectedInputDim": expected_input_dim,
         "labels": len(labels),
         "hasReferenceAngles": bool(reference_angles),
         "inputShape": getattr(model, "input_shape", None),
@@ -442,13 +457,22 @@ def analyze(req: AnalyzeRequest) -> AnalyzeResponse:
     feats132, pts = landmarks_to_vector(req.landmarks)
     points_xyz = pts[:, :3]
 
-    if feature_mode == "normalized146":
+    if expected_input_dim == 146 or feature_mode == "normalized146":
         feat146 = _build_training_feature_row(pts, angle_triplets)
         x = feat146.reshape(1, -1)
         if scaler is not None:
             x = scaler.transform(x)
-    else:
+    elif expected_input_dim == 132 or feature_mode == "legacy_raw132":
         x = feats132.reshape(1, 132)
+    else:
+        # Conservative fallback: try raw input for unknown models.
+        x = feats132.reshape(1, 132)
+
+    if expected_input_dim is not None and x.shape[1] != expected_input_dim:
+        raise ValueError(
+            f"Feature size mismatch: model expects {expected_input_dim}, got {x.shape[1]}. "
+            f"mode={feature_mode}, preprocess_exists={PREPROCESS_PATH.exists()}"
+        )
 
     probs = model.predict(x, verbose=0)[0]
     probs = np.asarray(probs, dtype=np.float32)
