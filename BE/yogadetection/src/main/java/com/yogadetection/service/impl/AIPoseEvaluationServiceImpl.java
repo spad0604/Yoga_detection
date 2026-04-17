@@ -68,6 +68,12 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
     @Value("${ai.vision.cloudinary-transform:f_jpg,q_auto,w_768}")
     private String cloudinaryTransform;
 
+    @Value("${ai.vision.log-prompt-preview:true}")
+    private boolean logPromptPreview;
+
+    @Value("${ai.vision.prompt-preview-max-chars:1200}")
+    private int promptPreviewMaxChars;
+
     @Override
     public EvaluationResult evaluatePose(String imageUrl, PoseLandmarkRequest landmarkData, String poseCode, String poseName, String poseDescription) {
         return evaluatePose(imageUrl, landmarkData, poseCode, poseName, poseDescription, null);
@@ -128,7 +134,8 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
         StringBuilder prompt = new StringBuilder();
 
         // Header
-        prompt.append("🧘 BẠN LÀ CHUYÊN GIA YOGA VỚI 10+ NĂM KINH NGHIỆM\n\n");
+        prompt.append("🧘 BẠN LÀ CHUYÊN GIA YOGA VỚI 10+ NĂM KINH NGHIỆM\n");
+        prompt.append("⚠️ QUAN TRỌNG: CHỈ TRẢ VỀ JSON CUỐI CÙNG, KHÔNG IN SUY LUẬN NỘI BỘ.\n\n");
 
         prompt.append("📋 THÔNG TIN TƯ THẾ ĐÁNH GIÁ:\n");
         prompt.append("• Tên tư thế: ").append(poseName).append("\n");
@@ -215,38 +222,22 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
         prompt.append("🚫 0-29: RẤT KÉM - Hoàn toàn sai, có thể gây chấn thương\n");
         prompt.append("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n");
 
-        prompt.append("📝 YÊU CẦU OUTPUT:\n");
-        prompt.append("Trả về JSON với cấu trúc:\n");
-        prompt.append("{\n");
-        prompt.append("  \"score\": <số từ 0-100>,\n");
-        prompt.append("  \"feedback\": \"<phản hồi chi tiết>\"\n");
-        prompt.append("}\n\n");
+        prompt.append("📝 OUTPUT BẮT BUỘC (JSON-ONLY MODE):\n");
+        prompt.append("- Trả về CHÍNH XÁC 1 object JSON hợp lệ, không thêm ký tự nào trước/sau JSON.\n");
+        prompt.append("- Ký tự đầu tiên phải là '{' và ký tự cuối cùng phải là '}'.\n");
+        prompt.append("- KHÔNG markdown, KHÔNG code block, KHÔNG giải thích, KHÔNG chuỗi kiểu 'The user wants me...'.\n");
+        prompt.append("- Toàn bộ nội dung feedback phải là TIẾNG VIỆT tự nhiên.\n");
+        prompt.append("- score trong khoảng 0-100.\n");
+        prompt.append("- feedback nên có các phần: Đánh giá tổng quan, Điểm mạnh, Cần cải thiện, Lời khuyên.\n\n");
 
-        prompt.append("📋 CẤU TRÚC FEEDBACK (viết bằng TIẾNG VIỆT):\n");
-        prompt.append("═══════════════════════════════════\n");
-        prompt.append("🎯 ĐÁNH GIÁ TỔNG QUAN:\n");
-        prompt.append("[Tóm tắt 1-2 câu về tư thế]\n\n");
-        prompt.append("✅ ĐIỂM MẠNH:\n");
-        prompt.append("• [Điểm làm tốt 1]\n");
-        prompt.append("• [Điểm làm tốt 2]\n\n");
-        prompt.append("⚠️ CẦN CẢI THIỆN:\n");
-        prompt.append("• [Điểm cần sửa 1] - Gợi ý: [cách sửa cụ thể]\n");
-        prompt.append("• [Điểm cần sửa 2] - Gợi ý: [cách sửa cụ thể]\n\n");
-        prompt.append("💡 LỜI KHUYÊN:\n");
-        prompt.append("[Lời khích lệ và hướng dẫn]\n");
-        prompt.append("═══════════════════════════════════\n\n");
+        prompt.append("Schema bắt buộc:\n");
+        prompt.append("{\"score\": <number 0..100>, \"feedback\": \"<Vietnamese text>\"}\n\n");
 
-        prompt.append("⚡ LƯU Ý:\n");
-        prompt.append("• KHÔNG thêm ```json``` hoặc markdown formatting\n");
-        prompt.append("• CHỈ trả về JSON thuần túy\n");
-        prompt.append("• Feedback phải CHI TIẾT, CỤ THỂ, DỄ HIỂU\n");
-        prompt.append("• BẮT BUỘC toàn bộ feedback viết bằng TIẾNG VIỆT tự nhiên\n");
-        prompt.append("• TUYỆT ĐỐI KHÔNG dùng tiếng Anh trong feedback\n");
-        prompt.append("• Nếu không nhận diện được tư thế, trả về score=0\n\n");
-        prompt.append("❗Không trả lời dưới dạng markdown, không thêm ```json``` hoặc văn bản ngoài JSON.\n");
-        prompt.append("❗Nếu bạn định trả lời tiếng Anh, hãy DỊCH SANG TIẾNG VIỆT trước khi trả kết quả.\n");
-        prompt.append("Nếu không thể xác định tư thế trong hình ảnh, hãy trả về đúng JSON sau (nhớ chèn tên tư thế thực tế vào chỗ <pose_name>):\n");
-        prompt.append("{\"score\": 0, \"feedback\": \"Bạn đang không thực hiện đúng dáng <pose_name> rồi! Hãy nghiêm túc hơn và thử lại nhé 😄\"}");
+        prompt.append("Ví dụ hợp lệ duy nhất (chỉ để tham chiếu format):\n");
+        prompt.append("{\"score\": 72, \"feedback\": \"🎯 ĐÁNH GIÁ TỔNG QUAN: ...\\n\\n✅ ĐIỂM MẠNH: ...\\n\\n⚠️ CẦN CẢI THIỆN: ...\\n\\n💡 LỜI KHUYÊN: ...\"}\n\n");
+
+        prompt.append("Nếu không thể xác định tư thế, trả về:\n");
+        prompt.append("{\"score\": 0, \"feedback\": \"Bạn đang không thực hiện đúng dáng ").append(poseName).append(" rồi! Hãy nghiêm túc hơn và thử lại nhé 😄\"}");
 
         return prompt.toString();
     }
@@ -354,6 +345,13 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
 
             log.info("🌐 Anthropic base URL: {}", anthropicBaseUrl);
             log.info("📤 Sending image to Anthropic Vision: {}", mediaSourceLog);
+
+            int promptLen = prompt != null ? prompt.length() : 0;
+            if (logPromptPreview) {
+                log.info("📝 Anthropic prompt preview (len={}): {}", promptLen, buildPromptPreview(prompt, promptPreviewMaxChars));
+            } else {
+                log.info("📝 Anthropic prompt length: {}", promptLen);
+            }
 
                 UserMessage userMessage = UserMessage.builder()
                     .text(prompt)
@@ -635,5 +633,18 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
             return s.substring(first, last + 1);
         }
         return s;
+    }
+
+    private String buildPromptPreview(String prompt, int maxChars) {
+        if (prompt == null || prompt.isBlank()) return "(empty prompt)";
+
+        int safeMax = Math.max(100, maxChars);
+        String compact = prompt.replaceAll("[\\r\\n]+", " ").trim();
+
+        if (compact.length() <= safeMax) {
+            return compact;
+        }
+
+        return compact.substring(0, safeMax) + " ...[truncated]";
     }
 }
