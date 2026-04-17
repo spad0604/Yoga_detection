@@ -40,7 +40,7 @@ except ImportError as exc:
     sys.exit(1)
 
 
-ACCESS_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJ0eXBlIjoiYWNjZXNzIiwidXNlcm5hbWUiOiJnaWFwNmF2YW5AZ21haWwuY29tIiwianRpIjoiZDkxZGQ5ZTgtMjZhMy00NjdjLTkyYTMtNDRhNTBhMjY3OGE1Iiwic3ViIjoiZ2lhcDZhdmFuQGdtYWlsLmNvbSIsImlhdCI6MTc3NjMxMTExNywiZXhwIjoxNzc2Mzk3NTE3fQ.a6B4t-8aPgQjFlfFaCjrKcykgZAgX6MQCP6dDoOOdfY"
+ACCESS_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJ0eXBlIjoiYWNjZXNzIiwidXNlcm5hbWUiOiJnaWFwNmF2YW5AZ21haWwuY29tIiwianRpIjoiZDkxZGQ5ZTgtMjZhMy00NjdjLTkyYTMtNDRhNTBhMjY3OGE1Iiwic3ViIjoiZ2lhcDZhdmFuQGdtYWlsLmNvbSIsImlhdCI6MTc3NjQwNTI2NiwiZXhwIjoxNzc2NDkxNjY2fQ.sjoFhU4cvp2VnjVIqjcKAtROV-_0LqSV9huO5M1-_64"
 
 # ==== Quick config: edit these values at the top ====
 BASE_URL = "http://127.0.0.1:9090"
@@ -148,7 +148,7 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help="Bearer access token. If omitted, use ACCESS_TOKEN env or ACCESS_TOKEN constant.",
     )
-    parser.add_argument("--timeout", type=int, default=60, help="HTTP timeout in seconds")
+    parser.add_argument("--timeout", type=int, default=300, help="HTTP timeout in seconds")
     parser.add_argument(
         "--save-landmarks-json",
         default=None,

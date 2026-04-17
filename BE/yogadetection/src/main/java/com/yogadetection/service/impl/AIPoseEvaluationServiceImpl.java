@@ -53,23 +53,23 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
             private final RestTemplate restTemplate;
     private final LandmarkAngleCalculator angleCalculator;
 
-    @Value("${spring.ai.anthropic.api-key:${ANTHROPIC_AUTH_TOKEN:}}")
+    @Value("${spring.ai.openai.api-key:${OPENAI_API_KEY:}}")
     private String apiKey;
 
-    @Value("${spring.ai.anthropic.base-url}")
-    private String anthropicBaseUrl;
+    @Value("${spring.ai.openai.base-url:https://api.openai.com}")
+    private String openAiBaseUrl;
 
-    @Value("${spring.ai.anthropic.chat.options.model:claude-3-5-sonnet-20241022}")
-    private String anthropicModel;
+    @Value("${spring.ai.openai.chat.options.model:gpt-4o-mini}")
+    private String openAiModel;
 
-    @Value("${spring.ai.anthropic.chat.options.max-tokens:4096}")
-    private int anthropicMaxTokens;
+    @Value("${spring.ai.openai.chat.options.max-tokens:4096}")
+    private int openAiMaxTokens;
 
-    @Value("${ai.llm.anthropic-version:2023-06-01}")
-    private String anthropicVersion;
+    @Value("${spring.ai.openai.chat.options.temperature:0.3}")
+    private double openAiTemperature;
 
-    @Value("${ai.llm.messages-path:/v1/messages}")
-    private String anthropicMessagesPath;
+    @Value("${ai.llm.chat-completions-path:/v1/chat/completions}")
+    private String openAiChatCompletionsPath;
 
     /**
      * If the input imageUrl is a Cloudinary URL, we can request a smaller/compressed variant
@@ -128,7 +128,7 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
             String actualDescription = poseDescription != null ? poseDescription : "";
 
             String prompt = buildEvaluationPrompt(actualPoseName, actualDescription, landmarkData, analysis);
-                EvaluationResult result = callAnthropicVision(imageUrl, imageFile, prompt, actualPoseName, analysis);
+            EvaluationResult result = callOpenAiEvaluation(imageUrl, imageFile, prompt, actualPoseName, analysis);
 
             log.info("✅ AI evaluation completed for pose {} ({}) → score={} | feedback length={}",
                     poseCode, actualPoseName, result.getScore(), result.getFeedback() != null ? result.getFeedback().length() : 0);
@@ -325,7 +325,7 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
         return String.format("%.1f°", value);
     }
 
-    private EvaluationResult callAnthropicVision(
+    private EvaluationResult callOpenAiEvaluation(
             String imageUrl,
             MultipartFile imageFile,
             String prompt,
@@ -334,7 +334,7 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
     ) {
         try {
             if (apiKey == null || apiKey.isEmpty()) {
-                log.warn("⚠️ Anthropic API key not configured → dùng template fallback");
+                log.warn("⚠️ OpenAI API key not configured → dùng template fallback");
                 return new EvaluationResult(0.0, PoseFeedbackTemplate.buildFallbackFeedback(expectedPoseName, analysis));
             }
 
@@ -348,18 +348,18 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
                 log.warn("⚠️ Refusing to send multipart image bytes to LLM. Upload to Cloudinary first and pass imageUrl.");
                 return new EvaluationResult(0.0, PoseFeedbackTemplate.buildFallbackFeedback(expectedPoseName, analysis));
             } else {
-                log.warn("⚠️ No image provided for Anthropic Vision call → dùng template fallback");
+                log.warn("⚠️ No image provided for OpenAI evaluation call → dùng template fallback");
                 return new EvaluationResult(0.0, PoseFeedbackTemplate.buildFallbackFeedback(expectedPoseName, analysis));
             }
 
-            log.info("🌐 Anthropic base URL: {}", anthropicBaseUrl);
-            log.info("📤 Sending image to Anthropic Vision: {}", mediaSourceLog);
+            log.info("🌐 OpenAI base URL: {}", openAiBaseUrl);
+            log.info("📤 Sending image context to OpenAI: {}", mediaSourceLog);
 
             int promptLen = prompt != null ? prompt.length() : 0;
             if (logPromptPreview) {
-                log.info("📝 Anthropic prompt preview (len={}): {}", promptLen, buildPromptPreview(prompt, promptPreviewMaxChars));
+                log.info("📝 OpenAI prompt preview (len={}): {}", promptLen, buildPromptPreview(prompt, promptPreviewMaxChars));
             } else {
-                log.info("📝 Anthropic prompt length: {}", promptLen);
+                log.info("📝 OpenAI prompt length: {}", promptLen);
             }
 
             String finalPrompt = prompt;
@@ -373,13 +373,13 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("x-api-key", apiKey);
-            headers.set("anthropic-version", anthropicVersion);
+            headers.setBearerAuth(apiKey);
             headers.set("User-Agent", DEFAULT_USER_AGENT);
 
             var payload = objectMapper.createObjectNode();
-            payload.put("model", anthropicModel);
-            payload.put("max_tokens", anthropicMaxTokens);
+            payload.put("model", openAiModel);
+            payload.put("max_tokens", openAiMaxTokens);
+            payload.put("temperature", openAiTemperature);
 
             var messages = objectMapper.createArrayNode();
             var message = objectMapper.createObjectNode();
@@ -388,19 +388,19 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
             messages.add(message);
             payload.set("messages", messages);
 
-            String endpoint = anthropicBaseUrl + anthropicMessagesPath;
+            String endpoint = openAiBaseUrl + openAiChatCompletionsPath;
             HttpEntity<String> request = new HttpEntity<>(payload.toString(), headers);
             ResponseEntity<String> responseEntity = restTemplate.postForEntity(endpoint, request, String.class);
             String responseBody = responseEntity.getBody();
 
             if (responseBody == null || responseBody.isBlank()) {
-                log.warn("⚠️ Anthropic returned empty response body → dùng template fallback");
+                log.warn("⚠️ OpenAI returned empty response body → dùng template fallback");
                 return new EvaluationResult(0.0, PoseFeedbackTemplate.buildFallbackFeedback(expectedPoseName, analysis));
             }
 
-            log.info("📥 Raw Anthropic response: {}", responseBody.replaceAll("[\\r\\n]+", " ").trim());
+            log.info("📥 Raw OpenAI response: {}", responseBody.replaceAll("[\\r\\n]+", " ").trim());
 
-            String assistantText = extractAssistantText(responseBody);
+            String assistantText = extractModelText(responseBody);
             if (assistantText == null || assistantText.isBlank()) {
                 log.warn("⚠️ Cannot extract assistant text from LLM envelope, using raw body as fallback parse input.");
                 assistantText = responseBody;
@@ -409,7 +409,7 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
             return parseAIResponse(assistantText, expectedPoseName, analysis);
 
         } catch (Exception e) {
-            log.error("❌ Error calling Anthropic API: {}", e.getMessage(), e);
+            log.error("❌ Error calling OpenAI API: {}", e.getMessage(), e);
             return new EvaluationResult(0.0, PoseFeedbackTemplate.buildFallbackFeedback(expectedPoseName, analysis));
         }
     }
@@ -483,10 +483,20 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
         return t;
     }
 
-    private String extractAssistantText(String rawBody) {
+    private String extractModelText(String rawBody) {
         if (rawBody == null || rawBody.isBlank()) return null;
         try {
             JsonNode root = objectMapper.readTree(rawBody);
+
+            JsonNode choices = root.path("choices");
+            if (choices.isArray() && !choices.isEmpty()) {
+                JsonNode firstChoice = choices.get(0);
+                String content = firstChoice.path("message").path("content").asText("");
+                if (!content.isBlank()) {
+                    return content;
+                }
+            }
+
             JsonNode content = root.path("content");
             if (!content.isArray()) {
                 return rawBody;
