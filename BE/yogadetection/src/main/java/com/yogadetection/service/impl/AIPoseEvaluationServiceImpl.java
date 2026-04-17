@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -70,6 +71,9 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
 
     @Value("${ai.llm.messages-path:/v1/messages}")
     private String anthropicMessagesPath;
+
+    @Value("${ai.llm.use-system-curl:true}")
+    private boolean useSystemCurl;
 
     /**
      * If the input imageUrl is a Cloudinary URL, we can request a smaller/compressed variant
@@ -371,12 +375,6 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
                         + "Hãy phân tích đúng ảnh ở URL trên.";
             }
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("x-api-key", apiKey);
-            headers.set("anthropic-version", anthropicVersion);
-            headers.set("User-Agent", DEFAULT_USER_AGENT);
-
             var payload = objectMapper.createObjectNode();
             payload.put("model", anthropicModel);
             payload.put("max_tokens", anthropicMaxTokens);
@@ -388,10 +386,7 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
             messages.add(message);
             payload.set("messages", messages);
 
-            String endpoint = anthropicBaseUrl + anthropicMessagesPath;
-            HttpEntity<String> request = new HttpEntity<>(payload.toString(), headers);
-            ResponseEntity<String> responseEntity = restTemplate.postForEntity(endpoint, request, String.class);
-            String responseBody = responseEntity.getBody();
+            String responseBody = invokeAnthropicMessages(payload.toString());
 
             if (responseBody == null || responseBody.isBlank()) {
                 log.warn("⚠️ Anthropic returned empty response body → dùng template fallback");
@@ -412,6 +407,77 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
             log.error("❌ Error calling Anthropic API: {}", e.getMessage(), e);
             return new EvaluationResult(0.0, PoseFeedbackTemplate.buildFallbackFeedback(expectedPoseName, analysis));
         }
+    }
+
+    private String invokeAnthropicMessages(String payloadJson) throws Exception {
+        if (useSystemCurl) {
+            return invokeAnthropicMessagesWithCurl(payloadJson);
+        }
+        return invokeAnthropicMessagesWithRestTemplate(payloadJson);
+    }
+
+    private String invokeAnthropicMessagesWithRestTemplate(String payloadJson) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("x-api-key", apiKey);
+        headers.set("anthropic-version", anthropicVersion);
+        headers.set("User-Agent", DEFAULT_USER_AGENT);
+
+        String endpoint = anthropicBaseUrl + anthropicMessagesPath;
+        HttpEntity<String> request = new HttpEntity<>(payloadJson, headers);
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity(endpoint, request, String.class);
+        return responseEntity.getBody();
+    }
+
+    private String invokeAnthropicMessagesWithCurl(String payloadJson) throws Exception {
+        String endpoint = anthropicBaseUrl + anthropicMessagesPath;
+
+        ProcessBuilder pb = new ProcessBuilder(
+                "curl",
+                "-sS",
+                "-X", "POST",
+                endpoint,
+                "-H", "User-Agent: " + DEFAULT_USER_AGENT,
+                "-H", "x-api-key: " + apiKey,
+                "-H", "anthropic-version: " + anthropicVersion,
+                "-H", "content-type: application/json",
+                "--data-raw", payloadJson,
+                "-w", "\n__HTTP_STATUS__:%{http_code}"
+        );
+        pb.redirectErrorStream(true);
+
+        Process process = pb.start();
+        String output;
+        try (var in = process.getInputStream()) {
+            output = new String(in.readAllBytes(), StandardCharsets.UTF_8);
+        }
+
+        int exitCode = process.waitFor();
+        if (exitCode != 0) {
+            throw new IllegalStateException("curl call failed with exit code=" + exitCode + ", output=" + output);
+        }
+
+        String marker = "\n__HTTP_STATUS__:";
+        int markerIdx = output.lastIndexOf(marker);
+        if (markerIdx < 0) {
+            throw new IllegalStateException("Cannot parse curl HTTP status marker from output=" + output);
+        }
+
+        String body = output.substring(0, markerIdx).trim();
+        String statusRaw = output.substring(markerIdx + marker.length()).trim();
+
+        int httpStatus;
+        try {
+            httpStatus = Integer.parseInt(statusRaw);
+        } catch (NumberFormatException e) {
+            throw new IllegalStateException("Invalid curl HTTP status: " + statusRaw + ", output=" + output, e);
+        }
+
+        if (httpStatus >= 400) {
+            throw new IllegalStateException("Anthropic HTTP " + httpStatus + ": " + body);
+        }
+
+        return body;
     }
 
     private String toAiImageUrl(String imageUrl) {
