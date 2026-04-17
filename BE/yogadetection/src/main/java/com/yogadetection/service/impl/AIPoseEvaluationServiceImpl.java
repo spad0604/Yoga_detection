@@ -378,7 +378,7 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
 
             var payload = objectMapper.createObjectNode();
             payload.put("model", openAiModel);
-            payload.put("max_tokens", openAiMaxTokens);
+            payload.put("max_completion_tokens", openAiMaxTokens);
             payload.put("temperature", openAiTemperature);
 
             var messages = objectMapper.createArrayNode();
