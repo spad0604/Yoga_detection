@@ -4,6 +4,7 @@ import json
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
+import pickle
 
 import logging
 import threading
@@ -24,7 +25,9 @@ except ModuleNotFoundError as e:
     ) from e
 
 APP_DIR = Path(__file__).resolve().parent
-MODEL_PATH = APP_DIR / "yoga_pose_model.h5"
+MODEL_PATH_KERAS = APP_DIR / "yoga_pose_model.keras"
+MODEL_PATH_H5 = APP_DIR / "yoga_pose_model.h5"
+PREPROCESS_PATH = APP_DIR / "pose_preprocessing.pkl"
 CSV_PATH = APP_DIR / "yoga_keypoints.csv"
 REFERENCE_CACHE = APP_DIR / "pose_angle_reference.json"
 
@@ -69,6 +72,20 @@ MP_LANDMARKS: List[str] = [
 ]
 
 NAME_TO_INDEX: Dict[str, int] = {name: i for i, name in enumerate(MP_LANDMARKS)}
+
+# Keep default triplets aligned with notebook training pipeline.
+DEFAULT_ANGLE_TRIPLETS: List[Tuple[int, int, int]] = [
+    (11, 13, 15),
+    (12, 14, 16),
+    (13, 11, 23),
+    (14, 12, 24),
+    (11, 23, 25),
+    (12, 24, 26),
+    (23, 25, 27),
+    (24, 26, 28),
+    (25, 27, 31),
+    (26, 28, 32),
+]
 
 
 def normalize_type(raw: str) -> str:
@@ -149,6 +166,67 @@ class BodyAngles:
         }
 
 
+def _calc_angle_normalized(a: np.ndarray, b: np.ndarray, c: np.ndarray) -> float:
+    ba = a - b
+    bc = c - b
+    denom = (float(np.linalg.norm(ba)) * float(np.linalg.norm(bc))) + 1e-8
+    cosine = float(np.dot(ba, bc) / denom)
+    cosine = max(-1.0, min(1.0, cosine))
+    return float(np.degrees(np.arccos(cosine)) / 180.0)
+
+
+def _safe_ratio(num: float, den: float) -> float:
+    return float(num / (den + 1e-8))
+
+
+def _normalize_pose_for_training_features(landmarks_33x4: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+    xyz = landmarks_33x4[:, :3]
+    visibility = landmarks_33x4[:, 3]
+
+    hip_center = (xyz[23] + xyz[24]) / 2.0
+    shoulder_center = (xyz[11] + xyz[12]) / 2.0
+    torso_scale = float(np.linalg.norm(shoulder_center - hip_center))
+    if torso_scale < 1e-6:
+        torso_scale = 1.0
+
+    xyz_norm = (xyz - hip_center) / torso_scale
+    return xyz_norm.astype(np.float32), visibility.astype(np.float32)
+
+
+def _build_training_feature_row(landmarks_33x4: np.ndarray, angle_triplets: List[Tuple[int, int, int]]) -> np.ndarray:
+    xyz_norm, visibility = _normalize_pose_for_training_features(landmarks_33x4)
+
+    angles = [
+        _calc_angle_normalized(xyz_norm[a], xyz_norm[b], xyz_norm[c])
+        for a, b, c in angle_triplets
+    ]
+
+    l_upper_arm = float(np.linalg.norm(xyz_norm[11] - xyz_norm[13]))
+    l_fore_arm = float(np.linalg.norm(xyz_norm[13] - xyz_norm[15]))
+    r_upper_arm = float(np.linalg.norm(xyz_norm[12] - xyz_norm[14]))
+    r_fore_arm = float(np.linalg.norm(xyz_norm[14] - xyz_norm[16]))
+    l_upper_leg = float(np.linalg.norm(xyz_norm[23] - xyz_norm[25]))
+    l_lower_leg = float(np.linalg.norm(xyz_norm[25] - xyz_norm[27]))
+    r_upper_leg = float(np.linalg.norm(xyz_norm[24] - xyz_norm[26]))
+    r_lower_leg = float(np.linalg.norm(xyz_norm[26] - xyz_norm[28]))
+
+    ratios = [
+        _safe_ratio(l_fore_arm, l_upper_arm),
+        _safe_ratio(r_fore_arm, r_upper_arm),
+        _safe_ratio(l_lower_leg, l_upper_leg),
+        _safe_ratio(r_lower_leg, r_upper_leg),
+    ]
+
+    return np.concatenate(
+        [
+            xyz_norm.flatten(),
+            visibility,
+            np.array(angles, dtype=np.float32),
+            np.array(ratios, dtype=np.float32),
+        ]
+    ).astype(np.float32)
+
+
 def _angle(a: np.ndarray, b: np.ndarray, c: np.ndarray) -> float:
     ba = a - b
     bc = c - b
@@ -200,25 +278,25 @@ def compute_angles(points_xyz: np.ndarray) -> BodyAngles:
 
 
 def landmarks_to_vector(landmarks: List[LandmarkIn]) -> Tuple[np.ndarray, np.ndarray]:
-    # Returns (features132, points33x3)
+    # Returns (features132, points33x4)
     by_type: Dict[str, LandmarkIn] = {}
     for lm in landmarks:
         by_type[normalize_type(lm.type)] = lm
 
     feats: List[float] = []
-    points = np.zeros((33, 3), dtype=np.float32)
+    points = np.zeros((33, 4), dtype=np.float32)
     for i, name in enumerate(MP_LANDMARKS):
         lm = by_type.get(name)
         if lm is None:
             feats.extend([0.0, 0.0, 0.0, 0.0])
-            points[i] = np.array([0.0, 0.0, 0.0], dtype=np.float32)
+            points[i] = np.array([0.0, 0.0, 0.0, 0.0], dtype=np.float32)
         else:
             x = float(lm.x) if lm.x >= 0 else 0.0
             y = float(lm.y) if lm.y >= 0 else 0.0
             z = float(lm.z)
             v = 1.0
             feats.extend([x, y, z, v])
-            points[i] = np.array([x, y, z], dtype=np.float32)
+            points[i] = np.array([x, y, z, v], dtype=np.float32)
 
     return np.array(feats, dtype=np.float32), points
 
@@ -280,20 +358,48 @@ app = FastAPI(title="Yoga Pose Model Service", version="1.0.0")
 
 @app.on_event("startup")
 def _startup() -> None:
-    global model, labels, reference_angles
+    global model, labels, reference_angles, model_path, feature_mode, scaler, angle_triplets
 
-    if not MODEL_PATH.exists():
-        raise RuntimeError(f"Model not found: {MODEL_PATH}")
+    model_path = MODEL_PATH_KERAS if MODEL_PATH_KERAS.exists() else MODEL_PATH_H5
+    if not model_path.exists():
+        raise RuntimeError(f"Model not found: {MODEL_PATH_KERAS} or {MODEL_PATH_H5}")
 
-    model = tf.keras.models.load_model(MODEL_PATH)
+    model = tf.keras.models.load_model(model_path)
 
-    log.info("Loaded model: input=%s output=%s", getattr(model, "input_shape", None), getattr(model, "output_shape", None))
+    scaler = None
+    angle_triplets = DEFAULT_ANGLE_TRIPLETS
+    labels = []
+    feature_mode = "legacy_raw132"
 
-    if CSV_PATH.exists():
+    if PREPROCESS_PATH.exists():
+        try:
+            with PREPROCESS_PATH.open("rb") as f:
+                artifacts = pickle.load(f)
+
+            scaler = artifacts.get("scaler")
+            classes = artifacts.get("label_encoder").classes_ if artifacts.get("label_encoder") is not None else None
+            if classes is not None:
+                labels = [str(x) for x in classes.tolist()]
+
+            loaded_triplets = artifacts.get("angle_triplets")
+            if loaded_triplets:
+                angle_triplets = [tuple(map(int, t)) for t in loaded_triplets]
+
+            feature_mode = "normalized146" if scaler is not None else "legacy_raw132"
+            log.info("Loaded preprocessing artifacts: %s (mode=%s)", PREPROCESS_PATH, feature_mode)
+        except Exception as e:
+            log.warning("Failed to load preprocessing artifacts (%s): %s", PREPROCESS_PATH, e)
+
+    log.info(
+        "Loaded model: path=%s input=%s output=%s mode=%s",
+        model_path,
+        getattr(model, "input_shape", None),
+        getattr(model, "output_shape", None),
+        feature_mode,
+    )
+
+    if not labels and CSV_PATH.exists():
         labels = get_label_list_from_csv(CSV_PATH)
-    else:
-        # Fallback: labels unknown (still return index)
-        labels = []
 
     # Start quickly: load reference angles in background (can be slow on first run)
     reference_angles = {}
@@ -321,7 +427,9 @@ def _startup() -> None:
 @app.get("/health")
 def health() -> Dict[str, Any]:
     return {
-        "modelPath": str(MODEL_PATH),
+        "modelPath": str(model_path),
+        "preprocessPath": str(PREPROCESS_PATH) if PREPROCESS_PATH.exists() else None,
+        "featureMode": feature_mode,
         "labels": len(labels),
         "hasReferenceAngles": bool(reference_angles),
         "inputShape": getattr(model, "input_shape", None),
@@ -331,8 +439,16 @@ def health() -> Dict[str, Any]:
 
 @app.post("/analyze", response_model=AnalyzeResponse)
 def analyze(req: AnalyzeRequest) -> AnalyzeResponse:
-    feats, pts = landmarks_to_vector(req.landmarks)
-    x = feats.reshape(1, 132)
+    feats132, pts = landmarks_to_vector(req.landmarks)
+    points_xyz = pts[:, :3]
+
+    if feature_mode == "normalized146":
+        feat146 = _build_training_feature_row(pts, angle_triplets)
+        x = feat146.reshape(1, -1)
+        if scaler is not None:
+            x = scaler.transform(x)
+    else:
+        x = feats132.reshape(1, 132)
 
     probs = model.predict(x, verbose=0)[0]
     probs = np.asarray(probs, dtype=np.float32)
@@ -354,7 +470,7 @@ def analyze(req: AnalyzeRequest) -> AnalyzeResponse:
     conf = float(probs[best_i])
 
     most_off: Optional[MostOffItem] = None
-    actual_angles = compute_angles(pts).to_dict()
+    actual_angles = compute_angles(points_xyz).to_dict()
     ref = reference_angles.get(predicted)
     if ref:
         # find metric with max abs diff

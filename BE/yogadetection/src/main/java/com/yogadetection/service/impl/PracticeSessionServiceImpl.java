@@ -147,11 +147,11 @@ public class PracticeSessionServiceImpl implements PracticeSessionService {
         
         // Evaluate pose with AI - sử dụng thông tin từ routine_pose và pose_details
         AIPoseEvaluationService.EvaluationResult evaluation = null;
-        if (image != null && !image.isEmpty() && request.getLandmarkData() != null) {
+        if (imageUrl != null && !imageUrl.isBlank() && request.getLandmarkData() != null) {
             try {
                 // Truyền poseName từ routine_pose và description từ pose_details
                 evaluation = aiEvaluationService.evaluatePose(
-                    image,
+                    imageUrl,
                     request.getLandmarkData(), 
                     request.getPoseCode(),
                     currentPose.getPoseName(),

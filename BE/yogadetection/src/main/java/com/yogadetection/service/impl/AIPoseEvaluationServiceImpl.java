@@ -14,7 +14,6 @@ import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.content.Media;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MimeType;
@@ -275,17 +274,17 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
     private String formatModelAngles(Map<String, Double> angles) {
         if (angles == null || angles.isEmpty()) return "(no angles)";
 
-        Double leftElbow = angles.get("left_elbow");
-        Double rightElbow = angles.get("right_elbow");
-        Double leftShoulder = angles.get("left_shoulder");
-        Double rightShoulder = angles.get("right_shoulder");
-        Double leftHip = angles.get("left_hip");
-        Double rightHip = angles.get("right_hip");
-        Double leftKnee = angles.get("left_knee");
-        Double rightKnee = angles.get("right_knee");
-        Double leftAnkle = angles.get("left_ankle");
-        Double rightAnkle = angles.get("right_ankle");
-        Double spine = angles.get("spine");
+        Double leftElbow = pickAngle(angles, "leftElbowAngle", "left_elbow", "leftElbow");
+        Double rightElbow = pickAngle(angles, "rightElbowAngle", "right_elbow", "rightElbow");
+        Double leftShoulder = pickAngle(angles, "leftShoulderAngle", "left_shoulder", "leftShoulder");
+        Double rightShoulder = pickAngle(angles, "rightShoulderAngle", "right_shoulder", "rightShoulder");
+        Double leftHip = pickAngle(angles, "leftHipAngle", "left_hip", "leftHip");
+        Double rightHip = pickAngle(angles, "rightHipAngle", "right_hip", "rightHip");
+        Double leftKnee = pickAngle(angles, "leftKneeAngle", "left_knee", "leftKnee");
+        Double rightKnee = pickAngle(angles, "rightKneeAngle", "right_knee", "rightKnee");
+        Double leftAnkle = pickAngle(angles, "leftAnkleAngle", "left_ankle", "leftAnkle");
+        Double rightAnkle = pickAngle(angles, "rightAnkleAngle", "right_ankle", "rightAnkle");
+        Double spine = pickAngle(angles, "spineAngle", "spine");
 
         return String.format("""
                 ┌─ TAY & VAI ──────────────────────┐
@@ -306,6 +305,17 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
                 fmtDeg(leftAnkle), fmtDeg(rightAnkle),
                 fmtDeg(spine)
         );
+    }
+
+    private Double pickAngle(Map<String, Double> angles, String... keys) {
+        if (angles == null || keys == null) return null;
+        for (String key : keys) {
+            if (key == null) continue;
+            if (angles.containsKey(key)) {
+                return angles.get(key);
+            }
+        }
+        return null;
     }
 
     private String fmtDeg(Double value) {
@@ -329,22 +339,14 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
             Media media;
             String mediaSourceLog;
 
-            if (imageFile != null && !imageFile.isEmpty()) {
-                byte[] imageBytes = imageFile.getBytes();
-                MimeType mimeType = guessMimeType(imageFile.getContentType(), imageFile.getOriginalFilename());
-                ByteArrayResource imageResource = new ByteArrayResource(imageBytes) {
-                    @Override
-                    public String getFilename() {
-                        return imageFile.getOriginalFilename();
-                    }
-                };
-                media = new Media(mimeType, imageResource);
-                mediaSourceLog = "multipart-upload:" + (imageFile.getOriginalFilename() != null ? imageFile.getOriginalFilename() : "unknown");
-            } else if (imageUrl != null && !imageUrl.isBlank()) {
+            if (imageUrl != null && !imageUrl.isBlank()) {
                 String aiImageUrl = toAiImageUrl(imageUrl);
                 MimeType mimeType = guessMimeType(aiImageUrl);
                 media = new Media(mimeType, new UrlResource(aiImageUrl));
                 mediaSourceLog = aiImageUrl;
+            } else if (imageFile != null && !imageFile.isEmpty()) {
+                log.warn("⚠️ Refusing to send multipart image bytes to LLM. Upload to Cloudinary first and pass imageUrl.");
+                return new EvaluationResult(0.0, PoseFeedbackTemplate.buildFallbackFeedback(expectedPoseName, analysis));
             } else {
                 log.warn("⚠️ No image provided for Anthropic Vision call → dùng template fallback");
                 return new EvaluationResult(0.0, PoseFeedbackTemplate.buildFallbackFeedback(expectedPoseName, analysis));
@@ -376,24 +378,6 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
             log.error("❌ Error calling Anthropic API: {}", e.getMessage(), e);
             return new EvaluationResult(0.0, PoseFeedbackTemplate.buildFallbackFeedback(expectedPoseName, analysis));
         }
-    }
-
-    private MimeType guessMimeType(String contentType, String fileName) {
-        if (contentType != null) {
-            String lower = contentType.toLowerCase();
-            if (lower.contains("png")) return MimeTypeUtils.IMAGE_PNG;
-            if (lower.contains("gif")) return MimeTypeUtils.IMAGE_GIF;
-            if (lower.contains("webp")) return new MimeType("image", "webp");
-            if (lower.contains("jpeg") || lower.contains("jpg")) return MimeTypeUtils.IMAGE_JPEG;
-        }
-
-        String lowerName = fileName == null ? "" : fileName.toLowerCase();
-        if (lowerName.endsWith(".png")) return MimeTypeUtils.IMAGE_PNG;
-        if (lowerName.endsWith(".gif")) return MimeTypeUtils.IMAGE_GIF;
-        if (lowerName.endsWith(".webp")) return new MimeType("image", "webp");
-        if (lowerName.endsWith(".jpeg") || lowerName.endsWith(".jpg")) return MimeTypeUtils.IMAGE_JPEG;
-
-        return MimeTypeUtils.IMAGE_JPEG;
     }
 
     private String toAiImageUrl(String imageUrl) {

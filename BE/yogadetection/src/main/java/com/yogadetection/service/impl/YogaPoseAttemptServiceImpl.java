@@ -119,22 +119,22 @@ public class YogaPoseAttemptServiceImpl implements YogaPoseAttemptService {
             }
         }
 
-        // NOTE: Do NOT gate LLM call by pose-model result.
-        // The pose-model signals (pose + confidence + angles) are supplemental context for the LLM.
-        if (imageFile != null && !imageFile.isEmpty()) {
-            log.info("Calling AI evaluation for pose {} with direct uploaded image", poseCode);
+        // Always call LLM when image is available.
+        // Pose-model mismatch is only contextual signal because classifier can be wrong.
+        if (imageUrl != null && !imageUrl.isBlank()) {
+            log.info("Calling AI evaluation for pose {} with Cloudinary URL", poseCode);
             evaluation = aiEvaluationService.evaluatePose(
-                imageFile,
-                    landmarkData,
-                    poseCode,
-                    poseDetails.getName(),
-                    poseDetails.getDescription(),
-                    analysis
+                imageUrl,
+                landmarkData,
+                poseCode,
+                poseDetails.getName(),
+                poseDetails.getDescription(),
+                analysis
             );
             log.info("AI evaluation completed for pose {}: score={}, feedback length={}",
-                    poseCode,
-                    evaluation.getScore(),
-                    evaluation.getFeedback() != null ? evaluation.getFeedback().length() : 0);
+                poseCode,
+                evaluation.getScore(),
+                evaluation.getFeedback() != null ? evaluation.getFeedback().length() : 0);
         } else if (analysis != null) {
             evaluation = new AIPoseEvaluationService.EvaluationResult(
                     0.0,

@@ -1,8 +1,12 @@
 # Yoga Pose Model Service (Python)
 
-Dịch vụ FastAPI chạy model `yoga_pose_model.h5` để:
+Dịch vụ FastAPI chạy model `yoga_pose_model.keras` (ưu tiên) để:
 - Dự đoán pose gần nhất (top-k)
 - Tính sai lệch lớn nhất theo góc khớp (so với trung bình dataset từ `yoga_keypoints.csv`)
+
+Ghi chú tương thích:
+- Nếu chưa có `yoga_pose_model.keras`, service sẽ fallback sang `yoga_pose_model.h5`.
+- Nếu có `pose_preprocessing.pkl`, service sẽ dùng đúng pipeline chuẩn hóa feature như notebook training mới.
 
 ## Run (Windows / PowerShell)
 
