@@ -9,15 +9,13 @@ import com.yogadetection.service.AIPoseEvaluationService;
 import com.yogadetection.service.PoseModelService.PoseModelAnalysis;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.chat.messages.UserMessage;
-import org.springframework.ai.chat.prompt.Prompt;
-import org.springframework.ai.content.Media;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.MimeType;
-import org.springframework.util.MimeTypeUtils;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -48,10 +46,11 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
             private static final Pattern SCORE_SINGLE_TEXT_PATTERN = Pattern.compile(
                 "(?i)(?:score|scores|scoring|điểm)[^\\d]{0,24}(\\d+(?:\\.\\d+)?)"
             );
+            private static final String DEFAULT_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
 
     private final YogaPoseDetailsRepository poseDetailsRepository;
     private final ObjectMapper objectMapper;
-    private final ChatClient chatClient;
+            private final RestTemplate restTemplate;
     private final LandmarkAngleCalculator angleCalculator;
 
     @Value("${spring.ai.anthropic.api-key:${ANTHROPIC_AUTH_TOKEN:}}")
@@ -59,6 +58,18 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
 
     @Value("${spring.ai.anthropic.base-url}")
     private String anthropicBaseUrl;
+
+    @Value("${spring.ai.anthropic.chat.options.model:claude-3-5-sonnet-20241022}")
+    private String anthropicModel;
+
+    @Value("${spring.ai.anthropic.chat.options.max-tokens:4096}")
+    private int anthropicMaxTokens;
+
+    @Value("${ai.llm.anthropic-version:2023-06-01}")
+    private String anthropicVersion;
+
+    @Value("${ai.llm.messages-path:/v1/messages}")
+    private String anthropicMessagesPath;
 
     /**
      * If the input imageUrl is a Cloudinary URL, we can request a smaller/compressed variant
@@ -327,13 +338,11 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
                 return new EvaluationResult(0.0, PoseFeedbackTemplate.buildFallbackFeedback(expectedPoseName, analysis));
             }
 
-            Media media;
             String mediaSourceLog;
+            String aiImageUrl = null;
 
             if (imageUrl != null && !imageUrl.isBlank()) {
-                String aiImageUrl = toAiImageUrl(imageUrl);
-                MimeType mimeType = guessMimeType(aiImageUrl);
-                media = new Media(mimeType, new UrlResource(aiImageUrl));
+                aiImageUrl = toAiImageUrl(imageUrl);
                 mediaSourceLog = aiImageUrl;
             } else if (imageFile != null && !imageFile.isEmpty()) {
                 log.warn("⚠️ Refusing to send multipart image bytes to LLM. Upload to Cloudinary first and pass imageUrl.");
@@ -353,24 +362,51 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
                 log.info("📝 Anthropic prompt length: {}", promptLen);
             }
 
-                UserMessage userMessage = UserMessage.builder()
-                    .text(prompt)
-                    .media(media)
-                    .build();
+            String finalPrompt = prompt;
+            if (aiImageUrl != null && !aiImageUrl.isBlank()) {
+                finalPrompt = prompt
+                        + "\n\n[IMAGE_URL]\n"
+                        + aiImageUrl
+                        + "\n[/IMAGE_URL]\n"
+                        + "Hãy phân tích đúng ảnh ở URL trên.";
+            }
 
-            Prompt chatPrompt = new Prompt(userMessage);
-            String response = chatClient.prompt(chatPrompt)
-                    .call()
-                    .content();
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("x-api-key", apiKey);
+            headers.set("anthropic-version", anthropicVersion);
+            headers.set("User-Agent", DEFAULT_USER_AGENT);
 
-            if (response == null || response.isBlank()) {
-                log.warn("⚠️ Anthropic returned empty response (null/blank) → dùng template fallback");
+            var payload = objectMapper.createObjectNode();
+            payload.put("model", anthropicModel);
+            payload.put("max_tokens", anthropicMaxTokens);
+
+            var messages = objectMapper.createArrayNode();
+            var message = objectMapper.createObjectNode();
+            message.put("role", "user");
+            message.put("content", finalPrompt);
+            messages.add(message);
+            payload.set("messages", messages);
+
+            String endpoint = anthropicBaseUrl + anthropicMessagesPath;
+            HttpEntity<String> request = new HttpEntity<>(payload.toString(), headers);
+            ResponseEntity<String> responseEntity = restTemplate.postForEntity(endpoint, request, String.class);
+            String responseBody = responseEntity.getBody();
+
+            if (responseBody == null || responseBody.isBlank()) {
+                log.warn("⚠️ Anthropic returned empty response body → dùng template fallback");
                 return new EvaluationResult(0.0, PoseFeedbackTemplate.buildFallbackFeedback(expectedPoseName, analysis));
             }
 
-            log.info("📥 Raw Anthropic response: {}", response.replaceAll("[\\r\\n]+", " ").trim());
+            log.info("📥 Raw Anthropic response: {}", responseBody.replaceAll("[\\r\\n]+", " ").trim());
 
-            return parseAIResponse(response, expectedPoseName, analysis);
+            String assistantText = extractAssistantText(responseBody);
+            if (assistantText == null || assistantText.isBlank()) {
+                log.warn("⚠️ Cannot extract assistant text from LLM envelope, using raw body as fallback parse input.");
+                assistantText = responseBody;
+            }
+
+            return parseAIResponse(assistantText, expectedPoseName, analysis);
 
         } catch (Exception e) {
             log.error("❌ Error calling Anthropic API: {}", e.getMessage(), e);
@@ -447,28 +483,36 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
         return t;
     }
 
-    private MimeType guessMimeType(String imageUrl) {
-        // If we request f_jpg from Cloudinary, we can safely send as JPEG.
-        if (imageUrl != null && imageUrl.contains("f_jpg")) {
-            return MimeTypeUtils.IMAGE_JPEG;
-        }
+    private String extractAssistantText(String rawBody) {
+        if (rawBody == null || rawBody.isBlank()) return null;
+        try {
+            JsonNode root = objectMapper.readTree(rawBody);
+            JsonNode content = root.path("content");
+            if (!content.isArray()) {
+                return rawBody;
+            }
 
-        String lower = (imageUrl == null) ? "" : imageUrl.toLowerCase();
-        if (lower.contains(".png")) {
-            return MimeTypeUtils.IMAGE_PNG;
-        }
-        if (lower.contains(".gif")) {
-            return MimeTypeUtils.IMAGE_GIF;
-        }
-        if (lower.contains(".webp")) {
-            return new MimeType("image", "webp");
-        }
-        if (lower.contains(".jpeg") || lower.contains(".jpg")) {
-            return MimeTypeUtils.IMAGE_JPEG;
-        }
+            StringBuilder out = new StringBuilder();
+            for (JsonNode block : content) {
+                String type = block.path("type").asText("");
+                if ("text".equalsIgnoreCase(type)) {
+                    String text = block.path("text").asText("");
+                    if (!text.isBlank()) {
+                        if (out.length() > 0) out.append("\n");
+                        out.append(text);
+                    }
+                }
+            }
 
-        // Default: most vision endpoints accept jpeg.
-        return MimeTypeUtils.IMAGE_JPEG;
+            if (out.length() > 0) {
+                return out.toString();
+            }
+
+            return rawBody;
+        } catch (Exception e) {
+            log.warn("⚠️ Failed to parse assistant text envelope: {}", e.getMessage());
+            return rawBody;
+        }
     }
 
     private EvaluationResult parseAIResponse(String response, String expectedPoseName, PoseModelAnalysis analysis) {
