@@ -65,7 +65,7 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
     @Value("${spring.ai.openai.chat.options.max-tokens:4096}")
     private int openAiMaxTokens;
 
-    @Value("${spring.ai.openai.chat.options.temperature:0.3}")
+    @Value("${spring.ai.openai.chat.options.temperature:1.0}")
     private double openAiTemperature;
 
     @Value("${ai.llm.chat-completions-path:/v1/chat/completions}")
@@ -379,7 +379,12 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
             var payload = objectMapper.createObjectNode();
             payload.put("model", openAiModel);
             payload.put("max_completion_tokens", openAiMaxTokens);
-            payload.put("temperature", openAiTemperature);
+            if (!isGpt5Model(openAiModel)) {
+                payload.put("temperature", openAiTemperature);
+            } else if (Math.abs(openAiTemperature - 1.0d) > 1e-9) {
+                log.warn("⚠️ Model {} does not support custom temperature={} (only default). Omitting temperature.",
+                        openAiModel, openAiTemperature);
+            }
 
             var messages = objectMapper.createArrayNode();
             var message = objectMapper.createObjectNode();
@@ -700,5 +705,10 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
         }
 
         return compact.substring(0, safeMax) + " ...[truncated]";
+    }
+
+    private boolean isGpt5Model(String model) {
+        if (model == null) return false;
+        return model.trim().toLowerCase().startsWith("gpt-5");
     }
 }
