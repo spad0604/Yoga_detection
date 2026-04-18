@@ -207,7 +207,7 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
                     prompt.append("⚠️ HƯỚNG DẪN SỬ DỤNG GÓC KHỚP:\n");
                     prompt.append("• Đây là góc THỰC TẾ của học viên\n");
                     prompt.append("• Hãy SO SÁNH với góc chuẩn của tư thế ").append(poseName).append("\n");
-                    prompt.append("• Sai lệch 5-10° = tốt | 10-20° = cần cải thiện | >20° = sai nghiêm trọng\n");
+                    prompt.append("• Sai lệch 8-15° = tốt | 15-25° = cần cải thiện | >25° = sai đáng kể\n");
                     prompt.append("• ƯU TIÊN ĐÁNH GIÁ DỰA VÀO GÓC KHỚP hơn là chỉ nhìn hình ảnh!\n\n");
 
                     log.info("✅ Góc khớp: {}", angles.toShortString());
@@ -226,12 +226,18 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
         // Tiêu chí chấm điểm chi tiết
         prompt.append("📊 TIÊU CHÍ CHẤM ĐIỂM (0-100):\n");
         prompt.append("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
-        prompt.append("🏆 90-100: XUẤT SẮC - Tư thế gần như hoàn hảo, góc khớp chính xác\n");
-        prompt.append("✅ 70-89: TỐT - Đúng cơ bản, cần điều chỉnh 1-2 điểm nhỏ\n");
-        prompt.append("⚠️ 50-69: TRUNG BÌNH - Có hình dáng nhưng góc khớp chưa đúng\n");
-        prompt.append("❌ 30-49: YẾU - Sai nhiều, cần học lại\n");
-        prompt.append("🚫 0-29: RẤT KÉM - Hoàn toàn sai, có thể gây chấn thương\n");
+        prompt.append("🏆 92-100: XUẤT SẮC - Tư thế rất chuẩn, chỉ còn chi tiết nhỏ\n");
+        prompt.append("✅ 78-91: TỐT - Đúng phần lớn, có thể tinh chỉnh thêm\n");
+        prompt.append("⚠️ 62-77: KHÁ - Hình dáng đúng cơ bản, cần chỉnh vài điểm\n");
+        prompt.append("🔧 45-61: CẦN CẢI THIỆN - Đúng một phần, còn nhiều điểm lệch\n");
+        prompt.append("🚫 0-44: CHƯA ĐÚNG - Sai đáng kể hoặc sai tư thế mục tiêu\n");
         prompt.append("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n");
+
+        prompt.append("🤝 PHONG CÁCH CHẤM ĐIỂM (ÍT KHẮT KHE):\n");
+        prompt.append("• Ưu tiên động viên người mới, tránh chấm quá nặng tay cho lỗi nhỏ\n");
+        prompt.append("• Nếu tư thế nhận diện đúng và an toàn cơ bản, điểm nên từ 60 trở lên\n");
+        prompt.append("• Mỗi lỗi nhỏ chỉ trừ nhẹ; chỉ trừ mạnh khi sai trục chính hoặc có nguy cơ chấn thương\n");
+        prompt.append("• Không dùng lời lẽ chê trách, feedback cần tích cực và dễ làm theo\n\n");
 
         prompt.append("📝 OUTPUT BẮT BUỘC (JSON-ONLY MODE):\n");
         prompt.append("- Trả về CHÍNH XÁC 1 object JSON hợp lệ, không thêm ký tự nào trước/sau JSON.\n");
@@ -245,10 +251,10 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
         prompt.append("{\"score\": <number 0..100>, \"feedback\": \"<Vietnamese text>\"}\n\n");
 
         prompt.append("Ví dụ hợp lệ duy nhất (chỉ để tham chiếu format):\n");
-        prompt.append("{\"score\": 72, \"feedback\": \"🎯 ĐÁNH GIÁ TỔNG QUAN: ...\\n\\n✅ ĐIỂM MẠNH: ...\\n\\n⚠️ CẦN CẢI THIỆN: ...\\n\\n💡 LỜI KHUYÊN: ...\"}\n\n");
+        prompt.append("{\"score\": 82, \"feedback\": \"🎯 ĐÁNH GIÁ TỔNG QUAN: ...\\n\\n✅ ĐIỂM MẠNH: ...\\n\\n⚠️ CẦN CẢI THIỆN: ...\\n\\n💡 LỜI KHUYÊN: ...\"}\n\n");
 
         prompt.append("Nếu không thể xác định tư thế, trả về:\n");
-        prompt.append("{\"score\": 0, \"feedback\": \"Bạn đang không thực hiện đúng dáng ").append(poseName).append(" rồi! Hãy nghiêm túc hơn và thử lại nhé 😄\"}");
+        prompt.append("{\"score\": 35, \"feedback\": \"Mình chưa nhận diện rõ dáng ").append(poseName).append(" trong ảnh này. Bạn thử điều chỉnh góc máy, đứng đủ toàn thân và thực hiện lại nhé 💪\"}");
 
         return prompt.toString();
     }
