@@ -26,6 +26,7 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_starter/presenter/languages/translation_keys.g.dart';
 import 'package:flutter_starter/presenter/pages/pose_guide/pose_capture_guide_dialog.dart';
+import 'package:image_picker/image_picker.dart';
 
 // ignore: depend_on_referenced_packages
 import 'package:google_mlkit_commons/google_mlkit_commons.dart'
@@ -44,8 +45,14 @@ part 'pose_painter.dart';
 class CameraDetectionPage extends StatefulWidget implements AutoRouteWrapper {
   final String? poseId;
   final YogaPoseDetails? item;
+  final bool startWithGallery;
 
-  const CameraDetectionPage({super.key, this.poseId, this.item});
+  const CameraDetectionPage({
+    super.key,
+    this.poseId,
+    this.item,
+    this.startWithGallery = false,
+  });
 
   @override
   Widget wrappedRoute(BuildContext context) {
@@ -75,6 +82,8 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
   List<Pose> _detectedPoses = [];
   bool _showResult = false;
   Size? _capturedImageSize; // Store actual captured image size
+  bool _capturedFromGallery = false;
+  bool _isPickingImage = false;
 
   // Distance detection and TTS
   FlutterTts? _flutterTts;
@@ -97,7 +106,14 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
       DeviceOrientation.landscapeRight,
     ]);
     _initializeTts();
-    _initializeCameraAndDetector();
+    if (widget.startWithGallery) {
+      _initializePoseDetectorOnly();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _pickImageFromGalleryAndDetect();
+      });
+    } else {
+      _initializeCameraAndDetector();
+    }
   }
 
   @override
@@ -236,6 +252,73 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
     await _startStream();
   }
 
+  Future<void> _initializePoseDetectorOnly() async {
+    _poseDetector = PoseDetector(
+      options: PoseDetectorOptions(
+        mode: PoseDetectionMode.single,
+        model: PoseDetectionModel.accurate,
+      ),
+    );
+  }
+
+  Future<void> _pickImageFromGalleryAndDetect() async {
+    if (_isPickingImage || _poseDetector == null) return;
+
+    setState(() {
+      _isPickingImage = true;
+      _showResult = false;
+      _capturedImage = null;
+      _capturedImageSize = null;
+      _detectedPoses = [];
+      _distanceStatus = '';
+    });
+
+    try {
+      final picker = ImagePicker();
+      final XFile? selectedImage = await picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 95,
+      );
+
+      if (selectedImage == null) {
+        setState(() {
+          _isPickingImage = false;
+        });
+        return;
+      }
+
+      final imageBytes = await selectedImage.readAsBytes();
+      final decodedImage = await decodeImageFromList(imageBytes);
+      final actualImageSize = Size(
+        decodedImage.width.toDouble(),
+        decodedImage.height.toDouble(),
+      );
+
+      final inputImage = InputImage.fromFilePath(selectedImage.path);
+      final poses = await _poseDetector!.processImage(inputImage);
+
+      setState(() {
+        _capturedImage = selectedImage;
+        _capturedImageSize = actualImageSize;
+        _detectedPoses = poses;
+        _showResult = true;
+        _capturedFromGallery = true;
+      });
+
+      await _printPoseData(poses);
+      await _uploadPoseViaHTTP(poses, imageBytes);
+    } catch (e) {
+      debugPrint('❌ Error selecting/detecting gallery image: $e');
+      _showError('Failed to process selected image: $e');
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isPickingImage = false;
+        });
+      }
+    }
+  }
+
   // Start countdown and capture after 5 seconds
   Future<void> _startCountdownAndCapture() async {
     if (_cameraController == null || _isCountingDown) return;
@@ -310,6 +393,7 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
         _capturedImageSize = actualImageSize;
         _detectedPoses = poses;
         _showResult = true;
+        _capturedFromGallery = false;
       });
 
       // Print pose data
@@ -512,8 +596,11 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
       _capturedImage = null;
       _capturedImageSize = null;
       _detectedPoses = [];
+      _capturedFromGallery = false;
     });
-    await _startStream();
+    if (!widget.startWithGallery) {
+      await _startStream();
+    }
   }
 
   Future<void> _initializeCameraAndDetector() async {
@@ -756,7 +843,6 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
   }
 
   @override
-  @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _stopStream(); // Stop stream first
@@ -776,10 +862,11 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
   @override
   Widget build(BuildContext context) {
     final _controller = _cameraController;
+    final isCameraReady = _controller != null && _controller.value.isInitialized;
 
     return Scaffold(
       backgroundColor: Colors.black,
-      body: _controller == null || !_controller.value.isInitialized
+      body: !isCameraReady && !widget.startWithGallery
           ? const Center(child: CircularProgressIndicator())
           : SafeArea(
               child: Column(
@@ -808,7 +895,11 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
                     height: 0,
                     child: Center(
                       child: Text(
-                        _showResult ? LocaleKeys.PoseDetected.tr() : LocaleKeys.LiveCamera.tr(),
+                        _showResult
+                            ? LocaleKeys.PoseDetected.tr()
+                            : (widget.startWithGallery
+                                ? LocaleKeys.ChooseImage.tr()
+                                : LocaleKeys.LiveCamera.tr()),
                         style: Theme.of(context)
                             .textTheme
                             .titleLarge
@@ -830,13 +921,41 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
                             if (_showResult && _capturedImage != null)
                               Transform(
                                 alignment: Alignment.center,
-                                transform: _controller.description.lensDirection ==
-                                        CameraLensDirection.front
+                                transform: (!_capturedFromGallery &&
+                                        isCameraReady &&
+                                        _controller.description.lensDirection ==
+                                            CameraLensDirection.front)
                                     ? (Matrix4.identity()..scale(-1.0, 1.0, 1.0))
                                     : Matrix4.identity(),
                                 child: Image.file(
                                   File(_capturedImage!.path),
                                   fit: BoxFit.contain, // Use contain to maintain aspect ratio
+                                ),
+                              )
+                            else if (!isCameraReady)
+                              Container(
+                                color: Colors.black,
+                                alignment: Alignment.center,
+                                padding: const EdgeInsets.symmetric(horizontal: 24),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(
+                                      Icons.photo_library_outlined,
+                                      color: Colors.white70,
+                                      size: 64,
+                                    ),
+                                    const SizedBox(height: 12),
+                                    Text(
+                                      LocaleKeys.ChooseImage.tr(),
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               )
                             else
@@ -850,12 +969,14 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
                                 painter: PosePainter(
                                   poses: _detectedPoses,
                                   imageSize: _capturedImageSize!, // Use actual captured image size
-                                  isFrontCamera: _controller.description.lensDirection ==
-                                      CameraLensDirection.front,
+                                  isFrontCamera: !_capturedFromGallery &&
+                                      isCameraReady &&
+                                      _controller.description.lensDirection ==
+                                          CameraLensDirection.front,
                                   showLabels: true, // Show labels on captured image
                                 ),
                               )
-                            else if (!_showResult)
+                            else if (!_showResult && isCameraReady)
                               BlocBuilder<CameraDetectionBloc, CameraDetectionState>(
                                 builder: (context, state) {
                                   final poses = state.poseList;
@@ -992,7 +1113,7 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
                               ),
 
                             // Camera flip button (only in live mode)
-                            if (!_showResult && !_isCountingDown)
+                            if (!_showResult && !_isCountingDown && isCameraReady)
                               Positioned(
                                 bottom: 20,
                                 right: 20,
@@ -1005,6 +1126,14 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
                                   ),
                                 ),
                               ),
+
+                            if (_isPickingImage)
+                              Container(
+                                color: Colors.black.withOpacity(0.5),
+                                child: const Center(
+                                  child: CircularProgressIndicator(color: Colors.white),
+                                ),
+                              ),
                           ],
                         ),
                       ),
@@ -1014,70 +1143,118 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
                   SafeArea(
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: _showResult
-                          ? Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                // Back to live view
-                                cameraDetectionButton(
-                                  AppImages.ic_video,
-                                  Colors.blue,
-                                  Colors.white,
-                                  _resetToLiveMode,
-                                ),
-                                // Capture again
-                                cameraDetectionButton(
-                                  AppImages.ic_present,
-                                  Colors.green,
-                                  Colors.white,
-                                  () async {
-                                    await _resetToLiveMode();
-                                    await _startCountdownAndCapture();
-                                  },
-                                ),
-                                // Close
-                                cameraDetectionButton(
-                                  AppImages.ic_close,
-                                  Colors.red,
-                                  Colors.white,
-                                  () => context.router.maybePop(),
-                                ),
-                              ],
-                            )
-                          : Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                // Start stream
-                                cameraDetectionButton(
-                                  AppImages.ic_video,
-                                  Colors.white,
-                                  Colors.black,
-                                  () async => await _startStream(),
-                                ),
-                                // Capture with countdown
-                                cameraDetectionButton(
-                                  AppImages.ic_present,
-                                  _isCountingDown ? Colors.grey : Colors.green,
-                                  Colors.white,
-                                  _isCountingDown ? () {} : _startCountdownAndCapture,
-                                ),
-                                // Close
-                                cameraDetectionButton(
-                                  AppImages.ic_close,
-                                  Colors.red,
-                                  Colors.white,
-                                  () async {
-                                    await _stopStream();
-                                    context.router.maybePop();
-                                  },
-                                )
-                              ],
-                            ),
+                      child: _buildBottomActions(),
                     ),
                   )
                 ],
               ),
             ),
+    );
+  }
+
+  Widget _buildActionButton({
+    required IconData icon,
+    required Color backgroundColor,
+    required Color iconColor,
+    required VoidCallback? onPressed,
+  }) {
+    return Container(
+      width: 60,
+      height: 50,
+      decoration: BoxDecoration(
+        color: onPressed == null ? Colors.grey : backgroundColor,
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Center(
+        child: IconButton(
+          icon: Icon(icon, color: iconColor, size: 24),
+          onPressed: onPressed,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBottomActions() {
+    if (widget.startWithGallery) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          _buildActionButton(
+            icon: Icons.photo_library,
+            backgroundColor: Colors.green,
+            iconColor: Colors.white,
+            onPressed: _isPickingImage ? null : _pickImageFromGalleryAndDetect,
+          ),
+          _buildActionButton(
+            icon: Icons.close,
+            backgroundColor: Colors.red,
+            iconColor: Colors.white,
+            onPressed: () => context.router.maybePop(),
+          ),
+        ],
+      );
+    }
+
+    if (_showResult) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          // Back to live view
+          cameraDetectionButton(
+            AppImages.ic_video,
+            Colors.blue,
+            Colors.white,
+            _resetToLiveMode,
+          ),
+          // Capture again
+          cameraDetectionButton(
+            AppImages.ic_present,
+            Colors.green,
+            Colors.white,
+            () async {
+              await _resetToLiveMode();
+              await _startCountdownAndCapture();
+            },
+          ),
+          // Close
+          cameraDetectionButton(
+            AppImages.ic_close,
+            Colors.red,
+            Colors.white,
+            () => context.router.maybePop(),
+          ),
+        ],
+      );
+    }
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        // Start stream
+        cameraDetectionButton(
+          AppImages.ic_video,
+          Colors.white,
+          Colors.black,
+          () async => await _startStream(),
+        ),
+        // Capture with countdown
+        cameraDetectionButton(
+          AppImages.ic_present,
+          _isCountingDown ? Colors.grey : Colors.green,
+          Colors.white,
+          _isCountingDown ? () {} : _startCountdownAndCapture,
+        ),
+        // Close
+        cameraDetectionButton(
+          AppImages.ic_close,
+          Colors.red,
+          Colors.white,
+          () async {
+            await _stopStream();
+            context.router.maybePop();
+          },
+        )
+      ],
     );
   }
 }

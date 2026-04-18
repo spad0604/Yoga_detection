@@ -50,6 +50,21 @@ class _PoseDetailsPageState extends State<PoseDetailsPage> {
   PoseDetailsBloc get _bloc => context.read<PoseDetailsBloc>();
   bool _detailsShowcaseStarted = false;
 
+  void _openDetection({required bool startWithGallery}) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => BlocProvider<CameraDetectionBloc>(
+          create: (ctx) => provider.get<CameraDetectionBloc>(),
+          child: CameraDetectionPage(
+            poseId: widget.item.id.toString(),
+            item: widget.item,
+            startWithGallery: startWithGallery,
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -216,7 +231,7 @@ class _PoseDetailsPageState extends State<PoseDetailsPage> {
                         _bloc.state.yogaPoseDetails!.tutorialVideoUrlCompat!.isNotEmpty)
                       const SizedBox(height: 24),
 
-                    // Start Button
+                    // Start Button (Camera)
                     Showcase(
                       key: playShowCaseWidget,
                       description: LocaleKeys.StartPractice.tr(),
@@ -241,18 +256,7 @@ class _PoseDetailsPageState extends State<PoseDetailsPage> {
                           child: InkWell(
                             borderRadius: BorderRadius.circular(16),
                             onTap: () {
-                              // Navigate with BlocProvider wrapped
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (_) => BlocProvider<CameraDetectionBloc>(
-                                    create: (ctx) => provider.get<CameraDetectionBloc>(),
-                                    child: CameraDetectionPage(
-                                      poseId: widget.item.id.toString(),
-                                      item: widget.item,
-                                    ),
-                                  ),
-                                ),
-                              );
+                              _openDetection(startWithGallery: false);
                             },
                             child: const Center(
                               child: Row(
@@ -274,6 +278,48 @@ class _PoseDetailsPageState extends State<PoseDetailsPage> {
                                   ),
                                 ],
                               ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+
+                    // Upload Button (Gallery)
+                    Container(
+                      width: double.infinity,
+                      height: 56,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: AppColors.primaryPurple.withOpacity(0.35)),
+                      ),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(16),
+                          onTap: () {
+                            _openDetection(startWithGallery: true);
+                          },
+                          child: Center(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.photo_library,
+                                  color: AppColors.primaryPurple,
+                                  size: 24,
+                                ),
+                                const SizedBox(width: 10),
+                                Text(
+                                  LocaleKeys.ChooseImage.tr(),
+                                  style: TextStyle(
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.primaryPurple,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),

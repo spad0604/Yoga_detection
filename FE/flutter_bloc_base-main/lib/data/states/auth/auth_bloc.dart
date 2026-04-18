@@ -1,5 +1,4 @@
 import 'package:flutter_starter/services/oauth_token_manager/oauth_token_manager.dart';
-import 'package:flutter_starter/services/oauth_token_manager/oauth_token_manager.default.dart';
 import 'package:injectable/injectable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_starter/data/states/auth/auth_event.dart';
