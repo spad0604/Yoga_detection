@@ -129,6 +129,7 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
 
             String prompt = buildEvaluationPrompt(actualPoseName, actualDescription, landmarkData, analysis);
             EvaluationResult result = callOpenAiEvaluation(imageUrl, imageFile, prompt, actualPoseName, analysis);
+            result = applyGenerousScoreWhenLikelyCorrect(result, actualPoseName, analysis);
 
             log.info("✅ AI evaluation completed for pose {} ({}) → score={} | feedback length={}",
                     poseCode, actualPoseName, result.getScore(), result.getFeedback() != null ? result.getFeedback().length() : 0);
@@ -235,7 +236,8 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
 
         prompt.append("🤝 PHONG CÁCH CHẤM ĐIỂM (ÍT KHẮT KHE):\n");
         prompt.append("• Ưu tiên động viên người mới, tránh chấm quá nặng tay cho lỗi nhỏ\n");
-        prompt.append("• Nếu tư thế nhận diện đúng và an toàn cơ bản, điểm nên từ 60 trở lên\n");
+        prompt.append("• Nếu tư thế đúng mục tiêu và an toàn cơ bản, điểm nên từ 80 trở lên\n");
+        prompt.append("• Nếu làm đúng dáng khá rõ, ưu tiên dải 85-95 thay vì chấm quá dè dặt\n");
         prompt.append("• Mỗi lỗi nhỏ chỉ trừ nhẹ; chỉ trừ mạnh khi sai trục chính hoặc có nguy cơ chấn thương\n");
         prompt.append("• Không dùng lời lẽ chê trách, feedback cần tích cực và dễ làm theo\n\n");
 
@@ -251,12 +253,91 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
         prompt.append("{\"score\": <number 0..100>, \"feedback\": \"<Vietnamese text>\"}\n\n");
 
         prompt.append("Ví dụ hợp lệ duy nhất (chỉ để tham chiếu format):\n");
-        prompt.append("{\"score\": 82, \"feedback\": \"🎯 ĐÁNH GIÁ TỔNG QUAN: ...\\n\\n✅ ĐIỂM MẠNH: ...\\n\\n⚠️ CẦN CẢI THIỆN: ...\\n\\n💡 LỜI KHUYÊN: ...\"}\n\n");
+        prompt.append("{\"score\": 88, \"feedback\": \"🎯 ĐÁNH GIÁ TỔNG QUAN: ...\\n\\n✅ ĐIỂM MẠNH: ...\\n\\n⚠️ CẦN CẢI THIỆN: ...\\n\\n💡 LỜI KHUYÊN: ...\"}\n\n");
 
         prompt.append("Nếu không thể xác định tư thế, trả về:\n");
         prompt.append("{\"score\": 35, \"feedback\": \"Mình chưa nhận diện rõ dáng ").append(poseName).append(" trong ảnh này. Bạn thử điều chỉnh góc máy, đứng đủ toàn thân và thực hiện lại nhé 💪\"}");
 
         return prompt.toString();
+    }
+
+    private EvaluationResult applyGenerousScoreWhenLikelyCorrect(
+            EvaluationResult result,
+            String expectedPoseName,
+            PoseModelAnalysis analysis
+    ) {
+        if (result == null) {
+            return new EvaluationResult(0.0, "Không có phản hồi từ AI.");
+        }
+
+        double rawScore = result.getScore() != null ? result.getScore() : 0.0;
+        double safeRaw = clampScore(rawScore);
+
+        if (analysis == null || analysis.getPredictedPose() == null || analysis.getPredictedPose().isBlank()) {
+            return new EvaluationResult(safeRaw, result.getFeedback());
+        }
+
+        double confidence = Math.max(0.0, Math.min(1.0, analysis.getConfidence()));
+        if (confidence < 0.35) {
+            return new EvaluationResult(safeRaw, result.getFeedback());
+        }
+
+        boolean likelySamePose = PoseNameMatcher.isLikelySamePose(expectedPoseName, analysis.getPredictedPose());
+        if (!likelySamePose) {
+            return new EvaluationResult(safeRaw, result.getFeedback());
+        }
+
+        double floor;
+        if (confidence >= 0.85) {
+            floor = 90.0;
+        } else if (confidence >= 0.70) {
+            floor = 85.0;
+        } else if (confidence >= 0.55) {
+            floor = 80.0;
+        } else if (confidence >= 0.40) {
+            floor = 75.0;
+        } else {
+            floor = 70.0;
+        }
+
+        if (analysis.getMostOff() != null) {
+            double maxDiff = Math.abs(analysis.getMostOff().getDiff());
+            if (maxDiff > 45) {
+                floor -= 15.0;
+            } else if (maxDiff > 30) {
+                floor -= 10.0;
+            } else if (maxDiff > 20) {
+                floor -= 5.0;
+            }
+        }
+
+        floor = Math.max(60.0, floor);
+
+        double boosted = Math.max(safeRaw, floor);
+        if (safeRaw >= 70.0) {
+            boosted = Math.max(boosted, Math.min(98.0, safeRaw + 4.0));
+        }
+        boosted = clampScore(boosted);
+
+        if (Math.abs(boosted - safeRaw) >= 0.1) {
+            log.info(
+                    "⬆️ Boosted score for likely-correct pose: expected='{}', predicted='{}', conf={}. raw={} -> boosted={}",
+                    expectedPoseName,
+                    analysis.getPredictedPose(),
+                    String.format("%.2f", confidence),
+                    String.format("%.1f", safeRaw),
+                    String.format("%.1f", boosted)
+            );
+        }
+
+        return new EvaluationResult(boosted, result.getFeedback());
+    }
+
+    private double clampScore(double score) {
+        if (Double.isNaN(score) || Double.isInfinite(score)) return 0.0;
+        if (score < 0.0) return 0.0;
+        if (score > 100.0) return 100.0;
+        return score;
     }
 
     private String formatLandmarks(List<Landmark> landmarks) {
