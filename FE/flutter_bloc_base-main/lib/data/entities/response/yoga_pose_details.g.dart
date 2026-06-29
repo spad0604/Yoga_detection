@@ -12,9 +12,9 @@ _$YogaPoseDetailsImpl _$$YogaPoseDetailsImplFromJson(
       id: _readId(json, 'id') as String,
       name: json['name'] as String,
       description: json['description'] as String?,
-      totalMinutes: (json['minutes'] as num?)?.toInt(),
+      totalMinutes: (_readMinutes(json, 'totalMinutes') as num?)?.toInt(),
       imageUrl: json['imageUrl'] as String?,
-      totalCalories: (json['calos'] as num?)?.toInt(),
+      totalCalories: (_readCalories(json, 'totalCalories') as num?)?.toInt(),
       level: json['level'] as String?,
       tutorialVideoUrl: _readVideoUrl(json, 'tutorial_video_url') as String?,
     );

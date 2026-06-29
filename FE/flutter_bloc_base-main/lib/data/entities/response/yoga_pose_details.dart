@@ -13,18 +13,27 @@ Object? _readVideoUrl(Map<dynamic, dynamic> json, String key) {
   return json['tutorialVideoUrl'] ?? json['videoUrl'] ?? json['youtubeUrl'];
 }
 
+Object? _readMinutes(Map<dynamic, dynamic> json, String key) {
+  return json['minutes'] ?? json['totalMinutes'];
+}
+
+Object? _readCalories(Map<dynamic, dynamic> json, String key) {
+  return json['calos'] ?? json['totalCalos'];
+}
+
 @freezed
 class YogaPoseDetails with _$YogaPoseDetails {
   const factory YogaPoseDetails({
     @JsonKey(readValue: _readId) required String id,
     @JsonKey(name: 'name') required String name,
     @JsonKey(name: 'description') String? description,
-    @JsonKey(name: 'minutes') int? totalMinutes,
+    @JsonKey(readValue: _readMinutes) int? totalMinutes,
     @JsonKey(name: 'imageUrl') String? imageUrl,
-    @JsonKey(name: 'calos') int? totalCalories,
+    @JsonKey(readValue: _readCalories) int? totalCalories,
     @JsonKey(name: 'level') String? level,
     @JsonKey(readValue: _readVideoUrl) String? tutorialVideoUrl,
   }) = _YogaPoseDetails;
 
-  factory YogaPoseDetails.fromJson(Map<String, dynamic> json) => _$YogaPoseDetailsFromJson(json);
+  factory YogaPoseDetails.fromJson(Map<String, dynamic> json) =>
+      _$YogaPoseDetailsFromJson(json);
 }

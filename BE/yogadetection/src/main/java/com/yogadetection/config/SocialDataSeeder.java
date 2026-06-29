@@ -1,9 +1,9 @@
 package com.yogadetection.config;
 
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 
 import com.yogadetection.entity.Friendship;
 import com.yogadetection.entity.Friendship.FriendshipStatus;
@@ -24,12 +24,11 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Seed data cho Social Features
- * Chạy tự động khi khởi động app (chỉ trong dev/staging)
- * Sử dụng @Profile("!production") để không chạy trong production
+ * Chỉ chạy khi bật social.seed.enabled=true.
  */
 @Slf4j
 @Configuration
-@Profile("!production")
+@ConditionalOnProperty(name = "social.seed.enabled", havingValue = "true")
 @RequiredArgsConstructor
 public class SocialDataSeeder {
 

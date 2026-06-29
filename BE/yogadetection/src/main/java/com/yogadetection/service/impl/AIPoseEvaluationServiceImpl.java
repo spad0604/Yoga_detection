@@ -2,7 +2,6 @@ package com.yogadetection.service.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yogadetection.dto.request.Landmark;
 import com.yogadetection.dto.request.PoseLandmarkRequest;
 import com.yogadetection.repository.YogaPoseDetailsRepository;
 import com.yogadetection.service.AIPoseEvaluationService;
@@ -19,21 +18,16 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.ArrayList;
+import java.util.Base64;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * ENHANCED VERSION - AI Pose Evaluation Service with Angle Calculation
- * 
- * Improvements:
- * 1. Tích hợp LandmarkAngleCalculator để tính góc khớp
- * 2. Better prompt engineering với tiêu chí chấm điểm chi tiết
- * 3. Context về ảnh đã crop/focus
- * 4. Structured feedback format
+ * AI Pose Evaluation Service.
+ *
+ * Sends the user image directly to OpenAI Vision and asks for structured yoga feedback.
+ * Landmarks are still accepted by the public API for compatibility/history, but they are
+ * not sent to the model prompt.
  */
 @Slf4j
 @Service
@@ -52,25 +46,21 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
     private final YogaPoseDetailsRepository poseDetailsRepository;
     private final ObjectMapper objectMapper;
             private final RestTemplate restTemplate;
-    private final LandmarkAngleCalculator angleCalculator;
 
-    @Value("${spring.ai.anthropic.api-key:${ANTHROPIC_AUTH_TOKEN:}}")
+    @Value("${openai.api-key:${OPENAI_API_KEY:}}")
     private String apiKey;
 
-    @Value("${spring.ai.anthropic.base-url}")
-    private String anthropicBaseUrl;
+    @Value("${openai.base-url:https://api.openai.com}")
+    private String openAiBaseUrl;
 
-    @Value("${spring.ai.anthropic.chat.options.model:claude-3-5-sonnet-20241022}")
-    private String anthropicModel;
+    @Value("${openai.model:gpt-5.4-mini}")
+    private String openAiModel;
 
-    @Value("${spring.ai.anthropic.chat.options.max-tokens:4096}")
-    private int anthropicMaxTokens;
+    @Value("${openai.max-output-tokens:1200}")
+    private int openAiMaxOutputTokens;
 
-    @Value("${ai.llm.anthropic-version:2023-06-01}")
-    private String anthropicVersion;
-
-    @Value("${ai.llm.messages-path:/v1/messages}")
-    private String anthropicMessagesPath;
+    @Value("${openai.responses-path:/v1/responses}")
+    private String openAiResponsesPath;
 
     @Value("${ai.llm.use-system-curl:true}")
     private boolean useSystemCurl;
@@ -132,7 +122,7 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
             String actualDescription = poseDescription != null ? poseDescription : "";
 
             String prompt = buildEvaluationPrompt(actualPoseName, actualDescription, landmarkData, analysis);
-                EvaluationResult result = callAnthropicVision(imageUrl, imageFile, prompt, actualPoseName, analysis);
+            EvaluationResult result = callOpenAIVision(imageUrl, imageFile, prompt, actualPoseName, analysis);
 
             log.info("✅ AI evaluation completed for pose {} ({}) → score={} | feedback length={}",
                     poseCode, actualPoseName, result.getScore(), result.getFeedback() != null ? result.getFeedback().length() : 0);
@@ -148,188 +138,45 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
     private String buildEvaluationPrompt(String poseName, String poseDescription, PoseLandmarkRequest landmarkData, PoseModelAnalysis analysis) {
         StringBuilder prompt = new StringBuilder();
 
-        // Header
-        prompt.append("🧘 BẠN LÀ CHUYÊN GIA YOGA VỚI 10+ NĂM KINH NGHIỆM\n");
-        prompt.append("⚠️ QUAN TRỌNG: CHỈ TRẢ VỀ JSON CUỐI CÙNG, KHÔNG IN SUY LUẬN NỘI BỘ.\n\n");
+        prompt.append("Bạn là huấn luyện viên yoga giàu kinh nghiệm, chuyên đánh giá tư thế từ ảnh.\n");
+        prompt.append("Chỉ dùng ảnh người dùng gửi trực tiếp và thông tin tư thế bên dưới. Không giả định từ landmark, góc khớp, hay model phân loại nội bộ.\n");
+        prompt.append("Chỉ trả về JSON hợp lệ, không markdown, không code block, không giải thích ngoài JSON.\n\n");
 
-        prompt.append("📋 THÔNG TIN TƯ THẾ ĐÁNH GIÁ:\n");
-        prompt.append("• Tên tư thế: ").append(poseName).append("\n");
-        prompt.append("• Mô tả chi tiết: ").append(poseDescription).append("\n\n");
+        prompt.append("TƯ THẾ CẦN ĐÁNH GIÁ:\n");
+        prompt.append("- Tên tư thế: ").append(poseName).append("\n");
+        prompt.append("- Mô tả chuẩn: ").append(poseDescription == null || poseDescription.isBlank() ? "Không có mô tả." : poseDescription).append("\n\n");
 
-        if (analysis != null && analysis.getPredictedPose() != null) {
-            prompt.append("🤖 KẾT QUẢ MODEL PHÂN LOẠI (Yoga-82):\n");
-            prompt.append("• Pose gần nhất: ").append(analysis.getPredictedPose())
-                .append(String.format(" (%.0f%%)\n", analysis.getConfidence() * 100.0));
-            if (analysis.getMostOff() != null) {
-            var m = analysis.getMostOff();
-            prompt.append(String.format("• Sai lệch lớn nhất: %s | lệch %.1f° (chuẩn %.1f°, hiện tại %.1f°)\n",
-                m.getMetric(), Math.abs(m.getDiff()), m.getReference(), m.getActual()));
-            }
-            prompt.append("\n");
-        }
+        prompt.append("CÁCH ĐÁNH GIÁ ẢNH:\n");
+        prompt.append("- Xác định người dùng có đang thực hiện đúng dáng ").append(poseName).append(" hay không.\n");
+        prompt.append("- Nhìn vào căn chỉnh toàn thân: đầu/cổ, vai, cột sống, hông, gối, cổ chân, bàn chân, tay và hướng trọng tâm.\n");
+        prompt.append("- Bỏ qua nền, ánh sáng và chất lượng camera nếu vẫn nhìn rõ cơ thể.\n");
+        prompt.append("- Nếu ảnh không rõ người, không rõ tư thế, hoặc tư thế khác hẳn dáng yêu cầu, score phải thấp.\n");
+        prompt.append("- Feedback phải cụ thể, chi tiết, dễ tập theo, nêu rõ người dùng nên chỉnh gì và chỉnh như thế nào.\n\n");
 
-        // Context về ảnh đã được crop
-        prompt.append("📸 THÔNG TIN VỀ ẢNH:\n");
-        prompt.append("• Đây là ảnh người dùng upload trực tiếp\n");
-        prompt.append("• Có thể có nhiễu nền hoặc ánh sáng không hoàn hảo\n");
-        prompt.append("• Ưu tiên đánh giá TƯ THẾ, bỏ qua chi tiết nền\n\n");
+        prompt.append("TIÊU CHÍ CHẤM ĐIỂM (0-100):\n");
+        prompt.append("- 90-100: đúng dáng rõ ràng, căn chỉnh tốt, chỉ cần chỉnh rất nhỏ.\n");
+        prompt.append("- 70-89: đúng dáng cơ bản, có 1-2 lỗi kỹ thuật đáng sửa.\n");
+        prompt.append("- 50-69: nhận ra dáng nhưng nhiều phần cơ thể chưa vào vị trí.\n");
+        prompt.append("- 30-49: cố gắng làm dáng nhưng sai nhiều, cần hướng dẫn lại từ đầu.\n");
+        prompt.append("- 0-29: không phải dáng yêu cầu, ảnh không đủ thông tin, hoặc tư thế có rủi ro cao.\n\n");
 
-        // Landmark data + GÓC KHỚP (QUAN TRỌNG NHẤT!)
-        if (landmarkData != null && landmarkData.getLandmarks() != null && !landmarkData.getLandmarks().isEmpty()) {
-            List<Landmark> normalizedLandmarks = normalizeLandmarkTypes(landmarkData.getLandmarks());
-
-            boolean hasModelAngles = analysis != null
-                    && analysis.getActualAngles() != null
-                    && !analysis.getActualAngles().isEmpty();
-
-            // 1. Góc khớp (ưu tiên từ pose-model nội bộ nếu có)
-            if (hasModelAngles) {
-                prompt.append("📐 GÓC CÁC KHỚP (TỪ MODEL NỘI BỘ TỰ TRAIN — THAM KHẢO):\n");
-                prompt.append("⚠️ Lưu ý: Đây là kết quả góc do model nội bộ tự training suy ra (có thể không đúng dáng hiện tại hoặc có sai số nếu landmark lỗi). Dùng để tham khảo.\n");
-                prompt.append(formatModelAngles(analysis.getActualAngles())).append("\n");
-
-                if (analysis.getReferenceAngles() != null && !analysis.getReferenceAngles().isEmpty()) {
-                    prompt.append("📏 GÓC CHUẨN THAM CHIẾU (THEO POSE MODEL DỰ ĐOÁN: ")
-                            .append(analysis.getPredictedPose() != null ? analysis.getPredictedPose() : "unknown")
-                            .append("):\n");
-                    prompt.append(formatModelAngles(analysis.getReferenceAngles())).append("\n");
-                }
-
-                prompt.append("⚠️ HƯỚNG DẪN SỬ DỤNG GÓC KHỚP:\n");
-                prompt.append("• Góc trên là dữ liệu tham khảo từ model; hãy kết hợp quan sát ảnh + landmark\n");
-                prompt.append("• Mục tiêu vẫn là tư thế ").append(poseName).append("\n");
-                prompt.append("• Nếu có góc chuẩn tham chiếu, hãy so sánh chênh lệch để chỉ ra điểm sai\n\n");
-            } else {
-                // Fallback: tính góc bằng calculator trong BE
-                try {
-                    LandmarkAngleCalculator.BodyAngles angles =
-                            angleCalculator.calculateBodyAngles(normalizedLandmarks);
-
-                    prompt.append("📐 GÓC CÁC KHỚP THỰC TẾ (QUAN TRỌNG NHẤT!):\n");
-                    prompt.append(angles.toString()).append("\n");
-
-                    prompt.append("⚠️ HƯỚNG DẪN SỬ DỤNG GÓC KHỚP:\n");
-                    prompt.append("• Đây là góc THỰC TẾ của học viên\n");
-                    prompt.append("• Hãy SO SÁNH với góc chuẩn của tư thế ").append(poseName).append("\n");
-                    prompt.append("• Sai lệch 5-10° = tốt | 10-20° = cần cải thiện | >20° = sai nghiêm trọng\n");
-                    prompt.append("• ƯU TIÊN ĐÁNH GIÁ DỰA VÀO GÓC KHỚP hơn là chỉ nhìn hình ảnh!\n\n");
-
-                    log.info("✅ Góc khớp: {}", angles.toShortString());
-                } catch (Exception e) {
-                    log.warn("⚠️ Không thể tính góc khớp: {}", e.getMessage());
-                }
-            }
-            
-            // 2. Landmark data chi tiết
-            prompt.append("🎯 DỮ LIỆU KHỚP XƯƠNG (33 ĐIỂM LANDMARK):\n");
-            prompt.append(formatLandmarks(normalizedLandmarks)).append("\n\n");
-        } else {
-            prompt.append("⚠️ Không có dữ liệu landmark. Đánh giá dựa hoàn toàn trên ảnh.\n\n");
-        }
-
-        // Tiêu chí chấm điểm chi tiết
-        prompt.append("📊 TIÊU CHÍ CHẤM ĐIỂM (0-100):\n");
-        prompt.append("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
-        prompt.append("🏆 90-100: XUẤT SẮC - Tư thế gần như hoàn hảo, góc khớp chính xác\n");
-        prompt.append("✅ 70-89: TỐT - Đúng cơ bản, cần điều chỉnh 1-2 điểm nhỏ\n");
-        prompt.append("⚠️ 50-69: TRUNG BÌNH - Có hình dáng nhưng góc khớp chưa đúng\n");
-        prompt.append("❌ 30-49: YẾU - Sai nhiều, cần học lại\n");
-        prompt.append("🚫 0-29: RẤT KÉM - Hoàn toàn sai, có thể gây chấn thương\n");
-        prompt.append("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n");
-
-        prompt.append("📝 OUTPUT BẮT BUỘC (JSON-ONLY MODE):\n");
+        prompt.append("OUTPUT BẮT BUỘC:\n");
         prompt.append("- Trả về CHÍNH XÁC 1 object JSON hợp lệ, không thêm ký tự nào trước/sau JSON.\n");
         prompt.append("- Ký tự đầu tiên phải là '{' và ký tự cuối cùng phải là '}'.\n");
-        prompt.append("- KHÔNG markdown, KHÔNG code block, KHÔNG giải thích, KHÔNG chuỗi kiểu 'The user wants me...'.\n");
         prompt.append("- Toàn bộ nội dung feedback phải là TIẾNG VIỆT tự nhiên.\n");
         prompt.append("- score trong khoảng 0-100.\n");
-        prompt.append("- feedback nên có các phần: Đánh giá tổng quan, Điểm mạnh, Cần cải thiện, Lời khuyên.\n\n");
+        prompt.append("- feedback dài 5-8 câu, có các phần: Đánh giá tổng quan, Điểm mạnh, Cần cải thiện, Cách chỉnh ngay lần tập tiếp theo.\n\n");
 
         prompt.append("Schema bắt buộc:\n");
         prompt.append("{\"score\": <number 0..100>, \"feedback\": \"<Vietnamese text>\"}\n\n");
 
-        prompt.append("Ví dụ hợp lệ duy nhất (chỉ để tham chiếu format):\n");
-        prompt.append("{\"score\": 72, \"feedback\": \"🎯 ĐÁNH GIÁ TỔNG QUAN: ...\\n\\n✅ ĐIỂM MẠNH: ...\\n\\n⚠️ CẦN CẢI THIỆN: ...\\n\\n💡 LỜI KHUYÊN: ...\"}\n\n");
-
         prompt.append("Nếu không thể xác định tư thế, trả về:\n");
-        prompt.append("{\"score\": 0, \"feedback\": \"Bạn đang không thực hiện đúng dáng ").append(poseName).append(" rồi! Hãy nghiêm túc hơn và thử lại nhé 😄\"}");
+        prompt.append("{\"score\": 0, \"feedback\": \"Mình chưa thấy rõ bạn đang thực hiện đúng dáng ").append(poseName).append(". Hãy chụp lại toàn thân trong khung hình, giữ camera ổn định và thử lại với đúng tư thế nhé.\"}");
 
         return prompt.toString();
     }
 
-    private String formatLandmarks(List<Landmark> landmarks) {
-        return landmarks.stream()
-                .map(l -> String.format("- %s: (x=%.2f, y=%.2f, z=%.2f)", l.getType(), l.getX(), l.getY(), l.getZ()))
-                .collect(Collectors.joining("\n"));
-    }
-
-    private List<Landmark> normalizeLandmarkTypes(List<Landmark> landmarks) {
-        List<Landmark> out = new ArrayList<>(landmarks.size());
-        for (Landmark lm : landmarks) {
-            if (lm == null) continue;
-            out.add(Landmark.builder()
-                    .type(LandmarkTypeNormalizer.normalize(lm.getType()))
-                    .x(lm.getX())
-                    .y(lm.getY())
-                    .z(lm.getZ())
-                    .build());
-        }
-        return out;
-    }
-
-    private String formatModelAngles(Map<String, Double> angles) {
-        if (angles == null || angles.isEmpty()) return "(no angles)";
-
-        Double leftElbow = pickAngle(angles, "leftElbowAngle", "left_elbow", "leftElbow");
-        Double rightElbow = pickAngle(angles, "rightElbowAngle", "right_elbow", "rightElbow");
-        Double leftShoulder = pickAngle(angles, "leftShoulderAngle", "left_shoulder", "leftShoulder");
-        Double rightShoulder = pickAngle(angles, "rightShoulderAngle", "right_shoulder", "rightShoulder");
-        Double leftHip = pickAngle(angles, "leftHipAngle", "left_hip", "leftHip");
-        Double rightHip = pickAngle(angles, "rightHipAngle", "right_hip", "rightHip");
-        Double leftKnee = pickAngle(angles, "leftKneeAngle", "left_knee", "leftKnee");
-        Double rightKnee = pickAngle(angles, "rightKneeAngle", "right_knee", "rightKnee");
-        Double leftAnkle = pickAngle(angles, "leftAnkleAngle", "left_ankle", "leftAnkle");
-        Double rightAnkle = pickAngle(angles, "rightAnkleAngle", "right_ankle", "rightAnkle");
-        Double spine = pickAngle(angles, "spineAngle", "spine");
-
-        return String.format("""
-                ┌─ TAY & VAI ──────────────────────┐
-                │ Khuỷu trái: %6s │ Khuỷu phải: %6s │
-                │ Vai trái:   %6s │ Vai phải:   %6s │
-                ├─ CHÂN & HÔNG ────────────────────┤
-                │ Hông trái:  %6s │ Hông phải:  %6s │
-                │ Gối trái:   %6s │ Gối phải:   %6s │
-                │ Cổ chân trái:%5s │ Cổ chân phải:%5s │
-                ├─ THÂN & LƯNG ────────────────────┤
-                │ Độ thẳng lưng:     %6s         │
-                └───────────────────────────────────┘
-                """,
-                fmtDeg(leftElbow), fmtDeg(rightElbow),
-                fmtDeg(leftShoulder), fmtDeg(rightShoulder),
-                fmtDeg(leftHip), fmtDeg(rightHip),
-                fmtDeg(leftKnee), fmtDeg(rightKnee),
-                fmtDeg(leftAnkle), fmtDeg(rightAnkle),
-                fmtDeg(spine)
-        );
-    }
-
-    private Double pickAngle(Map<String, Double> angles, String... keys) {
-        if (angles == null || keys == null) return null;
-        for (String key : keys) {
-            if (key == null) continue;
-            if (angles.containsKey(key)) {
-                return angles.get(key);
-            }
-        }
-        return null;
-    }
-
-    private String fmtDeg(Double value) {
-        if (value == null) return "N/A";
-        return String.format("%.1f°", value);
-    }
-
-    private EvaluationResult callAnthropicVision(
+    private EvaluationResult callOpenAIVision(
             String imageUrl,
             MultipartFile imageFile,
             String prompt,
@@ -338,62 +185,67 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
     ) {
         try {
             if (apiKey == null || apiKey.isEmpty()) {
-                log.warn("⚠️ Anthropic API key not configured → dùng template fallback");
+                log.warn("⚠️ OpenAI API key not configured → dùng template fallback");
                 return new EvaluationResult(0.0, PoseFeedbackTemplate.buildFallbackFeedback(expectedPoseName, analysis));
             }
 
             String mediaSourceLog;
-            String aiImageUrl = null;
+            String aiImageUrl;
 
             if (imageUrl != null && !imageUrl.isBlank()) {
                 aiImageUrl = toAiImageUrl(imageUrl);
                 mediaSourceLog = aiImageUrl;
             } else if (imageFile != null && !imageFile.isEmpty()) {
-                log.warn("⚠️ Refusing to send multipart image bytes to LLM. Upload to Cloudinary first and pass imageUrl.");
-                return new EvaluationResult(0.0, PoseFeedbackTemplate.buildFallbackFeedback(expectedPoseName, analysis));
+                String contentType = imageFile.getContentType();
+                if (contentType == null || contentType.isBlank()) {
+                    contentType = MediaType.IMAGE_JPEG_VALUE;
+                }
+                aiImageUrl = "data:" + contentType + ";base64,"
+                        + Base64.getEncoder().encodeToString(imageFile.getBytes());
+                mediaSourceLog = "multipart image bytes (" + contentType + ", " + imageFile.getSize() + " bytes)";
             } else {
-                log.warn("⚠️ No image provided for Anthropic Vision call → dùng template fallback");
+                log.warn("⚠️ No image provided for OpenAI Vision call → dùng template fallback");
                 return new EvaluationResult(0.0, PoseFeedbackTemplate.buildFallbackFeedback(expectedPoseName, analysis));
             }
 
-            log.info("🌐 Anthropic base URL: {}", anthropicBaseUrl);
-            log.info("📤 Sending image to Anthropic Vision: {}", mediaSourceLog);
+            log.info("🌐 OpenAI base URL: {}", openAiBaseUrl);
+            log.info("📤 Sending image directly to OpenAI Vision: {}", mediaSourceLog);
 
             int promptLen = prompt != null ? prompt.length() : 0;
             if (logPromptPreview) {
-                log.info("📝 Anthropic prompt preview (len={}): {}", promptLen, buildPromptPreview(prompt, promptPreviewMaxChars));
+                log.info("📝 OpenAI prompt preview (len={}): {}", promptLen, buildPromptPreview(prompt, promptPreviewMaxChars));
             } else {
-                log.info("📝 Anthropic prompt length: {}", promptLen);
-            }
-
-            String finalPrompt = prompt;
-            if (aiImageUrl != null && !aiImageUrl.isBlank()) {
-                finalPrompt = prompt
-                        + "\n\n[IMAGE_URL]\n"
-                        + aiImageUrl
-                        + "\n[/IMAGE_URL]\n"
-                        + "Hãy phân tích đúng ảnh ở URL trên.";
+                log.info("📝 OpenAI prompt length: {}", promptLen);
             }
 
             var payload = objectMapper.createObjectNode();
-            payload.put("model", anthropicModel);
-            payload.put("max_tokens", anthropicMaxTokens);
+            payload.put("model", openAiModel);
+            payload.put("max_output_tokens", openAiMaxOutputTokens);
 
-            var messages = objectMapper.createArrayNode();
+            var input = objectMapper.createArrayNode();
             var message = objectMapper.createObjectNode();
             message.put("role", "user");
-            message.put("content", finalPrompt);
-            messages.add(message);
-            payload.set("messages", messages);
+            var content = objectMapper.createArrayNode();
+            var textBlock = objectMapper.createObjectNode();
+            textBlock.put("type", "input_text");
+            textBlock.put("text", prompt);
+            content.add(textBlock);
+            var imageBlock = objectMapper.createObjectNode();
+            imageBlock.put("type", "input_image");
+            imageBlock.put("image_url", aiImageUrl);
+            content.add(imageBlock);
+            message.set("content", content);
+            input.add(message);
+            payload.set("input", input);
 
-            String responseBody = invokeAnthropicMessages(payload.toString());
+            String responseBody = invokeOpenAIResponses(payload.toString());
 
             if (responseBody == null || responseBody.isBlank()) {
-                log.warn("⚠️ Anthropic returned empty response body → dùng template fallback");
+                log.warn("⚠️ OpenAI returned empty response body → dùng template fallback");
                 return new EvaluationResult(0.0, PoseFeedbackTemplate.buildFallbackFeedback(expectedPoseName, analysis));
             }
 
-            log.info("📥 Raw Anthropic response: {}", responseBody.replaceAll("[\\r\\n]+", " ").trim());
+            log.info("📥 Raw OpenAI response: {}", responseBody.replaceAll("[\\r\\n]+", " ").trim());
 
             String assistantText = extractAssistantText(responseBody);
             if (assistantText == null || assistantText.isBlank()) {
@@ -404,33 +256,32 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
             return parseAIResponse(assistantText, expectedPoseName, analysis);
 
         } catch (Exception e) {
-            log.error("❌ Error calling Anthropic API: {}", e.getMessage(), e);
+            log.error("❌ Error calling OpenAI API: {}", e.getMessage(), e);
             return new EvaluationResult(0.0, PoseFeedbackTemplate.buildFallbackFeedback(expectedPoseName, analysis));
         }
     }
 
-    private String invokeAnthropicMessages(String payloadJson) throws Exception {
+    private String invokeOpenAIResponses(String payloadJson) throws Exception {
         if (useSystemCurl) {
-            return invokeAnthropicMessagesWithCurl(payloadJson);
+            return invokeOpenAIResponsesWithCurl(payloadJson);
         }
-        return invokeAnthropicMessagesWithRestTemplate(payloadJson);
+        return invokeOpenAIResponsesWithRestTemplate(payloadJson);
     }
 
-    private String invokeAnthropicMessagesWithRestTemplate(String payloadJson) {
+    private String invokeOpenAIResponsesWithRestTemplate(String payloadJson) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("x-api-key", apiKey);
-        headers.set("anthropic-version", anthropicVersion);
+        headers.setBearerAuth(apiKey);
         headers.set("User-Agent", DEFAULT_USER_AGENT);
 
-        String endpoint = anthropicBaseUrl + anthropicMessagesPath;
+        String endpoint = openAiBaseUrl + openAiResponsesPath;
         HttpEntity<String> request = new HttpEntity<>(payloadJson, headers);
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(endpoint, request, String.class);
         return responseEntity.getBody();
     }
 
-    private String invokeAnthropicMessagesWithCurl(String payloadJson) throws Exception {
-        String endpoint = anthropicBaseUrl + anthropicMessagesPath;
+    private String invokeOpenAIResponsesWithCurl(String payloadJson) throws Exception {
+        String endpoint = openAiBaseUrl + openAiResponsesPath;
 
         ProcessBuilder pb = new ProcessBuilder(
                 "curl",
@@ -438,8 +289,7 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
                 "-X", "POST",
                 endpoint,
                 "-H", "User-Agent: " + DEFAULT_USER_AGENT,
-                "-H", "x-api-key: " + apiKey,
-                "-H", "anthropic-version: " + anthropicVersion,
+                "-H", "Authorization: Bearer " + apiKey,
                 "-H", "content-type: application/json",
                 "--data-raw", payloadJson,
                 "-w", "\n__HTTP_STATUS__:%{http_code}"
@@ -474,7 +324,7 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
         }
 
         if (httpStatus >= 400) {
-            throw new IllegalStateException("Anthropic HTTP " + httpStatus + ": " + body);
+            throw new IllegalStateException("OpenAI HTTP " + httpStatus + ": " + body);
         }
 
         return body;
@@ -553,6 +403,34 @@ public class AIPoseEvaluationServiceImpl implements AIPoseEvaluationService {
         if (rawBody == null || rawBody.isBlank()) return null;
         try {
             JsonNode root = objectMapper.readTree(rawBody);
+
+            String outputText = root.path("output_text").asText("");
+            if (!outputText.isBlank()) {
+                return outputText;
+            }
+
+            JsonNode output = root.path("output");
+            if (output.isArray()) {
+                StringBuilder out = new StringBuilder();
+                for (JsonNode item : output) {
+                    JsonNode itemContent = item.path("content");
+                    if (!itemContent.isArray()) continue;
+                    for (JsonNode block : itemContent) {
+                        String text = block.path("text").asText("");
+                        if (text.isBlank()) {
+                            text = block.path("content").asText("");
+                        }
+                        if (!text.isBlank()) {
+                            if (out.length() > 0) out.append("\n");
+                            out.append(text);
+                        }
+                    }
+                }
+                if (out.length() > 0) {
+                    return out.toString();
+                }
+            }
+
             JsonNode content = root.path("content");
             if (!content.isArray()) {
                 return rawBody;

@@ -11,9 +11,9 @@ class RoutinesState with _$RoutinesState {
     @Default([]) List<UserRoutineProgress> inProgressRoutines,
     @Default([]) List<UserRoutineProgress> completedRoutines,
     @Default(false) bool isLoading,
+    @Default(false) bool isLoadingMore,
     String? error,
     @Default(0) int currentPage,
     @Default(false) bool hasMore,
   }) = _RoutinesState;
 }
-

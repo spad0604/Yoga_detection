@@ -12,7 +12,7 @@ _$BaseApiResponseImpl<T> _$$BaseApiResponseImplFromJson<T>(
 ) =>
     _$BaseApiResponseImpl<T>(
       code: (json['code'] as num?)?.toInt(),
-      data: _$nullableGenericFromJson(json['data'], fromJsonT),
+      data: _$nullableGenericFromJson(_readData(json, 'data'), fromJsonT),
     );
 
 Map<String, dynamic> _$$BaseApiResponseImplToJson<T>(
