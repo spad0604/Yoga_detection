@@ -68,10 +68,14 @@ class _SocialFeedWidgetState extends State<SocialFeedWidget> {
     }
   }
 
+  Future<void> refresh() => _loadFeed();
+
   @override
   Widget build(BuildContext context) {
     if (_isLoading) return const Center(child: CircularProgressIndicator());
-    if (_error != null) return Center(child: Text('${LocaleKeys.FailedToLoadPosts.tr()}: $_error'));
+    if (_error != null)
+      return Center(
+          child: Text('${LocaleKeys.FailedToLoadPosts.tr()}: $_error'));
     if (_posts.isEmpty) {
       return Center(
         child: Column(
@@ -79,10 +83,14 @@ class _SocialFeedWidgetState extends State<SocialFeedWidget> {
           children: [
             Icon(Icons.rss_feed_outlined, size: 64, color: Colors.grey[400]),
             const SizedBox(height: 12),
-            Text(LocaleKeys.NoPostsYet.tr(), style: Theme.of(context).textTheme.titleLarge),
+            Text(LocaleKeys.NoPostsYet.tr(),
+                style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 8),
             Text(LocaleKeys.SocialPostsWillAppearHere.tr(),
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey[600])),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium
+                    ?.copyWith(color: Colors.grey[600])),
           ],
         ),
       );
@@ -108,7 +116,8 @@ class PostCard extends StatefulWidget {
   final VoidCallback? onRefresh;
   final bool isDetailView;
 
-  const PostCard({Key? key, required this.post, this.onRefresh, this.isDetailView = false})
+  const PostCard(
+      {Key? key, required this.post, this.onRefresh, this.isDetailView = false})
       : super(key: key);
 
   @override
@@ -214,7 +223,9 @@ class _PostCardState extends State<PostCard> {
                       radius: 20,
                       backgroundColor: AppColors.primaryPurple.withOpacity(0.2),
                       child: Text(
-                        (widget.post.authorName ?? 'A').substring(0, 1).toUpperCase(),
+                        (widget.post.authorName ?? 'A')
+                            .substring(0, 1)
+                            .toUpperCase(),
                         style: TextStyle(
                           color: AppColors.primaryPurple,
                           fontWeight: FontWeight.bold,
@@ -248,7 +259,8 @@ class _PostCardState extends State<PostCard> {
                 ),
                 const SizedBox(height: 16),
                 // Content
-                if (widget.post.content != null && widget.post.content!.isNotEmpty)
+                if (widget.post.content != null &&
+                    widget.post.content!.isNotEmpty)
                   Text(
                     widget.post.content!,
                     style: TextStyle(
@@ -277,13 +289,15 @@ class _PostCardState extends State<PostCard> {
                               return Container(
                                 height: 200,
                                 color: AppColors.backgroundLight,
-                                child: const Center(child: CircularProgressIndicator()),
+                                child: const Center(
+                                    child: CircularProgressIndicator()),
                               );
                             },
                             errorBuilder: (context, error, stack) => Container(
                               height: 200,
                               color: AppColors.backgroundLight,
-                              child: const Center(child: Icon(Icons.broken_image)),
+                              child:
+                                  const Center(child: Icon(Icons.broken_image)),
                             ),
                           ),
                         ),
@@ -311,14 +325,17 @@ class _PostCardState extends State<PostCard> {
                                   width: 160,
                                   height: 120,
                                   color: AppColors.backgroundLight,
-                                  child: const Center(child: CircularProgressIndicator()),
+                                  child: const Center(
+                                      child: CircularProgressIndicator()),
                                 );
                               },
-                              errorBuilder: (context, error, stack) => Container(
+                              errorBuilder: (context, error, stack) =>
+                                  Container(
                                 width: 160,
                                 height: 120,
                                 color: AppColors.backgroundLight,
-                                child: const Center(child: Icon(Icons.broken_image)),
+                                child: const Center(
+                                    child: Icon(Icons.broken_image)),
                               ),
                             ),
                           ),
@@ -335,13 +352,16 @@ class _PostCardState extends State<PostCard> {
                       onTap: _toggleLike,
                       borderRadius: BorderRadius.circular(20),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 6),
                         child: Row(
                           children: [
                             Icon(
                               _isLiked ? Icons.favorite : Icons.favorite_border,
                               size: 20,
-                              color: _isLiked ? Colors.red : AppColors.textSecondary,
+                              color: _isLiked
+                                  ? Colors.red
+                                  : AppColors.textSecondary,
                             ),
                             const SizedBox(width: 6),
                             Text(
@@ -349,7 +369,9 @@ class _PostCardState extends State<PostCard> {
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
-                                color: _isLiked ? Colors.red : AppColors.textSecondary,
+                                color: _isLiked
+                                    ? Colors.red
+                                    : AppColors.textSecondary,
                               ),
                             ),
                           ],
@@ -362,7 +384,8 @@ class _PostCardState extends State<PostCard> {
                       onTap: () => _showPostDetail(context),
                       borderRadius: BorderRadius.circular(20),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 6),
                         child: Row(
                           children: [
                             Icon(
@@ -393,7 +416,8 @@ class _PostCardState extends State<PostCard> {
     );
   }
 
-  void _showImageViewer(BuildContext context, List<String> urls, int initialIndex) {
+  void _showImageViewer(
+      BuildContext context, List<String> urls, int initialIndex) {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => Scaffold(
@@ -413,10 +437,12 @@ class _PostCardState extends State<PostCard> {
                         fit: BoxFit.contain,
                         loadingBuilder: (context, child, progress) {
                           if (progress == null) return child;
-                          return const Center(child: CircularProgressIndicator());
+                          return const Center(
+                              child: CircularProgressIndicator());
                         },
                         errorBuilder: (context, error, stack) => const Center(
-                          child: Icon(Icons.broken_image, color: Colors.white, size: 64),
+                          child: Icon(Icons.broken_image,
+                              color: Colors.white, size: 64),
                         ),
                       ),
                     ),
@@ -427,7 +453,8 @@ class _PostCardState extends State<PostCard> {
                 child: Align(
                   alignment: Alignment.topRight,
                   child: IconButton(
-                    icon: const Icon(Icons.close, color: Colors.white, size: 30),
+                    icon:
+                        const Icon(Icons.close, color: Colors.white, size: 30),
                     onPressed: () => Navigator.of(context).pop(),
                   ),
                 ),
@@ -472,7 +499,8 @@ class _PostDetailSheetState extends State<_PostDetailSheet> {
     setState(() => _isLoadingComments = true);
     try {
       final repo = provider.get<SocialPostsRepository>();
-      final result = await repo.getComments(postId: widget.post.id, page: 0, size: 50);
+      final result =
+          await repo.getComments(postId: widget.post.id, page: 0, size: 50);
       setState(() => _comments = result.items);
     } catch (e) {
       debugPrint('Failed to load comments: $e');
@@ -548,7 +576,10 @@ class _PostDetailSheetState extends State<_PostDetailSheet> {
                   padding: const EdgeInsets.all(20),
                   children: [
                     // Original post (read-only mini card)
-                    PostCard(post: widget.post, onRefresh: widget.onRefresh, isDetailView: true),
+                    PostCard(
+                        post: widget.post,
+                        onRefresh: widget.onRefresh,
+                        isDetailView: true),
                     const SizedBox(height: 16),
                     // Comments section
                     Text(
@@ -571,7 +602,8 @@ class _PostDetailSheetState extends State<_PostDetailSheet> {
                         ),
                       )
                     else
-                      ..._comments.map((comment) => _CommentTile(comment: comment)),
+                      ..._comments
+                          .map((comment) => _CommentTile(comment: comment)),
                   ],
                 ),
               ),
@@ -598,18 +630,23 @@ class _PostDetailSheetState extends State<_PostDetailSheet> {
                         controller: _commentController,
                         decoration: InputDecoration(
                           hintText: 'Write a comment...',
-                          hintStyle: TextStyle(color: AppColors.textSecondary.withOpacity(0.5)),
+                          hintStyle: TextStyle(
+                              color: AppColors.textSecondary.withOpacity(0.5)),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(24),
-                            borderSide: BorderSide(color: AppColors.textSecondary.withOpacity(0.2)),
+                            borderSide: BorderSide(
+                                color:
+                                    AppColors.textSecondary.withOpacity(0.2)),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(24),
-                            borderSide: BorderSide(color: AppColors.primaryPurple, width: 2),
+                            borderSide: BorderSide(
+                                color: AppColors.primaryPurple, width: 2),
                           ),
                           filled: true,
                           fillColor: AppColors.backgroundLight,
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12),
                         ),
                       ),
                     ),
@@ -621,7 +658,8 @@ class _PostDetailSheetState extends State<_PostDetailSheet> {
                         color: AppColors.primaryPurple,
                       ),
                       style: IconButton.styleFrom(
-                        backgroundColor: AppColors.primaryPurple.withOpacity(0.1),
+                        backgroundColor:
+                            AppColors.primaryPurple.withOpacity(0.1),
                       ),
                     ),
                   ],
@@ -725,8 +763,11 @@ class ActivitiesPageContent extends StatefulWidget {
   State<ActivitiesPageContent> createState() => _ActivitiesPageContentState();
 }
 
-class _ActivitiesPageState extends State<ActivitiesPage> with SingleTickerProviderStateMixin {
+class _ActivitiesPageState extends State<ActivitiesPage>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  final _friendFeedKey = GlobalKey<_SocialFeedWidgetState>();
+  final _myFeedKey = GlobalKey<_SocialFeedWidgetState>();
 
   @override
   void initState() {
@@ -785,7 +826,9 @@ class _ActivitiesPageState extends State<ActivitiesPage> with SingleTickerProvid
                 indicatorColor: AppColors.primaryPurple,
                 tabs: [
                   Tab(text: LocaleKeys.Friends.tr(), icon: Icon(Icons.people)),
-                  Tab(text: LocaleKeys.MyActivity.tr(), icon: Icon(Icons.person)),
+                  Tab(
+                      text: LocaleKeys.MyActivity.tr(),
+                      icon: Icon(Icons.person)),
                 ],
               ),
               Container(
@@ -835,11 +878,13 @@ class _ActivitiesPageState extends State<ActivitiesPage> with SingleTickerProvid
             }
 
             return Padding(
-              padding: EdgeInsets.only(bottom: MediaQuery.of(bottomSheetContext).viewInsets.bottom),
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(bottomSheetContext).viewInsets.bottom),
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+                  borderRadius:
+                      const BorderRadius.vertical(top: Radius.circular(24)),
                 ),
                 padding: const EdgeInsets.all(24),
                 child: Column(
@@ -858,8 +903,10 @@ class _ActivitiesPageState extends State<ActivitiesPage> with SingleTickerProvid
                           ),
                         ),
                         IconButton(
-                          icon: Icon(Icons.close, color: AppColors.textSecondary),
-                          onPressed: () => Navigator.of(bottomSheetContext).pop(),
+                          icon:
+                              Icon(Icons.close, color: AppColors.textSecondary),
+                          onPressed: () =>
+                              Navigator.of(bottomSheetContext).pop(),
                         ),
                       ],
                     ),
@@ -869,14 +916,17 @@ class _ActivitiesPageState extends State<ActivitiesPage> with SingleTickerProvid
                       maxLines: 6,
                       decoration: InputDecoration(
                         hintText: LocaleKeys.ShareYourThoughts.tr(),
-                        hintStyle: TextStyle(color: AppColors.textSecondary.withOpacity(0.5)),
+                        hintStyle: TextStyle(
+                            color: AppColors.textSecondary.withOpacity(0.5)),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16),
-                          borderSide: BorderSide(color: AppColors.textSecondary.withOpacity(0.2)),
+                          borderSide: BorderSide(
+                              color: AppColors.textSecondary.withOpacity(0.2)),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16),
-                          borderSide: BorderSide(color: AppColors.primaryPurple, width: 2),
+                          borderSide: BorderSide(
+                              color: AppColors.primaryPurple, width: 2),
                         ),
                         filled: true,
                         fillColor: AppColors.backgroundLight,
@@ -898,7 +948,8 @@ class _ActivitiesPageState extends State<ActivitiesPage> with SingleTickerProvid
                               child: ListView.separated(
                                 scrollDirection: Axis.horizontal,
                                 itemCount: pickedImages.length,
-                                separatorBuilder: (_, __) => const SizedBox(width: 8),
+                                separatorBuilder: (_, __) =>
+                                    const SizedBox(width: 8),
                                 itemBuilder: (ctx, i) {
                                   final img = pickedImages[i];
                                   return Stack(
@@ -906,17 +957,20 @@ class _ActivitiesPageState extends State<ActivitiesPage> with SingleTickerProvid
                                       ClipRRect(
                                         borderRadius: BorderRadius.circular(8),
                                         child: Image.file(File(img.path),
-                                            width: 76, height: 76, fit: BoxFit.cover),
+                                            width: 76,
+                                            height: 76,
+                                            fit: BoxFit.cover),
                                       ),
                                       Positioned(
                                         top: 2,
                                         right: 2,
                                         child: GestureDetector(
-                                          onTap: () =>
-                                              setModalState(() => pickedImages.removeAt(i)),
+                                          onTap: () => setModalState(
+                                              () => pickedImages.removeAt(i)),
                                           child: Container(
                                             decoration: BoxDecoration(
-                                                color: Colors.black45, shape: BoxShape.circle),
+                                                color: Colors.black45,
+                                                shape: BoxShape.circle),
                                             padding: const EdgeInsets.all(4),
                                             child: const Icon(Icons.close,
                                                 size: 14, color: Colors.white),
@@ -939,18 +993,22 @@ class _ActivitiesPageState extends State<ActivitiesPage> with SingleTickerProvid
                         try {
                           await socialRepo.createPost(
                             content: text.isEmpty ? '' : text,
-                            imagePaths: pickedImages.map((e) => e.path).toList(),
+                            imagePaths:
+                                pickedImages.map((e) => e.path).toList(),
                           );
                           Navigator.of(bottomSheetContext).pop();
                           // Refresh activities
-                          activitiesBloc.add(const ActivitiesLoadMyActivities());
-                          activitiesBloc.add(const ActivitiesLoadFriendActivities());
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(SnackBar(content: Text(LocaleKeys.Posted.tr())));
+                          activitiesBloc
+                              .add(const ActivitiesLoadMyActivities());
+                          activitiesBloc
+                              .add(const ActivitiesLoadFriendActivities());
+                          _refreshSocialFeeds();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(LocaleKeys.Posted.tr())));
                         } catch (e) {
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text(
-                                  LocaleKeys.FailedToPost.tr(namedArgs: {'error': e.toString()}))));
+                              content: Text(LocaleKeys.FailedToPost.tr(
+                                  namedArgs: {'error': e.toString()}))));
                         }
                       },
                       style: ElevatedButton.styleFrom(
@@ -989,18 +1047,25 @@ class _ActivitiesPageState extends State<ActivitiesPage> with SingleTickerProvid
 
   Widget _buildFriendActivitiesTab() {
     // Temporarily show social posts feed here instead of friend activities
-    return const SocialFeedWidget();
+    return SocialFeedWidget(key: _friendFeedKey);
   }
 
   Widget _buildMyActivitiesTab() {
     // Temporarily show social posts feed here instead of my activities
-    return const SocialFeedWidget();
+    return SocialFeedWidget(key: _myFeedKey);
+  }
+
+  void _refreshSocialFeeds() {
+    _friendFeedKey.currentState?.refresh();
+    _myFeedKey.currentState?.refresh();
   }
 }
 
 class _ActivitiesPageContentState extends State<ActivitiesPageContent>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  final _friendFeedKey = GlobalKey<_SocialFeedWidgetState>();
+  final _myFeedKey = GlobalKey<_SocialFeedWidgetState>();
 
   @override
   void initState() {
@@ -1011,7 +1076,8 @@ class _ActivitiesPageContentState extends State<ActivitiesPageContent>
       try {
         final socialRepo = provider.get<SocialPostsRepository>();
         final feed = await socialRepo.getFeed(page: 0, size: 50);
-        debugPrint('Social feed (Content) loaded (${feed.totalElements} items)');
+        debugPrint(
+            'Social feed (Content) loaded (${feed.totalElements} items)');
       } catch (e) {
         debugPrint('Failed loading social feed (Content): $e');
       }
@@ -1055,7 +1121,9 @@ class _ActivitiesPageContentState extends State<ActivitiesPageContent>
                 indicatorColor: AppColors.primaryPurple,
                 tabs: [
                   Tab(text: LocaleKeys.Friends.tr(), icon: Icon(Icons.people)),
-                  Tab(text: LocaleKeys.MyActivity.tr(), icon: Icon(Icons.person)),
+                  Tab(
+                      text: LocaleKeys.MyActivity.tr(),
+                      icon: Icon(Icons.person)),
                 ],
               ),
               Container(
@@ -1098,16 +1166,19 @@ class _ActivitiesPageContentState extends State<ActivitiesPageContent>
             Future<void> pickImages() async {
               try {
                 final images = await ImagePicker().pickMultiImage();
-                if (images.isNotEmpty) setModalState(() => pickedImages.addAll(images));
+                if (images.isNotEmpty)
+                  setModalState(() => pickedImages.addAll(images));
               } catch (_) {}
             }
 
             return Padding(
-              padding: EdgeInsets.only(bottom: MediaQuery.of(bottomSheetContext).viewInsets.bottom),
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(bottomSheetContext).viewInsets.bottom),
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+                  borderRadius:
+                      const BorderRadius.vertical(top: Radius.circular(24)),
                 ),
                 padding: const EdgeInsets.all(24),
                 child: Column(
@@ -1121,7 +1192,8 @@ class _ActivitiesPageContentState extends State<ActivitiesPageContent>
                             style: Theme.of(context).textTheme.titleMedium),
                         IconButton(
                           icon: const Icon(Icons.close),
-                          onPressed: () => Navigator.of(bottomSheetContext).pop(),
+                          onPressed: () =>
+                              Navigator.of(bottomSheetContext).pop(),
                         ),
                       ],
                     ),
@@ -1131,7 +1203,8 @@ class _ActivitiesPageContentState extends State<ActivitiesPageContent>
                       maxLines: 6,
                       decoration: InputDecoration(
                           hintText: LocaleKeys.ShareSomething.tr(),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8))),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8))),
                     ),
                     const SizedBox(height: 12),
                     Row(
@@ -1149,7 +1222,8 @@ class _ActivitiesPageContentState extends State<ActivitiesPageContent>
                               child: ListView.separated(
                                 scrollDirection: Axis.horizontal,
                                 itemCount: pickedImages.length,
-                                separatorBuilder: (_, __) => const SizedBox(width: 8),
+                                separatorBuilder: (_, __) =>
+                                    const SizedBox(width: 8),
                                 itemBuilder: (ctx, i) {
                                   final img = pickedImages[i];
                                   return Stack(
@@ -1157,17 +1231,20 @@ class _ActivitiesPageContentState extends State<ActivitiesPageContent>
                                       ClipRRect(
                                         borderRadius: BorderRadius.circular(8),
                                         child: Image.file(File(img.path),
-                                            width: 76, height: 76, fit: BoxFit.cover),
+                                            width: 76,
+                                            height: 76,
+                                            fit: BoxFit.cover),
                                       ),
                                       Positioned(
                                         top: 2,
                                         right: 2,
                                         child: GestureDetector(
-                                          onTap: () =>
-                                              setModalState(() => pickedImages.removeAt(i)),
+                                          onTap: () => setModalState(
+                                              () => pickedImages.removeAt(i)),
                                           child: Container(
                                             decoration: BoxDecoration(
-                                                color: Colors.black45, shape: BoxShape.circle),
+                                                color: Colors.black45,
+                                                shape: BoxShape.circle),
                                             padding: const EdgeInsets.all(4),
                                             child: const Icon(Icons.close,
                                                 size: 14, color: Colors.white),
@@ -1190,13 +1267,17 @@ class _ActivitiesPageContentState extends State<ActivitiesPageContent>
                         try {
                           await socialRepo.createPost(
                             content: text.isEmpty ? '' : text,
-                            imagePaths: pickedImages.map((e) => e.path).toList(),
+                            imagePaths:
+                                pickedImages.map((e) => e.path).toList(),
                           );
                           Navigator.of(bottomSheetContext).pop();
-                          activitiesBloc.add(const ActivitiesLoadMyActivities());
-                          activitiesBloc.add(const ActivitiesLoadFriendActivities());
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(SnackBar(content: Text(LocaleKeys.Posted.tr())));
+                          activitiesBloc
+                              .add(const ActivitiesLoadMyActivities());
+                          activitiesBloc
+                              .add(const ActivitiesLoadFriendActivities());
+                          _refreshSocialFeeds();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(LocaleKeys.Posted.tr())));
                         } catch (e) {
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text(LocaleKeys.FailedToPostWithError.tr(
@@ -1217,11 +1298,16 @@ class _ActivitiesPageContentState extends State<ActivitiesPageContent>
 
   Widget _buildFriendActivitiesTab() {
     // Temporarily show social posts feed here instead of friend activities
-    return const SocialFeedWidget();
+    return SocialFeedWidget(key: _friendFeedKey);
   }
 
   Widget _buildMyActivitiesTab() {
     // Temporarily show social posts feed here instead of my activities
-    return const SocialFeedWidget();
+    return SocialFeedWidget(key: _myFeedKey);
+  }
+
+  void _refreshSocialFeeds() {
+    _friendFeedKey.currentState?.refresh();
+    _myFeedKey.currentState?.refresh();
   }
 }

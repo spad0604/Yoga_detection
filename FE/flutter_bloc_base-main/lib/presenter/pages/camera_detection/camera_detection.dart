@@ -388,8 +388,8 @@ class _CameraDetectionPageState extends State<CameraDetectionPage> with WidgetsB
 
       // Navigate to pretty result screen
       if (mounted) {
-        // Try to pass poseName from args if available
-        String? poseName;
+        // Try to pass poseName from widget/args if available
+        String? poseName = widget.item?.name;
         try {
           final route = ModalRoute.of(context);
           if (route != null && route.settings.arguments is Map) {

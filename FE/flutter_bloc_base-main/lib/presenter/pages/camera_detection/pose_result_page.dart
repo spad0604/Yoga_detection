@@ -3,20 +3,47 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_starter/data/entities/response/user_yoga_pose_model.dart';
 import 'package:flutter_starter/presenter/languages/translation_keys.g.dart';
+import 'package:flutter_starter/services/tts/viettel_tts_service.dart';
 import 'package:share_plus/share_plus.dart';
 
 @RoutePage()
-class PoseResultPage extends StatelessWidget {
+class PoseResultPage extends StatefulWidget {
   final UserYogaPoseModel result;
   final String? poseName;
 
   const PoseResultPage({super.key, required this.result, this.poseName});
 
   @override
+  State<PoseResultPage> createState() => _PoseResultPageState();
+}
+
+class _PoseResultPageState extends State<PoseResultPage> {
+  final _ttsService = ViettelTtsService();
+
+  @override
+  void initState() {
+    super.initState();
+    _ttsService.speak(widget.result.feedback);
+  }
+
+  @override
+  void dispose() {
+    _ttsService.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final result = widget.result;
+    final poseName = widget.poseName;
     final theme = Theme.of(context);
     final score = result.score ?? 0;
-    final displayPoseName = poseName ?? result.poseCode;
+    final displayPoseName =
+        (result.name != null && result.name!.trim().isNotEmpty)
+            ? result.name!.trim()
+            : (poseName != null && poseName.trim().isNotEmpty)
+                ? poseName.trim()
+                : result.poseCode;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -57,7 +84,8 @@ class PoseResultPage extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               displayPoseName,
-              style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
+              style: theme.textTheme.headlineSmall
+                  ?.copyWith(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 12),
             Container(
@@ -72,7 +100,8 @@ class PoseResultPage extends StatelessWidget {
                   const SizedBox(width: 12),
                   Text(
                     'Điểm số: ${score.toStringAsFixed(0)}',
-                    style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                    style: theme.textTheme.titleMedium
+                        ?.copyWith(fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
@@ -80,7 +109,8 @@ class PoseResultPage extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               'Nhận xét',
-              style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+              style: theme.textTheme.titleMedium
+                  ?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Container(
