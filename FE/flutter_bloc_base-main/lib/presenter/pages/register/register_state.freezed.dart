@@ -25,6 +25,7 @@ mixin _$RegisterState {
   String? get passwordError => throw _privateConstructorUsedError;
   String? get confirmPasswordError => throw _privateConstructorUsedError;
   String? get birthDateError => throw _privateConstructorUsedError;
+  RegisterResponse? get account => throw _privateConstructorUsedError;
 
   /// Create a copy of RegisterState
   /// with the given fields replaced by the non-null parameter values.
@@ -48,7 +49,10 @@ abstract class $RegisterStateCopyWith<$Res> {
       String? phoneError,
       String? passwordError,
       String? confirmPasswordError,
-      String? birthDateError});
+      String? birthDateError,
+      RegisterResponse? account});
+
+  $RegisterResponseCopyWith<$Res>? get account;
 }
 
 /// @nodoc
@@ -75,6 +79,7 @@ class _$RegisterStateCopyWithImpl<$Res, $Val extends RegisterState>
     Object? passwordError = freezed,
     Object? confirmPasswordError = freezed,
     Object? birthDateError = freezed,
+    Object? account = freezed,
   }) {
     return _then(_value.copyWith(
       status: null == status
@@ -113,7 +118,25 @@ class _$RegisterStateCopyWithImpl<$Res, $Val extends RegisterState>
           ? _value.birthDateError
           : birthDateError // ignore: cast_nullable_to_non_nullable
               as String?,
+      account: freezed == account
+          ? _value.account
+          : account // ignore: cast_nullable_to_non_nullable
+              as RegisterResponse?,
     ) as $Val);
+  }
+
+  /// Create a copy of RegisterState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $RegisterResponseCopyWith<$Res>? get account {
+    if (_value.account == null) {
+      return null;
+    }
+
+    return $RegisterResponseCopyWith<$Res>(_value.account!, (value) {
+      return _then(_value.copyWith(account: value) as $Val);
+    });
   }
 }
 
@@ -134,7 +157,11 @@ abstract class _$$RegisterStateImplCopyWith<$Res>
       String? phoneError,
       String? passwordError,
       String? confirmPasswordError,
-      String? birthDateError});
+      String? birthDateError,
+      RegisterResponse? account});
+
+  @override
+  $RegisterResponseCopyWith<$Res>? get account;
 }
 
 /// @nodoc
@@ -159,6 +186,7 @@ class __$$RegisterStateImplCopyWithImpl<$Res>
     Object? passwordError = freezed,
     Object? confirmPasswordError = freezed,
     Object? birthDateError = freezed,
+    Object? account = freezed,
   }) {
     return _then(_$RegisterStateImpl(
       status: null == status
@@ -197,6 +225,10 @@ class __$$RegisterStateImplCopyWithImpl<$Res>
           ? _value.birthDateError
           : birthDateError // ignore: cast_nullable_to_non_nullable
               as String?,
+      account: freezed == account
+          ? _value.account
+          : account // ignore: cast_nullable_to_non_nullable
+              as RegisterResponse?,
     ));
   }
 }
@@ -213,7 +245,8 @@ class _$RegisterStateImpl implements _RegisterState {
       this.phoneError,
       this.passwordError,
       this.confirmPasswordError,
-      this.birthDateError});
+      this.birthDateError,
+      this.account});
 
   @override
   @JsonKey()
@@ -234,10 +267,12 @@ class _$RegisterStateImpl implements _RegisterState {
   final String? confirmPasswordError;
   @override
   final String? birthDateError;
+  @override
+  final RegisterResponse? account;
 
   @override
   String toString() {
-    return 'RegisterState(status: $status, error: $error, firstNameError: $firstNameError, lastNameError: $lastNameError, emailError: $emailError, phoneError: $phoneError, passwordError: $passwordError, confirmPasswordError: $confirmPasswordError, birthDateError: $birthDateError)';
+    return 'RegisterState(status: $status, error: $error, firstNameError: $firstNameError, lastNameError: $lastNameError, emailError: $emailError, phoneError: $phoneError, passwordError: $passwordError, confirmPasswordError: $confirmPasswordError, birthDateError: $birthDateError, account: $account)';
   }
 
   @override
@@ -260,7 +295,8 @@ class _$RegisterStateImpl implements _RegisterState {
             (identical(other.confirmPasswordError, confirmPasswordError) ||
                 other.confirmPasswordError == confirmPasswordError) &&
             (identical(other.birthDateError, birthDateError) ||
-                other.birthDateError == birthDateError));
+                other.birthDateError == birthDateError) &&
+            (identical(other.account, account) || other.account == account));
   }
 
   @override
@@ -274,7 +310,8 @@ class _$RegisterStateImpl implements _RegisterState {
       phoneError,
       passwordError,
       confirmPasswordError,
-      birthDateError);
+      birthDateError,
+      account);
 
   /// Create a copy of RegisterState
   /// with the given fields replaced by the non-null parameter values.
@@ -295,7 +332,8 @@ abstract class _RegisterState implements RegisterState {
       final String? phoneError,
       final String? passwordError,
       final String? confirmPasswordError,
-      final String? birthDateError}) = _$RegisterStateImpl;
+      final String? birthDateError,
+      final RegisterResponse? account}) = _$RegisterStateImpl;
 
   @override
   RegisterStatus get status;
@@ -315,6 +353,8 @@ abstract class _RegisterState implements RegisterState {
   String? get confirmPasswordError;
   @override
   String? get birthDateError;
+  @override
+  RegisterResponse? get account;
 
   /// Create a copy of RegisterState
   /// with the given fields replaced by the non-null parameter values.

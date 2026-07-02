@@ -20,7 +20,8 @@ class RoutinesPage extends StatefulWidget implements AutoRouteWrapper {
   @override
   Widget wrappedRoute(BuildContext context) {
     return BlocProvider<RoutinesBloc>(
-      create: (ctx) => provider.get<RoutinesBloc>()..add(const RoutinesLoadRequested()),
+      create: (ctx) =>
+          provider.get<RoutinesBloc>()..add(const RoutinesLoadRequested()),
       child: this,
     );
   }
@@ -29,15 +30,31 @@ class RoutinesPage extends StatefulWidget implements AutoRouteWrapper {
   State<RoutinesPage> createState() => _RoutinesPageState();
 }
 
-class _RoutinesPageState extends State<RoutinesPage> with SingleTickerProviderStateMixin {
+class _RoutinesPageState extends State<RoutinesPage>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  final ScrollController _allRoutinesScrollController = ScrollController();
   bool _isAdmin = false;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    _allRoutinesScrollController.addListener(_onAllRoutinesScroll);
     _checkAdminStatus();
+  }
+
+  void _onAllRoutinesScroll() {
+    if (!_allRoutinesScrollController.hasClients) return;
+
+    final position = _allRoutinesScrollController.position;
+    if (position.maxScrollExtent - position.pixels <= 240) {
+      final bloc = context.read<RoutinesBloc>();
+      final state = bloc.state;
+      if (state.hasMore && !state.isLoading && !state.isLoadingMore) {
+        bloc.add(const RoutinesLoadMoreRequested());
+      }
+    }
   }
 
   Future<void> _checkAdminStatus() async {
@@ -51,6 +68,8 @@ class _RoutinesPageState extends State<RoutinesPage> with SingleTickerProviderSt
 
   @override
   void dispose() {
+    _allRoutinesScrollController.removeListener(_onAllRoutinesScroll);
+    _allRoutinesScrollController.dispose();
     _tabController.dispose();
     super.dispose();
   }
@@ -80,13 +99,14 @@ class _RoutinesPageState extends State<RoutinesPage> with SingleTickerProviderSt
       floatingActionButton: _isAdmin
           ? FloatingActionButton(
               onPressed: () async {
+                final bloc = context.read<RoutinesBloc>();
                 final result = await Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => const AdminAddEditRoutinePage(),
                   ),
                 );
                 if (result == true && mounted) {
-                  context.read<RoutinesBloc>().add(const RoutinesRefreshRequested());
+                  bloc.add(const RoutinesRefreshRequested());
                 }
               },
               child: const Icon(Icons.add),
@@ -111,7 +131,9 @@ class _RoutinesPageState extends State<RoutinesPage> with SingleTickerProviderSt
                 const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () {
-                    context.read<RoutinesBloc>().add(const RoutinesLoadRequested());
+                    context
+                        .read<RoutinesBloc>()
+                        .add(const RoutinesLoadRequested());
                   },
                   child: Text(LocaleKeys.Retry.tr()),
                 ),
@@ -125,18 +147,29 @@ class _RoutinesPageState extends State<RoutinesPage> with SingleTickerProviderSt
             context.read<RoutinesBloc>().add(const RoutinesRefreshRequested());
           },
           child: ListView.builder(
+            controller: _allRoutinesScrollController,
             padding: const EdgeInsets.all(16),
-            itemCount: state.routines.length,
+            itemCount: state.routines.length + (state.isLoadingMore ? 1 : 0),
             itemBuilder: (context, index) {
+              if (index == state.routines.length) {
+                return const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  child: Center(child: CircularProgressIndicator()),
+                );
+              }
+
               final routine = state.routines[index];
               return _RoutineCard(
                 routine: routine,
                 isAdmin: _isAdmin,
                 onTap: () {
-                  context.router.push(RoutineDetailsRoute(routineId: routine.id));
+                  context.router
+                      .push(RoutineDetailsRoute(routineId: routine.id));
                 },
                 onRefresh: () {
-                  context.read<RoutinesBloc>().add(const RoutinesRefreshRequested());
+                  context
+                      .read<RoutinesBloc>()
+                      .add(const RoutinesRefreshRequested());
                 },
               );
             },
@@ -235,7 +268,7 @@ class _RoutineCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                
+
                 // Admin buttons
                 if (isAdmin)
                   Positioned(
@@ -252,7 +285,8 @@ class _RoutineCard extends StatelessWidget {
                           child: IconButton(
                             icon: const Icon(Icons.delete, color: Colors.white),
                             onPressed: () async {
-                              final result = await AdminRoutineDeleteDialog.show(
+                              final result =
+                                  await AdminRoutineDeleteDialog.show(
                                 context,
                                 routine.id,
                                 routine.name,
@@ -311,14 +345,16 @@ class _RoutineCard extends StatelessWidget {
                       Expanded(
                         child: Text(
                           routine.name,
-                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.titleLarge?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
                         ),
                       ),
                       if (routine.isPremium)
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
                             color: Colors.amber,
                             borderRadius: BorderRadius.circular(12),
@@ -386,7 +422,8 @@ class _RoutineCard extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(
                       LocaleKeys.PercentCompleted.tr(namedArgs: {
-                        'percent': routine.userProgress!.completionPercentage.toStringAsFixed(0)
+                        'percent': routine.userProgress!.completionPercentage
+                            .toStringAsFixed(0)
                       }),
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
@@ -471,8 +508,9 @@ class _ProgressCard extends StatelessWidget {
               value: progress.completionPercentage / 100,
             ),
             const SizedBox(height: 4),
-            Text(LocaleKeys.PercentCompleted.tr(
-                namedArgs: {'percent': progress.completionPercentage.toStringAsFixed(0)})),
+            Text(LocaleKeys.PercentCompleted.tr(namedArgs: {
+              'percent': progress.completionPercentage.toStringAsFixed(0)
+            })),
           ],
         ),
         isThreeLine: true,

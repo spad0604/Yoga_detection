@@ -19,6 +19,7 @@ mixin _$RoutinesEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() loadRequested,
+    required TResult Function() loadMoreRequested,
     required TResult Function() refreshRequested,
     required TResult Function() loadInProgressRequested,
     required TResult Function() loadCompletedRequested,
@@ -29,6 +30,7 @@ mixin _$RoutinesEvent {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? loadRequested,
+    TResult? Function()? loadMoreRequested,
     TResult? Function()? refreshRequested,
     TResult? Function()? loadInProgressRequested,
     TResult? Function()? loadCompletedRequested,
@@ -39,6 +41,7 @@ mixin _$RoutinesEvent {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? loadRequested,
+    TResult Function()? loadMoreRequested,
     TResult Function()? refreshRequested,
     TResult Function()? loadInProgressRequested,
     TResult Function()? loadCompletedRequested,
@@ -50,6 +53,8 @@ mixin _$RoutinesEvent {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(RoutinesLoadRequested value) loadRequested,
+    required TResult Function(RoutinesLoadMoreRequested value)
+        loadMoreRequested,
     required TResult Function(RoutinesRefreshRequested value) refreshRequested,
     required TResult Function(RoutinesLoadInProgressRequested value)
         loadInProgressRequested,
@@ -62,6 +67,7 @@ mixin _$RoutinesEvent {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(RoutinesLoadRequested value)? loadRequested,
+    TResult? Function(RoutinesLoadMoreRequested value)? loadMoreRequested,
     TResult? Function(RoutinesRefreshRequested value)? refreshRequested,
     TResult? Function(RoutinesLoadInProgressRequested value)?
         loadInProgressRequested,
@@ -74,6 +80,7 @@ mixin _$RoutinesEvent {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(RoutinesLoadRequested value)? loadRequested,
+    TResult Function(RoutinesLoadMoreRequested value)? loadMoreRequested,
     TResult Function(RoutinesRefreshRequested value)? refreshRequested,
     TResult Function(RoutinesLoadInProgressRequested value)?
         loadInProgressRequested,
@@ -151,6 +158,7 @@ class _$RoutinesLoadRequestedImpl implements RoutinesLoadRequested {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() loadRequested,
+    required TResult Function() loadMoreRequested,
     required TResult Function() refreshRequested,
     required TResult Function() loadInProgressRequested,
     required TResult Function() loadCompletedRequested,
@@ -164,6 +172,7 @@ class _$RoutinesLoadRequestedImpl implements RoutinesLoadRequested {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? loadRequested,
+    TResult? Function()? loadMoreRequested,
     TResult? Function()? refreshRequested,
     TResult? Function()? loadInProgressRequested,
     TResult? Function()? loadCompletedRequested,
@@ -177,6 +186,7 @@ class _$RoutinesLoadRequestedImpl implements RoutinesLoadRequested {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? loadRequested,
+    TResult Function()? loadMoreRequested,
     TResult Function()? refreshRequested,
     TResult Function()? loadInProgressRequested,
     TResult Function()? loadCompletedRequested,
@@ -194,6 +204,8 @@ class _$RoutinesLoadRequestedImpl implements RoutinesLoadRequested {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(RoutinesLoadRequested value) loadRequested,
+    required TResult Function(RoutinesLoadMoreRequested value)
+        loadMoreRequested,
     required TResult Function(RoutinesRefreshRequested value) refreshRequested,
     required TResult Function(RoutinesLoadInProgressRequested value)
         loadInProgressRequested,
@@ -209,6 +221,7 @@ class _$RoutinesLoadRequestedImpl implements RoutinesLoadRequested {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(RoutinesLoadRequested value)? loadRequested,
+    TResult? Function(RoutinesLoadMoreRequested value)? loadMoreRequested,
     TResult? Function(RoutinesRefreshRequested value)? refreshRequested,
     TResult? Function(RoutinesLoadInProgressRequested value)?
         loadInProgressRequested,
@@ -224,6 +237,7 @@ class _$RoutinesLoadRequestedImpl implements RoutinesLoadRequested {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(RoutinesLoadRequested value)? loadRequested,
+    TResult Function(RoutinesLoadMoreRequested value)? loadMoreRequested,
     TResult Function(RoutinesRefreshRequested value)? refreshRequested,
     TResult Function(RoutinesLoadInProgressRequested value)?
         loadInProgressRequested,
@@ -242,6 +256,151 @@ class _$RoutinesLoadRequestedImpl implements RoutinesLoadRequested {
 
 abstract class RoutinesLoadRequested implements RoutinesEvent {
   const factory RoutinesLoadRequested() = _$RoutinesLoadRequestedImpl;
+}
+
+/// @nodoc
+abstract class _$$RoutinesLoadMoreRequestedImplCopyWith<$Res> {
+  factory _$$RoutinesLoadMoreRequestedImplCopyWith(
+          _$RoutinesLoadMoreRequestedImpl value,
+          $Res Function(_$RoutinesLoadMoreRequestedImpl) then) =
+      __$$RoutinesLoadMoreRequestedImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$RoutinesLoadMoreRequestedImplCopyWithImpl<$Res>
+    extends _$RoutinesEventCopyWithImpl<$Res, _$RoutinesLoadMoreRequestedImpl>
+    implements _$$RoutinesLoadMoreRequestedImplCopyWith<$Res> {
+  __$$RoutinesLoadMoreRequestedImplCopyWithImpl(
+      _$RoutinesLoadMoreRequestedImpl _value,
+      $Res Function(_$RoutinesLoadMoreRequestedImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of RoutinesEvent
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+
+class _$RoutinesLoadMoreRequestedImpl implements RoutinesLoadMoreRequested {
+  const _$RoutinesLoadMoreRequestedImpl();
+
+  @override
+  String toString() {
+    return 'RoutinesEvent.loadMoreRequested()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$RoutinesLoadMoreRequestedImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() loadRequested,
+    required TResult Function() loadMoreRequested,
+    required TResult Function() refreshRequested,
+    required TResult Function() loadInProgressRequested,
+    required TResult Function() loadCompletedRequested,
+    required TResult Function(String keyword) searchChanged,
+    required TResult Function(String? level, bool? isPremium) filterChanged,
+  }) {
+    return loadMoreRequested();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? loadRequested,
+    TResult? Function()? loadMoreRequested,
+    TResult? Function()? refreshRequested,
+    TResult? Function()? loadInProgressRequested,
+    TResult? Function()? loadCompletedRequested,
+    TResult? Function(String keyword)? searchChanged,
+    TResult? Function(String? level, bool? isPremium)? filterChanged,
+  }) {
+    return loadMoreRequested?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? loadRequested,
+    TResult Function()? loadMoreRequested,
+    TResult Function()? refreshRequested,
+    TResult Function()? loadInProgressRequested,
+    TResult Function()? loadCompletedRequested,
+    TResult Function(String keyword)? searchChanged,
+    TResult Function(String? level, bool? isPremium)? filterChanged,
+    required TResult orElse(),
+  }) {
+    if (loadMoreRequested != null) {
+      return loadMoreRequested();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(RoutinesLoadRequested value) loadRequested,
+    required TResult Function(RoutinesLoadMoreRequested value)
+        loadMoreRequested,
+    required TResult Function(RoutinesRefreshRequested value) refreshRequested,
+    required TResult Function(RoutinesLoadInProgressRequested value)
+        loadInProgressRequested,
+    required TResult Function(RoutinesLoadCompletedRequested value)
+        loadCompletedRequested,
+    required TResult Function(RoutinesSearchChanged value) searchChanged,
+    required TResult Function(RoutinesFilterChanged value) filterChanged,
+  }) {
+    return loadMoreRequested(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(RoutinesLoadRequested value)? loadRequested,
+    TResult? Function(RoutinesLoadMoreRequested value)? loadMoreRequested,
+    TResult? Function(RoutinesRefreshRequested value)? refreshRequested,
+    TResult? Function(RoutinesLoadInProgressRequested value)?
+        loadInProgressRequested,
+    TResult? Function(RoutinesLoadCompletedRequested value)?
+        loadCompletedRequested,
+    TResult? Function(RoutinesSearchChanged value)? searchChanged,
+    TResult? Function(RoutinesFilterChanged value)? filterChanged,
+  }) {
+    return loadMoreRequested?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(RoutinesLoadRequested value)? loadRequested,
+    TResult Function(RoutinesLoadMoreRequested value)? loadMoreRequested,
+    TResult Function(RoutinesRefreshRequested value)? refreshRequested,
+    TResult Function(RoutinesLoadInProgressRequested value)?
+        loadInProgressRequested,
+    TResult Function(RoutinesLoadCompletedRequested value)?
+        loadCompletedRequested,
+    TResult Function(RoutinesSearchChanged value)? searchChanged,
+    TResult Function(RoutinesFilterChanged value)? filterChanged,
+    required TResult orElse(),
+  }) {
+    if (loadMoreRequested != null) {
+      return loadMoreRequested(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class RoutinesLoadMoreRequested implements RoutinesEvent {
+  const factory RoutinesLoadMoreRequested() = _$RoutinesLoadMoreRequestedImpl;
 }
 
 /// @nodoc
@@ -289,6 +448,7 @@ class _$RoutinesRefreshRequestedImpl implements RoutinesRefreshRequested {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() loadRequested,
+    required TResult Function() loadMoreRequested,
     required TResult Function() refreshRequested,
     required TResult Function() loadInProgressRequested,
     required TResult Function() loadCompletedRequested,
@@ -302,6 +462,7 @@ class _$RoutinesRefreshRequestedImpl implements RoutinesRefreshRequested {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? loadRequested,
+    TResult? Function()? loadMoreRequested,
     TResult? Function()? refreshRequested,
     TResult? Function()? loadInProgressRequested,
     TResult? Function()? loadCompletedRequested,
@@ -315,6 +476,7 @@ class _$RoutinesRefreshRequestedImpl implements RoutinesRefreshRequested {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? loadRequested,
+    TResult Function()? loadMoreRequested,
     TResult Function()? refreshRequested,
     TResult Function()? loadInProgressRequested,
     TResult Function()? loadCompletedRequested,
@@ -332,6 +494,8 @@ class _$RoutinesRefreshRequestedImpl implements RoutinesRefreshRequested {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(RoutinesLoadRequested value) loadRequested,
+    required TResult Function(RoutinesLoadMoreRequested value)
+        loadMoreRequested,
     required TResult Function(RoutinesRefreshRequested value) refreshRequested,
     required TResult Function(RoutinesLoadInProgressRequested value)
         loadInProgressRequested,
@@ -347,6 +511,7 @@ class _$RoutinesRefreshRequestedImpl implements RoutinesRefreshRequested {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(RoutinesLoadRequested value)? loadRequested,
+    TResult? Function(RoutinesLoadMoreRequested value)? loadMoreRequested,
     TResult? Function(RoutinesRefreshRequested value)? refreshRequested,
     TResult? Function(RoutinesLoadInProgressRequested value)?
         loadInProgressRequested,
@@ -362,6 +527,7 @@ class _$RoutinesRefreshRequestedImpl implements RoutinesRefreshRequested {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(RoutinesLoadRequested value)? loadRequested,
+    TResult Function(RoutinesLoadMoreRequested value)? loadMoreRequested,
     TResult Function(RoutinesRefreshRequested value)? refreshRequested,
     TResult Function(RoutinesLoadInProgressRequested value)?
         loadInProgressRequested,
@@ -429,6 +595,7 @@ class _$RoutinesLoadInProgressRequestedImpl
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() loadRequested,
+    required TResult Function() loadMoreRequested,
     required TResult Function() refreshRequested,
     required TResult Function() loadInProgressRequested,
     required TResult Function() loadCompletedRequested,
@@ -442,6 +609,7 @@ class _$RoutinesLoadInProgressRequestedImpl
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? loadRequested,
+    TResult? Function()? loadMoreRequested,
     TResult? Function()? refreshRequested,
     TResult? Function()? loadInProgressRequested,
     TResult? Function()? loadCompletedRequested,
@@ -455,6 +623,7 @@ class _$RoutinesLoadInProgressRequestedImpl
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? loadRequested,
+    TResult Function()? loadMoreRequested,
     TResult Function()? refreshRequested,
     TResult Function()? loadInProgressRequested,
     TResult Function()? loadCompletedRequested,
@@ -472,6 +641,8 @@ class _$RoutinesLoadInProgressRequestedImpl
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(RoutinesLoadRequested value) loadRequested,
+    required TResult Function(RoutinesLoadMoreRequested value)
+        loadMoreRequested,
     required TResult Function(RoutinesRefreshRequested value) refreshRequested,
     required TResult Function(RoutinesLoadInProgressRequested value)
         loadInProgressRequested,
@@ -487,6 +658,7 @@ class _$RoutinesLoadInProgressRequestedImpl
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(RoutinesLoadRequested value)? loadRequested,
+    TResult? Function(RoutinesLoadMoreRequested value)? loadMoreRequested,
     TResult? Function(RoutinesRefreshRequested value)? refreshRequested,
     TResult? Function(RoutinesLoadInProgressRequested value)?
         loadInProgressRequested,
@@ -502,6 +674,7 @@ class _$RoutinesLoadInProgressRequestedImpl
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(RoutinesLoadRequested value)? loadRequested,
+    TResult Function(RoutinesLoadMoreRequested value)? loadMoreRequested,
     TResult Function(RoutinesRefreshRequested value)? refreshRequested,
     TResult Function(RoutinesLoadInProgressRequested value)?
         loadInProgressRequested,
@@ -570,6 +743,7 @@ class _$RoutinesLoadCompletedRequestedImpl
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() loadRequested,
+    required TResult Function() loadMoreRequested,
     required TResult Function() refreshRequested,
     required TResult Function() loadInProgressRequested,
     required TResult Function() loadCompletedRequested,
@@ -583,6 +757,7 @@ class _$RoutinesLoadCompletedRequestedImpl
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? loadRequested,
+    TResult? Function()? loadMoreRequested,
     TResult? Function()? refreshRequested,
     TResult? Function()? loadInProgressRequested,
     TResult? Function()? loadCompletedRequested,
@@ -596,6 +771,7 @@ class _$RoutinesLoadCompletedRequestedImpl
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? loadRequested,
+    TResult Function()? loadMoreRequested,
     TResult Function()? refreshRequested,
     TResult Function()? loadInProgressRequested,
     TResult Function()? loadCompletedRequested,
@@ -613,6 +789,8 @@ class _$RoutinesLoadCompletedRequestedImpl
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(RoutinesLoadRequested value) loadRequested,
+    required TResult Function(RoutinesLoadMoreRequested value)
+        loadMoreRequested,
     required TResult Function(RoutinesRefreshRequested value) refreshRequested,
     required TResult Function(RoutinesLoadInProgressRequested value)
         loadInProgressRequested,
@@ -628,6 +806,7 @@ class _$RoutinesLoadCompletedRequestedImpl
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(RoutinesLoadRequested value)? loadRequested,
+    TResult? Function(RoutinesLoadMoreRequested value)? loadMoreRequested,
     TResult? Function(RoutinesRefreshRequested value)? refreshRequested,
     TResult? Function(RoutinesLoadInProgressRequested value)?
         loadInProgressRequested,
@@ -643,6 +822,7 @@ class _$RoutinesLoadCompletedRequestedImpl
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(RoutinesLoadRequested value)? loadRequested,
+    TResult Function(RoutinesLoadMoreRequested value)? loadMoreRequested,
     TResult Function(RoutinesRefreshRequested value)? refreshRequested,
     TResult Function(RoutinesLoadInProgressRequested value)?
         loadInProgressRequested,
@@ -735,6 +915,7 @@ class _$RoutinesSearchChangedImpl implements RoutinesSearchChanged {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() loadRequested,
+    required TResult Function() loadMoreRequested,
     required TResult Function() refreshRequested,
     required TResult Function() loadInProgressRequested,
     required TResult Function() loadCompletedRequested,
@@ -748,6 +929,7 @@ class _$RoutinesSearchChangedImpl implements RoutinesSearchChanged {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? loadRequested,
+    TResult? Function()? loadMoreRequested,
     TResult? Function()? refreshRequested,
     TResult? Function()? loadInProgressRequested,
     TResult? Function()? loadCompletedRequested,
@@ -761,6 +943,7 @@ class _$RoutinesSearchChangedImpl implements RoutinesSearchChanged {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? loadRequested,
+    TResult Function()? loadMoreRequested,
     TResult Function()? refreshRequested,
     TResult Function()? loadInProgressRequested,
     TResult Function()? loadCompletedRequested,
@@ -778,6 +961,8 @@ class _$RoutinesSearchChangedImpl implements RoutinesSearchChanged {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(RoutinesLoadRequested value) loadRequested,
+    required TResult Function(RoutinesLoadMoreRequested value)
+        loadMoreRequested,
     required TResult Function(RoutinesRefreshRequested value) refreshRequested,
     required TResult Function(RoutinesLoadInProgressRequested value)
         loadInProgressRequested,
@@ -793,6 +978,7 @@ class _$RoutinesSearchChangedImpl implements RoutinesSearchChanged {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(RoutinesLoadRequested value)? loadRequested,
+    TResult? Function(RoutinesLoadMoreRequested value)? loadMoreRequested,
     TResult? Function(RoutinesRefreshRequested value)? refreshRequested,
     TResult? Function(RoutinesLoadInProgressRequested value)?
         loadInProgressRequested,
@@ -808,6 +994,7 @@ class _$RoutinesSearchChangedImpl implements RoutinesSearchChanged {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(RoutinesLoadRequested value)? loadRequested,
+    TResult Function(RoutinesLoadMoreRequested value)? loadMoreRequested,
     TResult Function(RoutinesRefreshRequested value)? refreshRequested,
     TResult Function(RoutinesLoadInProgressRequested value)?
         loadInProgressRequested,
@@ -917,6 +1104,7 @@ class _$RoutinesFilterChangedImpl implements RoutinesFilterChanged {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() loadRequested,
+    required TResult Function() loadMoreRequested,
     required TResult Function() refreshRequested,
     required TResult Function() loadInProgressRequested,
     required TResult Function() loadCompletedRequested,
@@ -930,6 +1118,7 @@ class _$RoutinesFilterChangedImpl implements RoutinesFilterChanged {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? loadRequested,
+    TResult? Function()? loadMoreRequested,
     TResult? Function()? refreshRequested,
     TResult? Function()? loadInProgressRequested,
     TResult? Function()? loadCompletedRequested,
@@ -943,6 +1132,7 @@ class _$RoutinesFilterChangedImpl implements RoutinesFilterChanged {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? loadRequested,
+    TResult Function()? loadMoreRequested,
     TResult Function()? refreshRequested,
     TResult Function()? loadInProgressRequested,
     TResult Function()? loadCompletedRequested,
@@ -960,6 +1150,8 @@ class _$RoutinesFilterChangedImpl implements RoutinesFilterChanged {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(RoutinesLoadRequested value) loadRequested,
+    required TResult Function(RoutinesLoadMoreRequested value)
+        loadMoreRequested,
     required TResult Function(RoutinesRefreshRequested value) refreshRequested,
     required TResult Function(RoutinesLoadInProgressRequested value)
         loadInProgressRequested,
@@ -975,6 +1167,7 @@ class _$RoutinesFilterChangedImpl implements RoutinesFilterChanged {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(RoutinesLoadRequested value)? loadRequested,
+    TResult? Function(RoutinesLoadMoreRequested value)? loadMoreRequested,
     TResult? Function(RoutinesRefreshRequested value)? refreshRequested,
     TResult? Function(RoutinesLoadInProgressRequested value)?
         loadInProgressRequested,
@@ -990,6 +1183,7 @@ class _$RoutinesFilterChangedImpl implements RoutinesFilterChanged {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(RoutinesLoadRequested value)? loadRequested,
+    TResult Function(RoutinesLoadMoreRequested value)? loadMoreRequested,
     TResult Function(RoutinesRefreshRequested value)? refreshRequested,
     TResult Function(RoutinesLoadInProgressRequested value)?
         loadInProgressRequested,

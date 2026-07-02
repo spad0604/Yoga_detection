@@ -145,9 +145,9 @@ public class PracticeSessionServiceImpl implements PracticeSessionService {
             log.warn("Failed to get pose details for AI evaluation: {}", e.getMessage());
         }
         
-        // Evaluate pose with AI - sử dụng thông tin từ routine_pose và pose_details
+        // Evaluate pose with OpenAI - image is enough; landmark data is optional.
         AIPoseEvaluationService.EvaluationResult evaluation = null;
-        if (imageUrl != null && !imageUrl.isBlank() && request.getLandmarkData() != null) {
+        if (imageUrl != null && !imageUrl.isBlank()) {
             try {
                 // Truyền poseName từ routine_pose và description từ pose_details
                 evaluation = aiEvaluationService.evaluatePose(

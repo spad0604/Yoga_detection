@@ -10,6 +10,7 @@ import 'package:flutter_starter/services/oauth_token_manager/oauth_token_manager
 @singleton
 class NetworkDio extends DioForNative implements Interceptor {
   final OauthTokenManager _tokenManager;
+  Future<Map<String, String?>>? _refreshFuture;
 
   NetworkDio._(this._tokenManager, BaseOptions options) : super(options);
 
@@ -42,7 +43,8 @@ class NetworkDio extends DioForNative implements Interceptor {
   }
 
   @override
-  void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
+  void onRequest(
+      RequestOptions options, RequestInterceptorHandler handler) async {
     try {
       final path = options.path.toLowerCase();
       final publicPaths = [
@@ -87,63 +89,69 @@ class NetworkDio extends DioForNative implements Interceptor {
       return handler.next(NetworkException());
     }
 
-    if (responseData is! Map) {
-      return handler.next(err);
-    }
-
     // Refresh the token when it expires (401)
-    if (err.response?.statusCode == 401) {
+    final requestPath = err.requestOptions.path.toLowerCase();
+    final isRefreshRequest = requestPath.contains('api/auth/refresh');
+    final hasRetried = err.requestOptions.extra['authRetried'] == true;
+
+    if (err.response?.statusCode == 401 && !isRefreshRequest && !hasRetried) {
       try {
         final refreshToken = await _tokenManager.getRefreshToken();
-        if (refreshToken == null) {
+        if (refreshToken == null || refreshToken.isEmpty) {
           await _tokenManager.removeAllTokens();
-          return handler.next(ServerException(ErrorCode.UNAUTHORIZED, data: err.response?.data));
+          return handler.next(ServerException(ErrorCode.UNAUTHORIZED,
+              data: err.response?.data));
         }
 
-        // Use a fresh Dio instance without interceptors to call refresh endpoint
-        final Dio refreshDio = Dio(BaseOptions(
-          baseUrl: this.options.baseUrl,
-          contentType: 'application/json; charset=utf-8',
-          connectTimeout: const Duration(seconds: 30),
-          receiveTimeout: const Duration(seconds: 30),
-        ));
+        final tokens = await _refreshTokens(refreshToken);
+        final newAccess = tokens['accessToken'];
+        final newRefresh = tokens['refreshToken'];
 
-        final refreshResponse =
-            await refreshDio.post('api/auth/refresh', data: {'refreshToken': refreshToken});
-
-        if (refreshResponse.data is Map && refreshResponse.data['data'] is Map) {
-          final data = refreshResponse.data['data'];
-          final newAccess = data['accessToken']?.toString();
-          final newRefresh = data['refreshToken']?.toString();
-
-          if (newAccess != null) {
-            await _tokenManager.saveAccessToken(newAccess);
-            if (newRefresh != null) await _tokenManager.saveRefreshToken(newRefresh);
-
-            // retry original request with new auth header
-            final opts = err.requestOptions;
-            final updatedHeaders = await _tokenManager.getAuthenticatedHeaders(opts.headers);
-
-            final retryResponse = await refreshDio.request(
-              opts.path,
-              data: opts.data,
-              queryParameters: opts.queryParameters,
-              options: Options(method: opts.method, headers: updatedHeaders),
-              cancelToken: opts.cancelToken,
-              onReceiveProgress: opts.onReceiveProgress,
-            );
-
-            return handler.resolve(retryResponse);
+        if (newAccess != null && newAccess.isNotEmpty) {
+          await _tokenManager.saveAccessToken(newAccess);
+          if (newRefresh != null && newRefresh.isNotEmpty) {
+            await _tokenManager.saveRefreshToken(newRefresh);
           }
+
+          // retry original request with new auth header
+          final opts = err.requestOptions;
+          final updatedHeaders =
+              await _tokenManager.getAuthenticatedHeaders(opts.headers);
+
+          final retryResponse = await request(
+            opts.path,
+            data: opts.data,
+            queryParameters: opts.queryParameters,
+            options: Options(
+              method: opts.method,
+              headers: updatedHeaders,
+              contentType: opts.contentType,
+              responseType: opts.responseType,
+              extra: {
+                ...opts.extra,
+                'authRetried': true,
+              },
+            ),
+            cancelToken: opts.cancelToken,
+            onReceiveProgress: opts.onReceiveProgress,
+            onSendProgress: opts.onSendProgress,
+          );
+
+          return handler.resolve(retryResponse);
         }
 
         // Refresh failed
         await _tokenManager.removeAllTokens();
-        return handler.next(ServerException(ErrorCode.UNAUTHORIZED, data: refreshResponse.data));
+        return handler.next(
+            ServerException(ErrorCode.UNAUTHORIZED, data: err.response?.data));
       } catch (e) {
         await _tokenManager.removeAllTokens();
         return handler.next(BaseException.from(e));
       }
+    }
+
+    if (responseData is! Map) {
+      return handler.next(err);
     }
 
     // TODO: Removing access token after logging out
@@ -155,5 +163,48 @@ class NetworkDio extends DioForNative implements Interceptor {
     // TODO: Handling global exception, such as maintainance, etc.
 
     return handler.next(err);
+  }
+
+  Future<Map<String, String?>> _refreshTokens(String refreshToken) {
+    final inFlight = _refreshFuture;
+    if (inFlight != null) {
+      return inFlight;
+    }
+
+    final future = _requestRefreshTokens(refreshToken);
+    _refreshFuture = future;
+
+    return future.whenComplete(() {
+      _refreshFuture = null;
+    });
+  }
+
+  Future<Map<String, String?>> _requestRefreshTokens(
+      String refreshToken) async {
+    // Use a fresh Dio instance without interceptors to call refresh endpoint.
+    final Dio refreshDio = Dio(BaseOptions(
+      baseUrl: options.baseUrl,
+      contentType: 'application/json; charset=utf-8',
+      connectTimeout: const Duration(seconds: 30),
+      receiveTimeout: const Duration(seconds: 30),
+    ));
+
+    final refreshResponse = await refreshDio.post(
+      'api/auth/refresh',
+      data: {'refreshToken': refreshToken},
+    );
+
+    final body = refreshResponse.data;
+    final data =
+        body is Map && body['data'] is Map ? body['data'] as Map : body;
+
+    if (data is! Map) {
+      throw ServerException(ErrorCode.UNAUTHORIZED, data: body);
+    }
+
+    return {
+      'accessToken': data['accessToken']?.toString(),
+      'refreshToken': data['refreshToken']?.toString(),
+    };
   }
 }

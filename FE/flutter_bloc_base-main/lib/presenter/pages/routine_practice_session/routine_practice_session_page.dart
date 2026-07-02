@@ -19,6 +19,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_starter/presenter/languages/translation_keys.g.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:flutter_starter/presenter/pages/pose_guide/pose_capture_guide_dialog.dart';
+import 'package:flutter_starter/services/tts/viettel_tts_service.dart';
 
 // ignore: depend_on_referenced_packages
 import 'package:google_mlkit_commons/google_mlkit_commons.dart'
@@ -61,6 +62,8 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
   int _elapsedSeconds = 0;
   CameraLensDirection _currentLensDirection = CameraLensDirection.front;
   FlutterTts? _flutterTts;
+  final _feedbackTtsService = ViettelTtsService();
+  String? _lastSpokenFeedbackKey;
   PracticeSession? _currentSession; // Cache current session for async operations
 
   // Capture and detection state
@@ -534,6 +537,14 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
   }
 
   void _showResultDialog(PoseSubmissionResult result) {
+    final feedback = result.feedback?.trim();
+    final feedbackKey = '${result.poseCode}|${result.submittedAt?.toIso8601String() ?? ''}|$feedback';
+    if (feedback != null && feedback.isNotEmpty && feedbackKey != _lastSpokenFeedbackKey) {
+      _lastSpokenFeedbackKey = feedbackKey;
+      _flutterTts?.stop();
+      _feedbackTtsService.speak(feedback);
+    }
+
     // Auto-close and continue after 3 seconds
     Future.delayed(const Duration(seconds: 10), () {
       if (mounted && Navigator.canPop(context)) {
@@ -831,6 +842,7 @@ class _RoutinePracticeSessionPageState extends State<RoutinePracticeSessionPage>
     _cameraController?.dispose();
     _poseDetector?.close();
     _flutterTts?.stop();
+    _feedbackTtsService.dispose();
     super.dispose();
   }
 

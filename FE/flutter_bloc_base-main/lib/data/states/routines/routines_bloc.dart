@@ -17,6 +17,7 @@ class RoutinesBloc extends Bloc<RoutinesEvent, RoutinesState> {
     this._getCompletedRoutinesUc,
   ) : super(const RoutinesState()) {
     on<RoutinesLoadRequested>(_onLoadRequested);
+    on<RoutinesLoadMoreRequested>(_onLoadMoreRequested);
     on<RoutinesRefreshRequested>(_onRefreshRequested);
     on<RoutinesLoadInProgressRequested>(_onLoadInProgressRequested);
     on<RoutinesLoadCompletedRequested>(_onLoadCompletedRequested);
@@ -46,6 +47,36 @@ class RoutinesBloc extends Bloc<RoutinesEvent, RoutinesState> {
     } catch (e) {
       emit(state.copyWith(
         isLoading: false,
+        error: e.toString(),
+      ));
+    }
+  }
+
+  Future<void> _onLoadMoreRequested(
+    RoutinesLoadMoreRequested event,
+    Emitter<RoutinesState> emit,
+  ) async {
+    if (state.isLoading || state.isLoadingMore || !state.hasMore) {
+      return;
+    }
+
+    emit(state.copyWith(isLoadingMore: true, error: null));
+
+    try {
+      final nextPage = state.currentPage + 1;
+      final result = await _getAllRoutinesUc(
+        GetAllRoutinesParams(page: nextPage, size: 20),
+      );
+
+      emit(state.copyWith(
+        routines: [...state.routines, ...result.items],
+        isLoadingMore: false,
+        hasMore: result.hasNext,
+        currentPage: result.page,
+      ));
+    } catch (e) {
+      emit(state.copyWith(
+        isLoadingMore: false,
         error: e.toString(),
       ));
     }
@@ -89,4 +120,3 @@ class RoutinesBloc extends Bloc<RoutinesEvent, RoutinesState> {
     }
   }
 }
-

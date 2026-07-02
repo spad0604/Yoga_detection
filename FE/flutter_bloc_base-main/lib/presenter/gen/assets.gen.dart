@@ -216,11 +216,15 @@ class $LibPresenterLanguagesTranslationsGen {
 class Assets {
   const Assets._();
 
+  static const String aEnv = 'assets/.env';
   static const $AssetsAudiosGen audios = $AssetsAudiosGen();
   static const $AssetsFilesGen files = $AssetsFilesGen();
   static const $AssetsFontsGen fonts = $AssetsFontsGen();
   static const $AssetsImagesGen images = $AssetsImagesGen();
   static const $LibGen lib = $LibGen();
+
+  /// List of all assets
+  static List<String> get values => [aEnv];
 }
 
 class AssetGenImage {

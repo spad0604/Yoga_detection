@@ -104,7 +104,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     if (!upperRegex.hasMatch(password) || !specialRegex.hasMatch(password)) {
       emit(state.copyWith(
         status: LoginStatus.failure,
-        passwordError: 'Password must contain at least one uppercase and one special character',
+        passwordError:
+            'Password must contain at least one uppercase and one special character',
         error: ValidationException('Password requirements not met'),
       ));
       return;
@@ -117,10 +118,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     try {
       final fcmToken = await firebaseConfig.getFcmToken();
 
-      final account = await _login((email: email, password: password, fcmToken: fcmToken));
+      final account =
+          await _login((email: email, password: password, fcmToken: fcmToken));
 
-      _oauthTokenManager.saveAccessToken(account?.accessToken ?? '');
-      _oauthTokenManager.saveRefreshToken(account?.refreshToken ?? '');
+      await _oauthTokenManager.saveAccessToken(account?.accessToken);
+      await _oauthTokenManager.saveRefreshToken(account?.refreshToken);
 
       // Save user role from login response
       await UserPreferences.saveUserRole(account?.userRole);
@@ -157,10 +159,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     try {
       final fcmToken = await firebaseConfig.getFcmToken();
 
-      final account = await _loginWithGoogle((idToken: idToken, fcmToken: fcmToken));
+      final account =
+          await _loginWithGoogle((idToken: idToken, fcmToken: fcmToken));
 
-      _oauthTokenManager.saveAccessToken(account?.accessToken ?? '');
-      _oauthTokenManager.saveRefreshToken(account?.refreshToken ?? '');
+      await _oauthTokenManager.saveAccessToken(account?.accessToken);
+      await _oauthTokenManager.saveRefreshToken(account?.refreshToken);
 
       // Save user role from login response
       await UserPreferences.saveUserRole(account?.userRole);

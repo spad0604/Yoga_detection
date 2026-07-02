@@ -8,7 +8,8 @@ import 'package:flutter_starter/presenter/pages/search_yoga_pose/search_yoga_pos
 import 'package:flutter_starter/presenter/pages/search_yoga_pose/search_yoga_pose_state.dart';
 
 @injectable
-class SearchYogaPoseBloc extends Bloc<SearchYogaPoseEvent, SearchYogaPoseState> {
+class SearchYogaPoseBloc
+    extends Bloc<SearchYogaPoseEvent, SearchYogaPoseState> {
   final GetListYogaPosesUc _getListYogaPoses;
   bool _isFetching = false;
 
@@ -33,18 +34,32 @@ class SearchYogaPoseBloc extends Bloc<SearchYogaPoseEvent, SearchYogaPoseState> 
     Emitter<SearchYogaPoseState> emit,
   ) async {
     if (_isFetching) return;
+    if (event.params.page > 0 && state.hasReachedMax) return;
     _isFetching = true;
 
-    emit(state.copyWith(status: SearchYogaPoseStatus.loading));
+    final isFirstPage = event.params.page == 0;
+    if (isFirstPage) {
+      emit(state.copyWith(
+        status: SearchYogaPoseStatus.loading,
+        yogaPoses: const [],
+        currentPage: 0,
+        hasReachedMax: false,
+      ));
+    } else {
+      emit(state.copyWith(status: SearchYogaPoseStatus.loadingMore));
+    }
 
     try {
       final yogaPoses = await _getListYogaPoses.call(event.params);
-      final combined =
-          event.params.page > 1 ? [...state.yogaPoses, ...yogaPoses.items] : yogaPoses.items;
+      final combined = isFirstPage
+          ? yogaPoses.items
+          : [...state.yogaPoses, ...yogaPoses.items];
 
       emit(state.copyWith(
         status: SearchYogaPoseStatus.success,
         yogaPoses: combined,
+        currentPage: yogaPoses.page,
+        hasReachedMax: yogaPoses.items.isEmpty || !yogaPoses.hasNext,
       ));
     } catch (error) {
       emit(state.copyWith(

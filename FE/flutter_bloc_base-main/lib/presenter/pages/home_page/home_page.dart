@@ -55,6 +55,7 @@ class _HomePagePageState extends State<HomePagePage> {
   bool _showcaseStarted = false;
   bool _autoNavigated = false;
   final Random _random = Random();
+  final ScrollController _scrollController = ScrollController();
   YogaPoseDetails? _pendingAutoNavigateItem;
   VoidCallback? _homeShowcaseListener;
   bool _isAdmin = false;
@@ -71,6 +72,7 @@ class _HomePagePageState extends State<HomePagePage> {
   @override
   void initState() {
     super.initState();
+    _scrollController.addListener(_onScroll);
     _bloc.add(HomePageStarted());
     // Ensure account information is loaded for WelcomeBanner
     context.read<AccountPageBloc>().add(AccountPageEvent.getInformation());
@@ -121,10 +123,24 @@ class _HomePagePageState extends State<HomePagePage> {
     homeShowcaseCompletedNotifier.addListener(_homeShowcaseListener!);
   }
 
+  void _onScroll() {
+    if (!_scrollController.hasClients) return;
+    final position = _scrollController.position;
+    if (position.maxScrollExtent - position.pixels <= 240) {
+      final state = _bloc.state;
+      if (!state.hasReachedMax && state.status != HomePageStatus.loadingMore) {
+        _bloc.add(HomePageLoadMore());
+      }
+    }
+  }
+
   @override
   void dispose() {
-    if (_homeShowcaseListener != null)
+    if (_homeShowcaseListener != null) {
       homeShowcaseCompletedNotifier.removeListener(_homeShowcaseListener!);
+    }
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -165,7 +181,8 @@ class _HomePagePageState extends State<HomePagePage> {
             children: [
               // Modern Header - softer gradient
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   boxShadow: [
@@ -234,7 +251,8 @@ class _HomePagePageState extends State<HomePagePage> {
                           description: 'Notifications',
                           child: InkWell(
                             onTap: () {
-                              context.router.push(const NotificationRouteRoute());
+                              context.router
+                                  .push(const NotificationRouteRoute());
                             },
                             borderRadius: BorderRadius.circular(24),
                             child: Stack(
@@ -243,7 +261,8 @@ class _HomePagePageState extends State<HomePagePage> {
                                 Container(
                                   padding: const EdgeInsets.all(10),
                                   decoration: BoxDecoration(
-                                    color: AppColors.primaryPurpleLight.withOpacity(0.1),
+                                    color: AppColors.primaryPurpleLight
+                                        .withOpacity(0.1),
                                     shape: BoxShape.circle,
                                   ),
                                   child: Icon(
@@ -282,6 +301,7 @@ class _HomePagePageState extends State<HomePagePage> {
               // Scrollable content
               Expanded(
                 child: SingleChildScrollView(
+                  controller: _scrollController,
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -298,7 +318,9 @@ class _HomePagePageState extends State<HomePagePage> {
                           key: overViewShowCaseWidget,
                           description: 'Here is your weekly overview',
                           child: OverView(
-                            totalSessions: _bloc.state.yogaPoses?.totalElements.toString() ?? '0',
+                            totalSessions: _bloc.state.yogaPoses?.totalElements
+                                    .toString() ??
+                                '0',
                           ),
                         ),
                       ),
@@ -322,10 +344,12 @@ class _HomePagePageState extends State<HomePagePage> {
                             description: 'See all poses',
                             child: GestureDetector(
                               onTap: () {
-                                context.router.push(const SearchYogaPoseRoute());
+                                context.router
+                                    .push(const SearchYogaPoseRoute());
                               },
                               child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 6),
                                 decoration: BoxDecoration(
                                   gradient: LinearGradient(
                                     colors: AppColors.gradientPurple,
@@ -333,7 +357,8 @@ class _HomePagePageState extends State<HomePagePage> {
                                   borderRadius: BorderRadius.circular(20),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: AppColors.primaryPurple.withOpacity(0.3),
+                                      color: AppColors.primaryPurple
+                                          .withOpacity(0.3),
                                       blurRadius: 8,
                                       offset: const Offset(0, 2),
                                     ),
@@ -366,12 +391,15 @@ class _HomePagePageState extends State<HomePagePage> {
                       const SizedBox(height: 16),
                       BlocBuilder<HomePageBloc, HomePageState>(
                         builder: (context, state) {
-                          final items = state.yogaPoses?.items ?? const <YogaPoseDetails>[];
+                          final items = state.yogaPoses?.items ??
+                              const <YogaPoseDetails>[];
 
-                          if (state.status == HomePageStatus.loading && items.isEmpty) {
+                          if (state.status == HomePageStatus.loading &&
+                              items.isEmpty) {
                             return Center(
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 40),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 40),
                                 child: Column(
                                   children: [
                                     SizedBox(
@@ -379,7 +407,8 @@ class _HomePagePageState extends State<HomePagePage> {
                                       height: 50,
                                       child: CircularProgressIndicator(
                                         strokeWidth: 3,
-                                        valueColor: AlwaysStoppedAnimation<Color>(
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
                                           AppColors.primaryPurple,
                                         ),
                                       ),
@@ -440,14 +469,21 @@ class _HomePagePageState extends State<HomePagePage> {
 
                             // Check persisted first-launch flag. If true, we allow auto-navigation
                             // (but still only after the showcase completes). If false, do nothing.
-                            provider.get<OauthTokenManager>().getIsFirstLaunch().then((isFirst) {
-                              if (!isFirst) return; // not first launch: never auto-navigate
+                            provider
+                                .get<OauthTokenManager>()
+                                .getIsFirstLaunch()
+                                .then((isFirst) {
+                              if (!isFirst) {
+                                return; // not first launch: never auto-navigate
+                              }
 
                               if (homeShowcaseCompletedNotifier.value) {
                                 _autoNavigated = true;
-                                WidgetsBinding.instance.addPostFrameCallback((_) {
+                                WidgetsBinding.instance
+                                    .addPostFrameCallback((_) {
                                   try {
-                                    context.router.push(PoseDetailsRoute(item: item));
+                                    context.router
+                                        .push(PoseDetailsRoute(item: item));
                                   } catch (_) {
                                     // ignore navigation errors in case route isn't available in some builds
                                   }
@@ -494,28 +530,45 @@ class _HomePagePageState extends State<HomePagePage> {
                             );
                           }
 
-                          return ListView.builder(
-                            itemCount: items.length,
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemBuilder: (context, index) {
-                              final item = items[index];
-                              final itemWidget = Padding(
-                                padding: const EdgeInsets.only(bottom: 12.0),
-                                child: YogaPosesItem(
-                                  item: item,
-                                  isAdmin: _isAdmin,
+                          return Column(
+                            children: [
+                              ListView.builder(
+                                itemCount: items.length,
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemBuilder: (context, index) {
+                                  final item = items[index];
+                                  final itemWidget = Padding(
+                                    padding:
+                                        const EdgeInsets.only(bottom: 12.0),
+                                    child: YogaPosesItem(
+                                      item: item,
+                                      isAdmin: _isAdmin,
+                                    ),
+                                  );
+                                  if (index == 0) {
+                                    return Showcase(
+                                      key: listYogaPoseShowCaseWidget,
+                                      description:
+                                          'Tap an item to view details',
+                                      child: itemWidget,
+                                    );
+                                  }
+                                  return itemWidget;
+                                },
+                              ),
+                              if (state.status == HomePageStatus.loadingMore)
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 16),
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2.5,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      AppColors.primaryPurple,
+                                    ),
+                                  ),
                                 ),
-                              );
-                              if (index == 0) {
-                                return Showcase(
-                                  key: listYogaPoseShowCaseWidget,
-                                  description: 'Tap an item to view details',
-                                  child: itemWidget,
-                                );
-                              }
-                              return itemWidget;
-                            },
+                            ],
                           );
                         },
                       ),

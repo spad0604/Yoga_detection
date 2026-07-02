@@ -36,7 +36,7 @@ public class YogaPoseDetails {
     @Enumerated(EnumType.STRING)
     @Column(name = "level", nullable = false)
     private YogaPoseLevelEnum level;
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
     @Column(name = "tutorial_video_url")
     private String tutorialVideoUrl;

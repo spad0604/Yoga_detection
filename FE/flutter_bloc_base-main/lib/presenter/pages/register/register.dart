@@ -3,6 +3,10 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_starter/di.dart';
+import 'package:flutter_starter/core/utils/user_preferences.dart';
+import 'package:flutter_starter/data/sources/network/network.dart';
+import 'package:flutter_starter/data/states/auth/auth_bloc.dart';
+import 'package:flutter_starter/data/states/auth/auth_event.dart';
 import 'package:flutter_starter/gen/app_images.dart';
 import 'package:flutter_starter/presenter/navigation/navigation.dart';
 import 'package:flutter_starter/presenter/pages/register/register_bloc.dart';
@@ -44,7 +48,31 @@ class _RegisterPageState extends State<RegisterPage> {
 
   RegisterBloc get _bloc => context.read<RegisterBloc>();
 
-  void _onSuccess(BuildContext context, RegisterState state) {
+  Future<void> _onSuccess(BuildContext context, RegisterState state) async {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        const SnackBar(
+          content: Text('Register successfully!'),
+          backgroundColor: AppColors.success,
+        ),
+      );
+
+    if (state.account != null) {
+      context.read<AuthBloc>().add(AuthLoggedIn(state.account!));
+    }
+
+    try {
+      final networkDataSource = provider.get<NetworkDataSource>();
+      final response = await networkDataSource.getInformation();
+      if (response.data != null) {
+        await UserPreferences.saveUserInfo(response.data!);
+      }
+    } catch (e) {
+      debugPrint('Failed to get user info after register: $e');
+    }
+
+    if (!context.mounted) return;
     context.router.replaceAll([HomeRoute()]);
   }
 
@@ -101,7 +129,10 @@ class _RegisterPageState extends State<RegisterPage> {
                             children: [
                               ShaderMask(
                                 shaderCallback: (bounds) => LinearGradient(
-                                  colors: [Colors.white, Colors.white.withOpacity(0.9)],
+                                  colors: [
+                                    Colors.white,
+                                    Colors.white.withOpacity(0.9)
+                                  ],
                                 ).createShader(bounds),
                                 child: Text(
                                   LocaleKeys.Register.tr(),
@@ -148,7 +179,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         child: CustomTextField(
                           controller: _firstNameController,
                           hintText: LocaleKeys.FirstName.tr(),
-                          onChanged: (v) => _bloc.add(const RegisterErrorOccurred(null)),
+                          onChanged: (v) =>
+                              _bloc.add(const RegisterErrorOccurred(null)),
                           suffixIcon: AppImages.ic_indentity,
                         ),
                       ),
@@ -157,7 +189,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         child: CustomTextField(
                           controller: _lastNameController,
                           hintText: LocaleKeys.LastName.tr(),
-                          onChanged: (v) => _bloc.add(const RegisterErrorOccurred(null)),
+                          onChanged: (v) =>
+                              _bloc.add(const RegisterErrorOccurred(null)),
                           suffixIcon: AppImages.ic_indentity,
                         ),
                       ),
@@ -167,11 +200,13 @@ class _RegisterPageState extends State<RegisterPage> {
                   const SizedBox(height: 16),
 
                   // Email
-                  BlocBuilder<RegisterBloc, RegisterState>(builder: (context, state) {
+                  BlocBuilder<RegisterBloc, RegisterState>(
+                      builder: (context, state) {
                     return CustomTextField(
                       controller: _emailController,
                       hintText: LocaleKeys.Email.tr(),
-                      onChanged: (v) => _bloc.add(const RegisterErrorOccurred(null)),
+                      onChanged: (v) =>
+                          _bloc.add(const RegisterErrorOccurred(null)),
                       errorText: state.emailError,
                       suffixIcon: AppImages.ic_mail,
                     );
@@ -180,11 +215,13 @@ class _RegisterPageState extends State<RegisterPage> {
                   const SizedBox(height: 16),
 
                   // Phone
-                  BlocBuilder<RegisterBloc, RegisterState>(builder: (context, state) {
+                  BlocBuilder<RegisterBloc, RegisterState>(
+                      builder: (context, state) {
                     return CustomTextField(
                       controller: _phoneNumberController,
                       hintText: LocaleKeys.PhoneNumber.tr(),
-                      onChanged: (v) => _bloc.add(const RegisterErrorOccurred(null)),
+                      onChanged: (v) =>
+                          _bloc.add(const RegisterErrorOccurred(null)),
                       errorText: state.phoneError,
                       suffixIcon: AppImages.ic_phone,
                     );
@@ -197,7 +234,8 @@ class _RegisterPageState extends State<RegisterPage> {
                     onTap: () async {
                       final picked = await showDatePicker(
                         context: context,
-                        initialDate: DateTime.now().subtract(const Duration(days: 365 * 18)),
+                        initialDate: DateTime.now()
+                            .subtract(const Duration(days: 365 * 18)),
                         firstDate: DateTime(1900),
                         lastDate: DateTime.now(),
                       );
@@ -210,11 +248,13 @@ class _RegisterPageState extends State<RegisterPage> {
                       }
                     },
                     child: AbsorbPointer(
-                      child: BlocBuilder<RegisterBloc, RegisterState>(builder: (context, state) {
+                      child: BlocBuilder<RegisterBloc, RegisterState>(
+                          builder: (context, state) {
                         return CustomTextField(
                           controller: _dateOfBirthController,
                           hintText: LocaleKeys.DateOfBirth.tr(),
-                          onChanged: (v) => _bloc.add(const RegisterErrorOccurred(null)),
+                          onChanged: (v) =>
+                              _bloc.add(const RegisterErrorOccurred(null)),
                           errorText: state.birthDateError,
                           suffixIcon: AppImages.ic_calendar,
                         );
@@ -225,14 +265,18 @@ class _RegisterPageState extends State<RegisterPage> {
                   const SizedBox(height: 16),
 
                   // Password
-                  BlocBuilder<RegisterBloc, RegisterState>(builder: (context, state) {
+                  BlocBuilder<RegisterBloc, RegisterState>(
+                      builder: (context, state) {
                     return CustomTextField(
                       isPassword: !_isPasswordVisible,
                       controller: _passwordController,
                       hintText: LocaleKeys.Password.tr(),
-                      onChanged: (v) => _bloc.add(const RegisterErrorOccurred(null)),
+                      onChanged: (v) =>
+                          _bloc.add(const RegisterErrorOccurred(null)),
                       errorText: state.passwordError,
-                      suffixIcon: _isPasswordVisible ? AppImages.ic_eye_on : AppImages.ic_eye_off,
+                      suffixIcon: _isPasswordVisible
+                          ? AppImages.ic_eye_on
+                          : AppImages.ic_eye_off,
                       onTapSuffix: () {
                         setState(() {
                           _isPasswordVisible = !_isPasswordVisible;
@@ -244,18 +288,22 @@ class _RegisterPageState extends State<RegisterPage> {
                   const SizedBox(height: 16),
 
                   // Confirm password
-                  BlocBuilder<RegisterBloc, RegisterState>(builder: (context, state) {
+                  BlocBuilder<RegisterBloc, RegisterState>(
+                      builder: (context, state) {
                     return CustomTextField(
                       isPassword: !_isConfirmPasswordVisible,
                       controller: _confirmPasswordController,
                       hintText: LocaleKeys.ConfirmPassword.tr(),
-                      onChanged: (v) => _bloc.add(const RegisterErrorOccurred(null)),
+                      onChanged: (v) =>
+                          _bloc.add(const RegisterErrorOccurred(null)),
                       errorText: state.confirmPasswordError,
-                      suffixIcon:
-                          _isConfirmPasswordVisible ? AppImages.ic_eye_on : AppImages.ic_eye_off,
+                      suffixIcon: _isConfirmPasswordVisible
+                          ? AppImages.ic_eye_on
+                          : AppImages.ic_eye_off,
                       onTapSuffix: () {
                         setState(() {
-                          _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                          _isConfirmPasswordVisible =
+                              !_isConfirmPasswordVisible;
                         });
                       },
                     );

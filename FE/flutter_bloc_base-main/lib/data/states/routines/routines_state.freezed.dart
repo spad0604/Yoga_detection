@@ -22,6 +22,7 @@ mixin _$RoutinesState {
   List<UserRoutineProgress> get completedRoutines =>
       throw _privateConstructorUsedError;
   bool get isLoading => throw _privateConstructorUsedError;
+  bool get isLoadingMore => throw _privateConstructorUsedError;
   String? get error => throw _privateConstructorUsedError;
   int get currentPage => throw _privateConstructorUsedError;
   bool get hasMore => throw _privateConstructorUsedError;
@@ -44,6 +45,7 @@ abstract class $RoutinesStateCopyWith<$Res> {
       List<UserRoutineProgress> inProgressRoutines,
       List<UserRoutineProgress> completedRoutines,
       bool isLoading,
+      bool isLoadingMore,
       String? error,
       int currentPage,
       bool hasMore});
@@ -68,6 +70,7 @@ class _$RoutinesStateCopyWithImpl<$Res, $Val extends RoutinesState>
     Object? inProgressRoutines = null,
     Object? completedRoutines = null,
     Object? isLoading = null,
+    Object? isLoadingMore = null,
     Object? error = freezed,
     Object? currentPage = null,
     Object? hasMore = null,
@@ -88,6 +91,10 @@ class _$RoutinesStateCopyWithImpl<$Res, $Val extends RoutinesState>
       isLoading: null == isLoading
           ? _value.isLoading
           : isLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isLoadingMore: null == isLoadingMore
+          ? _value.isLoadingMore
+          : isLoadingMore // ignore: cast_nullable_to_non_nullable
               as bool,
       error: freezed == error
           ? _value.error
@@ -118,6 +125,7 @@ abstract class _$$RoutinesStateImplCopyWith<$Res>
       List<UserRoutineProgress> inProgressRoutines,
       List<UserRoutineProgress> completedRoutines,
       bool isLoading,
+      bool isLoadingMore,
       String? error,
       int currentPage,
       bool hasMore});
@@ -140,6 +148,7 @@ class __$$RoutinesStateImplCopyWithImpl<$Res>
     Object? inProgressRoutines = null,
     Object? completedRoutines = null,
     Object? isLoading = null,
+    Object? isLoadingMore = null,
     Object? error = freezed,
     Object? currentPage = null,
     Object? hasMore = null,
@@ -160,6 +169,10 @@ class __$$RoutinesStateImplCopyWithImpl<$Res>
       isLoading: null == isLoading
           ? _value.isLoading
           : isLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isLoadingMore: null == isLoadingMore
+          ? _value.isLoadingMore
+          : isLoadingMore // ignore: cast_nullable_to_non_nullable
               as bool,
       error: freezed == error
           ? _value.error
@@ -185,6 +198,7 @@ class _$RoutinesStateImpl implements _RoutinesState {
       final List<UserRoutineProgress> inProgressRoutines = const [],
       final List<UserRoutineProgress> completedRoutines = const [],
       this.isLoading = false,
+      this.isLoadingMore = false,
       this.error,
       this.currentPage = 0,
       this.hasMore = false})
@@ -225,6 +239,9 @@ class _$RoutinesStateImpl implements _RoutinesState {
   @JsonKey()
   final bool isLoading;
   @override
+  @JsonKey()
+  final bool isLoadingMore;
+  @override
   final String? error;
   @override
   @JsonKey()
@@ -235,7 +252,7 @@ class _$RoutinesStateImpl implements _RoutinesState {
 
   @override
   String toString() {
-    return 'RoutinesState(routines: $routines, inProgressRoutines: $inProgressRoutines, completedRoutines: $completedRoutines, isLoading: $isLoading, error: $error, currentPage: $currentPage, hasMore: $hasMore)';
+    return 'RoutinesState(routines: $routines, inProgressRoutines: $inProgressRoutines, completedRoutines: $completedRoutines, isLoading: $isLoading, isLoadingMore: $isLoadingMore, error: $error, currentPage: $currentPage, hasMore: $hasMore)';
   }
 
   @override
@@ -250,6 +267,8 @@ class _$RoutinesStateImpl implements _RoutinesState {
                 .equals(other._completedRoutines, _completedRoutines) &&
             (identical(other.isLoading, isLoading) ||
                 other.isLoading == isLoading) &&
+            (identical(other.isLoadingMore, isLoadingMore) ||
+                other.isLoadingMore == isLoadingMore) &&
             (identical(other.error, error) || other.error == error) &&
             (identical(other.currentPage, currentPage) ||
                 other.currentPage == currentPage) &&
@@ -263,6 +282,7 @@ class _$RoutinesStateImpl implements _RoutinesState {
       const DeepCollectionEquality().hash(_inProgressRoutines),
       const DeepCollectionEquality().hash(_completedRoutines),
       isLoading,
+      isLoadingMore,
       error,
       currentPage,
       hasMore);
@@ -282,6 +302,7 @@ abstract class _RoutinesState implements RoutinesState {
       final List<UserRoutineProgress> inProgressRoutines,
       final List<UserRoutineProgress> completedRoutines,
       final bool isLoading,
+      final bool isLoadingMore,
       final String? error,
       final int currentPage,
       final bool hasMore}) = _$RoutinesStateImpl;
@@ -294,6 +315,8 @@ abstract class _RoutinesState implements RoutinesState {
   List<UserRoutineProgress> get completedRoutines;
   @override
   bool get isLoading;
+  @override
+  bool get isLoadingMore;
   @override
   String? get error;
   @override

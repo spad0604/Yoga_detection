@@ -18,6 +18,8 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$SearchYogaPoseState {
   SearchYogaPoseStatus get status => throw _privateConstructorUsedError;
   List<YogaPoseDetails> get yogaPoses => throw _privateConstructorUsedError;
+  int get currentPage => throw _privateConstructorUsedError;
+  bool get hasReachedMax => throw _privateConstructorUsedError;
   BaseException<dynamic>? get error => throw _privateConstructorUsedError;
 
   /// Create a copy of SearchYogaPoseState
@@ -36,6 +38,8 @@ abstract class $SearchYogaPoseStateCopyWith<$Res> {
   $Res call(
       {SearchYogaPoseStatus status,
       List<YogaPoseDetails> yogaPoses,
+      int currentPage,
+      bool hasReachedMax,
       BaseException<dynamic>? error});
 }
 
@@ -56,6 +60,8 @@ class _$SearchYogaPoseStateCopyWithImpl<$Res, $Val extends SearchYogaPoseState>
   $Res call({
     Object? status = null,
     Object? yogaPoses = null,
+    Object? currentPage = null,
+    Object? hasReachedMax = null,
     Object? error = freezed,
   }) {
     return _then(_value.copyWith(
@@ -67,6 +73,14 @@ class _$SearchYogaPoseStateCopyWithImpl<$Res, $Val extends SearchYogaPoseState>
           ? _value.yogaPoses
           : yogaPoses // ignore: cast_nullable_to_non_nullable
               as List<YogaPoseDetails>,
+      currentPage: null == currentPage
+          ? _value.currentPage
+          : currentPage // ignore: cast_nullable_to_non_nullable
+              as int,
+      hasReachedMax: null == hasReachedMax
+          ? _value.hasReachedMax
+          : hasReachedMax // ignore: cast_nullable_to_non_nullable
+              as bool,
       error: freezed == error
           ? _value.error
           : error // ignore: cast_nullable_to_non_nullable
@@ -86,6 +100,8 @@ abstract class _$$SearchYogaPoseStateImplCopyWith<$Res>
   $Res call(
       {SearchYogaPoseStatus status,
       List<YogaPoseDetails> yogaPoses,
+      int currentPage,
+      bool hasReachedMax,
       BaseException<dynamic>? error});
 }
 
@@ -104,6 +120,8 @@ class __$$SearchYogaPoseStateImplCopyWithImpl<$Res>
   $Res call({
     Object? status = null,
     Object? yogaPoses = null,
+    Object? currentPage = null,
+    Object? hasReachedMax = null,
     Object? error = freezed,
   }) {
     return _then(_$SearchYogaPoseStateImpl(
@@ -115,6 +133,14 @@ class __$$SearchYogaPoseStateImplCopyWithImpl<$Res>
           ? _value._yogaPoses
           : yogaPoses // ignore: cast_nullable_to_non_nullable
               as List<YogaPoseDetails>,
+      currentPage: null == currentPage
+          ? _value.currentPage
+          : currentPage // ignore: cast_nullable_to_non_nullable
+              as int,
+      hasReachedMax: null == hasReachedMax
+          ? _value.hasReachedMax
+          : hasReachedMax // ignore: cast_nullable_to_non_nullable
+              as bool,
       error: freezed == error
           ? _value.error
           : error // ignore: cast_nullable_to_non_nullable
@@ -129,6 +155,8 @@ class _$SearchYogaPoseStateImpl implements _SearchYogaPoseState {
   const _$SearchYogaPoseStateImpl(
       {this.status = SearchYogaPoseStatus.initial,
       final List<YogaPoseDetails> yogaPoses = const [],
+      this.currentPage = 0,
+      this.hasReachedMax = false,
       this.error})
       : _yogaPoses = yogaPoses;
 
@@ -145,11 +173,17 @@ class _$SearchYogaPoseStateImpl implements _SearchYogaPoseState {
   }
 
   @override
+  @JsonKey()
+  final int currentPage;
+  @override
+  @JsonKey()
+  final bool hasReachedMax;
+  @override
   final BaseException<dynamic>? error;
 
   @override
   String toString() {
-    return 'SearchYogaPoseState(status: $status, yogaPoses: $yogaPoses, error: $error)';
+    return 'SearchYogaPoseState(status: $status, yogaPoses: $yogaPoses, currentPage: $currentPage, hasReachedMax: $hasReachedMax, error: $error)';
   }
 
   @override
@@ -160,12 +194,21 @@ class _$SearchYogaPoseStateImpl implements _SearchYogaPoseState {
             (identical(other.status, status) || other.status == status) &&
             const DeepCollectionEquality()
                 .equals(other._yogaPoses, _yogaPoses) &&
+            (identical(other.currentPage, currentPage) ||
+                other.currentPage == currentPage) &&
+            (identical(other.hasReachedMax, hasReachedMax) ||
+                other.hasReachedMax == hasReachedMax) &&
             (identical(other.error, error) || other.error == error));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, status,
-      const DeepCollectionEquality().hash(_yogaPoses), error);
+  int get hashCode => Object.hash(
+      runtimeType,
+      status,
+      const DeepCollectionEquality().hash(_yogaPoses),
+      currentPage,
+      hasReachedMax,
+      error);
 
   /// Create a copy of SearchYogaPoseState
   /// with the given fields replaced by the non-null parameter values.
@@ -181,12 +224,18 @@ abstract class _SearchYogaPoseState implements SearchYogaPoseState {
   const factory _SearchYogaPoseState(
       {final SearchYogaPoseStatus status,
       final List<YogaPoseDetails> yogaPoses,
+      final int currentPage,
+      final bool hasReachedMax,
       final BaseException<dynamic>? error}) = _$SearchYogaPoseStateImpl;
 
   @override
   SearchYogaPoseStatus get status;
   @override
   List<YogaPoseDetails> get yogaPoses;
+  @override
+  int get currentPage;
+  @override
+  bool get hasReachedMax;
   @override
   BaseException<dynamic>? get error;
 

@@ -47,7 +47,7 @@ class _SearchYogaPosePageState extends State<SearchYogaPosePage> {
   final TextEditingController _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   Timer? _debounce;
-  int _currentPage = 1;
+  int _currentPage = 0;
   final int _pageSize = 20;
 
   @override
@@ -56,7 +56,7 @@ class _SearchYogaPosePageState extends State<SearchYogaPosePage> {
     _scrollController.addListener(_onScroll);
     // initial load
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _dispatchSearch(keyword: '', page: 1);
+      _dispatchSearch(keyword: '', page: 0);
     });
     super.initState();
   }
@@ -64,8 +64,9 @@ class _SearchYogaPosePageState extends State<SearchYogaPosePage> {
   void _onSearchChanged() {
     _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 400), () {
-      _currentPage = 1;
-      _dispatchSearch(keyword: _searchController.text.trim(), page: _currentPage);
+      _currentPage = 0;
+      _dispatchSearch(
+          keyword: _searchController.text.trim(), page: _currentPage);
     });
   }
 
@@ -75,11 +76,16 @@ class _SearchYogaPosePageState extends State<SearchYogaPosePage> {
     final maxScroll = _scrollController.position.maxScrollExtent;
     final current = _scrollController.position.pixels;
     if (maxScroll - current <= threshold) {
-      // load next page
-      if (!_bloc.state.yogaPoses.isEmpty) {
-        _currentPage += 1;
-        _dispatchSearch(keyword: _searchController.text.trim(), page: _currentPage);
+      final state = _bloc.state;
+      if (state.status == SearchYogaPoseStatus.loading ||
+          state.status == SearchYogaPoseStatus.loadingMore ||
+          state.hasReachedMax ||
+          state.yogaPoses.isEmpty) {
+        return;
       }
+      _currentPage = state.currentPage + 1;
+      _dispatchSearch(
+          keyword: _searchController.text.trim(), page: _currentPage);
     }
   }
 
@@ -94,7 +100,10 @@ class _SearchYogaPosePageState extends State<SearchYogaPosePage> {
         appBar: AppBar(
           title: Text(
             LocaleKeys.YogaPoses.tr(),
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.black),
+            style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: AppColors.black),
           ),
         ),
         body: Column(
@@ -107,24 +116,36 @@ class _SearchYogaPosePageState extends State<SearchYogaPosePage> {
             Expanded(
               child: BlocBuilder<SearchYogaPoseBloc, SearchYogaPoseState>(
                 builder: (context, state) {
-                  if (state.status == SearchYogaPoseStatus.loading && state.yogaPoses.isEmpty) {
+                  if (state.status == SearchYogaPoseStatus.loading &&
+                      state.yogaPoses.isEmpty) {
                     return const Center(child: CircularProgressIndicator());
                   }
                   if (state.status == SearchYogaPoseStatus.failure) {
-                    return Center(child: Text(LocaleKeys.FailedToLoadPoses.tr()));
+                    return Center(
+                        child: Text(LocaleKeys.FailedToLoadPoses.tr()));
                   }
                   return ListView.builder(
                     controller: _scrollController,
                     itemBuilder: (context, index) {
+                      if (index == state.yogaPoses.length) {
+                        return const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 16),
+                          child: Center(child: CircularProgressIndicator()),
+                        );
+                      }
                       final items = state.yogaPoses[index];
                       return Padding(
-                        padding: const EdgeInsets.only(bottom: 16.0, left: 8, right: 8),
+                        padding: const EdgeInsets.only(
+                            bottom: 16.0, left: 8, right: 8),
                         child: YogaPosesItem(
                           item: items,
                         ),
                       );
                     },
-                    itemCount: state.yogaPoses.length,
+                    itemCount: state.yogaPoses.length +
+                        (state.status == SearchYogaPoseStatus.loadingMore
+                            ? 1
+                            : 0),
                   );
                 },
               ),

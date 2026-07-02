@@ -16,7 +16,9 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
 
   final OauthTokenManager _oauthTokenManager;
 
-  RegisterBloc({required RegisterUseCase register, required OauthTokenManager oauthTokenManager})
+  RegisterBloc(
+      {required RegisterUseCase register,
+      required OauthTokenManager oauthTokenManager})
       : _register = register,
         _oauthTokenManager = oauthTokenManager,
         super(const RegisterState()) {
@@ -58,14 +60,16 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     if (event.lastName.trim().isEmpty) lastNameErr = 'Last name is required';
 
     final emailRegex = RegExp(r"^[\w-.]+@([\w-]+\.)+[\w-]{2,4}");
-    if (!emailRegex.hasMatch(event.email.trim())) emailErr = 'Invalid email address';
+    if (!emailRegex.hasMatch(event.email.trim()))
+      emailErr = 'Invalid email address';
 
     if (event.phone.trim().isEmpty) phoneErr = 'Phone number is required';
 
     final upper = RegExp(r"[A-Z]");
     final special = RegExp(r"[^A-Za-z0-9]");
     if (!upper.hasMatch(event.password) || !special.hasMatch(event.password)) {
-      passwordErr = 'Password must have an uppercase letter and a special character';
+      passwordErr =
+          'Password must have an uppercase letter and a special character';
     }
 
     if (event.password != event.confirmPassword) {
@@ -119,15 +123,16 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         ),
       );
 
-      _oauthTokenManager.saveAccessToken(response.accessToken);
-      _oauthTokenManager.saveRefreshToken(response.refreshToken);
+      await _oauthTokenManager.saveAccessToken(response.accessToken);
+      await _oauthTokenManager.saveRefreshToken(response.refreshToken);
 
       // Save user role from register response
       await UserPreferences.saveUserRole(response.userRole);
 
-      emit(state.copyWith(status: RegisterStatus.success));
+      emit(state.copyWith(status: RegisterStatus.success, account: response));
     } catch (e) {
-      emit(state.copyWith(status: RegisterStatus.failure, error: BaseException.from(e)));
+      emit(state.copyWith(
+          status: RegisterStatus.failure, error: BaseException.from(e)));
     }
   }
 }
